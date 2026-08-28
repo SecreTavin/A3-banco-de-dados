@@ -6,14 +6,18 @@ Visão completa de uma aposta específica: participantes, evidências e resultad
 ## Seções principais
 - **Cabeçalho:** status, prazo, recompensa
 - **Participantes:** lista com papel e escolha
-- **Evidências:** mídia (`FOTO`/`VIDEO`/`LINK`/`TEXTO`), comprovante, comentário
-- **Envio de evidência** (RF06)
+- **Evidências:** mídia (`FOTO`/`VIDEO`/`LINK`/`TEXTO`), comprovante, comentário — exibidas em linha do tempo (até 5 por aposta)
+- **Envio de evidência** (RF06) — nova evidência sequencial permitida se a anterior for recusada pelo júri
+- **Cancelamento**, quando cabível, com motivo obrigatório
 - **Resultado final** quando a aposta é encerrada
 
 ## Dados (origem: `aposta`, `participante_aposta`, `evidencia`)
 `status`, `data_limite` / `papel_aposta`, `escolha` / `tipo_midia`, `url_comprovante`, `comentario`, `data_envio`
 
+## Decisões (validado com o time)
+- Transição `EM_VOTACAO` → `FINALIZADA_CUMPRIU`/`FINALIZADA_PERDEU` depende da validação por quórum a cada etapa (quórum = metade + 1 dos validadores, ver [27](27-Tela-Central-Votacao.md)).
+- Cancelamento: o criador pode cancelar a aposta a qualquer momento após criada; a partir do início da validação, é obrigatório informar o motivo, que deve ser aprovado por pelo menos metade dos integrantes (`APOSTADOR` não conta para esse quórum).
+- Evidências: exibidas em linha do tempo; o apostador pode enviar uma nova evidência sequencial se o júri recusar a anterior, até no máximo 5 evidências por aposta. A partir de 3 evidências recusadas, o apostador perde a aposta.
+
 ## TODOs para validação com o time
-- [ ] **Gap crítico:** quem/o que dispara a transição `EM_VOTACAO` → `FINALIZADA_CUMPRIU`/`FINALIZADA_PERDEU`? Não há regra de quórum ou prazo de votação definida em nenhum RN. Validar com o time e com o professor orientador, já que impacta o modelo de dados.
-- [ ] Quem pode cancelar uma aposta (`CANCELADA`) e em que condições?
-- [ ] Mais de uma evidência por aposta é permitido — como exibir múltiplas (linha do tempo)?
+Nenhum pendente — todas as dúvidas foram resolvidas nas Decisões acima.
