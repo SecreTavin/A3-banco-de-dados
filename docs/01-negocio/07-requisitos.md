@@ -1,0 +1,68 @@
+# 07 - Requisitos do Sistema
+
+## 7.1 Requisitos Funcionais (RF)
+
+### Identidade e grupos
+
+* **RF01:** Cadastro e autenticação de usuários via Google (OAuth/OIDC). O
+  sistema não possui senha própria.
+* **RF02:** Gestão de grupos privados de amigos, com papéis `ADMIN` e `MEMBRO`.
+* **RF09:** Convite para grupo por código de 6 caracteres, de uso único e com
+  expiração.
+* **RF10:** Perfil do usuário com nome, apelido, avatar e histórico pessoal de
+  apostas, participações e evidências.
+
+### Apostas
+
+* **RF03:** Categorias de desafios (Esportes, Jogos, Prendas, Acadêmico) — lista
+  fixa, sem tela de gestão.
+* **RF04:** Criação de apostas com custo em CP e recompensa monetária ou prenda.
+* **RF05:** Registro de participantes com papel (`DESAFIANTE`, `DESAFIADO`,
+  `APOSTADOR`) e escolha (`VAI_CUMPRIR`, `NAO_VAI_CUMPRIR`).
+* **RF11:** Comentários na aposta, para a discussão que hoje acontece fora do app.
+* **RF12:** Cancelamento de aposta com motivo, estornando o CP dos participantes.
+
+### Validação
+
+* **RF06:** Submissão de fotos, vídeos, links ou texto como evidência de
+  cumprimento, com upload direto para o storage de objetos.
+* **RF07:** Votação de validação pelos membros do grupo, com justificativa.
+* **RF13:** Apuração automática do resultado quando o quórum é atingido,
+  encerrando a aposta e liquidando o CP na mesma transação.
+
+### Economia e ranking
+
+* **RF14:** Carteira de CP por grupo, com saldo e extrato de lançamentos.
+* **RF08:** Ranking por grupo com histórico completo — maiores apostas,
+  percentual de aprovação e apostas cumpridas versus perdidas.
+
+### Notificações
+
+* **RF15:** Notificações persistidas e entregues por Web Push para prazo
+  vencendo, evidência enviada, votação aberta e aposta encerrada.
+
+## 7.2 Requisitos Não Funcionais (RNF)
+
+* **RNF01:** Interface responsiva mobile-first, utilizável no navegador do
+  celular sem instalação.
+* **RNF02:** Atualização ao vivo da Central de Votação — a contagem de votos e o
+  encerramento da aposta chegam sem recarregar a página.
+* **RNF03:** Integridade referencial e transacional garantidas pelo SGBD, não
+  apenas pela aplicação.
+* **RNF04:** Observabilidade com logs estruturados, métricas de domínio e
+  estatísticas de consultas (`pg_stat_statements`).
+* **RNF05:** O DDL versionado deve ser válido e aplicável — verificado a cada
+  commit pelo CI contra um PostgreSQL limpo.
+
+## 7.3 Fora do escopo do MVP
+
+Registrado aqui para que a ausência seja deliberada, não esquecimento. Ver
+[19 - Limitações e Melhorias Futuras](../06-encerramento/19-limitacoes-e-melhorias.md).
+
+| Item | Situação |
+| --- | --- |
+| Chat por grupo | Substituído por comentários na aposta (RF11) |
+| Login por email e senha | Modelado em `credencial_usuario`, não implementado |
+| Upload de avatar próprio | Usa a foto do Google |
+| Cache distribuído e fila de mensagens | Sem carga que justifique |
+| Aplicativo nativo iOS/Android | Site responsivo atende |

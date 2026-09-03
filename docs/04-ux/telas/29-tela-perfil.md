@@ -1,0 +1,26 @@
+# 29 - Tela: Perfil
+
+## Objetivo
+Dados do usuário e histórico pessoal. Confirmado no escopo do MVP.
+
+## Seções principais
+- **Dados do usuário:** nome, apelido, email, avatar/foto, data de cadastro
+- **Edição de perfil:** nome e apelido
+- **Saldo de CP por grupo** e extrato de movimentações
+- **Histórico:** apostas criadas, participações, evidências enviadas
+
+## Dados (origem: `identidade.usuario`, `apostas.aposta`, `apostas.participante_aposta`, `validacao.evidencia`, `grupos.membro_grupo`, `economia.transacao_cp`)
+`nome`, `apelido`, `email`, `avatar_url`, `data_cadastro` / `saldo_cp` / `tipo`, `valor`, `descricao`, `data_lancamento`
+
+## Decisões (validado com o time)
+- Tela entra no escopo do MVP.
+- Avatar/foto é necessário.
+- Edição de perfil faz parte desta tela.
+
+## Resolvido na arquitetura
+- **Falta de coluna de avatar (TODO anterior):** adicionada `identidade.usuario.avatar_url`, preenchida com a **foto do Google** no primeiro login — o usuário já entra no app com avatar, sem passo extra de cadastro.
+- **Upload de avatar próprio ficou fora do MVP:** a edição de perfil cobre nome e apelido; trocar a foto por upload exigiria fluxo de mídia e moderação, e não entrou nesta versão. A coluna já comporta a evolução sem mudança de schema.
+- **Saldo e extrato de CP:** o perfil mostra o `saldo_cp` do usuário **em cada grupo** (`grupos.membro_grupo`) e o extrato de movimentações vindo do ledger `economia.transacao_cp`, pela query **Q5** de [analytical_queries.sql](../../../database/scripts/queries/analytical_queries.sql). O saldo é materializado e reconciliável contra o ledger ([ADR 0007](../../02-arquitetura/adr/0007-ledger-append-only.md)).
+
+## TODOs para validação com o time
+Nenhum pendente — ver **Resolvido na arquitetura**.

@@ -1,0 +1,296 @@
+# 11 - Modelo Lógico
+
+Catorze tabelas distribuídas em seis schemas, um por módulo
+([ADR 0005](../../02-arquitetura/adr/0005-schema-por-modulo-postgres.md)).
+Documento de referência: para o desenho das relações veja [10 - DER](10-der.md),
+para o SQL veja [12 - DDL](../implementacao/12-ddl-schema.md).
+
+Convenção das tabelas de colunas: **PK** chave primária, **FK** chave
+estrangeira, **UQ** participa de restrição de unicidade, **NN** obrigatória.
+A coluna *Regra* cita a RN de [08 - Regras de Negócio](../../01-negocio/08-regras-de-negocio.md)
+que a restrição garante.
+
+---
+
+## Módulo `identidade`
+
+### `identidade.usuario`
+
+Pessoa cadastrada no sistema. Existe uma vez, independente de quantos grupos
+integra.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_usuario` | `SERIAL` | PK | | |
+| `nome` | `VARCHAR(100)` | | NN | |
+| `email` | `VARCHAR(120)` | UQ | NN | |
+| `apelido` | `VARCHAR(50)` | | NN | Deliberadamente **não** único — a identidade é o e-mail |
+| `avatar_url` | `VARCHAR(500)` | | | Foto do Google no primeiro login |
+| `data_cadastro` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+### `identidade.credencial_usuario`
+
+Meio de acesso de um usuário. Externalizada de `usuario` para comportar mais de
+um provedor sem coluna órfã.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_credencial` | `SERIAL` | PK | | |
+| `id_usuario` | `INT` | FK → `usuario`, UQ | NN, `ON DELETE CASCADE` | |
+| `provedor` | `VARCHAR(20)` | UQ | NN, `chk_credencial_provedor`: `GOOGLE`, `SENHA` | RN05 |
+| `id_externo` | `VARCHAR(255)` | UQ | NN — claim `sub` do OIDC, ou o e-mail | RN05 |
+| `segredo_hash` | `VARCHAR(255)` | | `chk_credencial_segredo`: nulo se `GOOGLE`, obrigatório se `SENHA` | RN05 |
+| `data_vinculo` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+Unicidades: `unq_credencial_provedor (provedor, id_externo)` impede duas contas
+para a mesma identidade externa; `unq_credencial_usuario_provedor (id_usuario,
+provedor)` impede dois Googles para o mesmo usuário.
+
+---
+
+## Módulo `grupos`
+
+### `grupos.grupo_amigos`
+
+Turma dentro da qual as apostas acontecem. É a fronteira de visibilidade e a
+fronteira da economia de CP.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_grupo` | `SERIAL` | PK | | |
+| `nome` | `VARCHAR(80)` | | NN | |
+| `descricao` | `VARCHAR(255)` | | | |
+| `id_criador` | `INT` | FK → `usuario` | NN | RN25 (criador é `ADMIN`) |
+| `data_criacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+### `grupos.membro_grupo`
+
+Associativa usuário × grupo. Carrega o papel e o saldo de CP — o saldo é **por
+grupo**, não global.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_membro` | `SERIAL` | PK | | |
+| `id_grupo` | `INT` | FK → `grupo_amigos`, UQ | NN, `ON DELETE CASCADE` | |
+| `id_usuario` | `INT` | FK → `usuario`, UQ | NN, `ON DELETE CASCADE` | |
+| `papel` | `VARCHAR(20)` | | NN, default `MEMBRO`, `chk_membro_papel`: `ADMIN`, `MEMBRO` | RN25 |
+| `saldo_cp` | `INT` | | NN, default `100`, `chk_membro_saldo`: `>= 0` | RN06, RN08 |
+| `data_entrada` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+`unq_membro_grupo (id_grupo, id_usuario)` impede entrada duplicada.
+
+`saldo_cp` é saldo **materializado**: a fonte da verdade é
+`economia.transacao_cp` e a divergência entre os dois é detectada pela view
+`economia.vw_reconciliacao_saldo`
+([ADR 0007](../../02-arquitetura/adr/0007-ledger-append-only.md)).
+
+### `grupos.convite_grupo`
+
+Código de entrada em grupo: uso único, com expiração e rastreável até quem
+convidou.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_convite` | `SERIAL` | PK | | |
+| `id_grupo` | `INT` | FK → `grupo_amigos` | NN, `ON DELETE CASCADE` | |
+| `codigo` | `CHAR(6)` | UQ | NN — alfabeto sem `0`/`O`, `1`/`I`/`L` | RN20 |
+| `id_criador` | `INT` | FK → `usuario` | NN | RN20 |
+| `data_criacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+| `data_expiracao` | `TIMESTAMPTZ` | | NN, `chk_convite_expiracao`: `> data_criacao` | RN20 |
+| `id_usado_por` | `INT` | FK → `usuario` | `chk_convite_uso` (par com `data_uso`) | RN20 |
+| `data_uso` | `TIMESTAMPTZ` | | `chk_convite_uso` (par com `id_usado_por`) | RN20 |
+
+`chk_convite_uso` exige que os dois campos de uso estejam ambos nulos ou ambos
+preenchidos — o uso é um evento único, não dois estados independentes.
+
+---
+
+## Módulo `apostas`
+
+### `apostas.categoria_desafio`
+
+Classificação do desafio. Extraída de `aposta` para satisfazer a 3FN.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_categoria` | `SERIAL` | PK | | |
+| `nome` | `VARCHAR(50)` | UQ | NN | |
+| `descricao` | `VARCHAR(200)` | | | |
+
+### `apostas.aposta`
+
+O desafio. Entidade central do sistema e detentora da máquina de estados.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_aposta` | `SERIAL` | PK | | |
+| `id_grupo` | `INT` | FK → `grupo_amigos` | NN, `ON DELETE CASCADE` | |
+| `id_criador` | `INT` | FK → `usuario` | NN | |
+| `id_categoria` | `INT` | FK → `categoria_desafio` | NN | |
+| `titulo` | `VARCHAR(120)` | | NN | |
+| `descricao` | `TEXT` | | NN | |
+| `valor_cp` | `INT` | | NN, `chk_aposta_valor_cp`: `> 0` | RN07 |
+| `tipo_recompensa` | `VARCHAR(20)` | | NN, `chk_aposta_tipo`: `MONETARIA`, `PRENDA_ACAO`, `ITEM_MATERIAL`, `OUTRO` | RN01 |
+| `valor_monetario` | `DECIMAL(10,2)` | | `chk_aposta_valor`: nulo ou `> 0` — **descritivo** | RN02 |
+| `descricao_prenda` | `VARCHAR(255)` | | | |
+| `data_criacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+| `data_limite` | `TIMESTAMPTZ` | | NN | RN21 |
+| `status` | `VARCHAR(30)` | | NN, default `ABERTA`, `chk_aposta_status` (6 valores) | RN03 |
+| `motivo_cancelamento` | `VARCHAR(255)` | | `chk_aposta_cancelamento`: obrigatório se `CANCELADA` | RN12 |
+| `data_encerramento` | `TIMESTAMPTZ` | | `chk_aposta_encerramento`: obrigatória em qualquer status terminal | RN03 |
+
+`valor_cp` é o custo **por participante**; o pote é `valor_cp × n_participantes`.
+`valor_monetario` não alimenta nenhum cálculo do sistema
+([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md)).
+
+### `apostas.participante_aposta`
+
+Associativa usuário × aposta. Guarda o papel e a aposta feita.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_participante` | `SERIAL` | PK | | |
+| `id_aposta` | `INT` | FK → `aposta`, UQ | NN, `ON DELETE CASCADE` | |
+| `id_usuario` | `INT` | FK → `usuario`, UQ | NN | RN09 |
+| `papel_aposta` | `VARCHAR(20)` | | NN, `chk_participante_papel`: `DESAFIANTE`, `DESAFIADO`, `APOSTADOR` | RN09 |
+| `escolha` | `VARCHAR(20)` | | NN, `chk_participante_escolha`: `VAI_CUMPRIR`, `NAO_VAI_CUMPRIR` | |
+| `data_aceite` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | RN18 |
+
+Duas restrições cobrem a RN09: `unq_participante_aposta (id_aposta,
+id_usuario)` dá um papel por usuário, e o índice parcial único
+`unq_aposta_papel_unico (id_aposta, papel_aposta) WHERE papel_aposta IN
+('DESAFIANTE','DESAFIADO')` limita a um de cada papel único sem restringir a
+quantidade de `APOSTADOR`.
+
+### `apostas.comentario_aposta`
+
+Conversa acontecendo dentro da aposta. Substitui o módulo de chat.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_comentario` | `SERIAL` | PK | | |
+| `id_aposta` | `INT` | FK → `aposta` | NN, `ON DELETE CASCADE` | |
+| `id_usuario` | `INT` | FK → `usuario` | NN | |
+| `texto` | `VARCHAR(500)` | | NN, `chk_comentario_texto`: não vazio após `trim` | |
+| `data_envio` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+---
+
+## Módulo `validacao`
+
+### `validacao.evidencia`
+
+Prova de cumprimento enviada pelo desafiado. Uma aposta admite até cinco, em
+sequência.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_evidencia` | `SERIAL` | PK | | |
+| `id_aposta` | `INT` | FK → `aposta`, UQ | NN, `ON DELETE CASCADE` | |
+| `id_usuario` | `INT` | FK → `usuario` | NN | |
+| `ordem` | `INT` | UQ | NN, `chk_evidencia_ordem`: `BETWEEN 1 AND 5` | RN10 |
+| `tipo_midia` | `VARCHAR(20)` | | NN, `chk_evidencia_midia`: `FOTO`, `VIDEO`, `LINK`, `TEXTO` | |
+| `url_comprovante` | `VARCHAR(500)` | | NN — objeto no R2, linha criada só após upload confirmado | RN22 |
+| `comentario` | `TEXT` | | | |
+| `status` | `VARCHAR(20)` | | NN, default `EM_VOTACAO`, `chk_evidencia_status`: `EM_VOTACAO`, `ACEITA`, `RECUSADA`, `EXPIRADA` | RN13 |
+| `data_envio` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+| `data_limite_votacao` | `TIMESTAMPTZ` | | NN, `chk_evidencia_votacao`: `> data_envio` | RN11 |
+| `data_apuracao` | `TIMESTAMPTZ` | | `chk_evidencia_apuracao`: obrigatória se status ≠ `EM_VOTACAO` | RN13 |
+
+`unq_evidencia_ordem (id_aposta, ordem)` impede duas evidências na mesma
+posição da sequência.
+
+### `validacao.validador_evidencia`
+
+Snapshot do júri: quem estava elegível a votar no momento em que a evidência
+entrou em votação. Sem atributos próprios — a linha *é* a associação.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_evidencia` | `INT` | PK, FK → `evidencia` | NN, `ON DELETE CASCADE` | RN14 |
+| `id_usuario` | `INT` | PK, FK → `usuario` | NN | RN14 |
+
+PK composta `(id_evidencia, id_usuario)`, que é também o alvo da FK composta em
+`voto_evidencia`. O quórum é `floor(count/2) + 1` sobre estas linhas, nunca
+sobre o grupo atual
+([ADR 0008](../../02-arquitetura/adr/0008-quorum-congelado.md)).
+
+### `validacao.voto_evidencia`
+
+Voto de um validador sobre uma evidência.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_voto` | `SERIAL` | PK | | |
+| `id_evidencia` | `INT` | FK → `evidencia`, FK composta, UQ | NN, `ON DELETE CASCADE` | RN14 |
+| `id_usuario` | `INT` | FK → `usuario`, FK composta, UQ | NN | RN14 |
+| `voto` | `VARCHAR(20)` | | NN, `chk_voto_tipo`: `VALIDO`, `INVALIDO` | RN15 |
+| `justificativa` | `VARCHAR(255)` | | | |
+| `data_voto` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+`unq_voto_usuario (id_evidencia, id_usuario)` garante voto único (RN04). A FK
+composta `fk_voto_validador (id_evidencia, id_usuario) → validador_evidencia`
+garante que só vota quem estava no júri congelado (RN14). O trigger
+`trg_voto_evidencia_valida` recusa voto fora do prazo ou em evidência que não
+está `EM_VOTACAO` (RN19).
+
+---
+
+## Módulo `economia`
+
+### `economia.transacao_cp`
+
+Ledger append-only de partidas dobradas. Nunca sofre `UPDATE` nem `DELETE`.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_transacao` | `SERIAL` | PK | | |
+| `id_grupo` | `INT` | FK → `grupo_amigos` | NN, `ON DELETE CASCADE` | |
+| `id_usuario` | `INT` | FK → `usuario` | Nulo = conta da aposta (escrow) | RN18 |
+| `id_aposta` | `INT` | FK → `aposta` | | RN18 |
+| `tipo` | `VARCHAR(20)` | | NN, `chk_transacao_tipo`: `CREDITO_INICIAL`, `APOSTA_ESCROW`, `PREMIO`, `ESTORNO`, `RECOMPENSA_VOTO` | RN06, RN12, RN17, RN18, RN23 |
+| `valor` | `INT` | | NN, `chk_transacao_valor`: `<> 0` — positivo credita, negativo debita | RN24 |
+| `descricao` | `VARCHAR(255)` | | NN | |
+| `data_lancamento` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+Duas restrições cuidam da coerência de conta: `chk_transacao_conta` exige que o
+lançamento pertença a um usuário ou a uma aposta, e `chk_transacao_escrow`
+exige `id_aposta` sempre que o tipo for `APOSTA_ESCROW`.
+
+A imutabilidade é do trigger `trg_transacao_cp_imutavel` (RN24); estorno é
+lançamento novo, não remoção do original.
+
+---
+
+## Módulo `notificacoes`
+
+### `notificacoes.notificacao`
+
+Conteúdo da notificação, sempre persistido. Quem perdeu o push vê aqui ao abrir
+o app.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_notificacao` | `SERIAL` | PK | | |
+| `id_usuario` | `INT` | FK → `usuario` | NN, `ON DELETE CASCADE` | |
+| `tipo` | `VARCHAR(30)` | | NN, `chk_notificacao_tipo`: `PRAZO_VENCENDO`, `EVIDENCIA_ENVIADA`, `VOTACAO_ABERTA`, `APOSTA_ENCERRADA`, `CONVITE_ACEITO` | |
+| `titulo` | `VARCHAR(120)` | | NN | |
+| `corpo` | `VARCHAR(255)` | | NN | |
+| `url_destino` | `VARCHAR(255)` | | | |
+| `data_criacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+| `data_leitura` | `TIMESTAMPTZ` | | Nula = não lida | |
+
+### `notificacoes.push_subscription`
+
+Transporte: uma inscrição VAPID por dispositivo
+([ADR 0011](../../02-arquitetura/adr/0011-notificacoes-web-push.md)).
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_subscription` | `SERIAL` | PK | | |
+| `id_usuario` | `INT` | FK → `usuario` | NN, `ON DELETE CASCADE` | |
+| `endpoint` | `VARCHAR(500)` | UQ | NN | |
+| `chave_p256dh` | `VARCHAR(255)` | | NN | |
+| `chave_auth` | `VARCHAR(255)` | | NN | |
+| `data_criacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+| `data_ultimo_uso` | `TIMESTAMPTZ` | | | |
