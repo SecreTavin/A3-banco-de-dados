@@ -1,0 +1,122 @@
+.identidade {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.identidadeTextos {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nome {
+  font-size: 20px;
+}
+
+.apelido {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--primaria-forte);
+}
+
+.contato {
+  font-size: 12.5px;
+  color: var(--texto-fraco);
+}
+
+.numeros {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.numero {
+  display: grid;
+  gap: 2px;
+  justify-items: center;
+  text-align: center;
+  padding: 14px 8px;
+}
+
+.numeroValor {
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.numeroRotulo {
+  font-size: 11.5px;
+  color: var(--texto-fraco);
+}
+
+.saldos {
+  display: grid;
+  gap: 8px;
+}
+
+.saldo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--superficie);
+}
+
+.saldoGrupo {
+  flex: 1;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.saldoGrupo:hover {
+  color: var(--primaria-forte);
+}
+
+.extrato {
+  display: grid;
+  gap: 8px;
+}
+
+.lancamento {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--superficie);
+}
+
+.lancamentoTextos {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.lancamentoDescricao {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.lancamentoMeta {
+  font-size: 11.5px;
+  color: var(--texto-fraco);
+}
+
+.lancamentoValores {
+  display: grid;
+  gap: 3px;
+  justify-items: end;
+}
+
+.lancamentoSaldo {
+  font-size: 11.5px;
+  color: var(--texto-fraco);
+  font-variant-numeric: tabular-nums;
+}

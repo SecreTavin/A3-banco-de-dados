@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="EuDuvido.Api.Tests/EuDuvido.Api.Tests.csproj" />
+  <Project Path="EuDuvido.Api/EuDuvido.Api.csproj" />
+</Solution>

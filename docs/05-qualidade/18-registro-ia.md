@@ -32,6 +32,8 @@ rastro mecânico independente destes documentos.
 | Data | Alteração | Responsável |
 | --- | --- | --- |
 | 2026-09-03 | [Reorganização da documentação e decisões de arquitetura](registro-ia/2026-09-03-arquitetura-e-reorganizacao.md) | Arthur Marzano |
+| 2026-09-03 | [Implementação da API, do banco e da infraestrutura](registro-ia/2026-09-03-implementacao-api-e-banco.md) | Arthur Marzano |
+| 2026-09-03 | [Frontend React e as oito telas](registro-ia/2026-09-03-frontend-react-telas.md) | Arthur Marzano |
 
 ## Consolidação final
 

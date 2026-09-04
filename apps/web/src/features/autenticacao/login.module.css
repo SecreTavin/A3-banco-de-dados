@@ -1,0 +1,100 @@
+.tela {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 32px 18px;
+}
+
+.painel {
+  width: 100%;
+  max-width: 420px;
+  display: grid;
+  gap: 22px;
+}
+
+.marca {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 20px;
+  background: linear-gradient(140deg, var(--primaria-forte), #4c2fd6);
+  box-shadow: 0 14px 40px rgba(124, 92, 255, 0.35);
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.titulo {
+  font-size: 30px;
+}
+
+.subtitulo {
+  color: var(--texto-suave);
+  font-size: 14px;
+  max-width: 320px;
+}
+
+.lista {
+  display: grid;
+  gap: 10px;
+}
+
+.rotuloLista {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-fraco);
+}
+
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+}
+
+.usuario:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: var(--primaria);
+  background: var(--superficie-alta);
+}
+
+.usuario:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.usuarioTextos {
+  display: grid;
+  flex: 1;
+}
+
+.usuarioApelido {
+  font-weight: 600;
+}
+
+.usuarioNome {
+  font-size: 12.5px;
+  color: var(--texto-fraco);
+}
+
+.rodape {
+  text-align: center;
+  font-size: 12px;
+  color: var(--texto-fraco);
+}

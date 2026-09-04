@@ -1,6 +1,6 @@
 # 09 - Evolução da Modelagem
 
-O modelo não nasceu com 14 tabelas. Este documento registra as duas versões que
+O modelo não nasceu com 15 tabelas. Este documento registra as duas versões que
 existiram, o que mudou entre elas e — o que importa — **por que** cada mudança
 foi necessária. Toda alteração aqui é consequência de uma regra de negócio que o
 modelo anterior não conseguia representar ou de uma anomalia de normalização.

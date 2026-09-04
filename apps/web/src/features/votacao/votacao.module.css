@@ -1,0 +1,151 @@
+.lista {
+  display: grid;
+  gap: 12px;
+}
+
+.evidencia {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: linear-gradient(180deg, var(--superficie-alta), var(--superficie));
+  box-shadow: var(--sombra);
+}
+
+.cabecalho {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.desafio {
+  flex: 1;
+  font-size: 15.5px;
+  font-weight: 700;
+}
+
+.desafio:hover {
+  color: var(--primaria-forte);
+}
+
+.midia {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.link {
+  color: var(--primaria-forte);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.foto {
+  width: 100%;
+  max-height: 260px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  object-fit: cover;
+}
+
+.relato {
+  font-size: 13.5px;
+  color: var(--texto-suave);
+}
+
+.placar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.favoravel {
+  color: var(--cumpriu);
+  font-weight: 700;
+}
+
+.contra {
+  color: var(--perdeu);
+  font-weight: 700;
+}
+
+.aoVivo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--em-votacao);
+}
+
+.aoVivo::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulsar 1.6s ease-in-out infinite;
+}
+
+@keyframes pulsar {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.barra {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--fundo);
+  overflow: hidden;
+}
+
+.barraPreenchida {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primaria), var(--em-votacao));
+  transition: width 0.3s ease;
+}
+
+.legenda {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  color: var(--texto-fraco);
+}
+
+.prazo,
+.prazoUrgente {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+}
+
+.prazoUrgente {
+  color: var(--em-andamento);
+  font-weight: 600;
+}
+
+.formulario {
+  display: grid;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--borda);
+}
+
+.acoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}

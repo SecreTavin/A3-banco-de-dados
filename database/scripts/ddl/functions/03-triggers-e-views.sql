@@ -138,6 +138,27 @@ SELECT e.id_evidencia,
           e.status, e.ordem, e.data_limite_votacao;
 
 -- -----------------------------------------------------------------------------
+-- Escrow orfao: aposta encerrada com CP ainda preso na conta dela.
+-- Deve estar SEMPRE vazia. A reconciliacao de saldo nao pega este caso, porque
+-- compara saldo do usuario contra o ledger do usuario e ignora a conta da
+-- aposta - foi assim que um pote nao distribuido passou despercebido no seed.
+-- -----------------------------------------------------------------------------
+CREATE OR REPLACE VIEW economia.vw_escrow_orfao AS
+SELECT a.id_aposta,
+       a.titulo,
+       a.status,
+       SUM(t.valor) AS cp_preso
+  FROM apostas.aposta a
+  JOIN economia.transacao_cp t
+    ON t.id_aposta = a.id_aposta AND t.id_usuario IS NULL
+ WHERE a.status IN ('FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA')
+ GROUP BY a.id_aposta, a.titulo, a.status
+HAVING SUM(t.valor) <> 0;
+
+COMMENT ON VIEW economia.vw_escrow_orfao IS
+    'Deve estar SEMPRE vazia. Cada linha e um pote que ficou preso numa aposta ja encerrada - CP que sumiu de circulacao.';
+
+-- -----------------------------------------------------------------------------
 -- CP preso em apostas abertas, por grupo. Painel do Grafana.
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE VIEW economia.vw_cp_em_escrow AS

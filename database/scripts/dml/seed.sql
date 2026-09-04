@@ -78,10 +78,13 @@ INSERT INTO apostas.aposta
     'Theus duvidou que Lipe vai para a aula do Prof. Mário de dinossauro inflável.',
     15, 'PRENDA_ACAO', NULL, 'Pagar 1 rodada de açaí para todo o grupo',
     '2026-10-05 19:00:00-03', 'EM_ANDAMENTO', NULL),
+-- Entra como EM_VOTACAO e e encerrada pela procedure no fim deste script.
+-- Semear direto como FINALIZADA_CUMPRIU faria a guarda de idempotencia de
+-- encerrar_aposta retornar sem pagar, deixando o pote preso no escrow.
 (1, 3, 3, 'Ganhar de 3 gols de diferença no FIFA',
     'X1 clássico no PS5 entre Gabriel e Matheus.',
-    30, 'MONETARIA', 100.00, NULL, '2026-09-01 22:00:00-03', 'FINALIZADA_CUMPRIU',
-    '2026-09-01 23:10:00-03'),
+    30, 'MONETARIA', 100.00, NULL, '2026-09-01 22:00:00-03', 'EM_VOTACAO',
+    NULL),
 (1, 4, 4, 'Tirar nota máxima no projeto A3',
     'Lari duvidou que o grupo tira 40/40 na banca EXPOUNA.',
     25, 'PRENDA_ACAO', NULL, 'Usar a foto de perfil escolhida pelos amigos por 1 semana',

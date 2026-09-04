@@ -1,0 +1,137 @@
+:root {
+  color-scheme: dark;
+
+  --fundo: #0a0b11;
+  --fundo-topo: #10121b;
+  --superficie: #151824;
+  --superficie-alta: #1c2030;
+  --borda: #262b3b;
+  --borda-forte: #343b50;
+
+  --texto: #e9ecf5;
+  --texto-suave: #99a1b7;
+  --texto-fraco: #6b7389;
+
+  --primaria: #7c5cff;
+  --primaria-forte: #8f74ff;
+  --primaria-fraca: rgba(124, 92, 255, 0.16);
+
+  --cp: #f6c453;
+  --cp-fraca: rgba(246, 196, 83, 0.14);
+
+  --aberta: #3b82f6;
+  --em-andamento: #f59e0b;
+  --em-votacao: #a855f7;
+  --cumpriu: #22c55e;
+  --perdeu: #ef4444;
+  --cancelada: #6b7280;
+
+  --raio: 14px;
+  --raio-pequeno: 9px;
+  --sombra: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --largura-maxima: 940px;
+  --altura-nav: 62px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(900px 480px at 12% -8%, rgba(124, 92, 255, 0.16), transparent 60%),
+    radial-gradient(700px 420px at 100% 0%, rgba(34, 197, 94, 0.08), transparent 55%),
+    var(--fundo);
+  background-attachment: fixed;
+  color: var(--texto);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--fundo);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primaria);
+  box-shadow: 0 0 0 3px var(--primaria-fraca);
+}
+
+textarea {
+  min-height: 84px;
+  resize: vertical;
+}
+
+::placeholder {
+  color: var(--texto-fraco);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primaria-forte);
+  outline-offset: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 10px;
+  background: var(--borda-forte);
+  background-clip: content-box;
+}

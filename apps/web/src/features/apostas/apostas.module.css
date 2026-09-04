@@ -1,0 +1,313 @@
+.filtros {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.filtros::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex: none;
+  padding: 7px 14px;
+  border: 1px solid var(--borda);
+  border-radius: 999px;
+  background: var(--superficie);
+  color: var(--texto-suave);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.chip:hover {
+  color: var(--texto);
+  border-color: var(--borda-forte);
+}
+
+.chipAtivo {
+  border-color: var(--primaria);
+  background: var(--primaria-fraca);
+  color: var(--primaria-forte);
+}
+
+.lista {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 720px) {
+  .lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.aposta {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: linear-gradient(180deg, var(--superficie-alta), var(--superficie));
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.aposta:hover {
+  transform: translateY(-2px);
+  border-color: var(--primaria);
+}
+
+.apostaTopo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.apostaTitulo {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* O card inteiro navega para o detalhe, mas só o título é um <a> — links aninhados
+   (o CTA da votação) seriam HTML inválido. */
+.apostaTitulo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--raio);
+}
+
+.apostaMeta {
+  font-size: 12.5px;
+  color: var(--texto-fraco);
+}
+
+.apostaRecompensa {
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+.apostaRodape {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.prazo,
+.prazoUrgente {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  color: var(--texto-fraco);
+}
+
+.prazoUrgente {
+  color: var(--em-andamento);
+  font-weight: 600;
+}
+
+.cta {
+  position: relative;
+  margin-left: auto;
+  padding: 5px 12px;
+  border: 1px solid var(--em-votacao);
+  border-radius: 999px;
+  color: var(--em-votacao);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cta:hover {
+  background: rgba(168, 85, 247, 0.14);
+}
+
+.resumo {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.resumoDescricao {
+  font-size: 14px;
+  color: var(--texto-suave);
+  white-space: pre-line;
+}
+
+.resumoGrade {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.resumoItem dt {
+  margin-bottom: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--texto-fraco);
+}
+
+.resumoItem dd {
+  margin: 0;
+  font-size: 14px;
+}
+
+.prazoNota {
+  color: var(--texto-fraco);
+}
+
+.formulario {
+  display: grid;
+  gap: 12px;
+}
+
+.formularioLinha {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.formularioBotoes {
+  display: flex;
+  gap: 10px;
+}
+
+.participantes {
+  display: grid;
+  gap: 8px;
+}
+
+.participante {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex-wrap: wrap;
+  padding: 11px 13px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--superficie);
+}
+
+.participanteApelido {
+  flex: 1;
+  min-width: 90px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.evidencias {
+  display: grid;
+  gap: 10px;
+}
+
+.evidencia {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--borda-forte);
+  border-radius: var(--raio-pequeno);
+  background: var(--superficie);
+}
+
+.evidenciaTopo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.evidenciaOrdem {
+  font-weight: 800;
+  color: var(--texto-fraco);
+}
+
+.espaco {
+  flex: 1;
+}
+
+.evidenciaLink {
+  justify-self: start;
+  color: var(--primaria-forte);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.evidenciaTexto {
+  font-size: 13.5px;
+  color: var(--texto-suave);
+}
+
+.evidenciaVotos {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.votoFavoravel {
+  color: var(--cumpriu);
+  font-weight: 700;
+}
+
+.votoContra {
+  color: var(--perdeu);
+  font-weight: 700;
+}
+
+.evidenciaQuorum {
+  color: var(--texto-fraco);
+}
+
+.evidenciaRodape {
+  font-size: 12px;
+  color: var(--texto-fraco);
+}
+
+.comentarios {
+  display: grid;
+  gap: 10px;
+}
+
+.comentario {
+  display: flex;
+  gap: 11px;
+  padding: 11px 13px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio-pequeno);
+  background: var(--superficie);
+}
+
+.comentarioCorpo {
+  display: grid;
+  gap: 3px;
+  font-size: 13.5px;
+}
+
+.comentarioTopo {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.comentarioData {
+  font-size: 11.5px;
+  color: var(--texto-fraco);
+}
+
+.novoComentario {
+  display: flex;
+  gap: 10px;
+}

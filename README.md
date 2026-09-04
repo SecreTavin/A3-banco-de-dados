@@ -1,25 +1,91 @@
 # Eu Duvido! - Plataforma de Apostas Sociais e Desafios Entre Amigos
 
-Documentação técnica oficial do Projeto A3 da Unidade Curricular de **Banco de Dados** (Grupo Ânima Educação / Centro Universitário UNA).
+Projeto A3 da Unidade Curricular de **Banco de Dados** (Grupo Ânima Educação /
+Centro Universitário UNA).
 
-* **Título do Projeto:** Eu Duvido! (Apostas Sociais P2P, Prendas e Sistema de Votação por Evidência)
 * **Professor Orientador:** Prof. Mário Sérgio Caldas Teixeira
 * **Semestre Letivo:** 2026/2
-* **Ambiente de Documentação:** GitBook (Docs-as-Code integrado via GitHub)
+* **Documentação:** GitBook (Docs-as-Code via GitHub)
 
-## Estrutura do repositório
+## Como rodar
 
-```
-docs/                  Toda a documentação, separada por tipo
-  00-introducao/       Contexto, problema, objetivos e público-alvo
-  01-negocio/          Requisitos e regras de negócio
-  02-arquitetura/      Visão arquitetural, tecnologias e ADRs
-  03-banco-de-dados/   Modelagem (DER, lógico) e implementação (DDL, DML, consultas)
-  04-ux/               Refinamento das telas do app
-  05-qualidade/        Casos de teste e registro de uso de IA
-  06-encerramento/     Limitações, conclusão e referências
-database/scripts/      Scripts SQL executáveis (ddl, dml, queries)
-SUMMARY.md             Sumário de navegação do GitBook
+Requisito único: Docker.
+
+```bash
+docker compose up
 ```
 
-Índice completo da documentação em [docs/README.md](docs/README.md); navegação do GitBook em [SUMMARY.md](SUMMARY.md).
+Sobe PostgreSQL, MinIO, API e frontend. Quando os quatro estiverem de pé:
+
+| Serviço | Endereço |
+| --- | --- |
+| Aplicação | <http://localhost:8080> |
+| API (Swagger) | <http://localhost:5080/swagger> |
+| MinIO (console) | <http://localhost:9001> |
+| PostgreSQL | `localhost:5432` — `euduvido` / `euduvido` |
+
+O banco já sobe povoado. O login é por seleção de usuário — sem senha, sem
+Google — porque `Auth:Provider` está em `Dev`. Os cinco usuários disponíveis são
+**Tavin**, **Biel**, **Theus**, **Lari** e **Lipe**.
+
+### Roteiro de demonstração
+
+O seed deixa o sistema no estado exato para isto:
+
+1. Entre como **Lari** e vá para a Central de Votação.
+2. A evidência da aposta *"Correr 5km abaixo de 25 minutos"* está aguardando um
+   voto — o quórum é 2 e já há 1 voto favorável.
+3. Vote `VÁLIDO`.
+4. A apuração roda dentro do banco, numa transação: a evidência vira `ACEITA`, a
+   aposta vira `FINALIZADA_CUMPRIU`, o pote de CP é transferido aos vencedores e
+   quem votou recebe 2 CP.
+5. Abra a mesma tela em outro navegador antes de votar — a contagem se move ao
+   vivo por SignalR.
+
+Para conferir que a contabilidade fechou:
+
+```bash
+docker exec euduvido-db-1 psql -U euduvido -d euduvido \
+  -c "SELECT * FROM economia.vw_reconciliacao_saldo;" \
+  -c "SELECT * FROM economia.vw_escrow_orfao;"
+```
+
+As duas views devem vir **vazias**. Qualquer linha é bug de contabilidade.
+
+## Desenvolvimento local
+
+```bash
+docker compose up -d db storage        # só a infraestrutura
+cd apps/api/EuDuvido.Api && dotnet run # API em http://localhost:5080
+cd apps/web && npm install && npm run dev
+```
+
+A API aplica as migrations na subida.
+
+## Estrutura
+
+```text
+apps/
+  api/                   API .NET 10 - monólito modular, vertical slice
+    EuDuvido.Api/
+      Modules/           Identidade, Grupos, Apostas, Validacao, Economia, Ranking
+      Shared/            Auth, Database, Results, Realtime
+    EuDuvido.Api.Tests/  Testes de constraint, domínio e integração
+  web/                   React + TypeScript + Vite
+database/scripts/
+  ddl/schema.sql         GERADO pelas migrations - não editar à mão
+  ddl/functions/         Procedures, triggers e views (escritos à mão)
+  dml/seed.sql           Massa de demonstração
+  queries/               Consultas analíticas
+docs/                    Documentação por tipo - ver docs/README.md
+```
+
+## Arquitetura em três linhas
+
+A apuração de quórum e a liquidação de CP acontecem **dentro do PostgreSQL**,
+numa única transação — não existe estado em que a evidência foi aceita mas o CP
+não foi transferido. O SignalR apenas notifica que a transação commitou. As 53
+decisões de arquitetura estão registradas em
+[14 ADRs](docs/02-arquitetura/adr/README.md).
+
+Índice completo da documentação em [docs/README.md](docs/README.md).

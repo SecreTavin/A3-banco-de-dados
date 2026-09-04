@@ -25,6 +25,7 @@
   * [13 - Visão Geral da Arquitetura](docs/02-arquitetura/13-visao-geral.md)
   * [14 - Desenvolvimento do Sistema](docs/02-arquitetura/14-desenvolvimento-sistema.md)
   * [15 - Integração Sistema e Banco de Dados](docs/02-arquitetura/15-integracao-sistema-bd.md)
+  * [16 - Execução Local e Ambiente](docs/02-arquitetura/16-execucao-local.md)
   * [Tecnologias e Stack](docs/02-arquitetura/tecnologias.md)
   * [ADRs](docs/02-arquitetura/adr/README.md)
     * [Template de ADR](docs/02-arquitetura/adr/0000-template.md)
@@ -56,6 +57,8 @@
   * [18 - Registro de Programação Assistida por IA](docs/05-qualidade/18-registro-ia.md)
     * [Modelo de registro](docs/05-qualidade/registro-ia/0000-modelo.md)
     * [2026-09-03 - Arquitetura e reorganização](docs/05-qualidade/registro-ia/2026-09-03-arquitetura-e-reorganizacao.md)
+    * [2026-09-03 - Implementação da API e do banco](docs/05-qualidade/registro-ia/2026-09-03-implementacao-api-e-banco.md)
+    * [2026-09-03 - Frontend React e as telas](docs/05-qualidade/registro-ia/2026-09-03-frontend-react-telas.md)
 
 ## Produto
 

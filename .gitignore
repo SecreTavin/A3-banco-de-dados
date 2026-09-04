@@ -1,11 +1,26 @@
+# Node
 node_modules/
 dist/
 build/
 .next/
+
+# .NET
+bin/
+obj/
+*.user
+.vs/
+
+# Python
 *.pyc
 __pycache__/
+
+# Ambiente
 .env
+.env.local
 .vscode/
 .DS_Store
+
+# Banco local
 *.sqlite
 *.db
+*.tsbuildinfo

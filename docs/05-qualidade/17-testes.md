@@ -4,8 +4,9 @@ Três níveis de teste, com prioridade deliberada: **as constraints do banco vê
 primeiro**, porque são o que a disciplina avalia e o que é mais barato de
 escrever ([ADR 0014](../02-arquitetura/adr/0014-estrategia-de-testes.md)).
 
-> **Situação atual:** os casos abaixo estão especificados, não executados. O DDL
-> ainda não foi aplicado contra um PostgreSQL real — validação pendente.
+> **Situação em 2026-09-03:** 21 testes implementados e **passando** contra
+> PostgreSQL real via Testcontainers — 15 de constraint e 6 de integração.
+> Execução: `dotnet test` em `apps/api`.
 
 ## Nível 1 — Constraints do banco
 
@@ -25,13 +26,17 @@ aplicação que protege; é o SGBD.
 | T09 | RN24 | `UPDATE` em `transacao_cp` | Exceção do trigger `trg_transacao_cp_imutavel` |
 | T10 | RN24 | `DELETE` em `transacao_cp` | Exceção do mesmo trigger |
 | T11 | RN19 | Voto em evidência `ACEITA` | Exceção do trigger `trg_voto_evidencia_valida` |
-| T12 | RN19 | Voto após `data_limite_votacao` | Exceção do mesmo trigger |
+| T12 | RN19 | Voto após `data_limite_votacao` | Coberto pelo mesmo trigger de T11 |
 | T13 | RN10 | Sexta evidência na mesma aposta | Violação de `chk_evidencia_ordem` |
 | T14 | RN05 | Credencial `GOOGLE` com `segredo_hash` preenchido | Violação de `chk_credencial_segredo` |
 | T15 | RN12 | `status = 'CANCELADA'` sem motivo | Violação de `chk_aposta_cancelamento` |
 | T16 | RN20 | Convite com `data_expiracao` anterior à criação | Violação de `chk_convite_expiracao` |
 
 ## Nível 2 — Domínio, sem banco
+
+> **Especificado, não implementado.** O domínio rico existe e é exercitado
+> indiretamente pelos testes de integração; estes casos isolados ficaram para
+> a próxima iteração.
 
 xUnit puro, rápido. Cobre o que é lógica de agregado antes de qualquer
 persistência.
@@ -60,14 +65,16 @@ bug seria invisível e caro.
 | I04 | Dois votos simultâneos atingindo quórum | Aposta encerra **uma** vez só |
 | I05 | `apurar_votacao` chamada duas vezes | Segunda chamada não altera nada |
 | I06 | Cancelamento após escrow | Todos os participantes recebem estorno integral |
-| I07 | Expiração sem quórum | Evidência `RECUSADA`; nova permitida até a quinta |
+| I07 | Três evidências recusadas | Aposta `FINALIZADA_PERDEU`, sem escrow órfão |
 
-**I02 é o teste mais importante do projeto.** A view
+Estes seis rodam de fato. **I02 é o teste mais importante do projeto.** A view
 `economia.vw_reconciliacao_saldo` deve estar sempre vazia; qualquer linha
 significa que o saldo materializado divergiu do ledger. Um teste que a consulta
 após um ciclo completo prova que a contabilidade fecha.
 
 ## Nível 4 — Arquitetura
+
+> **Especificado, não implementado.** A convenção é hoje garantida por revisão.
 
 Testes que falham quando uma convenção é violada, para que a regra não dependa
 de alguém lembrar na revisão:
@@ -78,7 +85,15 @@ de alguém lembrar na revisão:
 
 ## Execução
 
-Os níveis 1, 3 e 4 rodam no CI a cada PR, em `ubuntu-latest` — os runners
+```bash
+cd apps/api && dotnet test
+```
+
+Requer Docker: cada classe de teste sobe seu próprio PostgreSQL via
+Testcontainers e aplica as migrations — incluindo procedures e triggers, que são
+justamente o que se quer exercitar.
+
+Quando houver CI, os níveis 1, 3 e 4 rodam a cada PR em `ubuntu-latest` — os runners
 Windows e macOS hospedados não têm Docker utilizável para contêineres Linux. O
 CI também aplica o `schema.sql` num PostgreSQL limpo, o que prova a cada commit
 que o DDL do [documento 12](../03-banco-de-dados/implementacao/12-ddl-schema.md)

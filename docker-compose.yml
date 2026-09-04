@@ -1,0 +1,94 @@
+name: euduvido
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: euduvido
+      POSTGRES_USER: euduvido
+      POSTGRES_PASSWORD: euduvido
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      # schema.sql e gerado pelas migrations e ja inclui procedures, triggers
+      # e views (ADR 0004) - um arquivo so descreve o banco inteiro.
+      - ./database/scripts/ddl/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/scripts/dml/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U euduvido -d euduvido"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  storage:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: euduvido
+      MINIO_ROOT_PASSWORD: euduvido123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - storage-data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "mc ready local || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Cria o bucket de evidencias e sai. O MinIO nao faz isso sozinho.
+  storage-init:
+    image: minio/mc:latest
+    depends_on:
+      storage:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://storage:9000 euduvido euduvido123 &&
+      mc mb --ignore-existing local/evidencias &&
+      mc anonymous set download local/evidencias
+      "
+
+  api:
+    build:
+      context: ./apps/api
+    depends_on:
+      db:
+        condition: service_healthy
+      storage:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__Postgres: "Host=db;Port=5432;Database=euduvido;Username=euduvido;Password=euduvido;Maximum Pool Size=15"
+      Auth__Provider: "Dev"
+      Auth__Chave: "chave-de-desenvolvimento-nao-usar-em-producao-min-32-chars"
+      Cors__Origens__0: "http://localhost:8080"
+      Cors__Origens__1: "http://localhost:5173"
+      Storage__Endpoint: "http://storage:9000"
+      Storage__Bucket: "evidencias"
+      Storage__AccessKey: "euduvido"
+      Storage__SecretKey: "euduvido123"
+    ports:
+      - "5080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  web:
+    build:
+      context: ./apps/web
+      args:
+        VITE_API_URL: http://localhost:5080
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+
+volumes:
+  db-data:
+  storage-data:
