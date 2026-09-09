@@ -1,0 +1,13 @@
+# Configuração de sync do GitBook com este repositório (Docs-as-Code).
+# Referência: https://docs.gitbook.com/integrations/git-sync/content-configuration
+#
+# root: onde o GitBook procura o README.md e o SUMMARY.md dentro do repo.
+# Como os dois estão na raiz (junto com o resto do código da aplicação), root
+# fica em "./" mesmo — não isolamos a doc numa subpasta tipo /docs porque o
+# SUMMARY.md já referencia tudo por caminho relativo a partir da raiz
+# (ex.: docs/07-entregas/README.md).
+root: ./
+
+structure:
+  readme: README.md
+  summary: SUMMARY.md
