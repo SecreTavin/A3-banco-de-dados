@@ -14,11 +14,10 @@ obj/
 *.pyc
 __pycache__/
 
-# Ambiente
+# Arquivos de ambiente - ignorar todos, exceto os de exemplo
 .env
-.env.local
-.vscode/
-.DS_Store
+.env.*
+!.env.example
 
 # Banco local
 *.sqlite

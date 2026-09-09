@@ -2,6 +2,7 @@ using Dapper;
 using EuDuvido.Api.Modules.Grupos.Domain;
 using EuDuvido.Api.Shared.Auth;
 using EuDuvido.Api.Shared.Database;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace EuDuvido.Api.Modules.Grupos.Features;
@@ -77,9 +78,15 @@ public static class GruposEndpoints
         grupo.MapPost("/{id:int}/convites", async (int id, IUsuarioAtual usuario,
             EuDuvidoDbContext db, CancellationToken ct) =>
         {
-            var ehMembro = await db.Membros
-                .AnyAsync(m => m.IdGrupo == id && m.IdUsuario == usuario.Id, ct);
-            if (!ehMembro) return Results.Forbid();
+            var membro = await db.Membros
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.IdGrupo == id && m.IdUsuario == usuario.Id, ct);
+
+            if (membro is null || !membro.EhAdmin)
+                return Results.Problem(
+                    title: "Acesso negado.",
+                    detail: "Apenas administradores do grupo podem gerar convites.",
+                    statusCode: 403);
 
             var convite = ConviteGrupo.Gerar(id, usuario.Id, ValidadeConvite);
             db.Convites.Add(convite);

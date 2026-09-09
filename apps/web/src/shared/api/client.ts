@@ -1,6 +1,6 @@
 import { lerToken, limparSessao, notificarExpiracao } from '../auth/sessao'
 
-export const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5080'
+export const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5100'
 
 export class ApiError extends Error {
   constructor(
@@ -70,6 +70,6 @@ export const api = {
 export function mensagemDeErro(falha: unknown): string {
   if (falha instanceof ApiError) return falha.message
   // fetch rejeita com TypeError quando não chega a falar com o servidor.
-  if (falha instanceof TypeError) return 'Não foi possível falar com o servidor.'
+  if (falha instanceof TypeError) return 'Não foi possível falar com o servidor. Verifique o console.'
   return falha instanceof Error ? falha.message : 'Erro inesperado.'
 }
