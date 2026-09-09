@@ -77,6 +77,7 @@ database/scripts/
   ddl/functions/         Procedures, triggers e views (escritos à mão)
   dml/seed.sql           Massa de demonstração
   queries/               Consultas analíticas
+scripts/entregas/        Automação da documentação de entrega (ver abaixo)
 docs/                    Documentação por tipo - ver docs/README.md
 ```
 
@@ -89,3 +90,43 @@ decisões de arquitetura estão registradas em
 [14 ADRs](docs/02-arquitetura/adr/README.md).
 
 Índice completo da documentação em [docs/README.md](docs/README.md).
+
+## Entregas do Projeto A3
+
+O edital define 4 entregas parciais mais a banca final (seção 20 do
+documento do professor). O status de cada uma — o que já está pronto, o que
+falta, e os documentos que comprovam cada item — é acompanhado em
+[docs/07-entregas/](docs/07-entregas/README.md) e **gerado automaticamente**,
+não mantido à mão.
+
+```bash
+node scripts/entregas/gerar-entregas.mjs
+```
+
+Esse comando lê [`scripts/entregas/manifest.json`](scripts/entregas/manifest.json)
+(a lista, por entrega, de quais documentos/scripts/pastas de código precisam
+existir), confere o estado real do repositório e reescreve as tabelas de
+status dentro de `docs/07-entregas/*.md`. Como boa parte da modelagem, do
+banco e do sistema já foi implementada antes da data de revisão em sala, as
+entregas futuras já aparecem parcialmente ✅ — é o "deixar em construção com
+conteúdo pronto".
+
+### Como fechar uma entrega
+
+1. Resolver as pendências listadas no documento da entrega em
+   `docs/07-entregas/`.
+2. Rodar `node scripts/entregas/gerar-entregas.mjs` e conferir 100% na
+   checklist.
+3. Commitar.
+4. Criar e enviar a tag da entrega:
+
+   ```bash
+   git tag entrega-1          # ou entrega-2, entrega-3, entrega-4, banca-final
+   git push origin entrega-1
+   ```
+
+O workflow [`entregas.yml`](.github/workflows/entregas.yml) publica
+automaticamente uma Release no GitHub com o conteúdo daquele documento, e a
+entrega passa a aparecer como **Entregue** na próxima geração da checklist —
+o histórico de releases do repositório vira, sozinho, o registro de todas as
+entregas feitas.

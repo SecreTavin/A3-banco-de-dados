@@ -1,0 +1,222 @@
+{
+  "$comment": "Fonte da verdade das entregas do Projeto A3 (UC Banco de Dados). Cada item vira uma linha da checklist gerada em docs/07-entregas/*.md. 'caminho' e relativo a raiz do repo. 'requerConteudo' exige que TODAS as substrings apareçam no arquivo (case-insensitive). 'minLinhas' exige um numero minimo de linhas - forma simples de flagar arquivo que ainda e so um stub de titulo. 'minArquivos' exige um numero minimo de arquivos dentro de uma pasta.",
+  "entregas": [
+    {
+      "id": "entrega-1",
+      "numero": 1,
+      "titulo": "Proposta e Requisitos",
+      "tag": "entrega-1",
+      "dataRevisao": "2026-09-11",
+      "arquivo": "docs/07-entregas/entrega-1-proposta-e-requisitos.md",
+      "perguntaChave": "Qual problema será resolvido e qual sistema será desenvolvido?",
+      "itens": [
+        {
+          "label": "Identificação do projeto (integrantes, RA, e-mail)",
+          "caminho": "docs/00-introducao/01-identificacao.md",
+          "requerConteudo": [
+            "Integrantes"
+          ],
+          "naoPodeConter": [
+            "_preencher_"
+          ]
+        },
+        {
+          "label": "Proposta do sistema (introdução)",
+          "caminho": "docs/00-introducao/02-introducao.md"
+        },
+        {
+          "label": "Problema e contexto",
+          "caminho": "docs/00-introducao/03-problema-e-contexto.md"
+        },
+        {
+          "label": "Justificativa",
+          "caminho": "docs/00-introducao/04-justificativa.md"
+        },
+        {
+          "label": "Objetivos (geral e específicos)",
+          "caminho": "docs/00-introducao/05-objetivos.md",
+          "requerConteudo": [
+            "Específicos"
+          ]
+        },
+        {
+          "label": "Público-alvo e usuários",
+          "caminho": "docs/00-introducao/06-publico-alvo.md"
+        },
+        {
+          "label": "Plano de trabalho / cronograma",
+          "caminho": "docs/00-introducao/07-plano-de-trabalho.md"
+        },
+        {
+          "label": "Requisitos funcionais e não funcionais",
+          "caminho": "docs/01-negocio/07-requisitos.md"
+        },
+        {
+          "label": "Regras de negócio iniciais",
+          "caminho": "docs/01-negocio/08-regras-de-negocio.md"
+        }
+      ]
+    },
+    {
+      "id": "entrega-2",
+      "numero": 2,
+      "titulo": "Modelagem",
+      "tag": "entrega-2",
+      "dataRevisao": "2026-10-02",
+      "arquivo": "docs/07-entregas/entrega-2-modelagem.md",
+      "perguntaChave": "Quais dados o sistema precisa armazenar e como esses dados se relacionam?",
+      "itens": [
+        {
+          "label": "Levantamento de dados e evolução da modelagem",
+          "caminho": "docs/03-banco-de-dados/modelagem/09-evolucao-modelagem.md"
+        },
+        {
+          "label": "DER — Diagrama Entidade-Relacionamento",
+          "caminho": "docs/03-banco-de-dados/modelagem/10-der.md"
+        },
+        {
+          "label": "Modelo lógico preliminar",
+          "caminho": "docs/03-banco-de-dados/modelagem/11-modelo-logico.md"
+        },
+        {
+          "label": "Regras de negócio consolidadas",
+          "caminho": "docs/01-negocio/08-regras-de-negocio.md"
+        },
+        {
+          "label": "ADR — schema por módulo (Postgres)",
+          "caminho": "docs/02-arquitetura/adr/0005-schema-por-modulo-postgres.md"
+        },
+        {
+          "label": "ADR — CP como moeda única",
+          "caminho": "docs/02-arquitetura/adr/0006-cp-como-moeda.md"
+        },
+        {
+          "label": "ADR — ledger append-only",
+          "caminho": "docs/02-arquitetura/adr/0007-ledger-append-only.md"
+        },
+        {
+          "label": "ADR — quórum congelado por evidência",
+          "caminho": "docs/02-arquitetura/adr/0008-quorum-congelado.md"
+        }
+      ]
+    },
+    {
+      "id": "entrega-3",
+      "numero": 3,
+      "titulo": "Banco de Dados",
+      "tag": "entrega-3",
+      "dataRevisao": "2026-10-30",
+      "arquivo": "docs/07-entregas/entrega-3-banco-de-dados.md",
+      "perguntaChave": "O modelo foi efetivamente transformado em um Banco de Dados funcional?",
+      "itens": [
+        {
+          "label": "SGBD escolhido e justificativa",
+          "caminho": "docs/02-arquitetura/adr/0001-stack-tecnologica.md"
+        },
+        {
+          "label": "Implementação do Banco de Dados (DDL)",
+          "caminho": "docs/03-banco-de-dados/implementacao/12-ddl-schema.md"
+        },
+        {
+          "label": "Script de criação (schema.sql, gerado por migration)",
+          "caminho": "database/scripts/ddl/schema.sql"
+        },
+        {
+          "label": "Procedures, triggers e views",
+          "caminho": "database/scripts/ddl/functions"
+        },
+        {
+          "label": "Povoamento — documento",
+          "caminho": "docs/03-banco-de-dados/implementacao/13-povoamento-dml.md",
+          "minLinhas": 3
+        },
+        {
+          "label": "Povoamento — script (seed.sql)",
+          "caminho": "database/scripts/dml/seed.sql"
+        },
+        {
+          "label": "Consultas SQL — documento",
+          "caminho": "docs/03-banco-de-dados/implementacao/16-consultas-sql.md"
+        },
+        {
+          "label": "Consultas SQL — script executável",
+          "caminho": "database/scripts/queries/analytical_queries.sql"
+        }
+      ]
+    },
+    {
+      "id": "entrega-4",
+      "numero": 4,
+      "titulo": "Sistema Funcional",
+      "tag": "entrega-4",
+      "dataRevisao": "2026-11-20",
+      "arquivo": "docs/07-entregas/entrega-4-sistema-funcional.md",
+      "perguntaChave": "O sistema funciona e utiliza efetivamente o Banco de Dados desenvolvido?",
+      "itens": [
+        {
+          "label": "API em funcionamento",
+          "caminho": "apps/api"
+        },
+        {
+          "label": "Frontend em funcionamento",
+          "caminho": "apps/web"
+        },
+        {
+          "label": "Principais telas documentadas",
+          "caminho": "docs/04-ux/telas"
+        },
+        {
+          "label": "Desenvolvimento do sistema",
+          "caminho": "docs/02-arquitetura/14-desenvolvimento-sistema.md"
+        },
+        {
+          "label": "Integração Sistema × Banco de Dados",
+          "caminho": "docs/02-arquitetura/15-integracao-sistema-bd.md"
+        },
+        {
+          "label": "Execução local e ambiente",
+          "caminho": "docs/02-arquitetura/16-execucao-local.md"
+        },
+        {
+          "label": "Casos de teste e validação",
+          "caminho": "docs/05-qualidade/17-testes.md"
+        },
+        {
+          "label": "Registro de Programação Assistida por IA",
+          "caminho": "docs/05-qualidade/18-registro-ia.md"
+        },
+        {
+          "label": "Evidências reais de uso de IA (além do modelo)",
+          "caminho": "docs/05-qualidade/registro-ia",
+          "minArquivos": 2
+        }
+      ]
+    },
+    {
+      "id": "banca-final",
+      "numero": 5,
+      "titulo": "Banca Final",
+      "tag": "banca-final",
+      "dataRevisao": "2026-12-04",
+      "arquivo": "docs/07-entregas/banca-final.md",
+      "perguntaChave": "O grupo compreendeu e é capaz de explicar o que desenvolveu, do problema à demonstração?",
+      "itens": [
+        {
+          "label": "Limitações e melhorias futuras",
+          "caminho": "docs/06-encerramento/19-limitacoes-e-melhorias.md",
+          "minLinhas": 6
+        },
+        {
+          "label": "Conclusão",
+          "caminho": "docs/06-encerramento/20-conclusao.md",
+          "minLinhas": 6
+        },
+        {
+          "label": "Referências (ABNT)",
+          "caminho": "docs/06-encerramento/21-referencias.md",
+          "minLinhas": 6
+        }
+      ]
+    }
+  ]
+}

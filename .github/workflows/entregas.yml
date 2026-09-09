@@ -1,0 +1,66 @@
+name: Entregas
+
+# Duas responsabilidades:
+#  1. checklist: garante que as tabelas geradas em docs/07-entregas/*.md estao
+#     em dia com o manifest e com o repositorio (falha o CI se alguem editar
+#     a tabela a mao ou esquecer de rodar o gerador apos mudar um documento).
+#  2. release: quando uma tag entrega-1..4 ou banca-final e enviada, publica o
+#     documento correspondente como GitHub Release - a "documentacao de
+#     entrega" de cada release, gerada sem trabalho manual extra.
+
+on:
+  push:
+    branches: [main]
+    tags:
+      - "entrega-*"
+      - "banca-final"
+    paths:
+      - "docs/**"
+      - "database/**"
+      - "apps/**"
+      - "scripts/entregas/**"
+
+permissions:
+  contents: read
+
+jobs:
+  checklist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: node scripts/entregas/gerar-entregas.mjs --check
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/entrega-') || github.ref == 'refs/tags/banca-final'
+    needs: checklist
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Resolver documento da entrega
+        id: resolve
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          FILE=$(node scripts/entregas/gerar-entregas.mjs --print-file "$TAG")
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+      - name: Publicar release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ steps.resolve.outputs.tag }}
+          tag_name: ${{ steps.resolve.outputs.tag }}
+          body_path: ${{ steps.resolve.outputs.file }}
+          generate_release_notes: true

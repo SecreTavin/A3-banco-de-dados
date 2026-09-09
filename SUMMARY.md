@@ -3,6 +3,15 @@
 * [Eu Duvido!](README.md)
 * [Documentação](docs/README.md)
 
+## Acompanhamento
+
+* [07 - Entregas](docs/07-entregas/README.md)
+  * [Entrega 1 - Proposta e Requisitos](docs/07-entregas/entrega-1-proposta-e-requisitos.md)
+  * [Entrega 2 - Modelagem](docs/07-entregas/entrega-2-modelagem.md)
+  * [Entrega 3 - Banco de Dados](docs/07-entregas/entrega-3-banco-de-dados.md)
+  * [Entrega 4 - Sistema Funcional](docs/07-entregas/entrega-4-sistema-funcional.md)
+  * [Banca Final](docs/07-entregas/banca-final.md)
+
 ## Contexto
 
 * [00 - Introdução](docs/00-introducao/README.md)
@@ -12,6 +21,7 @@
   * [04 - Justificativa](docs/00-introducao/04-justificativa.md)
   * [05 - Objetivos](docs/00-introducao/05-objetivos.md)
   * [06 - Público-Alvo](docs/00-introducao/06-publico-alvo.md)
+  * [07 - Plano de Trabalho](docs/00-introducao/07-plano-de-trabalho.md)
 
 ## Negócio
 
