@@ -29,7 +29,7 @@ ajuste antes de fechar.
 <!-- entregas:indice:start -->
 | # | Entrega | Pergunta-chave | Revisão em sala | Status |
 | --- | --- | --- | --- | --- |
-| 1 | [Proposta e Requisitos](entrega-1-proposta-e-requisitos.md) | Qual problema será resolvido e qual sistema será desenvolvido? | 2026-09-11 | 🟡 Em construção (7/9) |
+| 1 | [Proposta e Requisitos](entrega-1-proposta-e-requisitos.md) | Qual problema será resolvido e qual sistema será desenvolvido? | 2026-09-11 | 🔵 Pronta para entrega (9/9) |
 | 2 | [Modelagem](entrega-2-modelagem.md) | Quais dados o sistema precisa armazenar e como esses dados se relacionam? | 2026-10-02 | 🔵 Pronta para entrega (8/8) |
 | 3 | [Banco de Dados](entrega-3-banco-de-dados.md) | O modelo foi efetivamente transformado em um Banco de Dados funcional? | 2026-10-30 | 🔵 Pronta para entrega (8/8) |
 | 4 | [Sistema Funcional](entrega-4-sistema-funcional.md) | O sistema funciona e utiliza efetivamente o Banco de Dados desenvolvido? | 2026-11-20 | 🔵 Pronta para entrega (9/9) |
