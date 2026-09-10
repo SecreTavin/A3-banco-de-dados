@@ -43,13 +43,19 @@ exige".
 | --- | --- | --- |
 | 06/11 | Testes do sistema, registro de uso de IA | ⚪ Planejado |
 | 13/11 | Preparação da apresentação e roteiro de demonstração | ⚪ Planejado |
-| 20/11 | **Banca ExpoUna** — apresentação do Projeto A3 (20 pontos, 2 ou 3 grupos nesta janela) | ⚪ Planejado |
+| 20/11 | Feriado (Consciência Negra) — **fechamento da Entrega 4 é virtual, pelo GitBook**, em vez de revisão presencial | ⚪ Planejado |
+| 27/11 | **Banca ExpoUna (1ª janela)** — apresentação do Projeto A3 (20 pontos, 2 ou 3 grupos nesta janela) | ⚪ Planejado |
 
-> O Anexo 1 original também marca uma semana de feriado nesta etapa ("entrega
-> virtual pelo GitBook"), mas a data impressa no documento do professor está
-> inconsistente com a sequência das outras semanas. **Confirmar com o
-> professor** se o feriado cai em 20/11 (o que empurraria a banca) antes de
-> travar a agenda desta etapa.
+> O Anexo 1 original (ficha de inscrição) imprime essa semana como "20/12",
+> o que quebra a sequência cronológica das outras semanas (06/11 → 13/11 →
+> 20/12 → 27/11). Lendo como **20/11** — erro de digitação — a sequência
+> fecha certinho, e 20/11 é feriado nacional (Consciência Negra, Lei
+> 14.759/2023), o que explica por que o Anexo 1 marca essa entrega como
+> virtual pelo GitBook em vez de revisão em sala. Isso também bate com o
+> "Data Revisão: 20/11" da Entrega 4 em
+> [07-entregas/entrega-4-sistema-funcional.md](../07-entregas/entrega-4-sistema-funcional.md).
+> Interpretação com boa confiança, mas ainda vale confirmar com o professor
+> antes da semana em questão.
 
 ## E5 — Banca ExpoUna (2ª janela) e encerramento
 
