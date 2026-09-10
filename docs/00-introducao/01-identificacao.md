@@ -11,12 +11,10 @@
 ## Integrantes
 
 Em ordem alfabética (formato exigido no Slide 2 da banca e na Ficha de
-Inscrição). **Preencher com os dados reais do grupo.**
+Inscrição).
 
 | # | Nome completo | RA | E-mail |
 | --- | --- | --- | --- |
-| 1 | _preencher_ | _preencher_ | _preencher_ |
-| 2 | _preencher_ | _preencher_ | _preencher_ |
-| 3 | _preencher_ | _preencher_ | _preencher_ |
-| 4 | _preencher_ | _preencher_ | _preencher_ |
-| 5 | _preencher_ | _preencher_ | _preencher_ |
+| 1 | Arthur Araujo Marzano | 32524206 | arthuramarzano10@gmail.com |
+| 2 | Octávio Arruda | 326138211 | arrudaoctavio178@gmail.com |
+| 3 | Rafael Martins Alves | 325210271 | 325210271@ulife.com.br |
