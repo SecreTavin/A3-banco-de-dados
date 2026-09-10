@@ -117,7 +117,7 @@ conteúdo pronto".
    `docs/07-entregas/`.
 2. Rodar `node scripts/entregas/gerar-entregas.mjs` e conferir 100% na
    checklist.
-3. Commitar.
+3. Commitar, abrir PR, mesclar na `main`.
 4. Criar e enviar a tag da entrega:
 
    ```bash
@@ -125,8 +125,20 @@ conteúdo pronto".
    git push origin entrega-1
    ```
 
-O workflow [`entregas.yml`](.github/workflows/entregas.yml) publica
-automaticamente uma Release no GitHub com o conteúdo daquele documento, e a
-entrega passa a aparecer como **Entregue** na próxima geração da checklist —
-o histórico de releases do repositório vira, sozinho, o registro de todas as
-entregas feitas.
+5. **Rodar o gerador de novo** — só agora, com a tag já existindo, ele
+   calcula "Entregue" pra essa entrega. O commit do passo 3 não tinha
+   como prever isso: a tag não existia ainda quando ele foi feito.
+   Commitar o resultado, abrir PR, mesclar.
+6. Mover a tag pro commit do passo 5 e reenviar:
+
+   ```bash
+   git tag -f entrega-1
+   git push --force origin entrega-1
+   ```
+
+Só depois do passo 6 o workflow [`entregas.yml`](.github/workflows/entregas.yml)
+publica a Release: o `--check` do job `checklist` compara o commit da tag
+contra o que o gerador produziria, e só passa quando os dois batem — pular o
+passo 5 faz a tag ficar "presa" com o job `release` sempre `skipped`. Depois
+disso, o histórico de releases do repositório vira, sozinho, o registro de
+todas as entregas feitas.
