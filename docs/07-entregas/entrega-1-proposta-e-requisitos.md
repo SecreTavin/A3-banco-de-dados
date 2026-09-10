@@ -7,7 +7,7 @@
 | **Pergunta que a entrega precisa responder** | Qual problema será resolvido e qual sistema será desenvolvido? |
 
 <!-- entregas:status:start -->
-🔵 **Pronta para entrega** — 9/9 itens prontos · revisão em sala: 2026-09-11
+🟢 **Entregue** — tag `entrega-1` em 2026-09-09 · 9/9 itens prontos
 <!-- entregas:status:end -->
 
 ## Checklist

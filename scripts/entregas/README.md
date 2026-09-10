@@ -36,6 +36,16 @@ node scripts/entregas/gerar-entregas.mjs --print-file entrega-1   # imprime o
 ex. `entrega-1`, existe no repositório — ver
 [README principal](../../README.md#como-fechar-uma-entrega)).
 
+**Cuidado com a ordem:** o status `entregue` só aparece numa geração
+*posterior* à criação da tag — no commit que a tag aponta, ela ainda não
+existia, então os documentos não podem já dizer "Entregue" nele. Criar a
+tag e nunca rodar o gerador de novo deixa o job `checklist` do
+[`entregas.yml`](../../.github/workflows/entregas.yml) permanentemente
+desatualizado em relação à tag, e o job `release` (que depende dele) nunca
+roda — a tag fica pública, mas sem Release. O
+[README principal](../../README.md#como-fechar-uma-entrega) documenta os
+passos completos, incluindo mover a tag depois de regerar.
+
 ## Adicionando um item novo
 
 Editar `manifest.json`, adicionar o objeto em `itens` da entrega certa, rodar
