@@ -73,8 +73,13 @@ exige".
 
 ## Distribuição de responsabilidades
 
-A distribuição de tarefas entre os integrantes deve ser registrada aqui
-conforme o grupo avança (exigência da seção 2 do edital, para permitir
-identificar a participação de cada integrante nas diferentes etapas). Ainda
-não preenchido — depende da definição de integrantes em
-[01-identificacao.md](01-identificacao.md).
+Exigência da seção 2 do edital, para permitir identificar a participação de
+cada integrante nas diferentes etapas.
+
+| Integrante | Responsabilidade |
+| --- | --- |
+| Arthur Araujo Marzano | Melhoria contínua |
+| Luís Phillipe Pedra Souza | Testes |
+| Mario Lana Veloso Junior | Testes |
+| Octávio Arruda | Product Owner |
+| Rafael Martins Alves | Documentação |
