@@ -46,6 +46,15 @@ roda — a tag fica pública, mas sem Release. O
 [README principal](../../README.md#como-fechar-uma-entrega) documenta os
 passos completos, incluindo mover a tag depois de regerar.
 
+**Isso vale também pra mover uma tag já existente**, não só pra criar uma
+nova. A data mostrada ("tag `entrega-1` em AAAA-MM-DD") vem de
+`git log -1 --format=%ad` no commit apontado pela tag — se você fizer
+`git tag -f entrega-1` pra apontar a tag pra um commit mais novo (por
+exemplo, depois de corrigir algo que entrou na entrega já fechada), a data
+muda e o documento fica desatualizado até rodar o gerador de novo. Mesma
+sequência de sempre: mover a tag → regerar → commitar → mesclar → mover a
+tag de novo pro commit do merge → reenviar.
+
 ## Adicionando um item novo
 
 Editar `manifest.json`, adicionar o objeto em `itens` da entrega certa, rodar
