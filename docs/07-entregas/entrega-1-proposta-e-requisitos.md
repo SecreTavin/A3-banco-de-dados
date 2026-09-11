@@ -32,13 +32,9 @@ a tabela a mão — edite os documentos linkados e rode o script de novo.
 
 ## Pendências conhecidas (fora do que o script consegue checar)
 
-* **Integrantes, RA e e-mail** — a tabela em
-  [01-identificacao.md](../00-introducao/01-identificacao.md) precisa ser
-  preenchida com os dados reais do grupo (é o que vai para a Ficha de
-  Inscrição e para o Slide 2 da banca, em ordem alfabética).
-* **Objetivos específicos** — [05-objetivos.md](../00-introducao/05-objetivos.md)
-  hoje só tem o objetivo geral; falta a lista de objetivos específicos
-  (seção 5 do edital).
+* Nenhuma no momento. Integrantes (5, ordem alfabética), objetivos
+  específicos e o plano de trabalho estão preenchidos — ver
+  [01-identificacao.md](../00-introducao/01-identificacao.md).
 
 ## Itens fora do repositório
 
