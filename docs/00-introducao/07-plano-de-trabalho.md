@@ -18,7 +18,7 @@ exige".
 | 27–28/08 | Definição do problema, refinamento de telas iniciais | ✅ Concluído |
 | 04/09 | Levantamento de requisitos, regras de negócio, justificativa | ✅ Concluído |
 | 03/09 | *(fora da grade, adiantado)* modelagem, DER, schema, API, frontend e povoamento implementados de uma vez | ✅ Concluído |
-| 11/09 | **Revisão de Projeto em sala** — fechamento da Entrega 1 | 🟡 Em andamento — falta preencher integrantes/RA e objetivos específicos |
+| 11/09 | **Revisão de Projeto em sala** (RT01) — fechamento da Entrega 1 | ✅ Concluído — 9/9, tag `entrega-1` enviada |
 
 ## E2 — Modelagem
 
