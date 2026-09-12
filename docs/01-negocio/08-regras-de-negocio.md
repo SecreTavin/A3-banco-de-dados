@@ -131,3 +131,26 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
   `ADMIN`. O criador do grupo é `ADMIN` por padrão. Qualquer usuário pode sair
   do grupo por conta própria.
   *Aplicação.*
+
+## Idade mínima e moderação de conteúdo
+
+Exigência levantada pelo professor orientador na revisão da Entrega 1 (RT01,
+11/09/2026): o tom de "zoeira" do app não pode se traduzir em desafio com
+risco real à integridade física ou à reputação de um usuário. Decisão de
+produto e alternativas consideradas em
+[ADR 0015](../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md).
+
+* **RN26 —** Idade mínima de 16 anos para usar o app, calculada a partir da
+  data de nascimento informada no cadastro. Usuário abaixo disso não é
+  criado.
+  *Aplicação (`Usuario.Criar`).*
+
+* **RN27 —** Cada grupo tem um nível de filtro de moderação de IA —
+  `LEVE`, `MODERADO` ou `PESADO`, padrão `MODERADO` — configurável apenas
+  pelo `ADMIN` do grupo, na criação ou depois.
+  *Constraint `chk_grupo_nivel_filtro` + aplicação.*
+
+* **RN28 —** Todo desafio é avaliado pela IA de moderação, no nível do grupo,
+  antes de ser gravado. Desafio reprovado não é criado; a avaliação (aprovada
+  ou não) fica registrada para auditoria.
+  *Aplicação + tabela `apostas.moderacao_desafio`.*

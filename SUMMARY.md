@@ -53,6 +53,7 @@
     * [0012 - Contrato via OpenAPI](docs/02-arquitetura/adr/0012-contrato-openapi.md)
     * [0013 - Observabilidade](docs/02-arquitetura/adr/0013-observabilidade.md)
     * [0014 - Estratégia de testes](docs/02-arquitetura/adr/0014-estrategia-de-testes.md)
+    * [0015 - Idade mínima e moderação de desafios por IA](docs/02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)
 * [03 - Banco de Dados](docs/03-banco-de-dados/README.md)
   * [Modelagem](docs/03-banco-de-dados/modelagem/README.md)
     * [09 - Evolução da Modelagem](docs/03-banco-de-dados/modelagem/09-evolucao-modelagem.md)
