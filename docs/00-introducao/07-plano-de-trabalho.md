@@ -76,10 +76,15 @@ exige".
 Exigência da seção 2 do edital, para permitir identificar a participação de
 cada integrante nas diferentes etapas.
 
+> **Atualização (2026-09-12):** grupo reduzido de 5 para 3 integrantes — Luís
+> Phillipe Pedra Souza e Mario Lana Veloso Junior saíram (ver
+> [01-identificacao.md](01-identificacao.md)). Com dois deles concentrando
+> Testes, essa responsabilidade fica sem dono único; o grupo optou por
+> dividi-la entre os 3 integrantes restantes em vez de atribuí-la a uma só
+> pessoa.
+
 | Integrante | Responsabilidade |
 | --- | --- |
-| Arthur Araujo Marzano | Melhoria contínua |
-| Luís Phillipe Pedra Souza | Testes |
-| Mario Lana Veloso Junior | Testes |
-| Octávio Arruda | Product Owner |
-| Rafael Martins Alves | Documentação |
+| Arthur Araujo Marzano | Melhoria contínua + Testes (compartilhado) |
+| Octávio Arruda | Product Owner + Testes (compartilhado) |
+| Rafael Martins Alves | Documentação + Testes (compartilhado) |
