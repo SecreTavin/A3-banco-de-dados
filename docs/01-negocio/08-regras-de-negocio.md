@@ -143,7 +143,7 @@ produto e alternativas consideradas em
 * **RN26 —** Idade mínima de 16 anos para usar o app, calculada a partir da
   data de nascimento informada no cadastro. Usuário abaixo disso não é
   criado.
-  *Aplicação (`Usuario.Criar`).*
+  *Trigger `trg_usuario_idade_minima` + aplicação (`Usuario.Criar`).*
 
 * **RN27 —** Cada grupo tem um nível de filtro de moderação de IA —
   `LEVE`, `MODERADO` ou `PESADO`, padrão `MODERADO` — configurável apenas
@@ -153,4 +153,4 @@ produto e alternativas consideradas em
 * **RN28 —** Todo desafio é avaliado pela IA de moderação, no nível do grupo,
   antes de ser gravado. Desafio reprovado não é criado; a avaliação (aprovada
   ou não) fica registrada para auditoria.
-  *Aplicação + tabela `apostas.moderacao_desafio`.*
+  *Aplicação + tabela `apostas.moderacao_desafio` (`chk_moderacao_motivo`, `chk_moderacao_aposta`).*

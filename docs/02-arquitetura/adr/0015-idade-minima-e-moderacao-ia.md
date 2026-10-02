@@ -40,6 +40,21 @@ criação falha como **exceção de infraestrutura**, na mesma lógica da tabela
 Result Pattern do `CLAUDE.md`: um provedor externo fora do ar nunca deve
 resultar em aprovação silenciosa de um desafio não avaliado.
 
+### Detalhamento do modelo de dados
+
+Fechado na revisão da modelagem (02/10/2026), sem mudar a decisão acima:
+
+* **Idade mínima por trigger, não `CHECK`.** A regra depende da data corrente
+  e o PostgreSQL só aceita expressão imutável em `CHECK`.
+* **`moderacao_desafio` não tem FK obrigatória para `aposta`.** Desafio
+  reprovado não é criado, mas a avaliação precisa ficar gravada; por isso a
+  tabela guarda título e descrição avaliados, e `id_aposta` é opcional
+  (preenchido só se aprovado).
+* **O nível de filtro é copiado para a avaliação.** O admin pode mudar o nível
+  do grupo depois; a cópia preserva o que valia no momento da moderação.
+* **Backfill de `data_nascimento`.** Usuários já existentes não têm o dado: a
+  migration cria a coluna nula, preenche e só então aplica `NOT NULL`.
+
 ## Alternativas consideradas
 
 | Alternativa | Prós | Contras | Por que não |
