@@ -28,6 +28,52 @@ erDiagram
     APOSTA ||--o{ TRANSACAO_CP : escrow
 ```
 
+## Leitura das relações
+
+Cada relação lida nos dois sentidos. "Muitos" inclui zero, salvo onde diz
+"pelo menos".
+
+**Usuário e grupo — `membro_grupo`**
+* Um usuário pode participar de vários grupos; cada participação é uma linha de
+  `membro_grupo`, com papel e saldo próprios.
+* Um grupo contém vários membros (pelo menos o criador).
+* Um usuário pode criar vários grupos; cada grupo tem um único criador.
+
+**Grupo, usuário e categoria — `aposta`**
+* Um grupo hospeda várias apostas; cada aposta pertence a um único grupo.
+* Um usuário pode criar várias apostas; cada aposta tem um único criador.
+* Uma categoria classifica várias apostas; cada aposta tem uma única categoria.
+
+**Moderação — `moderacao_desafio`**
+* Um grupo audita várias moderações; cada moderação pertence a um único grupo.
+* Um usuário pode propor vários desafios à moderação; cada moderação tem um
+  único autor.
+* Uma aposta tem, no máximo, uma moderação; uma moderação aprovada gera uma
+  aposta, e uma reprovada não gera nenhuma.
+
+**Participação — `participante_aposta`**
+* Uma aposta possui vários participantes, um único `DESAFIANTE`, um único
+  `DESAFIADO` e quantos `APOSTADOR` houver.
+* Um usuário pode participar de várias apostas, mas com um único papel em cada
+  uma.
+
+**Prova — `evidencia`**
+* Uma aposta recebe até cinco evidências, em sequência.
+* Um usuário pode enviar várias evidências; cada evidência tem um único autor.
+
+**Júri — `jurado_evidencia`**
+* Uma evidência convoca vários jurados, fixados no envio e imutáveis depois.
+* Um usuário pode julgar várias evidências, mas vota uma única vez em cada.
+* Cada jurado tem no máximo um voto por evidência, que começa vazio.
+
+**Economia — `transacao_cp`**
+* Um grupo movimenta vários lançamentos de CP; cada lançamento pertence a um
+  único grupo.
+* Um usuário pode ser titular de vários lançamentos; um lançamento sem usuário é
+  a conta retida da aposta (escrow).
+* Uma aposta pode ter vários lançamentos, entre eles a retenção, o prêmio e os
+  estornos.
+
 ## Entidades por área
 
 | Área | Entidades | Pergunta que responde |
