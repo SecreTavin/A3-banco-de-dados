@@ -7,7 +7,7 @@
 | **Pergunta que a entrega precisa responder** | Quais dados o sistema precisa armazenar e como esses dados se relacionam? |
 
 <!-- entregas:status:start -->
-🔵 **Pronta para entrega** — 8/8 itens prontos · revisão em sala: 2026-10-02
+🟢 **Entregue** — tag `entrega-2` em 2026-10-02 · 8/8 itens prontos
 <!-- entregas:status:end -->
 
 ## Checklist
