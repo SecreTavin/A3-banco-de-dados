@@ -4,6 +4,46 @@ Entidades agrupadas pelos seis módulos do sistema. Cada módulo corresponde a u
 schema no PostgreSQL ([ADR 0005](../../02-arquitetura/adr/0005-schema-por-modulo-postgres.md));
 as chaves estrangeiras atravessam schemas normalmente.
 
+## Visão MVP — o núcleo em 8 tabelas
+
+Para ler o modelo pela primeira vez, comece por aqui. São as oito tabelas da v1
+([09 - Evolução](09-evolucao-modelagem.md)): o que sobra se tirarmos tudo que
+foi acrescentado depois para fechar regras de negócio. O DER completo vem na
+sequência.
+
+```mermaid
+erDiagram
+    USUARIO ||--o{ MEMBRO_GRUPO : participa
+    GRUPO_AMIGOS ||--o{ MEMBRO_GRUPO : contem
+    GRUPO_AMIGOS ||--o{ APOSTA : hospeda
+    USUARIO ||--o{ APOSTA : cria
+    CATEGORIA_DESAFIO ||--o{ APOSTA : classifica
+    APOSTA ||--o{ PARTICIPANTE_APOSTA : possui
+    USUARIO ||--o{ PARTICIPANTE_APOSTA : aposta
+    APOSTA ||--o{ EVIDENCIA : recebe
+    EVIDENCIA ||--o{ VOTO_EVIDENCIA : recebe
+    USUARIO ||--o{ VOTO_EVIDENCIA : vota
+```
+
+| Tabela | Papel |
+| --- | --- |
+| `usuario` | A pessoa. |
+| `grupo_amigos` | A turma onde as apostas acontecem. |
+| `membro_grupo` | Associativa usuário × grupo. |
+| `categoria_desafio` | Tipo do desafio (3FN). |
+| `aposta` | O desafio. |
+| `participante_aposta` | Associativa usuário × aposta. |
+| `evidencia` | Prova enviada pelo desafiado. |
+| `voto_evidencia` | Voto de cada jurado. |
+
+As outras sete tabelas de domínio são **extensões**, cada uma nascida de uma
+regra que o núcleo não representava: `validador_evidencia` (júri congelado),
+`transacao_cp` (ledger), `credencial_usuario`, `convite_grupo`,
+`comentario_aposta`, `notificacao` e `push_subscription`. A
+`moderacao_desafio` está só na modelagem (ADR 0015).
+
+## DER completo
+
 ```mermaid
 erDiagram
     USUARIO ||--o{ CREDENCIAL_USUARIO : autentica_por
