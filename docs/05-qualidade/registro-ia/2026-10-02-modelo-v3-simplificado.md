@@ -15,7 +15,7 @@ do escopo.
 
 ## O que a IA produziu
 
-Modelo v3 com 9 tabelas e 5 schemas. Principal ideia: `jurado_evidencia`
+Modelo v3 com 9 tabelas em um único schema (`public`); a primeira versão tinha 5 schemas e o time pediu schema único em seguida. Principal ideia: `jurado_evidencia`
 funde `validador_evidencia` e `voto_evidencia` (júri congelado e voto na mesma
 linha). Saem `credencial_usuario`, `convite_grupo`, `comentario_aposta`,
 `notificacao` e `push_subscription`; `valor_monetario` e `descricao_prenda`
@@ -32,6 +32,7 @@ viram `descricao_recompensa`.
   (lista de tabelas), 0011 e 0015. Foi decisão do time deixar para a migration.
 * O trigger de prazo de voto (RN19) agora deveria atuar em `UPDATE` de
   `jurado_evidencia`; isso é descrito no doc, mas não foi escrito nem testado.
+* O ADR 0005 (schema por módulo) segue como `Aceita`, mas o modelo v3 o contradiz. A regra do projeto manda marcá-lo `Substituída` e criar ADR novo; **não foi feito**, é pendência.
 * Nada foi executado contra banco; é só documentação.
 
 ## Como o time validou

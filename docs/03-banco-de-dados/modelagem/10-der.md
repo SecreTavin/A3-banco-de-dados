@@ -1,6 +1,6 @@
 # 10 - Diagrama Entidade-Relacionamento (DER)
 
-Nove entidades em cinco módulos. O modelo é a **v3**, versão simplificada da
+Nove entidades em um único schema, agrupadas em cinco áreas. O modelo é a **v3**, versão simplificada da
 v2: mantém todos os conceitos (júri congelado, ledger de CP, apuração por
 quórum) com menos tabelas. O que mudou e por quê está em
 [09 - Evolução](09-evolucao-modelagem.md).
@@ -27,15 +27,15 @@ erDiagram
     APOSTA ||--o{ TRANSACAO_CP : escrow
 ```
 
-## Entidades por módulo
+## Entidades por área
 
-| Módulo (schema) | Entidades | Pergunta que responde |
+| Área | Entidades | Pergunta que responde |
 | --- | --- | --- |
-| `identidade` | `usuario` | Quem é a pessoa? |
-| `grupos` | `grupo_amigos`, `membro_grupo` | Em qual turma, com qual papel e saldo? |
-| `apostas` | `categoria_desafio`, `aposta`, `participante_aposta` | Qual é o desafio e quem participa? |
-| `validacao` | `evidencia`, `jurado_evidencia` | Qual a prova e quem julga? |
-| `economia` | `transacao_cp` | Para onde foi cada moeda? |
+| identidade | `usuario` | Quem é a pessoa? |
+| grupos | `grupo_amigos`, `membro_grupo` | Em qual turma, com qual papel e saldo? |
+| apostas | `categoria_desafio`, `aposta`, `participante_aposta` | Qual é o desafio e quem participa? |
+| validacao | `evidencia`, `jurado_evidencia` | Qual a prova e quem julga? |
+| economia | `transacao_cp` | Para onde foi cada moeda? |
 
 ## Entidades associativas
 

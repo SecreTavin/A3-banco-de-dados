@@ -9,7 +9,7 @@ necessidade de explicar o modelo com menos peças sem perder conceito.
 | | v1 (agosto/2026) | v2 (setembro/2026) | v3 (outubro/2026) |
 | --- | --- | --- | --- |
 | Tabelas | 8 | 15 | 9 |
-| Schemas | 1 (`public`) | 6 | 5 |
+| Schemas | 1 (`public`) | 6 | 1 (`public`) |
 | Júri | calculado na hora | `validador_evidencia` + `voto_evidencia` | `jurado_evidencia` |
 | Economia | nenhuma | `transacao_cp` + `saldo_cp` | igual à v2 |
 | Estado da evidência | não existia | `status` + `data_apuracao` | igual à v2 |
@@ -94,10 +94,15 @@ contrário.
 registravam o que foi combinado fora do app e nenhuma entrava em cálculo
 (RN02).
 
-### (d) Cinco schemas
+### (d) Um schema só
 
-`notificacoes` deixa de existir junto com suas tabelas. Os outros cinco
-permanecem.
+Volta o schema único (`public`). Os seis schemas da v2
+([ADR 0005](../../02-arquitetura/adr/0005-schema-por-modulo-postgres.md))
+separavam módulos do **código**; no modelo de dados eles só obrigavam a
+qualificar cada nome (`economia.transacao_cp`) sem acrescentar integridade — as
+FKs já atravessavam todos. Com nove tabelas, a separação por nome não paga o
+custo de leitura. As áreas continuam existindo como agrupamento nos
+documentos, não no banco.
 
 ### Fora da v3
 
