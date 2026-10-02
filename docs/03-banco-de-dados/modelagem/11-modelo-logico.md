@@ -4,10 +4,16 @@
 > padrão SQL equivalente ao `SERIAL` da primeira versão do schema. A troca veio
 > junto com a geração do DDL pelas migrations ([ADR 0004](../../02-arquitetura/adr/0004-schema-sql-gerado-por-migration.md)).
 
-Catorze tabelas distribuídas em seis schemas, um por módulo
+Quinze tabelas distribuídas em seis schemas, um por módulo
 ([ADR 0005](../../02-arquitetura/adr/0005-schema-por-modulo-postgres.md)).
 Documento de referência: para o desenho das relações veja [10 - DER](10-der.md),
 para o SQL veja [12 - DDL](../implementacao/12-ddl-schema.md).
+
+> **Estado do modelo.** `usuario.data_nascimento`, `grupo_amigos.nivel_filtro`
+> e `apostas.moderacao_desafio` vêm do [ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)
+> e estão **só na modelagem**: ainda não há migration, então o
+> [DDL](../implementacao/12-ddl-schema.md) segue com 14 tabelas até a
+> implementação das issues #10, #11 e #12.
 
 Convenção das tabelas de colunas: **PK** chave primária, **FK** chave
 estrangeira, **UQ** participa de restrição de unicidade, **NN** obrigatória.
@@ -30,7 +36,13 @@ integra.
 | `email` | `VARCHAR(120)` | UQ | NN | |
 | `apelido` | `VARCHAR(50)` | | NN | Deliberadamente **não** único — a identidade é o e-mail |
 | `avatar_url` | `VARCHAR(500)` | | | Foto do Google no primeiro login |
+| `data_nascimento` | `DATE` | | NN, `trg_usuario_idade_minima`: idade ≥ 16 anos na data do cadastro | RN26 |
 | `data_cadastro` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+A idade mínima é garantida por **trigger** `BEFORE INSERT`, não por `CHECK`:
+a regra depende da data corrente, e o PostgreSQL só aceita expressões
+imutáveis em `CHECK`. O trigger compara com `data_cadastro`, não com
+`CURRENT_DATE`, para que a linha continue válida em qualquer reavaliação.
 
 ### `identidade.credencial_usuario`
 
@@ -65,7 +77,11 @@ fronteira da economia de CP.
 | `nome` | `VARCHAR(80)` | | NN | |
 | `descricao` | `VARCHAR(255)` | | | |
 | `id_criador` | `INT` | FK → `usuario` | NN | RN25 (criador é `ADMIN`) |
+| `nivel_filtro` | `VARCHAR(10)` | | NN, default `MODERADO`, `chk_grupo_nivel_filtro`: `LEVE`, `MODERADO`, `PESADO` | RN27 |
 | `data_criacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+`nivel_filtro` só é alterado pelo `ADMIN` do grupo (RN27) — regra de
+aplicação, porque o banco não conhece o papel de quem executa o `UPDATE`.
 
 ### `grupos.membro_grupo`
 
@@ -146,6 +162,33 @@ O desafio. Entidade central do sistema e detentora da máquina de estados.
 `valor_cp` é o custo **por participante**; o pote é `valor_cp × n_participantes`.
 `valor_monetario` não alimenta nenhum cálculo do sistema
 ([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md)).
+
+### `apostas.moderacao_desafio`
+
+Auditoria da moderação por IA: uma linha por avaliação, aprovada ou não
+([ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)).
+Desafio reprovado **não vira `aposta`**, por isso a tabela guarda o texto
+avaliado e não depende de FK para a aposta.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_moderacao` | `IDENTITY` | PK | | |
+| `id_grupo` | `INT` | FK → `grupo_amigos` | NN, `ON DELETE CASCADE` | RN28 |
+| `id_criador` | `INT` | FK → `usuario` | NN | RN28 |
+| `id_aposta` | `INT` | FK → `aposta`, UQ | Nulo se reprovado, `ON DELETE SET NULL`, `chk_moderacao_aposta` | RN28 |
+| `nivel_filtro` | `VARCHAR(10)` | | NN, `chk_moderacao_nivel`: `LEVE`, `MODERADO`, `PESADO` — **cópia** do nível no momento | RN27 |
+| `titulo` | `VARCHAR(120)` | | NN — texto avaliado | RN28 |
+| `descricao` | `TEXT` | | NN — texto avaliado | RN28 |
+| `aprovado` | `BOOLEAN` | | NN | RN28 |
+| `motivo` | `VARCHAR(500)` | | `chk_moderacao_motivo`: obrigatório se `aprovado = false` | RN28 |
+| `data_avaliacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+* `nivel_filtro` é copiado porque o admin pode mudar o nível do grupo depois;
+  sem a cópia, a taxa de bloqueio por nível (consulta da Entrega 3) mentiria.
+* `chk_moderacao_aposta`: `id_aposta` só pode estar preenchido se
+  `aprovado = true`. `unq_moderacao_aposta` garante uma avaliação por aposta.
+* Reprovação indisponível (Groq fora) **não grava linha**: é falha de
+  infraestrutura, tratada como exceção, e nenhum desafio sem avaliação passa.
 
 ### `apostas.participante_aposta`
 

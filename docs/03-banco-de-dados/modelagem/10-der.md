@@ -15,6 +15,9 @@ erDiagram
     USUARIO ||--o{ APOSTA : cria
     GRUPO_AMIGOS ||--o{ APOSTA : hospeda
     CATEGORIA_DESAFIO ||--o{ APOSTA : classifica
+    GRUPO_AMIGOS ||--o{ MODERACAO_DESAFIO : audita
+    USUARIO ||--o{ MODERACAO_DESAFIO : propoe
+    APOSTA ||--o| MODERACAO_DESAFIO : aprovada_em
     APOSTA ||--o{ PARTICIPANTE_APOSTA : possui
     USUARIO ||--o{ PARTICIPANTE_APOSTA : aposta
     APOSTA ||--o{ COMENTARIO_APOSTA : discute
@@ -40,10 +43,18 @@ erDiagram
 | --- | --- |
 | `identidade` | `usuario`, `credencial_usuario` |
 | `grupos` | `grupo_amigos`, `membro_grupo`, `convite_grupo` |
-| `apostas` | `categoria_desafio`, `aposta`, `participante_aposta`, `comentario_aposta` |
+| `apostas` | `categoria_desafio`, `aposta`, `moderacao_desafio`, `participante_aposta`, `comentario_aposta` |
 | `validacao` | `evidencia`, `validador_evidencia`, `voto_evidencia` |
 | `economia` | `transacao_cp` |
 | `notificacoes` | `notificacao`, `push_subscription` |
+
+## Moderação por IA
+
+`moderacao_desafio` ([ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md))
+registra toda avaliação do desafio antes de ele existir. A relação com `aposta`
+é **0..1**: desafio reprovado nunca vira aposta, então a FK é opcional. Os
+outros dois atributos novos do ADR entram em entidades existentes:
+`usuario.data_nascimento` (RN26) e `grupo_amigos.nivel_filtro` (RN27).
 
 ## Entidades associativas
 
