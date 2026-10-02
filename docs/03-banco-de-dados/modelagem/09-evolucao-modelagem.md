@@ -9,7 +9,7 @@ modelo anterior não conseguia representar ou de uma anomalia de normalização.
 
 | | v1 (agosto/2026) | v2 (setembro/2026) |
 | --- | --- | --- |
-| Tabelas | 8 | 14 |
+| Tabelas | 8 | 15 |
 | Schemas | 1 (`public`) | 6, um por módulo |
 | Autenticação | `senha_hash` em `usuario` | `credencial_usuario` |
 | Estado da evidência | não existia | `status` + `data_apuracao` |

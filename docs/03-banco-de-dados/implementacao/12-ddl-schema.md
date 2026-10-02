@@ -3,7 +3,7 @@
 SGBD alvo: PostgreSQL 16+. O DDL está em
 [`database/scripts/ddl/schema.sql`](../../../database/scripts/ddl/schema.sql) e
 materializa o [11 - Modelo Lógico](../modelagem/11-modelo-logico.md): 6 schemas,
-14 tabelas, 14 índices.
+15 tabelas, 14 índices.
 
 > **Validação pendente.** O DDL ainda **não foi executado** contra uma instância
 > real de PostgreSQL — o Docker não estava disponível no ambiente durante esta
