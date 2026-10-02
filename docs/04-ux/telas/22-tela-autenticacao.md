@@ -5,18 +5,19 @@ Cadastro e login de usuários via Google (RF01).
 
 ## Seções principais
 - **Login:** OAuth com Google — sem senha própria no app
-- **Cadastro:** nome, email e foto vêm do Google; usuário só define o `apelido` no primeiro acesso
+- **Cadastro:** nome, email e foto vêm do Google; usuário define o `apelido` e informa a `data_nascimento` no primeiro acesso (idade mínima de 16 anos, RN26)
 
-## Dados (origem: `identidade.usuario`, `identidade.credencial_usuario`)
-`nome`, `email` (UNIQUE), `apelido`, `avatar_url`, `data_cadastro` / `provedor`, `id_externo`, `data_vinculo`
+## Dados (origem: `usuario`)
+`nome`, `email` (UNIQUE), `apelido`, `avatar_url`, `data_nascimento`, `data_cadastro`
 
 ## Decisões (validado com o time)
 - Login é exclusivamente via Google — recuperação de senha e regras de validação de senha saem de escopo (não existe senha própria no sistema).
 - `apelido` não precisa ser UNIQUE (pode repetir entre usuários); a distinção entre contas passa a ser feita pelo `email`/id do Google, não pelo apelido.
 
 ## Resolvido na arquitetura
-- **`senha_hash` obrigatório no schema (TODO anterior):** a coluna foi **removida** de `identidade.usuario`. As credenciais passaram para a tabela separada `identidade.credencial_usuario`, com `provedor = 'GOOGLE'` e `id_externo` guardando o claim `sub` do OIDC do Google (identificador estável, não o email). A constraint `chk_credencial_segredo` garante no banco que uma credencial `GOOGLE` **nunca** tem `segredo_hash`, e `unq_credencial_provedor` impede duas contas amarradas ao mesmo id externo. A tabela já comporta login por senha no futuro sem mexer em `usuario` (RN05, ver [08 - Regras de Negócio](../../01-negocio/08-regras-de-negocio.md) e [12 - DDL/Schema](../../03-banco-de-dados/implementacao/12-ddl-schema.md)).
-- **Avatar:** `identidade.usuario.avatar_url` existe e é preenchido com a foto do Google no primeiro login — a tela de cadastro não pede foto ao usuário.
+- **Sem senha no banco:** o login é externo, então `usuario` não tem `senha_hash` nem tabela de credencial; a identidade é o `email` (RN05).
+- **Avatar:** `usuario.avatar_url` existe e é preenchido com a foto do Google no primeiro login — a tela de cadastro não pede foto ao usuário.
+- **Idade mínima:** o trigger `trg_usuario_idade_minima` recusa no banco o cadastro de menor de 16 anos (RN26).
 
 ## TODOs para validação com o time
 Nenhum pendente — ver **Resolvido na arquitetura**.
