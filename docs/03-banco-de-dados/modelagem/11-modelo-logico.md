@@ -4,7 +4,7 @@
 > padrão SQL equivalente ao `SERIAL` da primeira versão do schema. A troca veio
 > junto com a geração do DDL pelas migrations ([ADR 0004](../../02-arquitetura/adr/0004-schema-sql-gerado-por-migration.md)).
 
-Quinze tabelas distribuídas em seis schemas, um por módulo
+Dezesseis tabelas distribuídas em seis schemas, um por módulo
 ([ADR 0005](../../02-arquitetura/adr/0005-schema-por-modulo-postgres.md)).
 Documento de referência: para o desenho das relações veja [10 - DER](10-der.md),
 para o SQL veja [12 - DDL](../implementacao/12-ddl-schema.md).
@@ -12,8 +12,8 @@ para o SQL veja [12 - DDL](../implementacao/12-ddl-schema.md).
 > **Estado do modelo.** `usuario.data_nascimento`, `grupo_amigos.nivel_filtro`
 > e `apostas.moderacao_desafio` vêm do [ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)
 > e estão **só na modelagem**: ainda não há migration, então o
-> [DDL](../implementacao/12-ddl-schema.md) segue com 14 tabelas até a
-> implementação das issues #10, #11 e #12.
+> [DDL](../implementacao/12-ddl-schema.md) não os contém (uma tabela e duas
+> colunas a menos) até a implementação das issues #10, #11 e #12.
 
 Convenção das tabelas de colunas: **PK** chave primária, **FK** chave
 estrangeira, **UQ** participa de restrição de unicidade, **NN** obrigatória.

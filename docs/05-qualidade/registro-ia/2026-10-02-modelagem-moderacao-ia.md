@@ -27,6 +27,10 @@ seção de detalhamento no ADR.
 * A IA listou 12-ddl-schema.md e 16-consultas-sql.md como impactados; o time
   decidiu **não** alterá-los, porque o DDL é saída da migration (ADR 0004) e
   descreve o que roda de verdade. Editar agora o faria divergir do banco.
+* A IA escreveu "quinze tabelas" no modelo lógico, contando a partir do texto
+  do próprio doc ("catorze"). Ao contar os títulos de tabela no arquivo, eram
+  15 antes da moderação e 16 depois: o número antigo já estava defasado. O
+  time corrigiu para dezesseis.
 * O ADR não definia a relação de `moderacao_desafio` com `aposta`. A IA propôs
   FK opcional e cópia do nível de filtro; são escolhas de modelagem, não fatos
   do ADR, e precisam de revisão humana.
