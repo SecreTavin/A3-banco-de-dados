@@ -1,181 +1,116 @@
 # 09 - Evolução da Modelagem
 
-O modelo não nasceu com 15 tabelas. Este documento registra as duas versões que
-existiram, o que mudou entre elas e — o que importa — **por que** cada mudança
-foi necessária. Toda alteração aqui é consequência de uma regra de negócio que o
-modelo anterior não conseguia representar ou de uma anomalia de normalização.
+O modelo teve três versões. Cada mudança respondeu a uma regra de negócio que
+o modelo anterior não representava, a uma anomalia de normalização ou, na v3, à
+necessidade de explicar o modelo com menos peças sem perder conceito.
 
 ## Resumo
 
-| | v1 (agosto/2026) | v2 (setembro/2026) |
-| --- | --- | --- |
-| Tabelas | 8 | 15 |
-| Schemas | 1 (`public`) | 6, um por módulo |
-| Autenticação | `senha_hash` em `usuario` | `credencial_usuario` |
-| Estado da evidência | não existia | `status` + `data_apuracao` |
-| Júri | membros do grupo, calculado na hora | `validador_evidencia` (snapshot) |
-| Economia | nenhuma | `transacao_cp` (ledger) + `saldo_cp` |
-| Tipo temporal | `TIMESTAMP` | `TIMESTAMPTZ` |
+| | v1 (agosto/2026) | v2 (setembro/2026) | v3 (outubro/2026) |
+| --- | --- | --- | --- |
+| Tabelas | 8 | 15 | 9 |
+| Schemas | 1 (`public`) | 6 | 5 |
+| Júri | calculado na hora | `validador_evidencia` + `voto_evidencia` | `jurado_evidencia` |
+| Economia | nenhuma | `transacao_cp` + `saldo_cp` | igual à v2 |
+| Estado da evidência | não existia | `status` + `data_apuracao` | igual à v2 |
 
 ## v1 — agosto/2026
 
 Oito tabelas em um único schema: `usuario`, `grupo_amigos`, `membro_grupo`,
 `categoria_desafio`, `aposta`, `participante_aposta`, `evidencia` e
-`voto_evidencia`.
+`voto_evidencia`. A normalização estava correta e permanece até hoje:
 
-A normalização estava correta e permanece na v2:
+* **1FN** — nenhum atributo multivalorado. Participantes e votos são linhas.
+* **2FN** — entidades associativas com chave simples mais `UNIQUE` composta;
+  `papel`, `escolha` e `voto` dependem da associação inteira.
+* **3FN** — `categoria_desafio` extraída de `aposta`, para que o nome da
+  categoria não dependa do desafio.
 
-* **1FN** — nenhum atributo multivalorado ou composto. Listas que a interface
-  mostra juntas (participantes de uma aposta, votos de uma evidência) já eram
-  linhas, não campos concatenados.
-* **2FN** — nenhuma dependência parcial. As entidades associativas têm chave
-  simples (`SERIAL`) mais `UNIQUE` composta, e seus atributos próprios
-  (`papel`, `escolha`, `voto`) dependem da associação inteira.
-* **3FN** — nenhuma dependência transitiva. `categoria_desafio` foi extraída de
-  `aposta` justamente para que o nome e a descrição da categoria não
-  dependessem do desafio.
+Três relações N:N resolvidas por entidade associativa: usuário × grupo,
+usuário × aposta, jurado × evidência.
 
-Três relações N:N foram resolvidas por entidade associativa: usuário × grupo
-(`membro_grupo`), usuário × aposta (`participante_aposta`) e jurado × evidência
-(`voto_evidencia`).
-
-O que a v1 **não** conseguia representar:
+O que a v1 não conseguia representar:
 
 | Lacuna | Consequência |
 | --- | --- |
-| Evidência sem estado | A regra "3 recusadas perde a aposta" não era derivável do banco |
-| Júri calculado no momento da apuração | O resultado de uma aposta mudava sozinho |
-| Prenda sem valor numérico | Aposta de prenda não entrava em nenhum ranking |
-| `senha_hash` em `usuario` | Coluna órfã depois da decisão de login por Google |
+| Evidência sem estado | "3 recusadas perde a aposta" não era derivável do banco |
+| Júri calculado na apuração | O resultado de uma aposta mudava sozinho |
+| Prenda sem valor numérico | Aposta de prenda ficava fora de qualquer ranking |
 
 ## v2 — setembro/2026
 
-### (a) `senha_hash` sai de `usuario`, entra `credencial_usuario`
+A v2 fechou as lacunas e acrescentou suporte:
 
-Com o login exclusivamente por Google decidido
-([ADR 0001](../../02-arquitetura/adr/0001-stack-tecnologica.md), RN05),
-`senha_hash` viraria uma coluna sempre nula em `usuario` — o caso clássico de
-atributo que não descreve a entidade, mas um *meio de acesso* a ela.
+* **`evidencia.status`** — a decisão vira fato gravado pela procedure de
+  apuração (RN13), não contagem repetida de votos antigos.
+* **`validador_evidencia`** — snapshot do júri no envio da evidência. Corrige o
+  bug em que alguém entrar no grupo aumentava o quórum e invertia o resultado
+  ([ADR 0008](../../02-arquitetura/adr/0008-quorum-congelado.md)).
+* **`transacao_cp`** — o CP como moeda única, em ledger append-only de
+  partidas dobradas ([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md),
+  [ADR 0007](../../02-arquitetura/adr/0007-ledger-append-only.md)). Prenda e
+  dinheiro passam a custar a mesma moeda e ficam comparáveis. O ledger responde
+  "por quê"; `membro_grupo.saldo_cp` responde "quanto", conferido pela view
+  `vw_reconciliacao_saldo`.
+* **Índice parcial único** em `participante_aposta`: um `DESAFIANTE` e um
+  `DESAFIADO` por aposta, `APOSTADOR` livre (RN09).
+* **`TIMESTAMPTZ`** no lugar de `TIMESTAMP`: prazos são comparados contra o
+  relógio, e hora sem fuso é ambígua.
+* **Seis schemas**, um por módulo, com FKs atravessando
+  ([ADR 0005](../../02-arquitetura/adr/0005-schema-por-modulo-postgres.md)).
+* Tabelas de suporte: `credencial_usuario`, `convite_grupo`,
+  `comentario_aposta`, `notificacao`, `push_subscription`.
 
-A tabela separada resolve duas coisas ao mesmo tempo. Normaliza: o par
-`(provedor, id_externo)` descreve a credencial, não o usuário. E comporta
-múltiplos provedores sem alterar `usuario` — um dia com senha própria, é uma
-linha nova com `provedor = 'SENHA'`, não uma migration em `usuario`. A
-constraint `chk_credencial_segredo` mantém a coerência: `GOOGLE` nunca tem
-segredo, `SENHA` sempre tem.
+## v3 — outubro/2026: simplificação
 
-### (b) `evidencia` ganha `status`
+Objetivo: o mesmo conceito com menos peças. Nenhuma regra de negócio central
+foi abandonada.
 
-Na v1, o estado de uma evidência era inferido contando votos toda vez que
-alguém perguntava. Isso quebrava a RN10 — "a partir de 3 recusadas o desafiado
-perde a aposta" exige saber *quantas foram recusadas*, e isso não era um dado,
-era uma reinterpretação de votos antigos sob regras possivelmente novas.
+### (a) Júri e voto viram uma tabela: `jurado_evidencia`
 
-`status` (`EM_VOTACAO`, `ACEITA`, `RECUSADA`, `EXPIRADA`) torna a decisão um
-fato gravado, escrito uma única vez pela procedure de apuração junto com
-`data_apuracao`. Contar recusadas passa a ser um `COUNT` trivial.
+Na v2, `validador_evidencia` (quem pode votar) e `voto_evidencia` (o que
+votou) descreviam a mesma pessoa na mesma evidência e precisavam de uma FK
+composta para ficar coerentes. Na v3, o júri nasce como linhas com `voto`
+nulo e votar é preencher a linha. A PK `(id_evidencia, id_usuario)` entrega
+voto único e voto só de jurado, sem FK composta. O conceito de **júri
+congelado** permanece intacto.
 
-### (c) `validador_evidencia` — nova tabela
+### (b) Saem as tabelas de acesso e de comunicação
 
-O bug mais grave da v1, e o único de **correção**, não de modelagem: o quórum
-era `floor(n/2) + 1` sobre os membros do grupo *no instante da apuração*. Alguém
-entrando no grupo aumentava `n`, aumentava o quórum, e uma evidência que já
-tinha maioria deixava de ter. O resultado de uma aposta mudava sozinho, sem que
-ninguém votasse.
-
-A correção é congelar o conjunto de elegíveis no envio da evidência
-([ADR 0008](../../02-arquitetura/adr/0008-quorum-congelado.md), RN14). A tabela
-é um snapshot puro — PK composta `(id_evidencia, id_usuario)`, nenhum atributo
-próprio. Ela também vira o alvo da FK composta em `voto_evidencia`, então o
-banco recusa voto de quem não estava no júri.
-
-### (d) `transacao_cp` e o CP como moeda
-
-Na v1 a aposta tinha `valor_monetario` e nada mais. Aposta de prenda ("lava meu
-carro") não tinha valor numérico e portanto não entrava em ranking, em
-estatística ou em qualquer comparação entre apostas — metade do produto ficava
-fora dos números.
-
-O CP resolve isso: toda aposta custa CP, inclusive as de prenda
-([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md), RN07). Prenda e
-dinheiro passam a ser comparáveis porque ambos custam a mesma moeda.
-
-A escolha de modelar o CP como **ledger append-only** em vez de só um campo
-`saldo` é deliberada
-([ADR 0007](../../02-arquitetura/adr/0007-ledger-append-only.md), RN24). Um
-campo de saldo só responde "quanto tenho"; o ledger responde "por quê". Cada
-lançamento tem contrapartida — débito do participante contra crédito na conta
-da aposta — e a soma dos lançamentos de um grupo é sempre `100 × número de
-membros`. `membro_grupo.saldo_cp` continua existindo como saldo materializado,
-atualizado na mesma transação e conferido pela view
-`economia.vw_reconciliacao_saldo`, que deve estar sempre vazia.
-
-Do ponto de vista acadêmico, esta é a parte do modelo que mais rende: partidas
-dobradas, invariante verificável por view e imutabilidade garantida por trigger.
-
-### (e) `valor_monetario` vira descritivo
-
-Com o CP assumindo o papel transacional, `valor_monetario` deixa de alimentar
-qualquer cálculo. Ele passa a registrar apenas o que foi combinado fora do app —
-documentação da aposta, não insumo do sistema (RN02). Nenhuma query de ranking
-ou liquidação lê essa coluna.
-
-### (f) Quatro tabelas novas de suporte
-
-| Tabela | Substitui / resolve |
+| Tabela removida | Por que sai do modelo |
 | --- | --- |
-| `grupos.convite_grupo` | Entrada em grupo por código de uso único, rastreável até quem convidou (RN20) |
-| `apostas.comentario_aposta` | Substitui o módulo de chat — a conversa acontece na aposta, não fora dela |
-| `notificacoes.notificacao` | Notificação persistida: quem perdeu o push vê ao abrir o app |
-| `notificacoes.push_subscription` | Inscrições Web Push (VAPID), uma por dispositivo ([ADR 0011](../../02-arquitetura/adr/0011-notificacoes-web-push.md)) |
+| `credencial_usuario` | O login é externo (Google): a identidade é o e-mail e não há credencial a guardar |
+| `convite_grupo` | Mecanismo de entrada, não conceito do domínio de apostas |
+| `comentario_aposta` | Recurso de interface, sem regra de integridade própria |
+| `notificacao`, `push_subscription` | Comunicação com o usuário, não dado do domínio |
 
-`notificacao` e `push_subscription` são tabelas distintas de propósito: a
-primeira é o conteúdo, a segunda é o transporte. Um usuário sem nenhuma
-inscrição continua acumulando notificações.
+Cada uma dessas tabelas pode voltar quando o sistema precisar, sem alterar o
+núcleo — todas apontavam para `usuario`, `grupo_amigos` ou `aposta`, nunca o
+contrário.
 
-### (g) Um papel único por aposta
+### (c) Colunas descritivas se fundem
 
-A `UNIQUE (id_aposta, id_usuario)` da v1 permanece: um usuário tem um único
-papel por aposta. O `DESAFIADO` já aposta em si mesmo através de `escolha`,
-então papel duplo seria redundante.
+`valor_monetario` e `descricao_prenda` viram `descricao_recompensa`. Ambas só
+registravam o que foi combinado fora do app e nenhuma entrava em cálculo
+(RN02).
 
-Faltava a outra metade da RN09 — exatamente um `DESAFIANTE` e um `DESAFIADO`,
-com `APOSTADOR` livre em quantidade. Uma `UNIQUE (id_aposta, papel_aposta)`
-simples proibiria o segundo apostador. A solução é um **índice parcial único**:
+### (d) Cinco schemas
 
-```sql
-CREATE UNIQUE INDEX unq_aposta_papel_unico
-    ON apostas.participante_aposta (id_aposta, papel_aposta)
-    WHERE papel_aposta IN ('DESAFIANTE', 'DESAFIADO');
-```
+`notificacoes` deixa de existir junto com suas tabelas. Os outros cinco
+permanecem.
 
-A unicidade vale só onde precisa valer.
+### Fora da v3
 
-### (h) Separação em seis schemas
-
-O monólito é modular ([ADR 0002](../../02-arquitetura/adr/0002-monolito-modular-vertical-slice.md))
-e o banco acompanha: `identidade`, `grupos`, `apostas`, `validacao`, `economia`,
-`notificacoes` ([ADR 0005](../../02-arquitetura/adr/0005-schema-por-modulo-postgres.md)).
-
-A separação é **lógica**, não física — as FKs atravessam schemas normalmente e a
-integridade referencial continua inteira. O ganho é de fronteira: fica visível
-no próprio nome qualificado quando um módulo lê a tabela de outro.
-
-### (i) `TIMESTAMP` → `TIMESTAMPTZ`
-
-`TIMESTAMP` sem fuso é ambíguo — o mesmo valor significa horas diferentes
-dependendo de quem lê. Como prazos de aposta e de votação são comparados contra
-`CURRENT_TIMESTAMP` para decidir se uma evidência expirou, a ambiguidade seria
-erro de resultado, não de exibição. Todas as colunas temporais passaram a
-`TIMESTAMPTZ`.
+`moderacao_desafio`, `usuario.data_nascimento` e `grupo_amigos.nivel_filtro`
+([ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md))
+ficam fora do modelo simplificado. Continuam planejados, como extensão.
 
 ## O que não mudou
 
-As três formas normais continuam valendo na v2, e as tabelas novas foram
-desenhadas sob as mesmas restrições. `validador_evidencia` sem atributos
-próprios, `transacao_cp` sem coluna derivável de outra, `credencial_usuario`
-com o segredo dependendo apenas da própria credencial. O modelo cresceu em
-cobertura de regras, não em redundância.
+As três formas normais valem na v3. `transacao_cp` não tem coluna derivável de
+outra, `jurado_evidencia` depende inteiramente da chave composta, e
+`categoria_desafio` segue separada. O modelo encolheu em peças, não em
+cobertura das regras centrais.
 
-O modelo resultante está detalhado em [10 - DER](10-der.md) e
+O modelo resultante está em [10 - DER](10-der.md) e
 [11 - Modelo Lógico](11-modelo-logico.md).
