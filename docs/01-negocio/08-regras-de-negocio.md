@@ -118,14 +118,8 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
 ## Identidade e acesso
 
 * **RN05 —** Autenticação exclusivamente via Google. O sistema não armazena
-  senha própria — credenciais ficam em tabela separada, que já comporta login
-  por senha no futuro.
-  *Constraint `chk_credencial_segredo` + `unq_credencial_provedor`.*
-
-* **RN20 —** Convite de grupo é um código de 6 caracteres alfanuméricos, de uso
-  único e com expiração, rastreável até quem convidou. O alfabeto exclui
-  caracteres ambíguos (`0`/`O`, `1`/`I`/`L`) porque o código é ditado em voz alta.
-  *Tabela `convite_grupo` + constraints `chk_convite_expiracao` e `chk_convite_uso`.*
+  senha: a identidade é o e-mail.
+  *Constraint `UNIQUE` em `usuario.email`.*
 
 * **RN25 —** Remoção de membro e edição/exclusão do grupo são restritas a
   `ADMIN`. O criador do grupo é `ADMIN` por padrão. Qualquer usuário pode sair
@@ -153,4 +147,4 @@ produto e alternativas consideradas em
 * **RN28 —** Todo desafio é avaliado pela IA de moderação, no nível do grupo,
   antes de ser gravado. Desafio reprovado não é criado; a avaliação (aprovada
   ou não) fica registrada para auditoria.
-  *Aplicação + tabela `apostas.moderacao_desafio` (`chk_moderacao_motivo`, `chk_moderacao_aposta`).*
+  *Aplicação + tabela `moderacao_desafio` (`chk_moderacao_motivo`, `chk_moderacao_aposta`).*

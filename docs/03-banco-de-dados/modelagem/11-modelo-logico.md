@@ -1,6 +1,6 @@
 # 11 - Modelo Lógico
 
-Nove tabelas em um **único schema** (`public`), agrupadas por área só para
+Dez tabelas em um **único schema** (`public`), agrupadas por área só para
 leitura. Para o desenho veja [10 - DER](10-der.md).
 
 > **Estado do modelo.** Este é o modelo de referência. O DDL em
@@ -29,7 +29,14 @@ identidade é o e-mail (RN05).
 | `nome` | `VARCHAR(100)` | | NN | |
 | `email` | `VARCHAR(120)` | UQ | NN | RN05 |
 | `apelido` | `VARCHAR(50)` | | NN — deliberadamente **não** único | |
+| `avatar_url` | `VARCHAR(500)` | | Foto do Google no primeiro login | |
+| `data_nascimento` | `DATE` | | NN, `trg_usuario_idade_minima`: idade ≥ 16 anos na data do cadastro | RN26 |
 | `data_cadastro` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+A idade mínima é garantida por **trigger** `BEFORE INSERT`, não por `CHECK`: a
+regra depende da data corrente, e o PostgreSQL só aceita expressões imutáveis
+em `CHECK`. O trigger compara com `data_cadastro`, não com `CURRENT_DATE`, para
+que a linha continue válida em qualquer reavaliação.
 
 ---
 
@@ -46,7 +53,11 @@ CP.
 | `nome` | `VARCHAR(80)` | | NN | |
 | `descricao` | `VARCHAR(255)` | | | |
 | `id_criador` | `INT` | FK → `usuario` | NN | RN25 |
+| `nivel_filtro` | `VARCHAR(10)` | | NN, default `MODERADO`, `chk_grupo_nivel_filtro`: `LEVE`, `MODERADO`, `PESADO` | RN27 |
 | `data_criacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+`nivel_filtro` só é alterado pelo `ADMIN` do grupo (RN27) — regra de aplicação,
+porque o banco não conhece o papel de quem executa o `UPDATE`.
 
 ### `membro_grupo`
 
@@ -104,6 +115,31 @@ O desafio. Entidade central e detentora da máquina de estados.
 O pote é `valor_cp × n_participantes`. A recompensa combinada fora do app é
 texto, não número: nenhum cálculo do sistema a usa
 ([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md)).
+
+### `moderacao_desafio`
+
+Auditoria da moderação por IA: uma linha por avaliação, aprovada ou não
+([ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)).
+Desafio reprovado **não vira `aposta`**, por isso a tabela guarda o texto
+avaliado e não depende de FK para a aposta.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_moderacao` | `IDENTITY` | PK | | |
+| `id_grupo` | `INT` | FK → `grupo_amigos` | NN, `ON DELETE CASCADE` | RN28 |
+| `id_criador` | `INT` | FK → `usuario` | NN | RN28 |
+| `id_aposta` | `INT` | FK → `aposta`, UQ | Nulo se reprovado, `ON DELETE SET NULL`, `chk_moderacao_aposta` | RN28 |
+| `nivel_filtro` | `VARCHAR(10)` | | NN, `chk_moderacao_nivel`: `LEVE`, `MODERADO`, `PESADO` — **cópia** do nível no momento | RN27 |
+| `titulo` | `VARCHAR(120)` | | NN — texto avaliado | RN28 |
+| `descricao` | `TEXT` | | NN — texto avaliado | RN28 |
+| `aprovado` | `BOOLEAN` | | NN | RN28 |
+| `motivo` | `VARCHAR(500)` | | `chk_moderacao_motivo`: obrigatório se `aprovado = false` | RN28 |
+| `data_avaliacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+* `nivel_filtro` é copiado porque o admin pode mudar o nível do grupo depois;
+  sem a cópia, a taxa de bloqueio por nível mentiria.
+* `chk_moderacao_aposta`: `id_aposta` só pode estar preenchido se
+  `aprovado = true`. `unq_moderacao_aposta` garante uma avaliação por aposta.
 
 ### `participante_aposta`
 

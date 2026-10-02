@@ -1,18 +1,19 @@
 # 09 - Evolução da Modelagem
 
-O modelo começou com 8 tabelas e chegou a 9. Cada mudança respondeu a uma regra
+O modelo começou com 8 tabelas e chegou a 10. Cada mudança respondeu a uma regra
 de negócio que o primeiro desenho não conseguia representar.
 
 ## Resumo
 
 | | Primeira versão | Modelo atual |
 | --- | --- | --- |
-| Tabelas | 8 | 9 |
+| Tabelas | 8 | 10 |
 | Schemas | 1 (`public`) | 1 (`public`) |
 | Júri | calculado na hora | `jurado_evidencia` (congelado) |
 | Economia | nenhuma | `transacao_cp` (ledger) |
 | Estado da evidência | não existia | `status` + `data_apuracao` |
 | Tipo temporal | `TIMESTAMP` | `TIMESTAMPTZ` |
+| Moderação | nenhuma | `moderacao_desafio` + idade mínima |
 
 ## Primeira versão
 
@@ -82,7 +83,17 @@ CREATE UNIQUE INDEX unq_aposta_papel_unico
     WHERE papel_aposta IN ('DESAFIANTE', 'DESAFIADO');
 ```
 
-### (e) Ajustes menores
+### (e) Idade mínima e moderação por IA
+
+Exigência do professor orientador na revisão da Entrega 1 (RT01): o tom de
+"zoeira" não pode virar desafio com risco real a alguém
+([ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)).
+Entram `usuario.data_nascimento` (idade mínima de 16 anos, por trigger),
+`grupo_amigos.nivel_filtro` e a tabela `moderacao_desafio`, com FK opcional
+para `aposta`: desafio reprovado nunca vira aposta, mas a avaliação fica
+registrada (RN26 a RN28).
+
+### (f) Ajustes menores
 
 * `senha_hash` sai: o login é externo e a identidade é o e-mail (RN05).
 * `valor_monetario` e `descricao_prenda` viram `descricao_recompensa`: ambas só

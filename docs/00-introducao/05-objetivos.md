@@ -6,9 +6,8 @@ Desenvolver um protótipo funcional do sistema **Eu Duvido!**, estruturado sobre
 ## Objetivos Específicos
 
 * Modelar um esquema relacional normalizado para o domínio de apostas
-  sociais, organizado em módulos (`identidade`, `grupos`, `apostas`,
-  `validacao`, `economia`, `notificacoes`), com integridade referencial
-  garantida pelo SGBD entre os módulos.
+  sociais, em um único schema, com integridade referencial
+  garantida pelo SGBD.
 * Implementar a apuração de quórum de validação e a liquidação do saldo de
   CP como lógica transacional dentro do PostgreSQL (procedure), eliminando a
   possibilidade de estado em que a evidência foi aceita e o CP não foi

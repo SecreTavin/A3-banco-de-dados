@@ -1,6 +1,6 @@
 # 10 - Diagrama Entidade-Relacionamento (DER)
 
-Nove entidades em um único schema, agrupadas em cinco áreas. O que mudou desde
+Dez entidades em um único schema, agrupadas em cinco áreas. O que mudou desde
 o primeiro desenho e por quê está em [09 - Evolução](09-evolucao-modelagem.md).
 
 ```mermaid
@@ -12,6 +12,9 @@ erDiagram
     GRUPO_AMIGOS ||--o{ APOSTA : hospeda
     USUARIO ||--o{ APOSTA : cria
     CATEGORIA_DESAFIO ||--o{ APOSTA : classifica
+    GRUPO_AMIGOS ||--o{ MODERACAO_DESAFIO : audita
+    USUARIO ||--o{ MODERACAO_DESAFIO : propoe
+    APOSTA ||--o| MODERACAO_DESAFIO : aprovada_em
     APOSTA ||--o{ PARTICIPANTE_APOSTA : possui
     USUARIO ||--o{ PARTICIPANTE_APOSTA : aposta
 
@@ -31,7 +34,7 @@ erDiagram
 | --- | --- | --- |
 | identidade | `usuario` | Quem é a pessoa? |
 | grupos | `grupo_amigos`, `membro_grupo` | Em qual turma, com qual papel e saldo? |
-| apostas | `categoria_desafio`, `aposta`, `participante_aposta` | Qual é o desafio e quem participa? |
+| apostas | `categoria_desafio`, `aposta`, `moderacao_desafio`, `participante_aposta` | Qual é o desafio, ele passou na moderação e quem participa? |
 | validacao | `evidencia`, `jurado_evidencia` | Qual a prova e quem julga? |
 | economia | `transacao_cp` | Para onde foi cada moeda? |
 
@@ -58,3 +61,11 @@ Três relações N:N, cada uma resolvida por uma tabela própria:
 Como a chave primária é `(id_evidencia, id_usuario)`, o banco garante sozinho
 dois fatos: voto único por jurado e nenhum voto de quem não está no júri.
 Quórum = `floor(count(*)/2) + 1` sobre as linhas da evidência.
+
+## Moderação por IA
+
+`moderacao_desafio` registra toda avaliação do desafio antes de ele existir. A
+relação com `aposta` é **0..1**: desafio reprovado nunca vira aposta, então a FK
+é opcional. Os outros dois elementos da exigência entram em entidades
+existentes: `usuario.data_nascimento` (RN26) e `grupo_amigos.nivel_filtro`
+(RN27). Origem: [ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md).

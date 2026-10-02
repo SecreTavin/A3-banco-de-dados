@@ -7,8 +7,6 @@
 * **RF01:** Cadastro e autenticação de usuários via Google (OAuth/OIDC). O
   sistema não possui senha própria.
 * **RF02:** Gestão de grupos privados de amigos, com papéis `ADMIN` e `MEMBRO`.
-* **RF09:** Convite para grupo por código de 6 caracteres, de uso único e com
-  expiração.
 * **RF10:** Perfil do usuário com nome, apelido, avatar e histórico pessoal de
   apostas, participações e evidências.
 
@@ -19,7 +17,6 @@
 * **RF04:** Criação de apostas com custo em CP e recompensa monetária ou prenda.
 * **RF05:** Registro de participantes com papel (`DESAFIANTE`, `DESAFIADO`,
   `APOSTADOR`) e escolha (`VAI_CUMPRIR`, `NAO_VAI_CUMPRIR`).
-* **RF11:** Comentários na aposta, para a discussão que hoje acontece fora do app.
 * **RF12:** Cancelamento de aposta com motivo, estornando o CP dos participantes.
 
 ### Validação
@@ -30,16 +27,17 @@
 * **RF13:** Apuração automática do resultado quando o quórum é atingido,
   encerrando a aposta e liquidando o CP na mesma transação.
 
+### Moderação
+
+* **RF16:** Idade mínima de 16 anos no cadastro e moderação por IA de todo
+  desafio, no nível de filtro do grupo, com registro da avaliação.
+
 ### Economia e ranking
 
 * **RF14:** Carteira de CP por grupo, com saldo e extrato de lançamentos.
 * **RF08:** Ranking por grupo com histórico completo — maiores apostas,
   percentual de aprovação e apostas cumpridas versus perdidas.
 
-### Notificações
-
-* **RF15:** Notificações persistidas e entregues por Web Push para prazo
-  vencendo, evidência enviada, votação aberta e aposta encerrada.
 
 ## 7.2 Requisitos Não Funcionais (RNF)
 
@@ -61,8 +59,10 @@ Registrado aqui para que a ausência seja deliberada, não esquecimento. Ver
 
 | Item | Situação |
 | --- | --- |
-| Chat por grupo | Substituído por comentários na aposta (RF11) |
-| Login por email e senha | Modelado em `credencial_usuario`, não implementado |
+| Convite para grupo por código | Fora do escopo; o `ADMIN` adiciona membros |
+| Comentários na aposta e chat por grupo | Fora do escopo |
+| Notificações e Web Push | Fora do escopo |
+| Login por email e senha | Fora do escopo; só Google |
 | Upload de avatar próprio | Usa a foto do Google |
 | Cache distribuído e fila de mensagens | Sem carga que justifique |
 | Aplicativo nativo iOS/Android | Site responsivo atende |
