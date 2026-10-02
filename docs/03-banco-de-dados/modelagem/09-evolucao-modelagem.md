@@ -1,24 +1,24 @@
 # 09 - Evolução da Modelagem
 
-O modelo teve três versões. Cada mudança respondeu a uma regra de negócio que
-o modelo anterior não representava, a uma anomalia de normalização ou, na v3, à
-necessidade de explicar o modelo com menos peças sem perder conceito.
+O modelo começou com 8 tabelas e chegou a 9. Cada mudança respondeu a uma regra
+de negócio que o primeiro desenho não conseguia representar.
 
 ## Resumo
 
-| | v1 (agosto/2026) | v2 (setembro/2026) | v3 (outubro/2026) |
-| --- | --- | --- | --- |
-| Tabelas | 8 | 15 | 9 |
-| Schemas | 1 (`public`) | 6 | 1 (`public`) |
-| Júri | calculado na hora | `validador_evidencia` + `voto_evidencia` | `jurado_evidencia` |
-| Economia | nenhuma | `transacao_cp` + `saldo_cp` | igual à v2 |
-| Estado da evidência | não existia | `status` + `data_apuracao` | igual à v2 |
+| | Primeira versão | Modelo atual |
+| --- | --- | --- |
+| Tabelas | 8 | 9 |
+| Schemas | 1 (`public`) | 1 (`public`) |
+| Júri | calculado na hora | `jurado_evidencia` (congelado) |
+| Economia | nenhuma | `transacao_cp` (ledger) |
+| Estado da evidência | não existia | `status` + `data_apuracao` |
+| Tipo temporal | `TIMESTAMP` | `TIMESTAMPTZ` |
 
-## v1 — agosto/2026
+## Primeira versão
 
-Oito tabelas em um único schema: `usuario`, `grupo_amigos`, `membro_grupo`,
-`categoria_desafio`, `aposta`, `participante_aposta`, `evidencia` e
-`voto_evidencia`. A normalização estava correta e permanece até hoje:
+Oito tabelas: `usuario`, `grupo_amigos`, `membro_grupo`, `categoria_desafio`,
+`aposta`, `participante_aposta`, `evidencia` e `voto_evidencia`. A normalização
+estava correta e permanece até hoje:
 
 * **1FN** — nenhum atributo multivalorado. Participantes e votos são linhas.
 * **2FN** — entidades associativas com chave simples mais `UNIQUE` composta;
@@ -29,93 +29,72 @@ Oito tabelas em um único schema: `usuario`, `grupo_amigos`, `membro_grupo`,
 Três relações N:N resolvidas por entidade associativa: usuário × grupo,
 usuário × aposta, jurado × evidência.
 
-O que a v1 não conseguia representar:
+O que ela não conseguia representar:
 
 | Lacuna | Consequência |
 | --- | --- |
 | Evidência sem estado | "3 recusadas perde a aposta" não era derivável do banco |
 | Júri calculado na apuração | O resultado de uma aposta mudava sozinho |
 | Prenda sem valor numérico | Aposta de prenda ficava fora de qualquer ranking |
+| `senha_hash` em `usuario` | Coluna sempre nula, já que o login é pelo Google |
 
-## v2 — setembro/2026
+## O que mudou e por quê
 
-A v2 fechou as lacunas e acrescentou suporte:
+### (a) Júri congelado: `jurado_evidencia`
 
-* **`evidencia.status`** — a decisão vira fato gravado pela procedure de
-  apuração (RN13), não contagem repetida de votos antigos.
-* **`validador_evidencia`** — snapshot do júri no envio da evidência. Corrige o
-  bug em que alguém entrar no grupo aumentava o quórum e invertia o resultado
-  ([ADR 0008](../../02-arquitetura/adr/0008-quorum-congelado.md)).
-* **`transacao_cp`** — o CP como moeda única, em ledger append-only de
-  partidas dobradas ([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md),
-  [ADR 0007](../../02-arquitetura/adr/0007-ledger-append-only.md)). Prenda e
-  dinheiro passam a custar a mesma moeda e ficam comparáveis. O ledger responde
-  "por quê"; `membro_grupo.saldo_cp` responde "quanto", conferido pela view
-  `vw_reconciliacao_saldo`.
-* **Índice parcial único** em `participante_aposta`: um `DESAFIANTE` e um
-  `DESAFIADO` por aposta, `APOSTADOR` livre (RN09).
-* **`TIMESTAMPTZ`** no lugar de `TIMESTAMP`: prazos são comparados contra o
-  relógio, e hora sem fuso é ambígua.
-* **Seis schemas**, um por módulo, com FKs atravessando
-  ([ADR 0005](../../02-arquitetura/adr/0005-schema-por-modulo-postgres.md)).
-* Tabelas de suporte: `credencial_usuario`, `convite_grupo`,
-  `comentario_aposta`, `notificacao`, `push_subscription`.
+O quórum era `floor(n/2) + 1` sobre os membros do grupo **no instante da
+apuração**. Alguém entrando no grupo aumentava o quórum e uma evidência que já
+tinha maioria deixava de ter. O resultado mudava sem ninguém votar.
 
-## v3 — outubro/2026: simplificação
+A correção é gravar o júri no envio da evidência
+([ADR 0008](../../02-arquitetura/adr/0008-quorum-congelado.md)). Uma linha por
+integrante elegível, com `voto` nulo; votar é preencher a linha. A PK
+`(id_evidencia, id_usuario)` garante voto único e voto só de quem está no júri,
+sem FK composta.
 
-Objetivo: o mesmo conceito com menos peças. Nenhuma regra de negócio central
-foi abandonada.
+### (b) `evidencia.status`
 
-### (a) Júri e voto viram uma tabela: `jurado_evidencia`
+O estado era inferido contando votos a cada consulta. Agora `status`
+(`EM_VOTACAO`, `ACEITA`, `RECUSADA`, `EXPIRADA`) é um fato gravado uma única vez
+pela procedure de apuração, junto com `data_apuracao`. Contar recusadas vira um
+`COUNT` simples (RN10).
 
-Na v2, `validador_evidencia` (quem pode votar) e `voto_evidencia` (o que
-votou) descreviam a mesma pessoa na mesma evidência e precisavam de uma FK
-composta para ficar coerentes. Na v3, o júri nasce como linhas com `voto`
-nulo e votar é preencher a linha. A PK `(id_evidencia, id_usuario)` entrega
-voto único e voto só de jurado, sem FK composta. O conceito de **júri
-congelado** permanece intacto.
+### (c) CP como moeda e ledger: `transacao_cp`
 
-### (b) Saem as tabelas de acesso e de comunicação
+Aposta de prenda não tinha valor numérico. Com o CP, toda aposta custa a mesma
+moeda e fica comparável ([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md)).
 
-| Tabela removida | Por que sai do modelo |
-| --- | --- |
-| `credencial_usuario` | O login é externo (Google): a identidade é o e-mail e não há credencial a guardar |
-| `convite_grupo` | Mecanismo de entrada, não conceito do domínio de apostas |
-| `comentario_aposta` | Recurso de interface, sem regra de integridade própria |
-| `notificacao`, `push_subscription` | Comunicação com o usuário, não dado do domínio |
+O CP é um **ledger append-only** de partidas dobradas, não só um campo de saldo
+([ADR 0007](../../02-arquitetura/adr/0007-ledger-append-only.md)). O saldo
+responde "quanto tenho"; o ledger responde "por quê". `membro_grupo.saldo_cp`
+continua como saldo materializado, conferido pela view
+`vw_reconciliacao_saldo`, que deve estar sempre vazia. Um trigger impede
+`UPDATE` e `DELETE`; estorno é lançamento novo.
 
-Cada uma dessas tabelas pode voltar quando o sistema precisar, sem alterar o
-núcleo — todas apontavam para `usuario`, `grupo_amigos` ou `aposta`, nunca o
-contrário.
+### (d) Um `DESAFIANTE` e um `DESAFIADO` por aposta
 
-### (c) Colunas descritivas se fundem
+Um índice parcial único em `participante_aposta` limita esses dois papéis a um
+cada, sem restringir a quantidade de `APOSTADOR` (RN09):
 
-`valor_monetario` e `descricao_prenda` viram `descricao_recompensa`. Ambas só
-registravam o que foi combinado fora do app e nenhuma entrava em cálculo
-(RN02).
+```sql
+CREATE UNIQUE INDEX unq_aposta_papel_unico
+    ON participante_aposta (id_aposta, papel_aposta)
+    WHERE papel_aposta IN ('DESAFIANTE', 'DESAFIADO');
+```
 
-### (d) Um schema só
+### (e) Ajustes menores
 
-Volta o schema único (`public`). Os seis schemas da v2
-([ADR 0005](../../02-arquitetura/adr/0005-schema-por-modulo-postgres.md))
-separavam módulos do **código**; no modelo de dados eles só obrigavam a
-qualificar cada nome (`economia.transacao_cp`) sem acrescentar integridade — as
-FKs já atravessavam todos. Com nove tabelas, a separação por nome não paga o
-custo de leitura. As áreas continuam existindo como agrupamento nos
-documentos, não no banco.
-
-### Fora da v3
-
-`moderacao_desafio`, `usuario.data_nascimento` e `grupo_amigos.nivel_filtro`
-([ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md))
-ficam fora do modelo simplificado. Continuam planejados, como extensão.
+* `senha_hash` sai: o login é externo e a identidade é o e-mail (RN05).
+* `valor_monetario` e `descricao_prenda` viram `descricao_recompensa`: ambas só
+  registravam o que foi combinado fora do app e nenhuma entrava em cálculo
+  (RN02).
+* `TIMESTAMP` vira `TIMESTAMPTZ`: prazos são comparados contra o relógio, e hora
+  sem fuso é ambígua.
 
 ## O que não mudou
 
-As três formas normais valem na v3. `transacao_cp` não tem coluna derivável de
-outra, `jurado_evidencia` depende inteiramente da chave composta, e
-`categoria_desafio` segue separada. O modelo encolheu em peças, não em
-cobertura das regras centrais.
+As três formas normais valem no modelo atual. `transacao_cp` não tem coluna
+derivável de outra, `jurado_evidencia` depende inteiramente da chave composta, e
+`categoria_desafio` segue separada.
 
-O modelo resultante está em [10 - DER](10-der.md) e
-[11 - Modelo Lógico](11-modelo-logico.md).
+O modelo está em [10 - DER](10-der.md) e [11 - Modelo Lógico](11-modelo-logico.md).

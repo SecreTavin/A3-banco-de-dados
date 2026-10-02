@@ -1,9 +1,7 @@
 # 10 - Diagrama Entidade-Relacionamento (DER)
 
-Nove entidades em um único schema, agrupadas em cinco áreas. O modelo é a **v3**, versão simplificada da
-v2: mantém todos os conceitos (júri congelado, ledger de CP, apuração por
-quórum) com menos tabelas. O que mudou e por quê está em
-[09 - Evolução](09-evolucao-modelagem.md).
+Nove entidades em um único schema, agrupadas em cinco áreas. O que mudou desde
+o primeiro desenho e por quê está em [09 - Evolução](09-evolucao-modelagem.md).
 
 ```mermaid
 erDiagram
@@ -49,8 +47,7 @@ Três relações N:N, cada uma resolvida por uma tabela própria:
 
 ## O júri em uma tabela só
 
-`jurado_evidencia` junta duas ideias que a v2 separava em
-`validador_evidencia` e `voto_evidencia`:
+`jurado_evidencia` junta duas ideias:
 
 * **Quem pode votar.** Ao enviar a evidência, o sistema grava uma linha por
   integrante elegível, com `voto` nulo. Esse conjunto não muda mais — é o

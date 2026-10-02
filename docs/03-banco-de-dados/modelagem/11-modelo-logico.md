@@ -1,12 +1,12 @@
 # 11 - Modelo Lógico
 
 Nove tabelas em um **único schema** (`public`), agrupadas por área só para
-leitura. É o modelo **v3** (simplificado). Para o desenho veja [10 - DER](10-der.md).
+leitura. Para o desenho veja [10 - DER](10-der.md).
 
-> **Estado do modelo.** A v3 é a modelagem de referência. O DDL em
-> [12 - DDL](../implementacao/12-ddl-schema.md), o `schema.sql` e o seed
-> descrevem a v2 (15 tabelas) e serão alinhados à v3 numa migration futura.
-> Até lá os dois documentos divergem de propósito.
+> **Estado do modelo.** Este é o modelo de referência. O DDL em
+> [12 - DDL](../implementacao/12-ddl-schema.md), o `schema.sql` e o seed ainda
+> descrevem um desenho anterior e serão alinhados numa migration futura. Até
+> lá os documentos divergem de propósito.
 
 Convenção: **PK** chave primária, **FK** chave estrangeira, **UQ** unicidade,
 **NN** obrigatória. A coluna *Regra* cita a RN de

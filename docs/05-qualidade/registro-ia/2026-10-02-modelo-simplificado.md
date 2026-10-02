@@ -1,4 +1,4 @@
-# 2026-10-02 — Modelo v3 simplificado (9 tabelas)
+# 2026-10-02 — Modelo simplificado (9 tabelas)
 
 | Campo | Valor |
 | --- | --- |
@@ -15,7 +15,7 @@ do escopo.
 
 ## O que a IA produziu
 
-Modelo v3 com 9 tabelas em um único schema (`public`); a primeira versão tinha 5 schemas e o time pediu schema único em seguida. Principal ideia: `jurado_evidencia`
+Modelo com 9 tabelas em um único schema (`public`); a primeira versão tinha 5 schemas e o time pediu schema único em seguida. O histórico passou a contar só a primeira versão (8 tabelas) e o modelo atual, por decisão do time; a versão intermediária de 15 tabelas ficou apenas no histórico de commits. Principal ideia: `jurado_evidencia`
 funde `validador_evidencia` e `voto_evidencia` (júri congelado e voto na mesma
 linha). Saem `credencial_usuario`, `convite_grupo`, `comentario_aposta`,
 `notificacao` e `push_subscription`; `valor_monetario` e `descricao_prenda`
@@ -44,4 +44,4 @@ testada.
 ## Decisão final
 
 Entram os três documentos reescritos. O resto fica como pendência listada
-acima, a tratar quando a v3 for para migration.
+acima, a tratar quando o modelo for para migration.
