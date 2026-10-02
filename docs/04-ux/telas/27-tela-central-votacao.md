@@ -8,8 +8,8 @@ Validação por evidência pelos membros do grupo (RF07).
 - **Card de evidência:** mídia, comprovante, contagem de votos válidos/inválidos, quórum necessário e prazo restante
 - **Ação de votar:** `VALIDO`/`INVALIDO` + justificativa
 
-## Dados (origem: `evidencia`, `validador_evidencia`, `voto_evidencia`)
-`tipo_midia`, `url_comprovante`, `status`, `data_limite_votacao` / snapshot de validadores / `voto`, `justificativa`, `data_voto` — voto único por usuário/evidência (RN04). A tela é alimentada pela view `vw_status_votacao`, que já entrega votos, quórum e situação por evidência.
+## Dados (origem: `evidencia`, `jurado_evidencia`)
+`tipo_midia`, `url_comprovante`, `status`, `data_limite_votacao` / jurados congelados / `voto`, `justificativa`, `data_voto` — voto único por usuário/evidência (RN04). A tela é alimentada pela view `vw_status_votacao`, que já entrega votos, quórum e situação por evidência.
 
 ## Decisões (validado com o time)
 - O desafiante (`DESAFIANTE`) fica de fora da votação; os demais membros do grupo podem votar.

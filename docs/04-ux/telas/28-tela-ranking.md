@@ -8,7 +8,7 @@ Ranking de maiores apostas e apuração de resultados (RF08).
 - **Maiores apostas** (por pote em CP)
 - **% de aprovação** e cumpridas vs. perdidas
 
-## Dados (origem: queries analíticas sobre `aposta`, `participante_aposta`, `voto_evidencia`, `transacao_cp`, `membro_grupo`)
+## Dados (origem: queries analíticas sobre `aposta`, `participante_aposta`, `jurado_evidencia`, `transacao_cp`, `membro_grupo`)
 Baseado em [analytical_queries.sql](../../../database/scripts/queries/analytical_queries.sql) — `valor_cp`, `saldo_cp`, `percentual_aprovacao`, contagem de votos favoráveis/contra.
 
 ## Decisões (validado com o time)
