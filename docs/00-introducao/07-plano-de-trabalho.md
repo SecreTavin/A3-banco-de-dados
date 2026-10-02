@@ -24,9 +24,9 @@ exige".
 
 | Semana | Atividade | Status |
 | --- | --- | --- |
-| 18/09 | Revisão da modelagem contra o schema já implementado | ⚪ Planejado |
-| 25/09 | Ajustes de DER/modelo lógico conforme feedback da revisão de 11/09 | ⚪ Planejado |
-| 02/10 | **Revisão de Projeto em sala** — fechamento da Entrega 2 | ⚪ Planejado (conteúdo já existe, adiantado desde 03/09) |
+| 18/09 | Revisão da modelagem contra o schema já implementado | ✅ Concluído — feita em 02/10, junto com os ajustes abaixo |
+| 25/09 | Ajustes de DER/modelo lógico conforme feedback da revisão de 11/09 | ✅ Concluído — modelagem de idade mínima e moderação por IA (RT01, ADR 0015); em 02/10, simplificação do modelo para 10 tabelas em schema único (ADR 0016) |
+| 02/10 | **Revisão de Projeto em sala** — fechamento da Entrega 2 | ✅ Concluído — 8/8, tag `entrega-2` enviada |
 
 ## E3 — Banco de Dados
 
