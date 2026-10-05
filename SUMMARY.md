@@ -3,6 +3,15 @@
 * [Eu Duvido!](README.md)
 * [Documentação](docs/README.md)
 
+## Acompanhamento
+
+* [07 - Entregas](docs/07-entregas/README.md)
+  * [Entrega 1 - Proposta e Requisitos](docs/07-entregas/entrega-1-proposta-e-requisitos.md)
+  * [Entrega 2 - Modelagem](docs/07-entregas/entrega-2-modelagem.md)
+  * [Entrega 3 - Banco de Dados](docs/07-entregas/entrega-3-banco-de-dados.md)
+  * [Entrega 4 - Sistema Funcional](docs/07-entregas/entrega-4-sistema-funcional.md)
+  * [Banca Final](docs/07-entregas/banca-final.md)
+
 ## Contexto
 
 * [00 - Introdução](docs/00-introducao/README.md)
@@ -12,6 +21,7 @@
   * [04 - Justificativa](docs/00-introducao/04-justificativa.md)
   * [05 - Objetivos](docs/00-introducao/05-objetivos.md)
   * [06 - Público-Alvo](docs/00-introducao/06-publico-alvo.md)
+  * [07 - Plano de Trabalho](docs/00-introducao/07-plano-de-trabalho.md)
 
 ## Negócio
 
@@ -43,6 +53,7 @@
     * [0012 - Contrato via OpenAPI](docs/02-arquitetura/adr/0012-contrato-openapi.md)
     * [0013 - Observabilidade](docs/02-arquitetura/adr/0013-observabilidade.md)
     * [0014 - Estratégia de testes](docs/02-arquitetura/adr/0014-estrategia-de-testes.md)
+    * [0015 - Idade mínima e moderação de desafios por IA](docs/02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)
 * [03 - Banco de Dados](docs/03-banco-de-dados/README.md)
   * [Modelagem](docs/03-banco-de-dados/modelagem/README.md)
     * [09 - Evolução da Modelagem](docs/03-banco-de-dados/modelagem/09-evolucao-modelagem.md)

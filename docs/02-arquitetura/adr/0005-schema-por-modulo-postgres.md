@@ -1,6 +1,6 @@
 # 0005 - Um schema PostgreSQL por modulo, com FK atravessando
 
-* **Status:** Aceita
+* **Status:** Substituída por `0016-schema-unico-e-modelo-enxuto.md`
 * **Data:** 2026-09-03
 * **Decisores:** Octávio Arruda, Rafael Alves, Arthur Marzano
 

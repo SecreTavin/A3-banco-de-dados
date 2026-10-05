@@ -1,6 +1,6 @@
 # 0011 - Notificacoes persistidas com Web Push e tempo real via SignalR
 
-* **Status:** Aceita
+* **Status:** Substituída por `0016-schema-unico-e-modelo-enxuto.md`
 * **Data:** 2026-09-03
 * **Decisores:** Octávio Arruda, Rafael Alves, Arthur Marzano
 

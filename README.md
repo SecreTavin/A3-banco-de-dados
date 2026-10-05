@@ -77,6 +77,7 @@ database/scripts/
   ddl/functions/         Procedures, triggers e views (escritos à mão)
   dml/seed.sql           Massa de demonstração
   queries/               Consultas analíticas
+scripts/entregas/        Automação da documentação de entrega (ver abaixo)
 docs/                    Documentação por tipo - ver docs/README.md
 ```
 
@@ -89,3 +90,55 @@ decisões de arquitetura estão registradas em
 [14 ADRs](docs/02-arquitetura/adr/README.md).
 
 Índice completo da documentação em [docs/README.md](docs/README.md).
+
+## Entregas do Projeto A3
+
+O edital define 4 entregas parciais mais a banca final (seção 20 do
+documento do professor). O status de cada uma — o que já está pronto, o que
+falta, e os documentos que comprovam cada item — é acompanhado em
+[docs/07-entregas/](docs/07-entregas/README.md) e **gerado automaticamente**,
+não mantido à mão.
+
+```bash
+node scripts/entregas/gerar-entregas.mjs
+```
+
+Esse comando lê [`scripts/entregas/manifest.json`](scripts/entregas/manifest.json)
+(a lista, por entrega, de quais documentos/scripts/pastas de código precisam
+existir), confere o estado real do repositório e reescreve as tabelas de
+status dentro de `docs/07-entregas/*.md`. Como boa parte da modelagem, do
+banco e do sistema já foi implementada antes da data de revisão em sala, as
+entregas futuras já aparecem parcialmente ✅ — é o "deixar em construção com
+conteúdo pronto".
+
+### Como fechar uma entrega
+
+1. Resolver as pendências listadas no documento da entrega em
+   `docs/07-entregas/`.
+2. Rodar `node scripts/entregas/gerar-entregas.mjs` e conferir 100% na
+   checklist.
+3. Commitar, abrir PR, mesclar na `main`.
+4. Criar e enviar a tag da entrega:
+
+   ```bash
+   git tag entrega-1          # ou entrega-2, entrega-3, entrega-4, banca-final
+   git push origin entrega-1
+   ```
+
+5. **Rodar o gerador de novo** — só agora, com a tag já existindo, ele
+   calcula "Entregue" pra essa entrega. O commit do passo 3 não tinha
+   como prever isso: a tag não existia ainda quando ele foi feito.
+   Commitar o resultado, abrir PR, mesclar.
+6. Mover a tag pro commit do passo 5 e reenviar:
+
+   ```bash
+   git tag -f entrega-1
+   git push --force origin entrega-1
+   ```
+
+Só depois do passo 6 o workflow [`entregas.yml`](.github/workflows/entregas.yml)
+publica a Release: o `--check` do job `checklist` compara o commit da tag
+contra o que o gerador produziria, e só passa quando os dois batem — pular o
+passo 5 faz a tag ficar "presa" com o job `release` sempre `skipped`. Depois
+disso, o histórico de releases do repositório vira, sozinho, o registro de
+todas as entregas feitas.
