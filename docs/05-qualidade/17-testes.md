@@ -7,6 +7,11 @@ escrever ([ADR 0014](../02-arquitetura/adr/0014-estrategia-de-testes.md)).
 > **Situação em 2026-09-03:** 21 testes implementados e **passando** contra
 > PostgreSQL real via Testcontainers — 15 de constraint e 6 de integração.
 > Execução: `dotnet test` em `apps/api`.
+>
+> **Situação em 2026-10-05:** suíte reescrita para o modelo v3 (20 de
+> constraint, 6 de integração e testes puros da integração com IA em
+> `IaTests.cs`). **Ainda não executada** depois da reescrita — rodar
+> `dotnet test` antes do merge.
 
 ## Nível 1 — Constraints do banco
 
@@ -16,21 +21,25 @@ aplicação que protege; é o SGBD.
 | ID | Regra | Ação | Resultado esperado |
 | --- | --- | --- | --- |
 | T01 | RN03 | `INSERT` em `aposta` com `status = 'INVENTADO'` | Violação de `chk_aposta_status` |
-| T02 | RN02 | `INSERT` com `valor_monetario = -10` | Violação de `chk_aposta_valor` |
+| T02 | RN27 | `nivel_filtro = 'NENHUM'` em `grupo_amigos` | Violação de `chk_grupo_nivel_filtro` |
 | T03 | RN07 | `INSERT` com `valor_cp = 0` | Violação de `chk_aposta_valor_cp` |
-| T04 | RN04 | Dois votos do mesmo usuário na mesma evidência | Violação de `unq_voto_usuario` |
+| T04 | RN04 | Segundo voto do mesmo jurado na mesma evidência | Exceção do trigger `trg_jurado_evidencia_valida` ("já votou") |
 | T05 | — | `INSERT` em `aposta` com `id_grupo` inexistente | Violação de FK `fk_aposta_grupo` |
 | T06 | RN09 | Dois `DESAFIADO` na mesma aposta | Violação de `unq_aposta_papel_unico` |
-| T07 | RN14 | Voto de quem **não** está em `validador_evidencia` | Violação da FK composta `fk_voto_validador` |
+| T07 | RN14 | `DESAFIANTE` incluído no júri da própria aposta | Exceção do trigger `trg_jurado_evidencia_valida` |
 | T08 | RN08 | Débito que deixaria `saldo_cp` negativo | Violação de `chk_membro_saldo` |
 | T09 | RN24 | `UPDATE` em `transacao_cp` | Exceção do trigger `trg_transacao_cp_imutavel` |
 | T10 | RN24 | `DELETE` em `transacao_cp` | Exceção do mesmo trigger |
-| T11 | RN19 | Voto em evidência `ACEITA` | Exceção do trigger `trg_voto_evidencia_valida` |
-| T12 | RN19 | Voto após `data_limite_votacao` | Coberto pelo mesmo trigger de T11 |
+| T11 | RN19 | Voto em evidência `ACEITA` | Exceção do trigger `trg_jurado_evidencia_valida` |
+| T12 | RN15 | Voto sem `data_voto` | Violação de `chk_jurado_voto_data` |
 | T13 | RN10 | Sexta evidência na mesma aposta | Violação de `chk_evidencia_ordem` |
-| T14 | RN05 | Credencial `GOOGLE` com `segredo_hash` preenchido | Violação de `chk_credencial_segredo` |
+| T14 | RN26 | Usuário com 15 anos | Exceção do trigger `trg_usuario_idade_minima` |
 | T15 | RN12 | `status = 'CANCELADA'` sem motivo | Violação de `chk_aposta_cancelamento` |
-| T16 | RN20 | Convite com `data_expiracao` anterior à criação | Violação de `chk_convite_expiracao` |
+| T16 | RN28 | Moderação reprovada sem motivo | Violação de `chk_moderacao_motivo` |
+| T17 | RN28 | Moderação reprovada ligada a uma aposta | Violação de `chk_moderacao_aposta` |
+| T18 | RN29 | Verificação de prova recusada ligada a uma evidência | Violação de `chk_verificacao_evidencia` |
+| T19 | RN25 | Saída do grupo com aposta em curso | Exceção da procedure `remover_membro` |
+| T20 | RN25 | Saída e volta ao grupo | Ledger da conta zerado por `SAIDA_GRUPO`; `vw_reconciliacao_saldo` vazia |
 
 ## Nível 2 — Domínio, sem banco
 

@@ -1,4 +1,5 @@
 using ErrorOr;
+using EuDuvido.Api.Shared.Results;
 
 namespace EuDuvido.Api.Modules.Validacao.Domain;
 
@@ -37,4 +38,16 @@ public static class EvidenciaErrors
     public static Error SomenteDesafiadoEnvia =>
         Error.Forbidden("Evidencia.SomenteDesafiadoEnvia",
             "Apenas o desafiado envia evidencia.");
+
+    // Prova que a IA nao reconheceu: nao vira evidencia e o desafiado pode
+    // reenviar sem gastar uma das 5 tentativas (ADR 0017).
+    public static Error ProvaRecusada(string parecer) =>
+        Error.Custom(TipoErro.Recusado, "Evidencia.ProvaRecusada",
+            $"A IA nao reconheceu a prova: {parecer}");
+
+    // O link e do usuario, entao falhar ao baixa-lo e erro de entrada, nao de
+    // infraestrutura.
+    public static Error ComprovanteInacessivel(string motivo) =>
+        Error.Validation("Evidencia.ComprovanteInacessivel",
+            $"Nao foi possivel usar a foto do comprovante: {motivo}");
 }

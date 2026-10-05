@@ -24,13 +24,11 @@ import {
 } from '../../../shared/ui/status'
 import { useAuth } from '../../../shared/auth/AuthContext'
 import type { Escolha, PapelAposta, StatusAposta, TipoMidia } from '../../../shared/api/tipos'
-import { ItemComentario } from '../components/ItemComentario'
 import { ItemEvidencia } from '../components/ItemEvidencia'
 import { LinhaParticipante } from '../components/LinhaParticipante'
 import { useAceitarApostaCommand } from '../hooks/useAceitarApostaCommand'
 import { useApostaQuery } from '../hooks/useApostaQuery'
 import { useCancelarApostaCommand } from '../hooks/useCancelarApostaCommand'
-import { useComentarCommand } from '../hooks/useComentarCommand'
 import { useEnviarEvidenciaCommand } from '../hooks/useEnviarEvidenciaCommand'
 import estilos from '../apostas.module.css'
 
@@ -48,14 +46,12 @@ export function DetalheApostaView() {
 
   const aceitar = useAceitarApostaCommand(idAposta)
   const cancelar = useCancelarApostaCommand(idAposta)
-  const comentar = useComentarCommand(idAposta)
   const enviarEvidencia = useEnviarEvidenciaCommand(idAposta)
 
   const [papelAposta, setPapelAposta] = useState<PapelAposta>('APOSTADOR')
   const [escolha, setEscolha] = useState<Escolha>('VAI_CUMPRIR')
   const [motivo, setMotivo] = useState('')
   const [pedindoCancelamento, setPedindoCancelamento] = useState(false)
-  const [texto, setTexto] = useState('')
   const [tipoMidia, setTipoMidia] = useState<TipoMidia>('FOTO')
   const [urlComprovante, setUrlComprovante] = useState('')
   const [notaEvidencia, setNotaEvidencia] = useState('')
@@ -107,15 +103,6 @@ export function DetalheApostaView() {
     recarregar()
   }
 
-  const submeterComentario = async (evento: FormEvent) => {
-    evento.preventDefault()
-    const resultado = await comentar.executar(texto.trim())
-    if (!resultado.ok) return
-
-    setTexto('')
-    recarregar()
-  }
-
   return (
     <>
       <LinkVoltar para="/apostas" rotulo="Minhas apostas" />
@@ -144,11 +131,7 @@ export function DetalheApostaView() {
           <div className={estilos.resumoItem}>
             <dt>Recompensa</dt>
             <dd>
-              {descreverRecompensa(
-                aposta.tipoRecompensa,
-                aposta.valorMonetario,
-                aposta.descricaoPrenda,
-              )}
+              {descreverRecompensa(aposta.tipoRecompensa, aposta.descricaoRecompensa)}
             </dd>
           </div>
           <div className={estilos.resumoItem}>
@@ -260,7 +243,11 @@ export function DetalheApostaView() {
 
                 <Campo
                   rotulo={tipoMidia === 'TEXTO' ? 'Relato' : 'Link do comprovante'}
-                  dica="O júri é congelado no envio: quem entrar no grupo depois não vota."
+                  dica={
+                    tipoMidia === 'FOTO'
+                      ? 'Link público da imagem (JPEG, PNG, WebP ou GIF, até 5 MB).'
+                      : undefined
+                  }
                 >
                   <input
                     value={urlComprovante}
@@ -271,7 +258,14 @@ export function DetalheApostaView() {
                 </Campo>
               </div>
 
-              <Campo rotulo="Comentário">
+              <Campo
+                rotulo="Comentário"
+                dica={
+                  tipoMidia === 'FOTO'
+                    ? 'Descreva o que a foto mostra — a IA lê o comentário junto com a imagem.'
+                    : undefined
+                }
+              >
                 <input
                   value={notaEvidencia}
                   onChange={(e) => setNotaEvidencia(e.target.value)}
@@ -281,6 +275,13 @@ export function DetalheApostaView() {
 
               {enviarEvidencia.erro && <Alerta>{enviarEvidencia.erro}</Alerta>}
 
+              <p className={estilos.notaIa}>
+                A IA confere o comprovante antes de ir para o júri. Pode levar alguns segundos. Se
+                ela não reconhecer a prova, é só corrigir e reenviar — a recusa não conta no limite
+                de {MAXIMO_EVIDENCIAS} evidências. O júri é congelado no envio: quem for adicionado
+                ao grupo depois não vota.
+              </p>
+
               <div className={estilos.formularioBotoes}>
                 <Botao type="submit" carregando={enviarEvidencia.enviando}>
                   Enviar evidência
@@ -289,30 +290,6 @@ export function DetalheApostaView() {
             </form>
           </Card>
         )}
-      </Secao>
-
-      <Secao titulo="Comentários" contagem={aposta.comentarios.length}>
-        {aposta.comentarios.length > 0 && (
-          <ul className={estilos.comentarios}>
-            {aposta.comentarios.map((comentario) => (
-              <ItemComentario key={comentario.idComentario} comentario={comentario} />
-            ))}
-          </ul>
-        )}
-
-        <form className={estilos.novoComentario} onSubmit={submeterComentario}>
-          <input
-            value={texto}
-            onChange={(e) => setTexto(e.target.value)}
-            placeholder="Escreva algo para o grupo"
-            maxLength={500}
-            required
-          />
-          <Botao type="submit" variante="secundaria" carregando={comentar.enviando}>
-            Enviar
-          </Botao>
-        </form>
-        {comentar.erro && <Alerta>{comentar.erro}</Alerta>}
       </Secao>
 
       {podeCancelar && (

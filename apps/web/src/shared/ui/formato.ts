@@ -15,10 +15,6 @@ export function formatarDataCompleta(iso: string) {
   return dataCompleta.format(new Date(iso))
 }
 
-export function formatarMoeda(valor: number) {
-  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-}
-
 const MINUTO = 60_000
 const HORA = 60 * MINUTO
 const DIA = 24 * HORA

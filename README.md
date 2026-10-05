@@ -46,11 +46,38 @@ Para conferir que a contabilidade fechou:
 
 ```bash
 docker exec euduvido-db-1 psql -U euduvido -d euduvido \
-  -c "SELECT * FROM economia.vw_reconciliacao_saldo;" \
-  -c "SELECT * FROM economia.vw_escrow_orfao;"
+  -c "SELECT * FROM vw_reconciliacao_saldo;" \
+  -c "SELECT * FROM vw_escrow_orfao;"
 ```
 
 As duas views devem vir **vazias**. Qualquer linha é bug de contabilidade.
+
+### IA de moderação e de verificação de prova
+
+Criar aposta e enviar evidência passam por um modelo de linguagem
+([ADR 0015](docs/02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md),
+[ADR 0017](docs/02-arquitetura/adr/0017-ia-propria-e-verificacao-de-prova.md)).
+Qualquer servidor compatível com a API de chat da OpenAI serve. Com Ollama numa
+máquina do time, exposto pelo ngrok:
+
+```bash
+ollama pull qwen2.5:7b            # texto: moderação de desafios
+ollama pull qwen2.5vl:7b          # visão: olha a foto da prova
+ngrok http 11434 --host-header="localhost:11434"
+```
+
+E na API (variáveis de ambiente, ou um `.env` ao lado do `docker-compose.yml`):
+
+| Variável | Exemplo |
+| --- | --- |
+| `IA_BASE_URL` (`Ia__BaseUrl`) | `https://abcd-1234.ngrok-free.app/v1` |
+| `IA_MODELO` (`Ia__Modelo`) | `qwen2.5:7b` |
+| `IA_MODELO_VISAO` (`Ia__ModeloVisao`) | `qwen2.5vl:7b` |
+| `IA_API_KEY` (`Ia__ApiKey`) | vazio no Ollama; obrigatório em Groq/OpenAI |
+
+Sem essas variáveis a API sobe normalmente, mas criar aposta e enviar
+evidência respondem 503 — nada é aprovado sem avaliação. O endereço do ngrok
+gratuito muda a cada reinício: atualize `IA_BASE_URL` quando isso acontecer.
 
 ## Desenvolvimento local
 
@@ -69,7 +96,7 @@ apps/
   api/                   API .NET 10 - monólito modular, vertical slice
     EuDuvido.Api/
       Modules/           Identidade, Grupos, Apostas, Validacao, Economia, Ranking
-      Shared/            Auth, Database, Results, Realtime
+      Shared/            Auth, Database, Ia, Results, Realtime
     EuDuvido.Api.Tests/  Testes de constraint, domínio e integração
   web/                   React + TypeScript + Vite
 database/scripts/

@@ -62,6 +62,15 @@ export function CardEvidenciaVotavel({ evidencia, votando, aoVotar }: Props) {
 
       {evidencia.comentario && <p className={estilos.relato}>{evidencia.comentario}</p>}
 
+      {evidencia.parecerIa && (
+        <div className={estilos.parecer}>
+          <span className={estilos.parecerRotulo}>
+            Parecer da IA (consultivo — quem decide é o júri)
+          </span>
+          <p>{evidencia.parecerIa}</p>
+        </div>
+      )}
+
       <div className={estilos.placar}>
         <span className={estilos.favoravel}>{evidencia.votosFavoraveis} válido</span>
         <span className={estilos.contra}>{evidencia.votosContra} inválido</span>

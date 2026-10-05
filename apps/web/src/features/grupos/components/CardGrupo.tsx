@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { SaldoCp } from '../../../shared/ui'
+import { rotuloNivelFiltro } from '../../../shared/ui/status'
 import type { GrupoResumo } from '../../../shared/api/tipos'
 import estilos from '../grupos.module.css'
 
@@ -17,6 +18,7 @@ export function CardGrupo({ grupo }: { grupo: GrupoResumo }) {
         <span>
           {grupo.totalMembros} {grupo.totalMembros === 1 ? 'membro' : 'membros'}
         </span>
+        <span>· moderação {rotuloNivelFiltro[grupo.nivelFiltro].toLowerCase()}</span>
       </div>
     </Link>
   )

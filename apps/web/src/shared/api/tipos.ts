@@ -13,6 +13,7 @@ export type TipoMidia = 'FOTO' | 'VIDEO' | 'LINK' | 'TEXTO'
 export type StatusEvidencia = 'EM_VOTACAO' | 'ACEITA' | 'RECUSADA' | 'EXPIRADA'
 export type TipoVoto = 'VALIDO' | 'INVALIDO'
 export type PapelGrupo = 'ADMIN' | 'MEMBRO'
+export type NivelFiltro = 'LEVE' | 'MODERADO' | 'PESADO'
 
 export interface Usuario {
   idUsuario: number
@@ -34,6 +35,7 @@ export interface GrupoResumo {
   totalMembros: number
   saldoCp: number
   papel: PapelGrupo
+  nivelFiltro: NivelFiltro
 }
 
 export interface MembroGrupo {
@@ -48,12 +50,26 @@ export interface GrupoDetalhe {
   idGrupo: number
   nome: string
   descricao: string | null
+  nivelFiltro: NivelFiltro
+  meuPapel: PapelGrupo
   membros: MembroGrupo[]
 }
 
-export interface Convite {
-  codigo: string
-  dataExpiracao: string
+export interface GrupoCriado {
+  idGrupo: number
+  nome: string
+  descricao: string | null
+  nivelFiltro: NivelFiltro
+}
+
+export interface NivelFiltroAlterado {
+  idGrupo: number
+  nivelFiltro: NivelFiltro
+}
+
+export interface MembroAdicionado {
+  idUsuario: number
+  apelido: string
 }
 
 export interface ApostaResumo {
@@ -63,8 +79,7 @@ export interface ApostaResumo {
   status: StatusAposta
   valorCp: number
   tipoRecompensa: TipoRecompensa
-  valorMonetario: number | null
-  descricaoPrenda: string | null
+  descricaoRecompensa: string | null
   dataLimite: string
   categoria: string
   grupo: string
@@ -92,14 +107,7 @@ export interface Evidencia {
   votosContra: number
   quorum: number
   totalValidadores: number
-}
-
-export interface ComentarioAposta {
-  idComentario: number
-  apelido: string
-  avatarUrl: string | null
-  texto: string
-  dataEnvio: string
+  parecerIa: string | null
 }
 
 export interface ApostaDetalhe extends ApostaResumo {
@@ -108,7 +116,6 @@ export interface ApostaDetalhe extends ApostaResumo {
   motivoCancelamento: string | null
   participantes: ParticipanteAposta[]
   evidencias: Evidencia[]
-  comentarios: ComentarioAposta[]
 }
 
 export interface Categoria {
@@ -133,6 +140,7 @@ export interface EvidenciaPendente {
   votosContra: number
   votosFaltantes: number
   jaVotei: boolean
+  parecerIa: string | null
 }
 
 export interface PosicaoRanking {
@@ -176,6 +184,19 @@ export interface Perfil {
 export interface NovoGrupo {
   nome: string
   descricao: string
+  nivelFiltro: NivelFiltro
+}
+
+export interface NovoMembro {
+  email: string
+}
+
+export interface NovoCadastro {
+  nome: string
+  email: string
+  apelido: string
+  /** `YYYY-MM-DD`, direto do `<input type="date">`. */
+  dataNascimento: string
 }
 
 export interface NovaAposta {
@@ -185,8 +206,7 @@ export interface NovaAposta {
   descricao: string
   valorCp: number
   tipoRecompensa: TipoRecompensa
-  valorMonetario: number | null
-  descricaoPrenda: string | null
+  descricaoRecompensa: string | null
   dataLimite: string
 }
 
@@ -199,6 +219,11 @@ export interface NovaEvidencia {
   tipoMidia: TipoMidia
   urlComprovante: string
   comentario: string
+}
+
+export interface EvidenciaEnviada {
+  idEvidencia: number
+  parecerIa: string | null
 }
 
 export interface NovoVoto {

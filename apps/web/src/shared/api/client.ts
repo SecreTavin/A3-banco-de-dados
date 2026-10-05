@@ -65,6 +65,9 @@ export const api = {
   get: <T>(rota: string) => requisitar<T>(rota),
   post: <T>(rota: string, corpo?: unknown) =>
     requisitar<T>(rota, { method: 'POST', body: JSON.stringify(corpo ?? {}) }),
+  patch: <T>(rota: string, corpo?: unknown) =>
+    requisitar<T>(rota, { method: 'PATCH', body: JSON.stringify(corpo ?? {}) }),
+  delete: <T>(rota: string) => requisitar<T>(rota, { method: 'DELETE' }),
 }
 
 export function mensagemDeErro(falha: unknown): string {

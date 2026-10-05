@@ -34,4 +34,6 @@ public static class TipoRecompensa
     public const string PrendaAcao = "PRENDA_ACAO";
     public const string ItemMaterial = "ITEM_MATERIAL";
     public const string Outro = "OUTRO";
+
+    public static readonly string[] Todos = [Monetaria, PrendaAcao, ItemMaterial, Outro];
 }

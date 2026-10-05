@@ -1,6 +1,6 @@
 # 10 - Diagrama Entidade-Relacionamento (DER)
 
-Dez entidades em um único schema, agrupadas em cinco áreas. O que mudou desde
+Onze entidades em um único schema, agrupadas em cinco áreas. O que mudou desde
 o primeiro desenho e por quê está em [09 - Evolução](09-evolucao-modelagem.md).
 
 ```mermaid
@@ -22,6 +22,9 @@ erDiagram
     USUARIO ||--o{ EVIDENCIA : envia
     EVIDENCIA ||--o{ JURADO_EVIDENCIA : convoca
     USUARIO ||--o{ JURADO_EVIDENCIA : julga
+    APOSTA ||--o{ VERIFICACAO_EVIDENCIA : triagem
+    USUARIO ||--o{ VERIFICACAO_EVIDENCIA : envia
+    EVIDENCIA ||--o| VERIFICACAO_EVIDENCIA : aprovada_em
 
     GRUPO_AMIGOS ||--o{ TRANSACAO_CP : movimenta
     USUARIO ||--o{ TRANSACAO_CP : titular
@@ -61,6 +64,14 @@ Cada relação lida nos dois sentidos. "Muitos" inclui zero, salvo onde diz
 * Uma aposta recebe até cinco evidências, em sequência.
 * Um usuário pode enviar várias evidências; cada evidência tem um único autor.
 
+**Triagem por IA — `verificacao_evidencia`**
+* Uma aposta acumula várias verificações, uma por prova enviada, aprovada ou
+  não.
+* Um usuário pode enviar várias provas à verificação; cada uma tem um único
+  autor.
+* Uma evidência tem, no máximo, uma verificação; uma verificação aprovada gera
+  uma evidência, e uma reprovada não gera nenhuma.
+
 **Júri — `jurado_evidencia`**
 * Uma evidência convoca vários jurados, fixados no envio e imutáveis depois.
 * Um usuário pode julgar várias evidências, mas vota uma única vez em cada.
@@ -81,7 +92,7 @@ Cada relação lida nos dois sentidos. "Muitos" inclui zero, salvo onde diz
 | identidade | `usuario` | Quem é a pessoa? |
 | grupos | `grupo_amigos`, `membro_grupo` | Em qual turma, com qual papel e saldo? |
 | apostas | `categoria_desafio`, `aposta`, `moderacao_desafio`, `participante_aposta` | Qual é o desafio, ele passou na moderação e quem participa? |
-| validacao | `evidencia`, `jurado_evidencia` | Qual a prova e quem julga? |
+| validacao | `evidencia`, `verificacao_evidencia`, `jurado_evidencia` | Qual a prova, a IA a reconheceu e quem julga? |
 | economia | `transacao_cp` | Para onde foi cada moeda? |
 
 ## Entidades associativas
@@ -115,3 +126,7 @@ relação com `aposta` é **0..1**: desafio reprovado nunca vira aposta, então 
 é opcional. Os outros dois elementos da exigência entram em entidades
 existentes: `usuario.data_nascimento` (RN26) e `grupo_amigos.nivel_filtro`
 (RN27). Origem: [ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md).
+
+A prova segue o mesmo desenho: `verificacao_evidencia` registra a triagem por
+IA antes de a prova virar evidência, com relação **0..1** para `evidencia`
+([ADR 0017](../../02-arquitetura/adr/0017-ia-propria-e-verificacao-de-prova.md)).

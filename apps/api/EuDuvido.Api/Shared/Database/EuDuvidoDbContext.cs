@@ -2,32 +2,30 @@ using EuDuvido.Api.Modules.Apostas.Domain;
 using EuDuvido.Api.Modules.Economia.Domain;
 using EuDuvido.Api.Modules.Grupos.Domain;
 using EuDuvido.Api.Modules.Identidade.Domain;
-using EuDuvido.Api.Modules.Notificacoes.Domain;
 using EuDuvido.Api.Modules.Validacao.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace EuDuvido.Api.Shared.Database;
 
-// Toda configuracao usa nomes de constraint explicitos e iguais aos do
-// schema.sql documentado. Os documentos 11, 12 e 17 citam esses nomes; deixar
-// o EF gerar CK_aposta_xxx faria tres entregaveis mentirem.
+// Toda configuracao usa nomes de constraint explicitos e iguais aos do modelo
+// logico (doc 11). Os documentos 11, 12 e 17 citam esses nomes; deixar o EF
+// gerar CK_aposta_xxx faria tres entregaveis mentirem.
+//
+// Schema unico (public) desde o ADR 0016: os modulos continuam separados no
+// codigo, mas no banco a separacao so obrigava a qualificar cada nome.
 public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : DbContext(options)
 {
     public DbSet<Usuario> Usuarios => Set<Usuario>();
-    public DbSet<CredencialUsuario> Credenciais => Set<CredencialUsuario>();
     public DbSet<GrupoAmigos> Grupos => Set<GrupoAmigos>();
     public DbSet<MembroGrupo> Membros => Set<MembroGrupo>();
-    public DbSet<ConviteGrupo> Convites => Set<ConviteGrupo>();
     public DbSet<CategoriaDesafio> Categorias => Set<CategoriaDesafio>();
     public DbSet<Aposta> Apostas => Set<Aposta>();
+    public DbSet<ModeracaoDesafio> Moderacoes => Set<ModeracaoDesafio>();
     public DbSet<ParticipanteAposta> Participantes => Set<ParticipanteAposta>();
-    public DbSet<ComentarioAposta> Comentarios => Set<ComentarioAposta>();
     public DbSet<Evidencia> Evidencias => Set<Evidencia>();
-    public DbSet<ValidadorEvidencia> Validadores => Set<ValidadorEvidencia>();
-    public DbSet<VotoEvidencia> Votos => Set<VotoEvidencia>();
+    public DbSet<JuradoEvidencia> Jurados => Set<JuradoEvidencia>();
+    public DbSet<VerificacaoEvidencia> Verificacoes => Set<VerificacaoEvidencia>();
     public DbSet<TransacaoCp> Transacoes => Set<TransacaoCp>();
-    public DbSet<Notificacao> Notificacoes => Set<Notificacao>();
-    public DbSet<PushSubscription> PushSubscriptions => Set<PushSubscription>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -36,52 +34,24 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
         ConfigurarApostas(b);
         ConfigurarValidacao(b);
         ConfigurarEconomia(b);
-        ConfigurarNotificacoes(b);
     }
 
     private static void ConfigurarIdentidade(ModelBuilder b)
     {
         b.Entity<Usuario>(e =>
         {
-            e.ToTable("usuario", "identidade");
+            e.ToTable("usuario");
             e.HasKey(x => x.IdUsuario).HasName("pk_usuario");
             e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
             e.Property(x => x.Nome).HasColumnName("nome").HasMaxLength(100).IsRequired();
             e.Property(x => x.Email).HasColumnName("email").HasMaxLength(120).IsRequired();
             e.Property(x => x.Apelido).HasColumnName("apelido").HasMaxLength(50).IsRequired();
             e.Property(x => x.AvatarUrl).HasColumnName("avatar_url").HasMaxLength(500);
+            // RN26: idade minima garantida pelo trigger trg_usuario_idade_minima.
+            e.Property(x => x.DataNascimento).HasColumnName("data_nascimento");
             e.Property(x => x.DataCadastro).HasColumnName("data_cadastro")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
             e.HasIndex(x => x.Email).IsUnique().HasDatabaseName("unq_usuario_email");
-            e.HasMany(x => x.Credenciais).WithOne()
-                .HasForeignKey(c => c.IdUsuario)
-                .HasConstraintName("fk_credencial_usuario")
-                .OnDelete(DeleteBehavior.Cascade);
-        });
-
-        b.Entity<CredencialUsuario>(e =>
-        {
-            e.ToTable("credencial_usuario", "identidade", t =>
-            {
-                t.HasCheckConstraint("chk_credencial_provedor",
-                     "provedor IN ('GOOGLE', 'SENHA')");
-                t.HasCheckConstraint("chk_credencial_segredo",
-                     "(provedor = 'GOOGLE' AND segredo_hash IS NULL) OR " +
-                     "(provedor = 'SENHA' AND segredo_hash IS NOT NULL)");
-            });
-            e.HasKey(x => x.IdCredencial).HasName("pk_credencial_usuario");
-            e.Property(x => x.IdCredencial).HasColumnName("id_credencial");
-            e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
-            e.Property(x => x.Provedor).HasColumnName("provedor").HasMaxLength(20).IsRequired();
-            e.Property(x => x.IdExterno).HasColumnName("id_externo").HasMaxLength(255).IsRequired();
-            e.Property(x => x.SegredoHash).HasColumnName("segredo_hash").HasMaxLength(255);
-            e.Property(x => x.DataVinculo).HasColumnName("data_vinculo")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-            e.HasIndex(x => new { x.Provedor, x.IdExterno }).IsUnique()
-                .HasDatabaseName("unq_credencial_provedor");
-            e.HasIndex(x => new { x.IdUsuario, x.Provedor }).IsUnique()
-                .HasDatabaseName("unq_credencial_usuario_provedor");
-            e.HasIndex(x => x.IdUsuario).HasDatabaseName("idx_credencial_usuario");
         });
     }
 
@@ -89,12 +59,18 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
     {
         b.Entity<GrupoAmigos>(e =>
         {
-            e.ToTable("grupo_amigos", "grupos");
+            e.ToTable("grupo_amigos", t =>
+            {
+                t.HasCheckConstraint("chk_grupo_nivel_filtro",
+                     "nivel_filtro IN ('LEVE', 'MODERADO', 'PESADO')");
+            });
             e.HasKey(x => x.IdGrupo).HasName("pk_grupo_amigos");
             e.Property(x => x.IdGrupo).HasColumnName("id_grupo");
             e.Property(x => x.Nome).HasColumnName("nome").HasMaxLength(80).IsRequired();
             e.Property(x => x.Descricao).HasColumnName("descricao").HasMaxLength(255);
             e.Property(x => x.IdCriador).HasColumnName("id_criador");
+            e.Property(x => x.NivelFiltro).HasColumnName("nivel_filtro").HasMaxLength(10)
+                .HasDefaultValue(NiveisFiltro.Padrao).IsRequired();
             e.Property(x => x.DataCriacao).HasColumnName("data_criacao")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
             e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdCriador)
@@ -107,7 +83,7 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
 
         b.Entity<MembroGrupo>(e =>
         {
-            e.ToTable("membro_grupo", "grupos", t =>
+            e.ToTable("membro_grupo", t =>
             {
                 t.HasCheckConstraint("chk_membro_papel", "papel IN ('ADMIN', 'MEMBRO')");
                 t.HasCheckConstraint("chk_membro_saldo", "saldo_cp >= 0");
@@ -127,42 +103,13 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
                 .HasDatabaseName("unq_membro_grupo");
             e.HasIndex(x => x.IdUsuario).HasDatabaseName("idx_membro_usuario");
         });
-
-        b.Entity<ConviteGrupo>(e =>
-        {
-            e.ToTable("convite_grupo", "grupos", t =>
-            {
-                t.HasCheckConstraint("chk_convite_expiracao", "data_expiracao > data_criacao");
-                t.HasCheckConstraint("chk_convite_uso",
-                     "(id_usado_por IS NULL AND data_uso IS NULL) OR " +
-                     "(id_usado_por IS NOT NULL AND data_uso IS NOT NULL)");
-            });
-            e.HasKey(x => x.IdConvite).HasName("pk_convite_grupo");
-            e.Property(x => x.IdConvite).HasColumnName("id_convite");
-            e.Property(x => x.IdGrupo).HasColumnName("id_grupo");
-            e.Property(x => x.Codigo).HasColumnName("codigo").HasColumnType("char(6)").IsRequired();
-            e.Property(x => x.IdCriador).HasColumnName("id_criador");
-            e.Property(x => x.DataCriacao).HasColumnName("data_criacao")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-            e.Property(x => x.DataExpiracao).HasColumnName("data_expiracao");
-            e.Property(x => x.IdUsadoPor).HasColumnName("id_usado_por");
-            e.Property(x => x.DataUso).HasColumnName("data_uso");
-            e.HasOne<GrupoAmigos>().WithMany().HasForeignKey(x => x.IdGrupo)
-                .HasConstraintName("fk_convite_grupo").OnDelete(DeleteBehavior.Cascade);
-            e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdCriador)
-                .HasConstraintName("fk_convite_criador").OnDelete(DeleteBehavior.Restrict);
-            e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdUsadoPor)
-                .HasConstraintName("fk_convite_usado_por").OnDelete(DeleteBehavior.Restrict);
-            e.HasIndex(x => x.Codigo).IsUnique().HasDatabaseName("unq_convite_codigo");
-            e.HasIndex(x => x.IdGrupo).HasDatabaseName("idx_convite_grupo");
-        });
     }
 
     private static void ConfigurarApostas(ModelBuilder b)
     {
         b.Entity<CategoriaDesafio>(e =>
         {
-            e.ToTable("categoria_desafio", "apostas");
+            e.ToTable("categoria_desafio");
             e.HasKey(x => x.IdCategoria).HasName("pk_categoria_desafio");
             e.Property(x => x.IdCategoria).HasColumnName("id_categoria");
             e.Property(x => x.Nome).HasColumnName("nome").HasMaxLength(50).IsRequired();
@@ -172,12 +119,10 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
 
         b.Entity<Aposta>(e =>
         {
-            e.ToTable("aposta", "apostas", t =>
+            e.ToTable("aposta", t =>
             {
                 t.HasCheckConstraint("chk_aposta_tipo",
                      "tipo_recompensa IN ('MONETARIA', 'PRENDA_ACAO', 'ITEM_MATERIAL', 'OUTRO')");
-                t.HasCheckConstraint("chk_aposta_valor",
-                     "valor_monetario IS NULL OR valor_monetario > 0");
                 t.HasCheckConstraint("chk_aposta_valor_cp", "valor_cp > 0");
                 t.HasCheckConstraint("chk_aposta_status",
                      "status IN ('ABERTA', 'EM_ANDAMENTO', 'EM_VOTACAO', " +
@@ -198,9 +143,8 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
             e.Property(x => x.ValorCp).HasColumnName("valor_cp");
             e.Property(x => x.TipoRecompensa).HasColumnName("tipo_recompensa")
                 .HasMaxLength(20).IsRequired();
-            e.Property(x => x.ValorMonetario).HasColumnName("valor_monetario")
-                .HasPrecision(10, 2);
-            e.Property(x => x.DescricaoPrenda).HasColumnName("descricao_prenda").HasMaxLength(255);
+            e.Property(x => x.DescricaoRecompensa).HasColumnName("descricao_recompensa")
+                .HasMaxLength(255);
             e.Property(x => x.DataCriacao).HasColumnName("data_criacao")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
             e.Property(x => x.DataLimite).HasColumnName("data_limite");
@@ -225,9 +169,44 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
                 .HasFilter("status IN ('ABERTA', 'EM_ANDAMENTO')");
         });
 
+        b.Entity<ModeracaoDesafio>(e =>
+        {
+            e.ToTable("moderacao_desafio", t =>
+            {
+                t.HasCheckConstraint("chk_moderacao_nivel",
+                     "nivel_filtro IN ('LEVE', 'MODERADO', 'PESADO')");
+                // RN28: reprovacao sempre explica o motivo.
+                t.HasCheckConstraint("chk_moderacao_motivo", "aprovado OR motivo IS NOT NULL");
+                // Desafio reprovado nao vira aposta.
+                t.HasCheckConstraint("chk_moderacao_aposta", "id_aposta IS NULL OR aprovado");
+            });
+            e.HasKey(x => x.IdModeracao).HasName("pk_moderacao_desafio");
+            e.Property(x => x.IdModeracao).HasColumnName("id_moderacao");
+            e.Property(x => x.IdGrupo).HasColumnName("id_grupo");
+            e.Property(x => x.IdCriador).HasColumnName("id_criador");
+            e.Property(x => x.IdAposta).HasColumnName("id_aposta");
+            e.Property(x => x.NivelFiltro).HasColumnName("nivel_filtro")
+                .HasMaxLength(10).IsRequired();
+            e.Property(x => x.Titulo).HasColumnName("titulo").HasMaxLength(120).IsRequired();
+            e.Property(x => x.Descricao).HasColumnName("descricao").IsRequired();
+            e.Property(x => x.Aprovado).HasColumnName("aprovado");
+            e.Property(x => x.Motivo).HasColumnName("motivo").HasMaxLength(500);
+            e.Property(x => x.DataAvaliacao).HasColumnName("data_avaliacao")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            e.HasOne<GrupoAmigos>().WithMany().HasForeignKey(x => x.IdGrupo)
+                .HasConstraintName("fk_moderacao_grupo").OnDelete(DeleteBehavior.Cascade);
+            e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdCriador)
+                .HasConstraintName("fk_moderacao_criador").OnDelete(DeleteBehavior.Restrict);
+            e.HasOne<Aposta>().WithMany().HasForeignKey(x => x.IdAposta)
+                .HasConstraintName("fk_moderacao_aposta").OnDelete(DeleteBehavior.SetNull);
+            e.HasIndex(x => x.IdGrupo).HasDatabaseName("idx_moderacao_grupo");
+            e.HasIndex(x => x.IdCriador).HasDatabaseName("idx_moderacao_criador");
+            e.HasIndex(x => x.IdAposta).IsUnique().HasDatabaseName("unq_moderacao_aposta");
+        });
+
         b.Entity<ParticipanteAposta>(e =>
         {
-            e.ToTable("participante_aposta", "apostas", t =>
+            e.ToTable("participante_aposta", t =>
             {
                 t.HasCheckConstraint("chk_participante_papel",
                      "papel_aposta IN ('DESAFIANTE', 'DESAFIADO', 'APOSTADOR')");
@@ -253,33 +232,13 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
                 .HasDatabaseName("unq_aposta_papel_unico")
                 .HasFilter("papel_aposta IN ('DESAFIANTE', 'DESAFIADO')");
         });
-
-        b.Entity<ComentarioAposta>(e =>
-        {
-            e.ToTable("comentario_aposta", "apostas", t =>
-            {
-                t.HasCheckConstraint("chk_comentario_texto", "length(trim(texto)) > 0");
-            });
-            e.HasKey(x => x.IdComentario).HasName("pk_comentario_aposta");
-            e.Property(x => x.IdComentario).HasColumnName("id_comentario");
-            e.Property(x => x.IdAposta).HasColumnName("id_aposta");
-            e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
-            e.Property(x => x.Texto).HasColumnName("texto").HasMaxLength(500).IsRequired();
-            e.Property(x => x.DataEnvio).HasColumnName("data_envio")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-            e.HasOne<Aposta>().WithMany().HasForeignKey(x => x.IdAposta)
-                .HasConstraintName("fk_comentario_aposta").OnDelete(DeleteBehavior.Cascade);
-            e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdUsuario)
-                .HasConstraintName("fk_comentario_usuario").OnDelete(DeleteBehavior.Restrict);
-            e.HasIndex(x => x.IdAposta).HasDatabaseName("idx_comentario_aposta");
-        });
     }
 
     private static void ConfigurarValidacao(ModelBuilder b)
     {
         b.Entity<Evidencia>(e =>
         {
-            e.ToTable("evidencia", "validacao", t =>
+            e.ToTable("evidencia", t =>
             {
                 t.HasCheckConstraint("chk_evidencia_midia",
                      "tipo_midia IN ('FOTO', 'VIDEO', 'LINK', 'TEXTO')");
@@ -310,13 +269,9 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
                 .HasConstraintName("fk_evidencia_aposta").OnDelete(DeleteBehavior.Cascade);
             e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdUsuario)
                 .HasConstraintName("fk_evidencia_usuario").OnDelete(DeleteBehavior.Restrict);
-            e.HasMany(x => x.Validadores).WithOne()
-                .HasForeignKey(v => v.IdEvidencia)
-                .HasConstraintName("fk_validador_evidencia")
-                .OnDelete(DeleteBehavior.Cascade);
-            e.HasMany(x => x.Votos).WithOne()
-                .HasForeignKey(v => v.IdEvidencia)
-                .HasConstraintName("fk_voto_evidencia")
+            e.HasMany(x => x.Jurados).WithOne()
+                .HasForeignKey(j => j.IdEvidencia)
+                .HasConstraintName("fk_jurado_evidencia")
                 .OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(x => new { x.IdAposta, x.Ordem }).IsUnique()
                 .HasDatabaseName("unq_evidencia_ordem");
@@ -325,41 +280,57 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
                 .HasFilter("status = 'EM_VOTACAO'");
         });
 
-        b.Entity<ValidadorEvidencia>(e =>
+        b.Entity<JuradoEvidencia>(e =>
         {
-            e.ToTable("validador_evidencia", "validacao");
-            e.HasKey(x => new { x.IdEvidencia, x.IdUsuario })
-                .HasName("pk_validador_evidencia");
+            e.ToTable("jurado_evidencia", t =>
+            {
+                // Voto nulo = ainda nao votou; IN com NULL nao reprova o CHECK.
+                t.HasCheckConstraint("chk_jurado_voto", "voto IN ('VALIDO', 'INVALIDO')");
+                t.HasCheckConstraint("chk_jurado_voto_data", "(voto IS NULL) = (data_voto IS NULL)");
+            });
+            // RN04 + RN14: a PK e a garantia de voto unico e de voto so do juri.
+            e.HasKey(x => new { x.IdEvidencia, x.IdUsuario }).HasName("pk_jurado_evidencia");
             e.Property(x => x.IdEvidencia).HasColumnName("id_evidencia");
             e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
+            e.Property(x => x.Voto).HasColumnName("voto").HasMaxLength(20);
+            e.Property(x => x.Justificativa).HasColumnName("justificativa").HasMaxLength(255);
+            e.Property(x => x.DataVoto).HasColumnName("data_voto");
             e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdUsuario)
-                .HasConstraintName("fk_validador_usuario").OnDelete(DeleteBehavior.Restrict);
+                .HasConstraintName("fk_jurado_usuario").OnDelete(DeleteBehavior.Restrict);
+            e.HasIndex(x => x.IdUsuario).HasDatabaseName("idx_jurado_usuario");
         });
 
-        b.Entity<VotoEvidencia>(e =>
+        b.Entity<VerificacaoEvidencia>(e =>
         {
-            e.ToTable("voto_evidencia", "validacao", t =>
+            e.ToTable("verificacao_evidencia", t =>
             {
-                t.HasCheckConstraint("chk_voto_tipo", "voto IN ('VALIDO', 'INVALIDO')");
+                t.HasCheckConstraint("chk_verificacao_midia",
+                     "tipo_midia IN ('FOTO', 'VIDEO', 'LINK', 'TEXTO')");
+                // Prova recusada pela IA nao vira evidencia.
+                t.HasCheckConstraint("chk_verificacao_evidencia", "id_evidencia IS NULL OR aprovado");
             });
-            e.HasKey(x => x.IdVoto).HasName("pk_voto_evidencia");
-            e.Property(x => x.IdVoto).HasColumnName("id_voto");
-            e.Property(x => x.IdEvidencia).HasColumnName("id_evidencia");
+            e.HasKey(x => x.IdVerificacao).HasName("pk_verificacao_evidencia");
+            e.Property(x => x.IdVerificacao).HasColumnName("id_verificacao");
+            e.Property(x => x.IdAposta).HasColumnName("id_aposta");
             e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
-            e.Property(x => x.Voto).HasColumnName("voto").HasMaxLength(20).IsRequired();
-            e.Property(x => x.Justificativa).HasColumnName("justificativa").HasMaxLength(255);
-            e.Property(x => x.DataVoto).HasColumnName("data_voto")
+            e.Property(x => x.IdEvidencia).HasColumnName("id_evidencia");
+            e.Property(x => x.TipoMidia).HasColumnName("tipo_midia").HasMaxLength(20).IsRequired();
+            e.Property(x => x.UrlComprovante).HasColumnName("url_comprovante")
+                .HasMaxLength(500).IsRequired();
+            e.Property(x => x.Comentario).HasColumnName("comentario");
+            e.Property(x => x.Aprovado).HasColumnName("aprovado");
+            e.Property(x => x.Parecer).HasColumnName("parecer").HasMaxLength(500).IsRequired();
+            e.Property(x => x.DataAvaliacao).HasColumnName("data_avaliacao")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
+            e.HasOne<Aposta>().WithMany().HasForeignKey(x => x.IdAposta)
+                .HasConstraintName("fk_verificacao_aposta").OnDelete(DeleteBehavior.Cascade);
             e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdUsuario)
-                .HasConstraintName("fk_voto_usuario").OnDelete(DeleteBehavior.Restrict);
-            // RN14: FK composta - so vota quem esta no snapshot de validadores.
-            e.HasOne<ValidadorEvidencia>().WithMany()
-                .HasForeignKey(x => new { x.IdEvidencia, x.IdUsuario })
-                .HasConstraintName("fk_voto_validador")
-                .OnDelete(DeleteBehavior.Cascade);
-            e.HasIndex(x => new { x.IdEvidencia, x.IdUsuario }).IsUnique()
-                .HasDatabaseName("unq_voto_usuario");
-            e.HasIndex(x => x.IdEvidencia).HasDatabaseName("idx_voto_evidencia");
+                .HasConstraintName("fk_verificacao_usuario").OnDelete(DeleteBehavior.Restrict);
+            e.HasOne<Evidencia>().WithMany().HasForeignKey(x => x.IdEvidencia)
+                .HasConstraintName("fk_verificacao_evidencia").OnDelete(DeleteBehavior.SetNull);
+            e.HasIndex(x => x.IdAposta).HasDatabaseName("idx_verificacao_aposta");
+            e.HasIndex(x => x.IdUsuario).HasDatabaseName("idx_verificacao_usuario");
+            e.HasIndex(x => x.IdEvidencia).IsUnique().HasDatabaseName("unq_verificacao_evidencia");
         });
     }
 
@@ -367,11 +338,11 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
     {
         b.Entity<TransacaoCp>(e =>
         {
-            e.ToTable("transacao_cp", "economia", t =>
+            e.ToTable("transacao_cp", t =>
             {
                 t.HasCheckConstraint("chk_transacao_tipo",
                      "tipo IN ('CREDITO_INICIAL', 'APOSTA_ESCROW', 'PREMIO', " +
-                     "'ESTORNO', 'RECOMPENSA_VOTO')");
+                     "'ESTORNO', 'RECOMPENSA_VOTO', 'SAIDA_GRUPO')");
                 t.HasCheckConstraint("chk_transacao_valor", "valor <> 0");
                 t.HasCheckConstraint("chk_transacao_conta",
                      "id_usuario IS NOT NULL OR id_aposta IS NOT NULL");
@@ -396,52 +367,6 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
                 .HasConstraintName("fk_transacao_aposta").OnDelete(DeleteBehavior.Restrict);
             e.HasIndex(x => new { x.IdGrupo, x.IdUsuario }).HasDatabaseName("idx_transacao_conta");
             e.HasIndex(x => x.IdAposta).HasDatabaseName("idx_transacao_aposta");
-        });
-    }
-
-    private static void ConfigurarNotificacoes(ModelBuilder b)
-    {
-        b.Entity<Notificacao>(e =>
-        {
-            e.ToTable("notificacao", "notificacoes", t =>
-            {
-                t.HasCheckConstraint("chk_notificacao_tipo",
-                    "tipo IN ('PRAZO_VENCENDO', 'EVIDENCIA_ENVIADA', 'VOTACAO_ABERTA', " +
-                    "'APOSTA_ENCERRADA', 'CONVITE_ACEITO')");
-            });
-            e.HasKey(x => x.IdNotificacao).HasName("pk_notificacao");
-            e.Property(x => x.IdNotificacao).HasColumnName("id_notificacao");
-            e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
-            e.Property(x => x.Tipo).HasColumnName("tipo").HasMaxLength(30).IsRequired();
-            e.Property(x => x.Titulo).HasColumnName("titulo").HasMaxLength(120).IsRequired();
-            e.Property(x => x.Corpo).HasColumnName("corpo").HasMaxLength(255).IsRequired();
-            e.Property(x => x.UrlDestino).HasColumnName("url_destino").HasMaxLength(255);
-            e.Property(x => x.DataCriacao).HasColumnName("data_criacao")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-            e.Property(x => x.DataLeitura).HasColumnName("data_leitura");
-            e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdUsuario)
-                .HasConstraintName("fk_notificacao_usuario").OnDelete(DeleteBehavior.Cascade);
-            e.HasIndex(x => x.IdUsuario).HasDatabaseName("idx_notificacao_nao_lida")
-                .HasFilter("data_leitura IS NULL");
-        });
-
-        b.Entity<PushSubscription>(e =>
-        {
-            e.ToTable("push_subscription", "notificacoes");
-            e.HasKey(x => x.IdSubscription).HasName("pk_push_subscription");
-            e.Property(x => x.IdSubscription).HasColumnName("id_subscription");
-            e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
-            e.Property(x => x.Endpoint).HasColumnName("endpoint").HasMaxLength(500).IsRequired();
-            e.Property(x => x.ChaveP256dh).HasColumnName("chave_p256dh")
-                .HasMaxLength(255).IsRequired();
-            e.Property(x => x.ChaveAuth).HasColumnName("chave_auth")
-                .HasMaxLength(255).IsRequired();
-            e.Property(x => x.DataCriacao).HasColumnName("data_criacao")
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
-            e.Property(x => x.DataUltimoUso).HasColumnName("data_ultimo_uso");
-            e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdUsuario)
-                .HasConstraintName("fk_push_usuario").OnDelete(DeleteBehavior.Cascade);
-            e.HasIndex(x => x.Endpoint).IsUnique().HasDatabaseName("unq_push_endpoint");
         });
     }
 }

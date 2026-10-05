@@ -276,38 +276,20 @@
   color: var(--texto-fraco);
 }
 
-.comentarios {
-  display: grid;
-  gap: 10px;
-}
-
-.comentario {
-  display: flex;
-  gap: 11px;
-  padding: 11px 13px;
-  border: 1px solid var(--borda);
+.parecerIa {
+  padding: 8px 10px;
   border-radius: var(--raio-pequeno);
-  background: var(--superficie);
-}
-
-.comentarioCorpo {
-  display: grid;
-  gap: 3px;
-  font-size: 13.5px;
-}
-
-.comentarioTopo {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.comentarioData {
-  font-size: 11.5px;
+  background: var(--fundo);
+  font-size: 12.5px;
   color: var(--texto-fraco);
 }
 
-.novoComentario {
-  display: flex;
-  gap: 10px;
+.parecerIa strong {
+  color: var(--texto-suave);
+  font-weight: 600;
+}
+
+.notaIa {
+  font-size: 12px;
+  color: var(--texto-fraco);
 }

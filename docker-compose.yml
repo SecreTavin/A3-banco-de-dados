@@ -65,6 +65,12 @@ services:
       Auth__Chave: "chave-de-desenvolvimento-nao-usar-em-producao-min-32-chars"
       Cors__Origens__0: "http://localhost:8080"
       Cors__Origens__1: "http://localhost:5173"
+      # IA de moderacao e verificacao de prova (ADR 0017). Endpoint compativel
+      # com a OpenAI, ate o /v1 - ex.: https://xxxx.ngrok-free.app/v1 (Ollama).
+      Ia__BaseUrl: "${IA_BASE_URL:-}"
+      Ia__ApiKey: "${IA_API_KEY:-}"
+      Ia__Modelo: "${IA_MODELO:-}"
+      Ia__ModeloVisao: "${IA_MODELO_VISAO:-}"
       Storage__Endpoint: "http://storage:9000"
       Storage__Bucket: "evidencias"
       Storage__AccessKey: "euduvido"

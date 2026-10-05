@@ -93,6 +93,16 @@
   color: var(--texto-fraco);
 }
 
+.formulario {
+  display: grid;
+  gap: 12px;
+}
+
+.formularioBotoes {
+  display: flex;
+  gap: 10px;
+}
+
 .rodape {
   text-align: center;
   font-size: 12px;

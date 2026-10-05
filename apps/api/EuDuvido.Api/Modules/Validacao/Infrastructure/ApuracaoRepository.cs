@@ -22,6 +22,6 @@ public class Apuracao(EuDuvidoDbContext db) : IApuracao
         };
 
         await db.Database.ExecuteSqlRawAsync(
-            "CALL validacao.apurar_votacao(@p_id_evidencia)", [parametro], ct);
+            "CALL apurar_votacao(@p_id_evidencia)", [parametro], ct);
     }
 }

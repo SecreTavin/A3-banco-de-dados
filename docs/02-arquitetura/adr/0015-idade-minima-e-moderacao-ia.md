@@ -1,6 +1,6 @@
 # 0015 - Idade mínima de acesso e moderação de desafios por IA
 
-* **Status:** Aceita
+* **Status:** Aceita — a escolha do provedor (Groq) foi substituída pelo [ADR 0017](0017-ia-propria-e-verificacao-de-prova.md); o resto segue em vigor
 * **Data:** 2026-09-12
 * **Decisores:** Octávio Arruda (Product Owner)
 

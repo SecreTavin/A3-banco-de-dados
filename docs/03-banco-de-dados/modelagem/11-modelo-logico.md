@@ -1,12 +1,12 @@
 # 11 - Modelo Lógico
 
-Dez tabelas em um **único schema** (`public`), agrupadas por área só para
+Onze tabelas em um **único schema** (`public`), agrupadas por área só para
 leitura. Para o desenho veja [10 - DER](10-der.md).
 
-> **Estado do modelo.** Este é o modelo de referência. O DDL em
-> [12 - DDL](../implementacao/12-ddl-schema.md), o `schema.sql` e o seed ainda
-> descrevem um desenho anterior e serão alinhados numa migration futura. Até
-> lá os documentos divergem de propósito.
+> **Estado do modelo.** Este é o modelo de referência, e a migration
+> `AlinhamentoModeloV3` leva o banco até ele, preservando os dados existentes.
+> O `schema.sql` gerado, o seed e o [12 - DDL](../implementacao/12-ddl-schema.md)
+> ainda precisam ser regenerados a partir dessa migration.
 
 Convenção: **PK** chave primária, **FK** chave estrangeira, **UQ** unicidade,
 **NN** obrigatória. A coluna *Regra* cita a RN de
@@ -33,7 +33,7 @@ identidade é o e-mail (RN05).
 | `data_nascimento` | `DATE` | | NN, `trg_usuario_idade_minima`: idade ≥ 16 anos na data do cadastro | RN26 |
 | `data_cadastro` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
 
-A idade mínima é garantida por **trigger** `BEFORE INSERT`, não por `CHECK`: a
+A idade mínima é garantida por **trigger** `BEFORE INSERT OR UPDATE`, não por `CHECK`: a
 regra depende da data corrente, e o PostgreSQL só aceita expressões imutáveis
 em `CHECK`. O trigger compara com `data_cadastro`, não com `CURRENT_DATE`, para
 que a linha continue válida em qualquer reavaliação.
@@ -187,6 +187,32 @@ sequência.
 posição da sequência. `status` é um fato gravado uma única vez pela procedure
 de apuração, não uma reinterpretação de votos.
 
+### `verificacao_evidencia`
+
+Auditoria da triagem de prova por IA: uma linha por análise, aprovada ou não
+([ADR 0017](../../02-arquitetura/adr/0017-ia-propria-e-verificacao-de-prova.md)).
+Mesmo desenho de `moderacao_desafio`: prova recusada **não vira `evidencia`**,
+por isso a tabela guarda o que foi analisado e a FK para a evidência é opcional.
+
+| Coluna | Tipo | Chave | Restrição | Regra |
+| --- | --- | --- | --- | --- |
+| `id_verificacao` | `IDENTITY` | PK | | |
+| `id_aposta` | `INT` | FK → `aposta` | NN, `ON DELETE CASCADE` | RN29 |
+| `id_usuario` | `INT` | FK → `usuario` | NN — quem enviou a prova | RN29 |
+| `id_evidencia` | `INT` | FK → `evidencia`, UQ | Nulo se recusada, `ON DELETE SET NULL`, `chk_verificacao_evidencia` | RN29 |
+| `tipo_midia` | `VARCHAR(20)` | | NN, `chk_verificacao_midia`: `FOTO`, `VIDEO`, `LINK`, `TEXTO` | |
+| `url_comprovante` | `VARCHAR(500)` | | NN — o que foi analisado | RN29 |
+| `comentario` | `TEXT` | | | |
+| `aprovado` | `BOOLEAN` | | NN | RN29 |
+| `parecer` | `VARCHAR(500)` | | NN — o que a IA viu; mostrado ao júri quando aprovada | RN29 |
+| `data_avaliacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
+
+* `chk_verificacao_evidencia`: `id_evidencia` só pode estar preenchido se
+  `aprovado = true`. `unq_verificacao_evidencia` garante uma análise por
+  evidência.
+* O parecer é **consultivo**: a decisão é do júri (RN15) e a liquidação é da
+  procedure `apurar_votacao`.
+
 ### `jurado_evidencia`
 
 Júri congelado **e** voto, na mesma linha. Uma linha por integrante elegível,
@@ -201,8 +227,13 @@ criada no envio da evidência com `voto` nulo; votar é preencher a linha.
 | `data_voto` | `TIMESTAMPTZ` | | `chk_jurado_voto_data`: preenchida se, e somente se, `voto` preenchido | RN15 |
 
 A PK composta `(id_evidencia, id_usuario)` garante **voto único** (RN04) e
-**voto só de quem está no júri** (RN14), sem FK composta. Um trigger recusa
-alterar `voto` fora do prazo ou em evidência que não está `EM_VOTACAO` (RN19).
+**voto só de quem está no júri** (RN14), sem FK composta. O trigger
+`trg_jurado_evidencia_valida` completa as regras que a chave não alcança:
+
+* no `INSERT`, o jurado nasce sem voto e não pode ser `DESAFIANTE` nem
+  `DESAFIADO` da aposta (RN14);
+* no `UPDATE`, recusa voto fora do prazo ou em evidência que não está
+  `EM_VOTACAO` (RN19) e recusa alterar um voto já registrado (RN04).
 Quórum: `floor(count(*)/2) + 1` sobre as linhas da evidência
 ([ADR 0008](../../02-arquitetura/adr/0008-quorum-congelado.md)).
 
@@ -220,7 +251,7 @@ Ledger append-only de partidas dobradas. Nunca sofre `UPDATE` nem `DELETE`.
 | `id_grupo` | `INT` | FK → `grupo_amigos` | NN, `ON DELETE CASCADE` | |
 | `id_usuario` | `INT` | FK → `usuario` | Nulo = conta da aposta (escrow) | RN18 |
 | `id_aposta` | `INT` | FK → `aposta` | | RN18 |
-| `tipo` | `VARCHAR(20)` | | NN, `chk_transacao_tipo`: `CREDITO_INICIAL`, `APOSTA_ESCROW`, `PREMIO`, `ESTORNO`, `RECOMPENSA_VOTO` | RN06, RN12, RN17, RN18, RN23 |
+| `tipo` | `VARCHAR(20)` | | NN, `chk_transacao_tipo`: `CREDITO_INICIAL`, `APOSTA_ESCROW`, `PREMIO`, `ESTORNO`, `RECOMPENSA_VOTO`, `SAIDA_GRUPO` | RN06, RN12, RN17, RN18, RN23, RN25 |
 | `valor` | `INT` | | NN, `chk_transacao_valor`: `<> 0` — positivo credita, negativo debita | RN24 |
 | `descricao` | `VARCHAR(255)` | | NN | |
 | `data_lancamento` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
@@ -228,4 +259,6 @@ Ledger append-only de partidas dobradas. Nunca sofre `UPDATE` nem `DELETE`.
 `chk_transacao_conta` exige que o lançamento pertença a um usuário ou a uma
 aposta; `chk_transacao_escrow` exige `id_aposta` quando o tipo é
 `APOSTA_ESCROW`. A imutabilidade é do trigger `trg_transacao_cp_imutavel`
-(RN24); estorno é lançamento novo.
+(RN24); estorno é lançamento novo. `SAIDA_GRUPO` é lançado pela procedure
+`remover_membro` e zera a conta de quem sai do grupo (RN25): o histórico fica,
+e quem voltar recomeça com os 100 CP do crédito inicial sem divergir do ledger.

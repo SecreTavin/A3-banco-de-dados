@@ -34,6 +34,12 @@ export function ItemEvidencia({ evidencia }: { evidencia: Evidencia }) {
 
       {evidencia.comentario && <p className={estilos.evidenciaTexto}>{evidencia.comentario}</p>}
 
+      {evidencia.parecerIa && (
+        <p className={estilos.parecerIa}>
+          <strong>Parecer da IA:</strong> {evidencia.parecerIa}
+        </p>
+      )}
+
       <div className={estilos.evidenciaVotos}>
         <span className={estilos.votoFavoravel}>{evidencia.votosFavoraveis} válido</span>
         <span className={estilos.votoContra}>{evidencia.votosContra} inválido</span>

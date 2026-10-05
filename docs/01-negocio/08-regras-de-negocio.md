@@ -10,10 +10,11 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
   `'ITEM_MATERIAL'`, `'OUTRO'`.
   *Constraint `chk_aposta_tipo`.*
 
-* **RN02 —** Quando informado, o valor monetário é maior que zero. Este campo é
-  **descritivo**: registra o que foi combinado fora do app e nenhum cálculo do
-  sistema o utiliza ([ADR 0006](../02-arquitetura/adr/0006-cp-como-moeda.md)).
-  *Constraint `chk_aposta_valor`.*
+* **RN02 —** O que foi combinado fora do app (valor em dinheiro, prenda, item)
+  fica em `descricao_recompensa`, texto livre e opcional. O campo é
+  **descritivo**: nenhum cálculo do sistema o utiliza
+  ([ADR 0006](../02-arquitetura/adr/0006-cp-como-moeda.md)).
+  *Coluna `aposta.descricao_recompensa`.*
 
 * **RN07 —** Toda aposta custa CP, inclusive as de prenda. O valor é fixo por
   participante, igual para todos, definido na criação.
@@ -34,18 +35,19 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
 * **RN21 —** A aposta sai de `ABERTA` para `EM_ANDAMENTO` quando `DESAFIANTE` e
   `DESAFIADO` aceitaram. Aposta que atinge a `data_limite` ainda `ABERTA` é
   cancelada automaticamente — sem isso ela ficaria aberta para sempre.
-  *`BackgroundService` + `apostas.cancelar_aposta`.*
+  *`BackgroundService` + `cancelar_aposta`.*
 
 * **RN12 —** Cancelamento exige motivo e estorna o CP de todos os participantes.
   A partir do início da validação, o motivo precisa ser aprovado por ao menos
   metade dos integrantes (`APOSTADOR` não conta para esse quórum).
-  *Constraint `chk_aposta_cancelamento` + procedure `apostas.cancelar_aposta`.*
+  *Constraint `chk_aposta_cancelamento` + procedure `cancelar_aposta`.*
 
 ## Evidências
 
 * **RN10 —** No máximo 5 evidências por aposta. Nova evidência só é permitida se
   a anterior foi recusada. A partir de 3 recusadas — ou esgotada a quinta — o
-  desafiado perde a aposta.
+  desafiado perde a aposta. Prova barrada pela triagem de IA (RN29) não vira
+  evidência e não conta para esse limite.
   *Constraints `chk_evidencia_ordem` e `unq_evidencia_ordem` + procedure de apuração.*
 
 * **RN11 —** Cada evidência tem prazo de votação de 1 semana, gravado em coluna
@@ -64,28 +66,31 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
 
 ## Votação
 
-* **RN04 —** Voto único por usuário em cada evidência.
-  *Constraint `unq_voto_usuario`.*
+* **RN04 —** Voto único por usuário em cada evidência, e definitivo.
+  *PK `pk_jurado_evidencia (id_evidencia, id_usuario)` + trigger
+  `trg_jurado_evidencia_valida`, que recusa alterar um voto já registrado.*
 
 * **RN14 —** Validadores são os membros do grupo **exceto** `DESAFIANTE` e
   `DESAFIADO`. O conjunto é **congelado** no momento do envio da evidência: quem
   entra no grupo depois não vota nem conta para o quórum. Sem esse
   congelamento, o resultado de uma aposta mudaria sozinho
   ([ADR 0008](../02-arquitetura/adr/0008-quorum-congelado.md)).
-  *Tabela `validador_evidencia` + FK composta em `voto_evidencia`.*
+  *Tabela `jurado_evidencia`: só vota quem tem linha nela (PK), e o trigger
+  `trg_jurado_evidencia_valida` recusa incluir no júri o `DESAFIANTE` ou o
+  `DESAFIADO`.*
 
 * **RN15 —** Quórum é `floor(n/2) + 1` sobre os validadores congelados. A
   evidência é aceita quando os votos `VALIDO` atingem o quórum, e recusada
   quando os `INVALIDO` o atingem.
-  *Procedure `validacao.apurar_votacao`.*
+  *Procedure `apurar_votacao`.*
 
 * **RN16 —** Empate mantém a votação aberta. Se o prazo expira sem maioria, a
   evidência é **recusada** — o ônus da prova é de quem a enviou. Prazo expirado
   sem nenhum voto resulta em `'EXPIRADA'`.
-  *Procedure `validacao.apurar_votacao`.*
+  *Procedure `apurar_votacao`.*
 
 * **RN19 —** Só se vota em evidência `EM_VOTACAO` e dentro do prazo.
-  *Trigger `trg_voto_evidencia_valida`.*
+  *Trigger `trg_jurado_evidencia_valida`.*
 
 ## Economia de CP
 
@@ -98,21 +103,21 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
 * **RN18 —** O CP é debitado **no aceite** da aposta e fica retido na conta da
   aposta (escrow) até a resolução. Impede apostar o mesmo CP em várias apostas
   simultâneas.
-  *Procedure `economia.debitar_escrow`.*
+  *Procedure `debitar_escrow`.*
 
 * **RN17 —** Quem votou numa evidência que atingiu quórum recebe 2 CP. O
   pagamento ocorre na apuração, não por voto individual — pagar por clique
   incentivaria votar sem analisar.
-  *Procedure `economia.creditar_recompensa_voto`.*
+  *Procedure `creditar_recompensa_voto`.*
 
 * **RN23 —** O pote é dividido igualmente entre os participantes que acertaram.
   Como CP é inteiro, o resto da divisão vai para o primeiro vencedor, de modo
   que a soma dos prêmios seja exatamente o pote.
-  *Procedure `apostas.encerrar_aposta`.*
+  *Procedure `encerrar_aposta`.*
 
 * **RN24 —** O ledger é **append-only**: nunca sofre `UPDATE` nem `DELETE`.
-  Estorno é lançamento novo. A soma de todos os lançamentos de um grupo é sempre
-  `100 × número de membros`.
+  Estorno é lançamento novo. O saldo materializado de cada membro é sempre a
+  soma dos lançamentos dele no grupo.
   *Trigger `trg_transacao_cp_imutavel` + view `vw_reconciliacao_saldo`.*
 
 ## Identidade e acesso
@@ -121,10 +126,15 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
   senha: a identidade é o e-mail.
   *Constraint `UNIQUE` em `usuario.email`.*
 
-* **RN25 —** Remoção de membro e edição/exclusão do grupo são restritas a
-  `ADMIN`. O criador do grupo é `ADMIN` por padrão. Qualquer usuário pode sair
-  do grupo por conta própria.
-  *Aplicação.*
+* **RN25 —** Adição e remoção de membro e edição/exclusão do grupo são
+  restritas a `ADMIN`; o `ADMIN` adiciona um usuário já cadastrado pelo e-mail.
+  O criador do grupo é `ADMIN` por padrão. Qualquer usuário pode sair do grupo
+  por conta própria. Ninguém sai (nem é removido) enquanto participa de aposta
+  em curso ou integra júri de votação aberta, e o único `ADMIN` não sai
+  enquanto houver outros membros. Ao sair, o saldo deixa de circular no grupo:
+  um lançamento `SAIDA_GRUPO` zera a conta, preservando o histórico, e quem
+  voltar recomeça com 100 CP.
+  *Aplicação (papel) + procedure `remover_membro` (pendências e lançamento de saída).*
 
 ## Idade mínima e moderação de conteúdo
 
@@ -146,5 +156,14 @@ produto e alternativas consideradas em
 
 * **RN28 —** Todo desafio é avaliado pela IA de moderação, no nível do grupo,
   antes de ser gravado. Desafio reprovado não é criado; a avaliação (aprovada
-  ou não) fica registrada para auditoria.
+  ou não) fica registrada para auditoria. IA indisponível impede a criação —
+  nunca há aprovação sem avaliação.
   *Aplicação + tabela `moderacao_desafio` (`chk_moderacao_motivo`, `chk_moderacao_aposta`).*
+
+* **RN29 —** Toda prova passa por triagem de IA antes de ir ao júri. A IA
+  recusa só a prova que claramente não comprova o desafio (imagem sem relação,
+  ilegível ou imprópria); prova recusada não vira evidência e pode ser
+  reenviada. A aprovada vai ao júri com o parecer da IA, que é **consultivo**:
+  quem decide é o júri (RN15). Toda verificação fica registrada.
+  *Aplicação + tabela `verificacao_evidencia` (`chk_verificacao_evidencia`) —
+  [ADR 0017](../02-arquitetura/adr/0017-ia-propria-e-verificacao-de-prova.md).*

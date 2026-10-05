@@ -6,7 +6,8 @@
 
 * **RF01:** Cadastro e autenticação de usuários via Google (OAuth/OIDC). O
   sistema não possui senha própria.
-* **RF02:** Gestão de grupos privados de amigos, com papéis `ADMIN` e `MEMBRO`.
+* **RF02:** Gestão de grupos privados de amigos, com papéis `ADMIN` e `MEMBRO`;
+  o `ADMIN` adiciona membros já cadastrados pelo e-mail.
 * **RF10:** Perfil do usuário com nome, apelido, avatar e histórico pessoal de
   apostas, participações e evidências.
 
@@ -31,6 +32,9 @@
 
 * **RF16:** Idade mínima de 16 anos no cadastro e moderação por IA de todo
   desafio, no nível de filtro do grupo, com registro da avaliação.
+* **RF17:** Triagem por IA de toda prova antes do júri: a IA confere se a
+  prova (inclusive a foto) mostra o que o desafio pede, barra a que claramente
+  não comprova e entrega ao júri um parecer consultivo, com registro da análise.
 
 ### Economia e ranking
 

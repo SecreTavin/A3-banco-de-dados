@@ -3,7 +3,7 @@ import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Alerta, Botao, CabecalhoPagina, Campo, Card, LinkVoltar, SpinnerCentral } from '../../../shared/ui'
 import { paraIso } from '../../../shared/ui/formato'
-import { rotuloRecompensa } from '../../../shared/ui/status'
+import { exemploRecompensa, rotuloNivelFiltro, rotuloRecompensa } from '../../../shared/ui/status'
 import type { TipoRecompensa } from '../../../shared/api/tipos'
 import { useGruposQuery } from '../../grupos/hooks/useGruposQuery'
 import { useCategoriasQuery } from '../hooks/useCategoriasQuery'
@@ -30,11 +30,10 @@ export function CriarApostaView() {
   const [descricao, setDescricao] = useState('')
   const [valorCp, setValorCp] = useState('10')
   const [tipoRecompensa, setTipoRecompensa] = useState<TipoRecompensa>('MONETARIA')
-  const [valorMonetario, setValorMonetario] = useState('')
-  const [descricaoPrenda, setDescricaoPrenda] = useState('')
+  const [descricaoRecompensa, setDescricaoRecompensa] = useState('')
   const [dataLimite, setDataLimite] = useState('')
 
-  const ehMonetaria = tipoRecompensa === 'MONETARIA'
+  const grupoEscolhido = grupos?.find((grupo) => grupo.idGrupo === Number(idGrupo))
 
   async function submeter(evento: FormEvent) {
     evento.preventDefault()
@@ -46,8 +45,7 @@ export function CriarApostaView() {
       descricao: descricao.trim(),
       valorCp: Number(valorCp),
       tipoRecompensa,
-      valorMonetario: ehMonetaria ? Number(valorMonetario) : null,
-      descricaoPrenda: ehMonetaria ? null : descricaoPrenda.trim(),
+      descricaoRecompensa: descricaoRecompensa.trim() || null,
       dataLimite: paraIso(dataLimite),
     })
 
@@ -144,30 +142,26 @@ export function CriarApostaView() {
             </select>
           </Campo>
 
-          {ehMonetaria ? (
-            <Campo rotulo="Valor combinado" dica="Descritivo: o app não movimenta dinheiro, só CP.">
-              <input
-                type="number"
-                min={0.01}
-                step={0.01}
-                value={valorMonetario}
-                onChange={(e) => setValorMonetario(e.target.value)}
-                required
-              />
-            </Campo>
-          ) : (
-            <Campo rotulo="Prenda combinada">
-              <input
-                value={descricaoPrenda}
-                onChange={(e) => setDescricaoPrenda(e.target.value)}
-                maxLength={200}
-                placeholder="Paga o rodízio de domingo"
-                required
-              />
-            </Campo>
-          )}
+          <Campo
+            rotulo="O que foi combinado"
+            dica="Opcional, mas recomendado. Só descreve o acordo: o app não movimenta dinheiro, só CP."
+          >
+            <input
+              value={descricaoRecompensa}
+              onChange={(e) => setDescricaoRecompensa(e.target.value)}
+              maxLength={255}
+              placeholder={exemploRecompensa[tipoRecompensa]}
+            />
+          </Campo>
 
           {criar.erro && <Alerta>{criar.erro}</Alerta>}
+
+          <p className={estilos.notaIa}>
+            {grupoEscolhido
+              ? `Este desafio passa pela moderação de IA do grupo (nível ${rotuloNivelFiltro[grupoEscolhido.nivelFiltro]}) antes de ser criado.`
+              : 'Todo desafio passa pela moderação de IA do grupo antes de ser criado.'}
+            {criar.enviando && ' A IA está avaliando — pode levar alguns segundos.'}
+          </p>
 
           <div className={estilos.formularioBotoes}>
             <Botao type="submit" carregando={criar.enviando}>

@@ -22,8 +22,8 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
 
         var apos1 = await c.QuerySingleAsync<(string Evidencia, string Aposta)>(
             """
-            SELECT e.status, a.status FROM validacao.evidencia e
-            JOIN apostas.aposta a ON a.id_aposta = e.id_aposta
+            SELECT e.status, a.status FROM evidencia e
+            JOIN aposta a ON a.id_aposta = e.id_aposta
             WHERE e.id_evidencia = @id
             """, new { id = idEvidencia });
         apos1.Evidencia.Should().Be("EM_VOTACAO");
@@ -33,8 +33,8 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
 
         var apos2 = await c.QuerySingleAsync<(string Evidencia, string Aposta)>(
             """
-            SELECT e.status, a.status FROM validacao.evidencia e
-            JOIN apostas.aposta a ON a.id_aposta = e.id_aposta
+            SELECT e.status, a.status FROM evidencia e
+            JOIN aposta a ON a.id_aposta = e.id_aposta
             WHERE e.id_evidencia = @id
             """, new { id = idEvidencia });
         apos2.Evidencia.Should().Be("ACEITA");
@@ -43,18 +43,18 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
         // Pote de 40 CP (2 participantes x 20) vai inteiro para quem apostou
         // VAI_CUMPRIR - o desafiado. Ele pagou 20, entao fecha em 120.
         var saldoDesafiado = await c.QuerySingleAsync<int>(
-            "SELECT saldo_cp FROM grupos.membro_grupo WHERE id_grupo=@g AND id_usuario=@u",
+            "SELECT saldo_cp FROM membro_grupo WHERE id_grupo=@g AND id_usuario=@u",
             new { g = cenario.IdGrupo, u = cenario.IdDesafiado });
         saldoDesafiado.Should().Be(120);
 
         var saldoDesafiante = await c.QuerySingleAsync<int>(
-            "SELECT saldo_cp FROM grupos.membro_grupo WHERE id_grupo=@g AND id_usuario=@u",
+            "SELECT saldo_cp FROM membro_grupo WHERE id_grupo=@g AND id_usuario=@u",
             new { g = cenario.IdGrupo, u = cenario.IdDesafiante });
         saldoDesafiante.Should().Be(80);
 
         // Quem votou na evidencia que atingiu quorum recebe 2 CP (RN17).
         var saldoVotante = await c.QuerySingleAsync<int>(
-            "SELECT saldo_cp FROM grupos.membro_grupo WHERE id_grupo=@g AND id_usuario=@u",
+            "SELECT saldo_cp FROM membro_grupo WHERE id_grupo=@g AND id_usuario=@u",
             new { g = cenario.IdGrupo, u = cenario.IdsValidadores[0] });
         saldoVotante.Should().Be(102);
     }
@@ -71,11 +71,11 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
         await c.OpenAsync();
 
         var divergencias = await c.QuerySingleAsync<int>(
-            "SELECT count(*) FROM economia.vw_reconciliacao_saldo");
+            "SELECT count(*) FROM vw_reconciliacao_saldo");
         divergencias.Should().Be(0, "saldo materializado e ledger nunca podem divergir");
 
         var orfaos = await c.QuerySingleAsync<int>(
-            "SELECT count(*) FROM economia.vw_escrow_orfao");
+            "SELECT count(*) FROM vw_escrow_orfao");
         orfaos.Should().Be(0, "aposta encerrada nao pode reter CP no escrow");
     }
 
@@ -94,7 +94,7 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
             """
             SELECT COALESCE(SUM(valor), 0),
                    COALESCE(SUM(valor) FILTER (WHERE tipo = 'RECOMPENSA_VOTO'), 0)
-              FROM economia.transacao_cp WHERE id_grupo = @g
+              FROM transacao_cp WHERE id_grupo = @g
             """, new { g = cenario.IdGrupo });
 
         resultado.Soma.Should().Be(5 * 100 + resultado.Recompensas);
@@ -112,14 +112,14 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
         await c.OpenAsync();
 
         var antes = await c.QuerySingleAsync<int>(
-            "SELECT saldo_cp FROM grupos.membro_grupo WHERE id_grupo=@g AND id_usuario=@u",
+            "SELECT saldo_cp FROM membro_grupo WHERE id_grupo=@g AND id_usuario=@u",
             new { g = cenario.IdGrupo, u = cenario.IdDesafiado });
 
-        await c.ExecuteAsync("CALL validacao.apurar_votacao(@e)", new { e = idEvidencia });
-        await c.ExecuteAsync("CALL validacao.apurar_votacao(@e)", new { e = idEvidencia });
+        await c.ExecuteAsync("CALL apurar_votacao(@e)", new { e = idEvidencia });
+        await c.ExecuteAsync("CALL apurar_votacao(@e)", new { e = idEvidencia });
 
         var depois = await c.QuerySingleAsync<int>(
-            "SELECT saldo_cp FROM grupos.membro_grupo WHERE id_grupo=@g AND id_usuario=@u",
+            "SELECT saldo_cp FROM membro_grupo WHERE id_grupo=@g AND id_usuario=@u",
             new { g = cenario.IdGrupo, u = cenario.IdDesafiado });
 
         depois.Should().Be(antes);
@@ -138,8 +138,8 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
 
         var estado = await c.QuerySingleAsync<(string Evidencia, string Aposta)>(
             """
-            SELECT e.status, a.status FROM validacao.evidencia e
-            JOIN apostas.aposta a ON a.id_aposta = e.id_aposta
+            SELECT e.status, a.status FROM evidencia e
+            JOIN aposta a ON a.id_aposta = e.id_aposta
             WHERE e.id_evidencia = @id
             """, new { id = idEvidencia });
 
@@ -164,11 +164,11 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
         await c.OpenAsync();
 
         var status = await c.QuerySingleAsync<string>(
-            "SELECT status FROM apostas.aposta WHERE id_aposta = @a", new { a = cenario.IdAposta });
+            "SELECT status FROM aposta WHERE id_aposta = @a", new { a = cenario.IdAposta });
         status.Should().Be("FINALIZADA_PERDEU");
 
         var orfaos = await c.QuerySingleAsync<int>(
-            "SELECT count(*) FROM economia.vw_escrow_orfao");
+            "SELECT count(*) FROM vw_escrow_orfao");
         orfaos.Should().Be(0);
     }
 }

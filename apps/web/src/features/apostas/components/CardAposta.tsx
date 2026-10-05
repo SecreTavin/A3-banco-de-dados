@@ -23,8 +23,7 @@ export function CardAposta({ aposta }: { aposta: ApostaResumo }) {
       </p>
 
       <p className={estilos.apostaRecompensa}>
-        Vale{' '}
-        {descreverRecompensa(aposta.tipoRecompensa, aposta.valorMonetario, aposta.descricaoPrenda)}
+        Vale {descreverRecompensa(aposta.tipoRecompensa, aposta.descricaoRecompensa)}
       </p>
 
       <div className={estilos.apostaRodape}>

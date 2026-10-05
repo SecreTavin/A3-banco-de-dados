@@ -18,13 +18,13 @@ public class RegistrarVotoHandler(
         RegistrarVotoCommand comando, int idUsuario, CancellationToken ct)
     {
         var evidencia = await db.Evidencias
-            .Include(e => e.Validadores)
-            .Include(e => e.Votos)
+            .Include(e => e.Jurados)
             .FirstOrDefaultAsync(e => e.IdEvidencia == comando.IdEvidencia, ct);
 
         if (evidencia is null)
             return EvidenciaErrors.NaoEncontrada;
 
+        // Votar e preencher a linha do jurado congelado (UPDATE em jurado_evidencia).
         var voto = evidencia.Votar(idUsuario, comando.Voto, comando.Justificativa);
         if (voto.IsError)
             return voto.Errors;
@@ -65,8 +65,8 @@ public class RegistrarVotoHandler(
                    v.quorum::int       AS "Quorum",
                    v.votos_faltantes::int AS "VotosFaltantes",
                    a.status            AS "StatusAposta"
-              FROM validacao.vw_status_votacao v
-              JOIN apostas.aposta a ON a.id_aposta = v.id_aposta
+              FROM vw_status_votacao v
+              JOIN aposta a ON a.id_aposta = v.id_aposta
              WHERE v.id_evidencia = @idEvidencia
             """,
             new { idEvidencia });
