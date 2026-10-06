@@ -15,7 +15,7 @@ modelagem sem pagar o custo de implementação.
 
 | Item | Decisão |
 | --- | --- |
-| Chat por grupo | Substituído por comentários na aposta (`apostas.comentario_aposta`). Chat seria feature grande sem retorno na avaliação |
+| Chat por grupo | Substituído por comentários no desafio (`desafios.comentario_desafio`). Chat seria feature grande sem retorno na avaliação |
 | Cache distribuído (Redis/Valkey) | Sem carga que justifique. O dataset é um grupo de amigos e a query mais pesada agrega dezenas de linhas |
 | Fila de mensagens (Kafka/Redpanda) | Nenhum produtor e consumidor desacoplados no domínio. Os eventos reais são transições de estado que precisam ser atômicas com a escrita |
 | Aplicativo nativo iOS/Android | Nenhum ponto da avaliação depende disso; site responsivo atende |
@@ -60,7 +60,7 @@ para uso real.
 **Evolução do produto:**
 
 * Ranking global além do ranking por grupo
-* Apostas com valor variável por participante, com rateio proporcional
+* Desafios com valor variável por participante, com rateio proporcional
 * Chat por grupo, se a discussão em comentários se mostrar insuficiente
 * Histórico de reputação como validador — quem julga bem versus quem só clica
 

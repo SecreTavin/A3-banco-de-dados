@@ -7,7 +7,7 @@
 ## Contexto
 
 Na revisão da Entrega 1 (RT01, 11/09/2026), o professor orientador observou
-que o tom "de zoeira" do app — apostas e desafios entre amigos — pode levar um
+que o tom "de zoeira" do app — desafios entre amigos — pode levar um
 usuário a propor um desafio com risco real à integridade física ou à
 reputação de outro membro, e que o sistema precisa de um mecanismo de
 controle para isso, não depender só do bom senso do grupo.
@@ -30,7 +30,7 @@ criação do grupo (padrão `MODERADO`) — RN27:
 | `MODERADO` | Meio-termo entre os outros dois níveis. |
 | `PESADO` | Rigor voltado a grupos com adolescentes; recusa qualquer coisa que arrisque a imagem ou a reputação de um membro. |
 
-Desafio reprovado **não é criado**; a API devolve o motivo indicado pela IA —
+Proposta de desafio reprovada **não vira desafio**; a API devolve o motivo indicado pela IA —
 RN28.
 
 A moderação usa a **API da Groq** (inferência de modelos abertos como Llama,
@@ -46,9 +46,9 @@ Fechado na revisão da modelagem (02/10/2026), sem mudar a decisão acima:
 
 * **Idade mínima por trigger, não `CHECK`.** A regra depende da data corrente
   e o PostgreSQL só aceita expressão imutável em `CHECK`.
-* **`moderacao_desafio` não tem FK obrigatória para `aposta`.** Desafio
+* **`moderacao_desafio` não tem FK obrigatória para `desafio`.** Desafio
   reprovado não é criado, mas a avaliação precisa ficar gravada; por isso a
-  tabela guarda título e descrição avaliados, e `id_aposta` é opcional
+  tabela guarda título e descrição avaliados, e `id_desafio` é opcional
   (preenchido só se aprovado).
 * **O nível de filtro é copiado para a avaliação.** O admin pode mudar o nível
   do grupo depois; a cópia preserva o que valia no momento da moderação.
@@ -69,11 +69,11 @@ Fechado na revisão da modelagem (02/10/2026), sem mudar a decisão acima:
 
 **Positivas:** o apontamento do professor fica endereçado por uma regra de
 negócio auditável — toda avaliação (aprovada ou não) é gravada em
-`apostas.moderacao_desafio`, o que também vira fonte de consulta analítica
+`desafios.moderacao_desafio`, o que também vira fonte de consulta analítica
 para a Entrega 3 (ex.: taxa de bloqueio por nível de filtro). Idade mínima e
 moderação de conteúdo são regras independentes: uma não bloqueia a outra.
 
-**Negativas:** a criação de aposta passa a depender de um serviço externo,
+**Negativas:** a criação de desafio passa a depender de um serviço externo,
 ainda que gratuito — antes dependia só do próprio banco. O prompt de
 moderação precisa ser calibrado com casos de teste reais; é esperado revisar
 os três níveis numa próxima revisão em sala.

@@ -9,7 +9,7 @@
 O produto tem dois momentos em que o usuario precisa saber de algo **sem estar
 olhando para a tela**:
 
-* **Prazo vencendo.** A evidencia tem `data_limite_votacao`; a aposta tem prazo
+* **Prazo vencendo.** A evidencia tem `data_limite_votacao`; o desafio tem prazo
   de cumprimento. Quem nao e avisado perde o voto, e o quorum congelado
   ([0008](0008-quorum-congelado.md)) nao se recalcula por isso — validador que
   sumiu continua contando no denominador.
@@ -17,7 +17,7 @@ olhando para a tela**:
   fechado.
 
 E tem um momento em que varias pessoas olham **a mesma tela ao mesmo tempo**: a
-Central de Votacao (tela 27), onde o grupo vota e a aposta fecha sozinha quando
+Central de Votacao (tela 27), onde o grupo vota e o desafio fecha sozinho quando
 o quorum e atingido.
 
 Sao problemas diferentes e foram tratados como um so em discussoes anteriores.
@@ -54,8 +54,7 @@ sempre a fonte de verdade.
 A fonte de leitura do evento e `validacao.vw_status_votacao`, que ja calcula
 quorum, total de votos e votos faltantes.
 
-**Por que o escopo e so a votacao.** Na banca, tres celulares abertos na mesma
-aposta vendo a contagem subir e a aposta fechar sozinha **prova visualmente que
+**Por que o escopo e so a votacao.** Na banca, tres celulares abertos no mesmo desafio vendo a contagem subir e o desafio fechar sozinho **prova visualmente que
 a procedure rodou dentro de uma transacao**. E a demonstracao mais direta da
 decisao estrutural do projeto. Nas outras telas, tempo real nao prova nada e nao
 melhora nada perceptivel — escopo amplo custa e nao paga.
@@ -80,7 +79,7 @@ Toda notificacao **vira linha em `notificacoes.notificacao` primeiro**. A
 entrega e consequencia, nao a notificacao em si.
 
 * `notificacoes.notificacao` guarda destinatario, tipo, referencia ao objeto
-  (aposta, evidencia, grupo), texto e estado de leitura. E o que alimenta a
+  (desafio, evidencia, grupo), texto e estado de leitura. E o que alimenta a
   central de notificacoes dentro do app.
 * `notificacoes.push_subscription` guarda o **endpoint por dispositivo** — o
   mesmo usuario tem uma inscricao no celular e outra no notebook. Endpoint
@@ -126,7 +125,7 @@ nao entra no roteiro da apresentacao.
 | So notificacao in-app, sem push | Uma tabela e uma tela, zero infraestrutura externa | Nao avisa ninguem com o app fechado — que e exatamente o caso do prazo vencendo | O problema que motivou o ADR fica sem solucao |
 | So push, sem persistir no banco | Menos uma tabela | Quem estava sem rede, com o dispositivo desligado ou com a inscricao expirada **nunca ve o aviso** | Notificacao sem historico e notificacao perdida; e nao ha o que mostrar na central do app |
 | Fila externa (Redis, RabbitMQ) para o disparo | Desacopla o envio da API | Mais um servico gerenciado, mais uma credencial, mais um ponto de falha | Volume do projeto cabe num `BackgroundService`; infraestrutura sem justificativa e o que este projeto evita |
-| Notificacao por e-mail | Funciona em qualquer dispositivo, sem service worker | Ninguem le e-mail de app de aposta entre amigos; e o iOS continua sem push | Resolve a entrega e perde o produto |
+| Notificacao por e-mail | Funciona em qualquer dispositivo, sem service worker | Ninguem le e-mail de app de desafio entre amigos; e o iOS continua sem push | Resolve a entrega e perde o produto |
 
 ## Consequencias
 

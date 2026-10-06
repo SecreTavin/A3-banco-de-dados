@@ -7,9 +7,9 @@ Dados do usuário e histórico pessoal. Confirmado no escopo do MVP.
 - **Dados do usuário:** nome, apelido, email, avatar/foto, data de cadastro
 - **Edição de perfil:** nome e apelido
 - **Saldo de CP por grupo** e extrato de movimentações
-- **Histórico:** apostas criadas, participações, evidências enviadas
+- **Histórico:** desafios criados, participações, evidências enviadas
 
-## Dados (origem: `usuario`, `aposta`, `participante_aposta`, `evidencia`, `membro_grupo`, `transacao_cp`)
+## Dados (origem: `usuario`, `desafio`, `participante_desafio`, `evidencia`, `membro_grupo`, `transacao_cp`)
 `nome`, `apelido`, `email`, `avatar_url`, `data_cadastro` / `saldo_cp` / `tipo`, `valor`, `descricao`, `data_lancamento`
 
 ## Decisões (validado com o time)

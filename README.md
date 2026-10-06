@@ -1,4 +1,4 @@
-# Eu Duvido! - Plataforma de Apostas Sociais e Desafios Entre Amigos
+# Eu Duvido! - Plataforma de Desafios Sociais Entre Amigos
 
 Projeto A3 da Unidade Curricular de **Banco de Dados** (Grupo Ânima Educação /
 Centro Universitário UNA).
@@ -33,11 +33,10 @@ Google — porque `Auth:Provider` está em `Dev`. Os cinco usuários disponívei
 O seed deixa o sistema no estado exato para isto:
 
 1. Entre como **Lari** e vá para a Central de Votação.
-2. A evidência da aposta *"Correr 5km abaixo de 25 minutos"* está aguardando um
+2. A evidência do desafio *"Correr 5km abaixo de 25 minutos"* está aguardando um
    voto — o quórum é 2 e já há 1 voto favorável.
 3. Vote `VÁLIDO`.
-4. A apuração roda dentro do banco, numa transação: a evidência vira `ACEITA`, a
-   aposta vira `FINALIZADA_CUMPRIU`, o pote de CP é transferido aos vencedores e
+4. A apuração roda dentro do banco, numa transação: a evidência vira `ACEITA`, o desafio vira `FINALIZADA_CUMPRIU`, o pote de CP é transferido aos vencedores e
    quem votou recebe 2 CP.
 5. Abra a mesma tela em outro navegador antes de votar — a contagem se move ao
    vivo por SignalR.
@@ -68,7 +67,7 @@ A API aplica as migrations na subida.
 apps/
   api/                   API .NET 10 - monólito modular, vertical slice
     EuDuvido.Api/
-      Modules/           Identidade, Grupos, Apostas, Validacao, Economia, Ranking
+      Modules/           Identidade, Grupos, Desafios, Validacao, Economia, Ranking
       Shared/            Auth, Database, Results, Realtime
     EuDuvido.Api.Tests/  Testes de constraint, domínio e integração
   web/                   React + TypeScript + Vite

@@ -29,6 +29,7 @@ Registro das decisões de arquitetura do Eu Duvido!. Uma decisão por arquivo, e
 | [0014](0014-estrategia-de-testes.md) | Três níveis de teste, com constraints do banco em primeiro lugar | Aceita | 2026-09-03 |
 | [0015](0015-idade-minima-e-moderacao-ia.md) | Idade mínima de acesso e moderação de desafios por IA | Aceita | 2026-09-12 |
 | [0016](0016-schema-unico-e-modelo-enxuto.md) | Schema único e modelo de dados enxuto | Aceita | 2026-10-02 |
+| [0017](0017-desafio-no-lugar-de-aposta.md) | "Desafio" no lugar de "aposta" | Aceita | 2026-10-02 |
 
 ## Status possíveis
 

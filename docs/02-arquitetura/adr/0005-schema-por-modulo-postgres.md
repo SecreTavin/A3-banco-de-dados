@@ -24,12 +24,12 @@ Cada modulo tem seu proprio schema no Postgres:
 | --- | --- |
 | `identidade` | usuario, credencial |
 | `grupos` | grupo, membro, convite |
-| `apostas` | desafio, palpite |
+| `desafios` | desafio, palpite |
 | `validacao` | votacao, voto, apuracao |
 | `economia` | saldo, transacao, extrato |
 | `notificacoes` | inscricao push, notificacao enviada |
 
-**As FKs atravessam schemas normalmente.** `apostas.desafio` referencia
+**As FKs atravessam schemas normalmente.** `desafios.desafio` referencia
 `identidade.usuario` com uma `FOREIGN KEY` de verdade. A separacao e **logica**;
 a integridade referencial continua sendo responsabilidade do banco.
 
@@ -43,7 +43,7 @@ qualificada com o schema. Ler a consulta ja mostra quais modulos ela toca.
 | Schema unico (`public`) com JOIN livre | Simples, sem qualificar nome | Os modulos nao sao realmente separados; o acoplamento some dentro do SQL | A fronteira do [0002](0002-monolito-modular-vertical-slice.md) precisa aparecer no banco, nao so no C# |
 | Schema por modulo, sem FK entre modulos (integridade na aplicacao) | Prepara extracao para microservicos; cada modulo dono absoluto dos seus dados | Abre mao de integridade referencial garantida pelo SGBD | **Descartado com forca.** Numa materia de Banco de Dados, remover FK de proposito e o oposto do que se avalia — e teria que ser justificado para a banca sem nenhum ganho real, ja que microservicos ja foram descartados no 0002 |
 | Um banco por modulo | Isolamento maximo | Sem FK, sem transacao entre modulos, seis conexoes | Todos os contras da opcao acima, multiplicados, e com custo de infra |
-| Prefixo no nome da tabela (`apostas_desafio`) | Nao exige schema | Convencao que nada obriga a seguir; sem permissao por namespace | Schema faz a mesma coisa e o banco garante |
+| Prefixo no nome da tabela (`desafios_desafio`) | Nao exige schema | Convencao que nada obriga a seguir; sem permissao por namespace | Schema faz a mesma coisa e o banco garante |
 
 ## Consequencias
 

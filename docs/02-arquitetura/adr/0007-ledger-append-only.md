@@ -7,12 +7,12 @@
 ## Contexto
 
 Com o CP como moeda unica ([0006](0006-cp-como-moeda.md)), o sistema passa a
-movimentar saldo: credito na entrada do grupo, debito ao aceitar uma aposta,
+movimentar saldo: credito na entrada do grupo, debito ao aceitar um desafio,
 premio na resolucao, estorno no cancelamento. Movimentar saldo levanta tres
 perguntas que precisam de resposta no modelo, nao no codigo da aplicacao:
 
 * **Onde mora a verdade?** No saldo atual ou no historico de movimentacoes?
-* **Como impedir double-spend?** Quem tem 100 CP nao pode aceitar cinco apostas
+* **Como impedir double-spend?** Quem tem 100 CP nao pode aceitar cinco desafios
   de 100 CP. Se o debito so acontecesse na resolucao, as cinco entrariam.
 * **Como provar que a conta fecha?** Um saldo errado em producao e invisivel:
   nao ha excecao, nao ha log, o numero simplesmente esta errado.
@@ -49,23 +49,23 @@ linha e bug, e o teste e uma consulta so.
 ### Escrow
 
 O CP sai da carteira **no momento do aceite**, nao na resolucao, e vai para a
-**conta da aposta**: um lancamento com `id_aposta` preenchido e `id_usuario`
+**conta do desafio**: um lancamento com `id_desafio` preenchido e `id_usuario`
 NULL. Duas linhas por aceite:
 
-| Lancamento | `id_usuario` | `id_aposta` | `valor` |
+| Lancamento | `id_usuario` | `id_desafio` | `valor` |
 | --- | --- | --- | --- |
-| Debito da carteira | participante | aposta | `-valor_cp` |
-| Credito na conta da aposta | NULL | aposta | `+valor_cp` |
+| Debito da carteira | participante | desafio | `-valor_cp` |
+| Credito na conta do desafio | NULL | desafio | `+valor_cp` |
 
 Isso resolve duas coisas ao mesmo tempo: **impede o double-spend** (o saldo cai
-na hora, entao a proxima aposta encontra a carteira ja reduzida) e **mantem o
-ledger balanceado enquanto a aposta esta aberta** — o CP nao esta em lugar
-nenhum, esta na conta da aposta. A invariante do grupo vale em qualquer instante:
+na hora, entao o proximo desafio encontra a carteira ja reduzida) e **mantem o
+ledger balanceado enquanto o desafio esta aberto** — o CP nao esta em lugar
+nenhum, esta na conta do desafio. A invariante do grupo vale em qualquer instante:
 
 > a soma de todos os lancamentos de um grupo e sempre `100 * numero de membros`
 > (mais as recompensas de voto ja creditadas).
 
-Na resolucao, `apostas.encerrar_aposta` le o pote da conta da aposta, distribui
+Na resolucao, `desafios.encerrar_desafio` le o pote da conta do desafio, distribui
 entre quem acertou e zera a conta com um lancamento negativo. Como CP e inteiro,
 o resto da divisao vai para o primeiro vencedor — a soma dos premios e
 exatamente o pote, nunca um CP a menos.
@@ -75,12 +75,12 @@ exatamente o pote, nunca um CP a menos.
 | Tipo | De | Para | Quando |
 | --- | --- | --- | --- |
 | `CREDITO_INICIAL` | sistema | membro | entrada no grupo (100 CP) |
-| `APOSTA_ESCROW` | membro | conta da aposta | aceite da aposta |
-| `PREMIO` | conta da aposta | vencedores | resolucao |
-| `ESTORNO` | conta da aposta | participantes | cancelamento |
+| `DESAFIO_ESCROW` | membro | conta do desafio | aceite do desafio |
+| `PREMIO` | conta do desafio | vencedores | resolucao |
+| `ESTORNO` | conta do desafio | participantes | cancelamento |
 | `RECOMPENSA_VOTO` | sistema | validador | evidencia que atingiu quorum |
 
-A conta da aposta **nao tem saldo materializado** — e derivada do ledger por
+A conta do desafio **nao tem saldo materializado** — e derivada do ledger por
 `SUM`. So a carteira do membro, que e lida a toda hora na UI, e materializada.
 
 ## Alternativas consideradas
@@ -90,7 +90,7 @@ A conta da aposta **nao tem saldo materializado** — e derivada do ledger por
 | So ledger, saldo sempre derivado por `SUM` | Impossivel dessincronizar; uma fonte da verdade so | `SUM` a cada leitura de tela; e nao ha nada para reconciliar — a consulta de reconciliacao, que e material de avaliacao, deixa de existir | O saldo aparece em quase toda tela; e a reconciliacao e justamente o que se quer demonstrar |
 | So saldo, sem ledger | Uma coluna, uma escrita | Perde o historico inteiro: nao da para auditar, nao da para estornar, nao da para explicar um saldo | O ranking precisa de historico completo, nao do saldo final |
 | Ledger mutavel (corrigir o lancamento errado) | Correcao "limpa" | Destroi a auditoria; um saldo errado passa a ser inexplicavel | Contabilidade nao apaga lancamento — e a materia avalia justamente a integridade |
-| Debitar so na resolucao | Nenhuma conta intermediaria | Permite apostar 100 CP em cinco apostas tendo 100 CP | Double-spend direto — a falha mais obvia do modelo |
+| Debitar so na resolucao | Nenhuma conta intermediaria | Permite apostar 100 CP em cinco desafios tendo 100 CP | Double-spend direto — a falha mais obvia do modelo |
 | Trigger recalculando o saldo apos o `INSERT` | Aplicacao nao precisa lembrar de atualizar | A regra fica escondida em duas camadas e o `CHECK` dispara dentro da trigger, com erro confuso | A procedure `economia.lancar` ja e o unico ponto de entrada; explicito e melhor |
 
 ## Consequencias
@@ -106,7 +106,7 @@ invariante e `SELECT ... FOR UPDATE` para serializar a resolucao concorrente.
 que **toda** movimentacao passe por `economia.lancar` — um `UPDATE` direto em
 `saldo_cp` quebra a reconciliacao em silencio. O ledger tambem cresce sem parar,
 por definicao: nao ha expurgo. Na escala do projeto isso e irrelevante, mas e
-divida reconhecida. A conta da aposta com `id_usuario NULL` torna o
+divida reconhecida. A conta do desafio com `id_usuario NULL` torna o
 `chk_transacao_conta` menos obvio de ler do que seria com uma tabela de contas
 propria.
 

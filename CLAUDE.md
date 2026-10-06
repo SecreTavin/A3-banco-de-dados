@@ -1,6 +1,6 @@
 # Eu Duvido! — Instruções do projeto
 
-Projeto A3 da UC de **Banco de Dados** (UNA / Ânima). App de apostas sociais
+Projeto A3 da UC de **Banco de Dados** (UNA / Ânima). App de desafios sociais
 entre amigos com validação por júri. A nota vem de modelagem, constraints,
 transações e consultas — não da stack de aplicação.
 
@@ -65,7 +65,7 @@ Dispare o evento depois do commit.
 
 | Situação | Tratamento |
 | --- | --- |
-| Regra de negócio violada ("aposta já fechada") | `Result.Fail` |
+| Regra de negócio violada ("desafio já fechado") | `Result.Fail` |
 | Entrada inválida ("título vazio") | Validador, antes do handler |
 | Falha de infraestrutura (banco fora) | **Exceção** |
 
@@ -75,7 +75,7 @@ Não transforme falha de infra em `Result` — isso esconde bug real dentro de u
 ### Módulos e schemas
 
 Seis módulos, cada um com seu schema no Postgres: `identidade`, `grupos`,
-`apostas`, `validacao`, `economia`, `notificacoes`. FKs atravessam schemas
+`desafios`, `validacao`, `economia`, `notificacoes`. FKs atravessam schemas
 normalmente — a separação é lógica, a integridade é do banco. **Não remova FK
 entre módulos.**
 

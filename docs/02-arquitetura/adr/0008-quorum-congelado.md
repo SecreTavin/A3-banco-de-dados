@@ -17,12 +17,12 @@ no nucleo do produto:
 > desafiado). Validadores = 3, quorum = 2. Dois votam `VALIDO`: a evidencia tem
 > maioria. Nesse instante um sexto membro entra no grupo pelo convite.
 > Validadores passam a 4, quorum passa a 3. **A evidencia que ja tinha maioria
-> deixa de ter.** O resultado da aposta muda sozinho, sem ninguem votar e sem
+> deixa de ter.** O resultado do desafio muda sozinho, sem ninguem votar e sem
 > ninguem fazer nada.
 
 O inverso e igualmente ruim: alguem sair do grupo faz o quorum cair e aprova
 retroativamente uma evidencia que estava em minoria. Em ambos os casos o
-resultado de uma aposta ja votada depende de um evento externo a ela.
+resultado de um desafio ja votado depende de um evento externo a ela.
 
 A tela 27 tambem exige que a votacao mostre "voces ja votaram 2 de 3" — um
 denominador que muda no meio da votacao e uma UI que mente.
@@ -32,11 +32,11 @@ denominador que muda no meio da votacao e uma UI que mente.
 **O conjunto de validadores e congelado por evidencia, em uma tabela.**
 
 `validacao.validador_evidencia` grava um **snapshot dos elegiveis a votar** no
-momento em que a evidencia e enviada — a transicao da aposta para `EM_VOTACAO`.
+momento em que a evidencia e enviada — a transicao do desafio para `EM_VOTACAO`.
 A escrita do snapshot acontece na **mesma transacao** que insere a evidencia.
 
 * **Quem entra no snapshot:** todos os membros do grupo **exceto o DESAFIANTE e
-  o DESAFIADO**. Nao se julga a propria aposta.
+  o DESAFIADO**. Nao se julga o proprio desafio.
 * **Quorum:** `floor(n/2) + 1`, com `n = COUNT(*)` das linhas do snapshot
   daquela evidencia. Um numero fixo desde o segundo zero da votacao.
 * **So vota quem esta no snapshot.** `voto_evidencia` tem FK **composta** para a
@@ -77,7 +77,7 @@ da FK composta acima.
 **Positivas:** o resultado de uma evidencia depende **apenas** dos votos daquela
 evidencia — entradas e saidas do grupo nao alteram nada ja em votacao. O quorum
 e um `COUNT` sobre linhas fixas, calculavel em qualquer momento, inclusive meses
-depois para explicar por que uma aposta terminou daquele jeito. A elegibilidade
+depois para explicar por que um desafio terminou daquele jeito. A elegibilidade
 e garantida por FK: nao ha checagem na aplicacao que possa ser esquecida em um
 endpoint.
 
@@ -91,7 +91,7 @@ implicitamente. O snapshot pode ficar desatualizado em relacao ao grupo, e isso
 e intencional, mas exige explicar: um membro removido do grupo continua
 aparecendo como validador daquela evidencia. E se o grupo tiver apenas
 desafiante e desafiado, o snapshot sai vazio — caso que a apuracao precisa
-tratar explicitamente (nao ha juri, a aposta nao pode ser validada por voto).
+tratar explicitamente (nao ha juri, o desafio nao pode ser validado por voto).
 
 **Impacto na documentacao:** [08-regras-de-negocio.md](../../01-negocio/08-regras-de-negocio.md)
 (RN04 voto unico, RN11 prazo de votacao, RN13 apuracao, RN14 elegibilidade),
@@ -100,4 +100,4 @@ tratar explicitamente (nao ha juri, a aposta nao pode ser validada por voto).
 [12-ddl-schema.md](../../03-banco-de-dados/implementacao/12-ddl-schema.md),
 [27-tela-central-votacao.md](../../04-ux/telas/27-tela-central-votacao.md)
 (define o denominador do contador de votos),
-[26-tela-detalhe-aposta.md](../../04-ux/telas/26-tela-detalhe-aposta.md).
+[26-tela-detalhe-desafio.md](../../04-ux/telas/26-tela-detalhe-desafio.md).

@@ -18,25 +18,25 @@ de negócio que o primeiro desenho não conseguia representar.
 ## Primeira versão
 
 Oito tabelas: `usuario`, `grupo_amigos`, `membro_grupo`, `categoria_desafio`,
-`aposta`, `participante_aposta`, `evidencia` e `voto_evidencia`. A normalização
+`desafio`, `participante_desafio`, `evidencia` e `voto_evidencia`. A normalização
 estava correta e permanece até hoje:
 
 * **1FN** — nenhum atributo multivalorado. Participantes e votos são linhas.
 * **2FN** — entidades associativas com chave simples mais `UNIQUE` composta;
   `papel`, `escolha` e `voto` dependem da associação inteira.
-* **3FN** — `categoria_desafio` extraída de `aposta`, para que o nome da
+* **3FN** — `categoria_desafio` extraída de `desafio`, para que o nome da
   categoria não dependa do desafio.
 
 Três relações N:N resolvidas por entidade associativa: usuário × grupo,
-usuário × aposta, jurado × evidência.
+usuário × desafio, jurado × evidência.
 
 O que ela não conseguia representar:
 
 | Lacuna | Consequência |
 | --- | --- |
-| Evidência sem estado | "3 recusadas perde a aposta" não era derivável do banco |
-| Júri calculado na apuração | O resultado de uma aposta mudava sozinho |
-| Prenda sem valor numérico | Aposta de prenda ficava fora de qualquer ranking |
+| Evidência sem estado | "3 recusadas perde o desafio" não era derivável do banco |
+| Júri calculado na apuração | O resultado de um desafio mudava sozinho |
+| Prenda sem valor numérico | Desafio de prenda ficava fora de qualquer ranking |
 | `senha_hash` em `usuario` | Coluna sempre nula, já que o login é pelo Google |
 
 ## O que mudou e por quê
@@ -62,7 +62,7 @@ pela procedure de apuração, junto com `data_apuracao`. Contar recusadas vira u
 
 ### (c) CP como moeda e ledger: `transacao_cp`
 
-Aposta de prenda não tinha valor numérico. Com o CP, toda aposta custa a mesma
+Desafio de prenda não tinha valor numérico. Com o CP, todo desafio custa a mesma
 moeda e fica comparável ([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md)).
 
 O CP é um **ledger append-only** de partidas dobradas, não só um campo de saldo
@@ -72,15 +72,15 @@ continua como saldo materializado, conferido pela view
 `vw_reconciliacao_saldo`, que deve estar sempre vazia. Um trigger impede
 `UPDATE` e `DELETE`; estorno é lançamento novo.
 
-### (d) Um `DESAFIANTE` e um `DESAFIADO` por aposta
+### (d) Um `DESAFIANTE` e um `DESAFIADO` por desafio
 
-Um índice parcial único em `participante_aposta` limita esses dois papéis a um
+Um índice parcial único em `participante_desafio` limita esses dois papéis a um
 cada, sem restringir a quantidade de `APOSTADOR` (RN09):
 
 ```sql
-CREATE UNIQUE INDEX unq_aposta_papel_unico
-    ON participante_aposta (id_aposta, papel_aposta)
-    WHERE papel_aposta IN ('DESAFIANTE', 'DESAFIADO');
+CREATE UNIQUE INDEX unq_desafio_papel_unico
+    ON participante_desafio (id_desafio, papel_desafio)
+    WHERE papel_desafio IN ('DESAFIANTE', 'DESAFIADO');
 ```
 
 ### (e) Idade mínima e moderação por IA
@@ -90,7 +90,7 @@ Exigência do professor orientador na revisão da Entrega 1 (RT01): o tom de
 ([ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)).
 Entram `usuario.data_nascimento` (idade mínima de 16 anos, por trigger),
 `grupo_amigos.nivel_filtro` e a tabela `moderacao_desafio`, com FK opcional
-para `aposta`: desafio reprovado nunca vira aposta, mas a avaliação fica
+para `desafio`: proposta reprovada nunca vira desafio, mas a avaliação fica
 registrada (RN26 a RN28).
 
 ### (f) Ajustes menores
