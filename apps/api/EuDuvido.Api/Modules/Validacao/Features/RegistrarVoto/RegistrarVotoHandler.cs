@@ -38,16 +38,16 @@ public class RegistrarVotoHandler(
             await tx.CommitAsync(ct);
         });
 
-        // Estado lido depois do commit: a procedure pode ter fechado a aposta.
+        // Estado lido depois do commit: a procedure pode ter fechado o desafio.
         var estado = await LerEstado(comando.IdEvidencia, ct);
 
         await notificador.VotacaoAtualizada(estado.IdGrupo, estado.IdEvidencia, estado);
-        if (estado.StatusAposta is not null && estado.StatusAposta.StartsWith("FINALIZADA"))
-            await notificador.ApostaEncerrada(estado.IdGrupo, estado.IdAposta, estado.StatusAposta);
+        if (estado.StatusDesafio is not null && estado.StatusDesafio.StartsWith("FINALIZADA"))
+            await notificador.DesafioEncerrado(estado.IdGrupo, estado.IdDesafio, estado.StatusDesafio);
 
         return new VotoRegistradoResponse(
             estado.IdEvidencia, estado.Status, estado.TotalVotos, estado.VotosFavoraveis,
-            estado.VotosContra, estado.Quorum, estado.VotosFaltantes, estado.StatusAposta);
+            estado.VotosContra, estado.Quorum, estado.VotosFaltantes, estado.StatusDesafio);
     }
 
     private async Task<EstadoVotacao> LerEstado(int idEvidencia, CancellationToken ct)
@@ -56,7 +56,7 @@ public class RegistrarVotoHandler(
         return await conexao.QuerySingleAsync<EstadoVotacao>(
             """
             SELECT v.id_evidencia      AS "IdEvidencia",
-                   v.id_aposta         AS "IdAposta",
+                   v.id_desafio         AS "IdDesafio",
                    v.id_grupo          AS "IdGrupo",
                    v.status            AS "Status",
                    v.total_votos::int  AS "TotalVotos",
@@ -64,16 +64,16 @@ public class RegistrarVotoHandler(
                    v.votos_contra::int AS "VotosContra",
                    v.quorum::int       AS "Quorum",
                    v.votos_faltantes::int AS "VotosFaltantes",
-                   a.status            AS "StatusAposta"
+                   a.status            AS "StatusDesafio"
               FROM validacao.vw_status_votacao v
-              JOIN apostas.aposta a ON a.id_aposta = v.id_aposta
+              JOIN desafios.desafio a ON a.id_desafio = v.id_desafio
              WHERE v.id_evidencia = @idEvidencia
             """,
             new { idEvidencia });
     }
 
     private record EstadoVotacao(
-        int IdEvidencia, int IdAposta, int IdGrupo, string Status,
+        int IdEvidencia, int IdDesafio, int IdGrupo, string Status,
         int TotalVotos, int VotosFavoraveis, int VotosContra,
-        int Quorum, int VotosFaltantes, string? StatusAposta);
+        int Quorum, int VotosFaltantes, string? StatusDesafio);
 }

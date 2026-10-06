@@ -1,6 +1,6 @@
-namespace EuDuvido.Api.Modules.Apostas.Domain;
+namespace EuDuvido.Api.Modules.Desafios.Domain;
 
-public static class StatusAposta
+public static class StatusDesafio
 {
     public const string Aberta = "ABERTA";
     public const string EmAndamento = "EM_ANDAMENTO";
@@ -15,7 +15,7 @@ public static class StatusAposta
     public static bool EhTerminal(string status) => Terminais.Contains(status);
 }
 
-public static class PapelAposta
+public static class PapelDesafio
 {
     public const string Desafiante = "DESAFIANTE";
     public const string Desafiado = "DESAFIADO";

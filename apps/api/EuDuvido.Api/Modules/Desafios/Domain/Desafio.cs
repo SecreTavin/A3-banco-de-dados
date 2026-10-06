@@ -1,10 +1,10 @@
 using ErrorOr;
 
-namespace EuDuvido.Api.Modules.Apostas.Domain;
+namespace EuDuvido.Api.Modules.Desafios.Domain;
 
-public class Aposta
+public class Desafio
 {
-    public int IdAposta { get; private set; }
+    public int IdDesafio { get; private set; }
     public int IdGrupo { get; private set; }
     public int IdCriador { get; private set; }
     public int IdCategoria { get; private set; }
@@ -20,12 +20,12 @@ public class Aposta
     public string? MotivoCancelamento { get; private set; }
     public DateTimeOffset? DataEncerramento { get; private set; }
 
-    private readonly List<ParticipanteAposta> _participantes = [];
-    public IReadOnlyCollection<ParticipanteAposta> Participantes => _participantes;
+    private readonly List<ParticipanteDesafio> _participantes = [];
+    public IReadOnlyCollection<ParticipanteDesafio> Participantes => _participantes;
 
-    private Aposta() { }
+    private Desafio() { }
 
-    public static Aposta Criar(
+    public static Desafio Criar(
         int idGrupo,
         int idCriador,
         int idCategoria,
@@ -49,54 +49,54 @@ public class Aposta
             DescricaoPrenda = descricaoPrenda,
             DataCriacao = DateTimeOffset.UtcNow,
             DataLimite = dataLimite,
-            Status = StatusAposta.Aberta
+            Status = StatusDesafio.Aberta
         };
 
-    public ErrorOr<ParticipanteAposta> Aceitar(int idUsuario, string papel, string escolha)
+    public ErrorOr<ParticipanteDesafio> Aceitar(int idUsuario, string papel, string escolha)
     {
-        if (Status != StatusAposta.Aberta)
-            return ApostaErrors.NaoAceitaParticipante;
+        if (Status != StatusDesafio.Aberta)
+            return DesafioErrors.NaoAceitaParticipante;
 
         if (_participantes.Any(p => p.IdUsuario == idUsuario))
-            return ApostaErrors.JaParticipa;
+            return DesafioErrors.JaParticipa;
 
         // RN09: 1 DESAFIANTE e 1 DESAFIADO. APOSTADOR e livre.
-        if (papel != PapelAposta.Apostador &&
-            _participantes.Any(p => p.PapelAposta == papel))
-            return ApostaErrors.PapelJaOcupado(papel);
+        if (papel != PapelDesafio.Apostador &&
+            _participantes.Any(p => p.PapelDesafio == papel))
+            return DesafioErrors.PapelJaOcupado(papel);
 
-        var participante = ParticipanteAposta.Novo(idUsuario, papel, escolha);
+        var participante = ParticipanteDesafio.Novo(idUsuario, papel, escolha);
         _participantes.Add(participante);
 
         // RN21: com desafiante e desafiado definidos, o desafio esta valendo.
         if (TemDuelistas())
-            Status = StatusAposta.EmAndamento;
+            Status = StatusDesafio.EmAndamento;
 
         return participante;
     }
 
     public ErrorOr<Success> Cancelar(int idSolicitante, string motivo)
     {
-        if (StatusAposta.EhTerminal(Status))
-            return ApostaErrors.JaEncerrada;
+        if (StatusDesafio.EhTerminal(Status))
+            return DesafioErrors.JaEncerrado;
 
         if (idSolicitante != IdCriador)
-            return ApostaErrors.SomenteCriadorCancela;
+            return DesafioErrors.SomenteCriadorCancela;
 
         if (string.IsNullOrWhiteSpace(motivo))
-            return ApostaErrors.MotivoObrigatorio;
+            return DesafioErrors.MotivoObrigatorio;
 
         // O estorno do CP e a mudanca de status acontecem em
-        // apostas.cancelar_aposta, para que dinheiro e estado commitem juntos.
+        // desafios.cancelar_desafio, para que dinheiro e estado commitem juntos.
         return Result.Success;
     }
 
-    public void MarcarEmVotacao() => Status = StatusAposta.EmVotacao;
+    public void MarcarEmVotacao() => Status = StatusDesafio.EmVotacao;
 
     public bool PodeReceberEvidencia =>
-        Status is StatusAposta.EmAndamento or StatusAposta.EmVotacao;
+        Status is StatusDesafio.EmAndamento or StatusDesafio.EmVotacao;
 
     private bool TemDuelistas() =>
-        _participantes.Any(p => p.PapelAposta == PapelAposta.Desafiante) &&
-        _participantes.Any(p => p.PapelAposta == PapelAposta.Desafiado);
+        _participantes.Any(p => p.PapelDesafio == PapelDesafio.Desafiante) &&
+        _participantes.Any(p => p.PapelDesafio == PapelDesafio.Desafiado);
 }

@@ -1145,3 +1145,632 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261003005803_RenomeiaApostaParaDesafio') THEN
+    DROP VIEW IF EXISTS economia.vw_cp_em_escrow;
+    DROP VIEW IF EXISTS economia.vw_escrow_orfao;
+    DROP VIEW IF EXISTS economia.vw_reconciliacao_saldo;
+    DROP VIEW IF EXISTS validacao.vw_status_votacao;
+    DROP TRIGGER IF EXISTS trg_membro_credito_inicial ON grupos.membro_grupo;
+    DROP TRIGGER IF EXISTS trg_transacao_cp_imutavel ON economia.transacao_cp;
+    DROP TRIGGER IF EXISTS trg_voto_evidencia_valida ON validacao.voto_evidencia;
+    DROP FUNCTION IF EXISTS grupos.trg_credito_inicial;
+    DROP FUNCTION IF EXISTS economia.trg_ledger_imutavel;
+    DROP FUNCTION IF EXISTS validacao.trg_valida_voto;
+    DROP PROCEDURE IF EXISTS validacao.apurar_votacao;
+    DROP PROCEDURE IF EXISTS apostas.encerrar_aposta;
+    DROP PROCEDURE IF EXISTS apostas.cancelar_aposta;
+    DROP PROCEDURE IF EXISTS economia.creditar_recompensa_voto;
+    DROP PROCEDURE IF EXISTS economia.debitar_escrow;
+    DROP PROCEDURE IF EXISTS economia.lancar;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261003005803_RenomeiaApostaParaDesafio') THEN
+    ALTER SCHEMA apostas RENAME TO desafios;
+    ALTER TABLE desafios.aposta RENAME TO desafio;
+    ALTER TABLE desafios.comentario_aposta RENAME TO comentario_desafio;
+    ALTER TABLE desafios.participante_aposta RENAME TO participante_desafio;
+
+    ALTER TABLE desafios.desafio RENAME COLUMN id_aposta TO id_desafio;
+    ALTER TABLE desafios.comentario_desafio RENAME COLUMN id_aposta TO id_desafio;
+    ALTER TABLE desafios.participante_desafio RENAME COLUMN id_aposta TO id_desafio;
+    ALTER TABLE desafios.participante_desafio RENAME COLUMN papel_aposta TO papel_desafio;
+    ALTER TABLE validacao.evidencia RENAME COLUMN id_aposta TO id_desafio;
+    ALTER TABLE economia.transacao_cp RENAME COLUMN id_aposta TO id_desafio;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261003005803_RenomeiaApostaParaDesafio') THEN
+    ALTER TABLE desafios.desafio RENAME CONSTRAINT pk_aposta TO pk_desafio;
+    ALTER TABLE desafios.desafio RENAME CONSTRAINT chk_aposta_cancelamento TO chk_desafio_cancelamento;
+    ALTER TABLE desafios.desafio RENAME CONSTRAINT chk_aposta_encerramento TO chk_desafio_encerramento;
+    ALTER TABLE desafios.desafio RENAME CONSTRAINT chk_aposta_status TO chk_desafio_status;
+    ALTER TABLE desafios.desafio RENAME CONSTRAINT chk_aposta_tipo TO chk_desafio_tipo;
+    ALTER TABLE desafios.desafio RENAME CONSTRAINT chk_aposta_valor TO chk_desafio_valor;
+    ALTER TABLE desafios.desafio RENAME CONSTRAINT chk_aposta_valor_cp TO chk_desafio_valor_cp;
+    ALTER TABLE desafios.desafio RENAME CONSTRAINT fk_aposta_categoria TO fk_desafio_categoria;
+    ALTER TABLE desafios.desafio RENAME CONSTRAINT fk_aposta_criador TO fk_desafio_criador;
+    ALTER TABLE desafios.desafio RENAME CONSTRAINT fk_aposta_grupo TO fk_desafio_grupo;
+
+    ALTER TABLE desafios.comentario_desafio RENAME CONSTRAINT pk_comentario_aposta TO pk_comentario_desafio;
+    ALTER TABLE desafios.comentario_desafio RENAME CONSTRAINT fk_comentario_aposta TO fk_comentario_desafio;
+
+    ALTER TABLE desafios.participante_desafio RENAME CONSTRAINT pk_participante_aposta TO pk_participante_desafio;
+    ALTER TABLE desafios.participante_desafio RENAME CONSTRAINT fk_participante_aposta TO fk_participante_desafio;
+
+    ALTER TABLE validacao.evidencia RENAME CONSTRAINT fk_evidencia_aposta TO fk_evidencia_desafio;
+    ALTER TABLE economia.transacao_cp RENAME CONSTRAINT fk_transacao_aposta TO fk_transacao_desafio;
+
+    ALTER INDEX desafios.idx_aposta_data_limite RENAME TO idx_desafio_data_limite;
+    ALTER INDEX desafios.idx_aposta_grupo RENAME TO idx_desafio_grupo;
+    ALTER INDEX desafios.idx_aposta_status RENAME TO idx_desafio_status;
+    ALTER INDEX desafios."IX_aposta_id_categoria" RENAME TO "IX_desafio_id_categoria";
+    ALTER INDEX desafios."IX_aposta_id_criador" RENAME TO "IX_desafio_id_criador";
+    ALTER INDEX desafios.idx_comentario_aposta RENAME TO idx_comentario_desafio;
+    ALTER INDEX desafios."IX_comentario_aposta_id_usuario" RENAME TO "IX_comentario_desafio_id_usuario";
+    ALTER INDEX desafios.unq_aposta_papel_unico RENAME TO unq_desafio_papel_unico;
+    ALTER INDEX desafios.unq_participante_aposta RENAME TO unq_participante_desafio;
+    ALTER INDEX validacao.idx_evidencia_aposta RENAME TO idx_evidencia_desafio;
+    ALTER INDEX economia.idx_transacao_aposta RENAME TO idx_transacao_desafio;
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261003005803_RenomeiaApostaParaDesafio') THEN
+    ALTER TABLE notificacoes.notificacao DROP CONSTRAINT chk_notificacao_tipo;
+    UPDATE notificacoes.notificacao SET tipo = 'DESAFIO_ENCERRADO' WHERE tipo = 'APOSTA_ENCERRADA';
+    ALTER TABLE notificacoes.notificacao ADD CONSTRAINT chk_notificacao_tipo
+        CHECK (tipo IN ('PRAZO_VENCENDO', 'EVIDENCIA_ENVIADA', 'VOTACAO_ABERTA', 'DESAFIO_ENCERRADO', 'CONVITE_ACEITO'));
+
+    ALTER TABLE economia.transacao_cp DROP CONSTRAINT chk_transacao_tipo;
+    ALTER TABLE economia.transacao_cp ADD CONSTRAINT chk_transacao_tipo
+        CHECK (tipo IN ('CREDITO_INICIAL', 'DESAFIO_ESCROW', 'APOSTA_ESCROW', 'PREMIO', 'ESTORNO', 'RECOMPENSA_VOTO'));
+
+    ALTER TABLE economia.transacao_cp DROP CONSTRAINT chk_transacao_escrow;
+    ALTER TABLE economia.transacao_cp ADD CONSTRAINT chk_transacao_escrow
+        CHECK (tipo NOT IN ('DESAFIO_ESCROW', 'APOSTA_ESCROW') OR id_desafio IS NOT NULL);
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261003005803_RenomeiaApostaParaDesafio') THEN
+    -- =============================================================================
+    -- Procedure de apuracao de votacao - Eu Duvido!
+    -- =============================================================================
+    -- Coracao do sistema. Decide se uma evidencia foi aceita ou recusada e, quando
+    -- isso encerra o desafio, transfere o CP do escrow para o vencedor.
+    --
+    -- Roda INTEIRA em uma transacao: ou tudo acontece, ou nada acontece. Nao existe
+    -- estado em que a evidencia foi aceita mas o CP nao foi pago (ADR 0003).
+    --
+    -- Chamada pela aplicacao apos cada voto:  CALL validacao.apurar_votacao(:id);
+    -- E tambem pelo BackgroundService ao expirar o prazo.
+    -- =============================================================================
+
+    CREATE OR REPLACE PROCEDURE validacao.apurar_votacao(p_id_evidencia INT)
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+        v_id_desafio        INT;
+        v_id_grupo         INT;
+        v_status_evidencia VARCHAR(20);
+        v_data_limite      TIMESTAMPTZ;
+        v_ordem            INT;
+        v_total_validadores INT;
+        v_quorum           INT;
+        v_total_votos      INT;
+        v_votos_validos    INT;
+        v_votos_invalidos  INT;
+        v_expirou          BOOLEAN;
+        v_novo_status      VARCHAR(20);
+        v_recusadas        INT;
+    BEGIN
+        -- Trava a evidencia: dois votos simultaneos nao podem apurar em paralelo.
+        SELECT e.id_desafio, e.status, e.data_limite_votacao, e.ordem, a.id_grupo
+          INTO v_id_desafio, v_status_evidencia, v_data_limite, v_ordem, v_id_grupo
+          FROM validacao.evidencia e
+          JOIN desafios.desafio a ON a.id_desafio = e.id_desafio
+         WHERE e.id_evidencia = p_id_evidencia
+           FOR UPDATE OF e;
+
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'Evidencia % nao encontrada', p_id_evidencia;
+        END IF;
+
+        -- Ja apurada: nada a fazer. Idempotente por design.
+        IF v_status_evidencia <> 'EM_VOTACAO' THEN
+            RETURN;
+        END IF;
+
+        -- Quorum sobre o snapshot congelado, nunca sobre o grupo atual (RN14).
+        SELECT COUNT(*) INTO v_total_validadores
+          FROM validacao.validador_evidencia
+         WHERE id_evidencia = p_id_evidencia;
+
+        v_quorum := floor(v_total_validadores / 2.0) + 1;
+
+        SELECT COUNT(*),
+               COUNT(*) FILTER (WHERE voto = 'VALIDO'),
+               COUNT(*) FILTER (WHERE voto = 'INVALIDO')
+          INTO v_total_votos, v_votos_validos, v_votos_invalidos
+          FROM validacao.voto_evidencia
+         WHERE id_evidencia = p_id_evidencia;
+
+        v_expirou := CURRENT_TIMESTAMP > v_data_limite;
+
+        -- ---------------------------------------------------------------------
+        -- Decisao (RN15, RN16)
+        -- ---------------------------------------------------------------------
+        IF v_votos_validos >= v_quorum THEN
+            v_novo_status := 'ACEITA';
+        ELSIF v_votos_invalidos >= v_quorum THEN
+            v_novo_status := 'RECUSADA';
+        ELSIF v_expirou THEN
+            -- Prazo estourou sem maioria - inclui o caso de empate (RN16).
+            v_novo_status := CASE WHEN v_total_votos = 0 THEN 'EXPIRADA' ELSE 'RECUSADA' END;
+        ELSE
+            -- Sem quorum e dentro do prazo: segue em votacao. Empate mantem aberto.
+            RETURN;
+        END IF;
+
+        UPDATE validacao.evidencia
+           SET status = v_novo_status,
+               data_apuracao = CURRENT_TIMESTAMP
+         WHERE id_evidencia = p_id_evidencia;
+
+        -- RN17: quem votou em evidencia que atingiu quorum ganha CP.
+        -- Nao paga em EXPIRADA (ninguem votou) nem por voto individual - so quando
+        -- a decisao coletiva se concretizou, para nao incentivar voto sem analise.
+        IF v_novo_status IN ('ACEITA', 'RECUSADA') AND v_total_votos > 0 THEN
+            CALL economia.creditar_recompensa_voto(p_id_evidencia, v_id_grupo);
+        END IF;
+
+        -- ---------------------------------------------------------------------
+        -- Encerramento do desafio
+        -- ---------------------------------------------------------------------
+        IF v_novo_status = 'ACEITA' THEN
+            CALL desafios.encerrar_desafio(v_id_desafio, TRUE);
+        ELSE
+            -- RN10: 3 recusadas OU a 5a evidencia esgotada encerra contra o desafiado.
+            SELECT COUNT(*) INTO v_recusadas
+              FROM validacao.evidencia
+             WHERE id_desafio = v_id_desafio
+               AND status IN ('RECUSADA', 'EXPIRADA');
+
+            IF v_recusadas >= 3 OR v_ordem >= 5 THEN
+                CALL desafios.encerrar_desafio(v_id_desafio, FALSE);
+            END IF;
+        END IF;
+    END;
+    $$;
+
+    COMMENT ON PROCEDURE validacao.apurar_votacao(INT) IS
+        'Apura uma evidencia e, se for o caso, encerra o desafio. Idempotente: chamar de novo em evidencia ja apurada nao faz nada. Usa FOR UPDATE para serializar votos concorrentes.';
+
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261003005803_RenomeiaApostaParaDesafio') THEN
+    -- =============================================================================
+    -- Procedures da economia de CP - Eu Duvido!
+    -- =============================================================================
+    -- Toda movimentacao de CP passa por aqui. Regra invariante: o ledger e
+    -- append-only e balanceia por partidas dobradas - cada debito tem um credito
+    -- correspondente, entao a soma de todos os lancamentos de um grupo e sempre
+    -- 100 * numero de membros (ADR 0007).
+    -- =============================================================================
+
+    -- -----------------------------------------------------------------------------
+    -- Lancamento primitivo. Escreve no ledger e atualiza o saldo materializado na
+    -- mesma transacao - os dois nunca divergem.
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE PROCEDURE economia.lancar(
+        p_id_grupo   INT,
+        p_id_usuario INT,          -- NULL = conta do desafio (escrow)
+        p_id_desafio  INT,
+        p_tipo       VARCHAR(20),
+        p_valor      INT,
+        p_descricao  VARCHAR(255)
+    )
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        INSERT INTO economia.transacao_cp
+            (id_grupo, id_usuario, id_desafio, tipo, valor, descricao)
+        VALUES
+            (p_id_grupo, p_id_usuario, p_id_desafio, p_tipo, p_valor, p_descricao);
+
+        -- Conta do desafio nao tem saldo materializado - e derivada do ledger.
+        IF p_id_usuario IS NOT NULL THEN
+            UPDATE grupos.membro_grupo
+               SET saldo_cp = saldo_cp + p_valor
+             WHERE id_grupo = p_id_grupo
+               AND id_usuario = p_id_usuario;
+
+            IF NOT FOUND THEN
+                RAISE EXCEPTION 'Usuario % nao e membro do grupo %',
+                    p_id_usuario, p_id_grupo;
+            END IF;
+            -- chk_membro_saldo (saldo_cp >= 0) barra saldo negativo aqui.
+        END IF;
+    END;
+    $$;
+
+    -- -----------------------------------------------------------------------------
+    -- Debito no aceite: CP sai da carteira e entra na conta do desafio (RN18).
+    -- Duas linhas no ledger - o CP muda de lugar, nao e destruido.
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE PROCEDURE economia.debitar_escrow(
+        p_id_desafio  INT,
+        p_id_usuario INT
+    )
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+        v_id_grupo INT;
+        v_valor_cp INT;
+        v_titulo   VARCHAR(120);
+    BEGIN
+        SELECT id_grupo, valor_cp, titulo
+          INTO v_id_grupo, v_valor_cp, v_titulo
+          FROM desafios.desafio
+         WHERE id_desafio = p_id_desafio;
+
+        IF NOT FOUND THEN
+            RAISE EXCEPTION 'Desafio % nao encontrado', p_id_desafio;
+        END IF;
+
+        CALL economia.lancar(v_id_grupo, p_id_usuario, p_id_desafio,
+            'DESAFIO_ESCROW', -v_valor_cp, 'Entrada no desafio: ' || v_titulo);
+
+        CALL economia.lancar(v_id_grupo, NULL, p_id_desafio,
+            'DESAFIO_ESCROW', v_valor_cp, 'Escrow recebido de participante');
+    END;
+    $$;
+
+    -- -----------------------------------------------------------------------------
+    -- Recompensa por votar em evidencia que atingiu quorum (RN17).
+    -- Valor pequeno e fixo - o CP vem do sistema, e a unica entrada de CP novo
+    -- alem do credito inicial.
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE PROCEDURE economia.creditar_recompensa_voto(
+        p_id_evidencia INT,
+        p_id_grupo     INT
+    )
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+        c_recompensa CONSTANT INT := 2;
+        v_votante    RECORD;
+    BEGIN
+        FOR v_votante IN
+            SELECT id_usuario FROM validacao.voto_evidencia
+             WHERE id_evidencia = p_id_evidencia
+        LOOP
+            CALL economia.lancar(p_id_grupo, v_votante.id_usuario, NULL,
+                'RECOMPENSA_VOTO', c_recompensa, 'Participacao na validacao');
+        END LOOP;
+    END;
+    $$;
+
+    -- -----------------------------------------------------------------------------
+    -- Encerramento: distribui o pote entre quem acertou.
+    -- p_cumpriu = TRUE  -> ganham os que escolheram VAI_CUMPRIR
+    -- p_cumpriu = FALSE -> ganham os que escolheram NAO_VAI_CUMPRIR
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE PROCEDURE desafios.encerrar_desafio(
+        p_id_desafio INT,
+        p_cumpriu   BOOLEAN
+    )
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+        v_id_grupo       INT;
+        v_valor_cp       INT;
+        v_status         VARCHAR(30);
+        v_escolha_vence  VARCHAR(20);
+        v_pote           INT;
+        v_n_vencedores   INT;
+        v_premio         INT;
+        v_resto          INT;
+        v_vencedor       RECORD;
+        v_primeiro       BOOLEAN := TRUE;
+    BEGIN
+        SELECT id_grupo, valor_cp, status
+          INTO v_id_grupo, v_valor_cp, v_status
+          FROM desafios.desafio
+         WHERE id_desafio = p_id_desafio
+           FOR UPDATE;
+
+        -- Ja encerrado: idempotente.
+        IF v_status IN ('FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA') THEN
+            RETURN;
+        END IF;
+
+        v_escolha_vence := CASE WHEN p_cumpriu THEN 'VAI_CUMPRIR' ELSE 'NAO_VAI_CUMPRIR' END;
+
+        SELECT COALESCE(SUM(valor), 0) INTO v_pote
+          FROM economia.transacao_cp
+         WHERE id_desafio = p_id_desafio AND id_usuario IS NULL;
+
+        SELECT COUNT(*) INTO v_n_vencedores
+          FROM desafios.participante_desafio
+         WHERE id_desafio = p_id_desafio AND escolha = v_escolha_vence;
+
+        IF v_n_vencedores > 0 AND v_pote > 0 THEN
+            -- CP e inteiro: o resto da divisao vai para o primeiro vencedor,
+            -- para que a soma dos premios seja exatamente o pote.
+            v_premio := v_pote / v_n_vencedores;
+            v_resto  := v_pote - (v_premio * v_n_vencedores);
+
+            FOR v_vencedor IN
+                SELECT id_usuario FROM desafios.participante_desafio
+                 WHERE id_desafio = p_id_desafio AND escolha = v_escolha_vence
+                 ORDER BY id_participante
+            LOOP
+                CALL economia.lancar(v_id_grupo, v_vencedor.id_usuario, p_id_desafio,
+                    'PREMIO', v_premio + CASE WHEN v_primeiro THEN v_resto ELSE 0 END,
+                    'Premio do desafio');
+                v_primeiro := FALSE;
+            END LOOP;
+
+            CALL economia.lancar(v_id_grupo, NULL, p_id_desafio,
+                'PREMIO', -v_pote, 'Pote distribuido aos vencedores');
+        END IF;
+
+        UPDATE desafios.desafio
+           SET status = CASE WHEN p_cumpriu THEN 'FINALIZADA_CUMPRIU'
+                                            ELSE 'FINALIZADA_PERDEU' END,
+               data_encerramento = CURRENT_TIMESTAMP
+         WHERE id_desafio = p_id_desafio;
+    END;
+    $$;
+
+    -- -----------------------------------------------------------------------------
+    -- Cancelamento: estorna o escrow para cada participante (RN12).
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE PROCEDURE desafios.cancelar_desafio(
+        p_id_desafio INT,
+        p_motivo    VARCHAR(255)
+    )
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+        v_id_grupo     INT;
+        v_valor_cp     INT;
+        v_status       VARCHAR(30);
+        v_participante RECORD;
+    BEGIN
+        SELECT id_grupo, valor_cp, status
+          INTO v_id_grupo, v_valor_cp, v_status
+          FROM desafios.desafio
+         WHERE id_desafio = p_id_desafio
+           FOR UPDATE;
+
+        IF v_status IN ('FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA') THEN
+            RETURN;
+        END IF;
+
+        FOR v_participante IN
+            SELECT id_usuario FROM desafios.participante_desafio
+             WHERE id_desafio = p_id_desafio
+        LOOP
+            CALL economia.lancar(v_id_grupo, v_participante.id_usuario, p_id_desafio,
+                'ESTORNO', v_valor_cp, 'Estorno por cancelamento');
+            CALL economia.lancar(v_id_grupo, NULL, p_id_desafio,
+                'ESTORNO', -v_valor_cp, 'Estorno devolvido ao participante');
+        END LOOP;
+
+        UPDATE desafios.desafio
+           SET status = 'CANCELADA',
+               motivo_cancelamento = p_motivo,
+               data_encerramento = CURRENT_TIMESTAMP
+         WHERE id_desafio = p_id_desafio;
+    END;
+    $$;
+
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261003005803_RenomeiaApostaParaDesafio') THEN
+    -- =============================================================================
+    -- Triggers de invariante e views analiticas - Eu Duvido!
+    -- =============================================================================
+    -- Triggers guardam o que NUNCA pode ser violado, mesmo por acesso direto ao
+    -- banco. A aplicacao tambem valida, mas o banco e a ultima linha de defesa.
+    -- =============================================================================
+
+    -- -----------------------------------------------------------------------------
+    -- RN19: so se vota em evidencia que esta EM_VOTACAO e dentro do prazo.
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE FUNCTION validacao.trg_valida_voto()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+        v_status      VARCHAR(20);
+        v_data_limite TIMESTAMPTZ;
+    BEGIN
+        SELECT status, data_limite_votacao
+          INTO v_status, v_data_limite
+          FROM validacao.evidencia
+         WHERE id_evidencia = NEW.id_evidencia;
+
+        IF v_status <> 'EM_VOTACAO' THEN
+            RAISE EXCEPTION 'Evidencia % nao esta em votacao (status: %)',
+                NEW.id_evidencia, v_status;
+        END IF;
+
+        IF CURRENT_TIMESTAMP > v_data_limite THEN
+            RAISE EXCEPTION 'Prazo de votacao da evidencia % expirou em %',
+                NEW.id_evidencia, v_data_limite;
+        END IF;
+
+        RETURN NEW;
+    END;
+    $$;
+
+    CREATE TRIGGER trg_voto_evidencia_valida
+        BEFORE INSERT ON validacao.voto_evidencia
+        FOR EACH ROW EXECUTE FUNCTION validacao.trg_valida_voto();
+
+    -- -----------------------------------------------------------------------------
+    -- O ledger e append-only: nenhum UPDATE, nenhum DELETE, nunca.
+    -- Estorno e um lancamento novo. Isso e o que torna a reconciliacao confiavel.
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE FUNCTION economia.trg_ledger_imutavel()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        RAISE EXCEPTION
+            'transacao_cp e append-only: % nao e permitido. Lance um ESTORNO.',
+            TG_OP;
+    END;
+    $$;
+
+    CREATE TRIGGER trg_transacao_cp_imutavel
+        BEFORE UPDATE OR DELETE ON economia.transacao_cp
+        FOR EACH ROW EXECUTE FUNCTION economia.trg_ledger_imutavel();
+
+    -- -----------------------------------------------------------------------------
+    -- RN20: novo membro entra com 100 CP, lancados no ledger.
+    -- Garante que o saldo inicial tambem obedece a contabilidade.
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE FUNCTION grupos.trg_credito_inicial()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        INSERT INTO economia.transacao_cp
+            (id_grupo, id_usuario, id_desafio, tipo, valor, descricao)
+        VALUES
+            (NEW.id_grupo, NEW.id_usuario, NULL, 'CREDITO_INICIAL',
+             NEW.saldo_cp, 'Credito inicial de entrada no grupo');
+        RETURN NEW;
+    END;
+    $$;
+
+    CREATE TRIGGER trg_membro_credito_inicial
+        AFTER INSERT ON grupos.membro_grupo
+        FOR EACH ROW EXECUTE FUNCTION grupos.trg_credito_inicial();
+
+    -- =============================================================================
+    -- VIEWS ANALITICAS
+    -- =============================================================================
+
+    -- -----------------------------------------------------------------------------
+    -- Reconciliacao: prova que o saldo materializado bate com o ledger.
+    -- Se esta view retornar QUALQUER linha, ha um bug de contabilidade.
+    -- Usada como caso de teste (documento 17) e como painel no Grafana.
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE VIEW economia.vw_reconciliacao_saldo AS
+    SELECT m.id_grupo,
+           m.id_usuario,
+           u.apelido,
+           m.saldo_cp                    AS saldo_materializado,
+           COALESCE(SUM(t.valor), 0)     AS saldo_ledger,
+           m.saldo_cp - COALESCE(SUM(t.valor), 0) AS divergencia
+      FROM grupos.membro_grupo m
+      JOIN identidade.usuario u ON u.id_usuario = m.id_usuario
+      LEFT JOIN economia.transacao_cp t
+             ON t.id_grupo   = m.id_grupo
+            AND t.id_usuario = m.id_usuario
+     GROUP BY m.id_grupo, m.id_usuario, u.apelido, m.saldo_cp
+    HAVING m.saldo_cp <> COALESCE(SUM(t.valor), 0);
+
+    COMMENT ON VIEW economia.vw_reconciliacao_saldo IS
+        'Deve estar SEMPRE vazia. Cada linha e uma divergencia entre o saldo materializado e o ledger - ou seja, um bug.';
+
+    -- -----------------------------------------------------------------------------
+    -- Estado ao vivo de cada votacao: quantos votaram, quanto falta para o quorum.
+    -- Alimenta a Central de Votacao e o painel do Grafana.
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE VIEW validacao.vw_status_votacao AS
+    SELECT e.id_evidencia,
+           e.id_desafio,
+           a.titulo                AS desafio,
+           a.id_grupo,
+           e.status,
+           e.ordem,
+           e.data_limite_votacao,
+           COUNT(DISTINCT val.id_usuario)                          AS total_validadores,
+           floor(COUNT(DISTINCT val.id_usuario) / 2.0) + 1         AS quorum,
+           COUNT(DISTINCT v.id_usuario)                            AS total_votos,
+           COUNT(DISTINCT v.id_usuario) FILTER (WHERE v.voto = 'VALIDO')   AS votos_favoraveis,
+           COUNT(DISTINCT v.id_usuario) FILTER (WHERE v.voto = 'INVALIDO') AS votos_contra,
+           GREATEST(
+               (floor(COUNT(DISTINCT val.id_usuario) / 2.0) + 1)
+               - GREATEST(
+                   COUNT(DISTINCT v.id_usuario) FILTER (WHERE v.voto = 'VALIDO'),
+                   COUNT(DISTINCT v.id_usuario) FILTER (WHERE v.voto = 'INVALIDO')
+                 ), 0)                                             AS votos_faltantes
+      FROM validacao.evidencia e
+      JOIN desafios.desafio a  ON a.id_desafio = e.id_desafio
+      LEFT JOIN validacao.validador_evidencia val ON val.id_evidencia = e.id_evidencia
+      LEFT JOIN validacao.voto_evidencia v        ON v.id_evidencia   = e.id_evidencia
+     GROUP BY e.id_evidencia, e.id_desafio, a.titulo, a.id_grupo,
+              e.status, e.ordem, e.data_limite_votacao;
+
+    -- -----------------------------------------------------------------------------
+    -- Escrow orfao: desafio encerrado com CP ainda preso na conta dele.
+    -- Deve estar SEMPRE vazia. A reconciliacao de saldo nao pega este caso, porque
+    -- compara saldo do usuario contra o ledger do usuario e ignora a conta do
+    -- desafio - foi assim que um pote nao distribuido passou despercebido no seed.
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE VIEW economia.vw_escrow_orfao AS
+    SELECT a.id_desafio,
+           a.titulo,
+           a.status,
+           SUM(t.valor) AS cp_preso
+      FROM desafios.desafio a
+      JOIN economia.transacao_cp t
+        ON t.id_desafio = a.id_desafio AND t.id_usuario IS NULL
+     WHERE a.status IN ('FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA')
+     GROUP BY a.id_desafio, a.titulo, a.status
+    HAVING SUM(t.valor) <> 0;
+
+    COMMENT ON VIEW economia.vw_escrow_orfao IS
+        'Deve estar SEMPRE vazia. Cada linha e um pote que ficou preso num desafio ja encerrado - CP que sumiu de circulacao.';
+
+    -- -----------------------------------------------------------------------------
+    -- CP preso em desafios abertos, por grupo. Painel do Grafana.
+    -- -----------------------------------------------------------------------------
+    CREATE OR REPLACE VIEW economia.vw_cp_em_escrow AS
+    SELECT a.id_grupo,
+           g.nome                    AS grupo,
+           COUNT(DISTINCT a.id_desafio) AS desafios_abertas,
+           COALESCE(SUM(t.valor), 0)   AS cp_em_escrow
+      FROM desafios.desafio a
+      JOIN grupos.grupo_amigos g ON g.id_grupo = a.id_grupo
+      LEFT JOIN economia.transacao_cp t
+             ON t.id_desafio = a.id_desafio AND t.id_usuario IS NULL
+     WHERE a.status IN ('ABERTA', 'EM_ANDAMENTO', 'EM_VOTACAO')
+     GROUP BY a.id_grupo, g.nome;
+
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20261003005803_RenomeiaApostaParaDesafio') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20261003005803_RenomeiaApostaParaDesafio', '10.0.11');
+    END IF;
+END $EF$;
+COMMIT;
+

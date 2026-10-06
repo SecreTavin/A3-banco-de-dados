@@ -1,18 +1,18 @@
-namespace EuDuvido.Api.Modules.Apostas.Domain;
+namespace EuDuvido.Api.Modules.Desafios.Domain;
 
-public class ComentarioAposta
+public class ComentarioDesafio
 {
     public int IdComentario { get; private set; }
-    public int IdAposta { get; private set; }
+    public int IdDesafio { get; private set; }
     public int IdUsuario { get; private set; }
     public string Texto { get; private set; } = null!;
     public DateTimeOffset DataEnvio { get; private set; }
 
-    private ComentarioAposta() { }
+    private ComentarioDesafio() { }
 
-    public static ComentarioAposta Novo(int idAposta, int idUsuario, string texto) => new()
+    public static ComentarioDesafio Novo(int idDesafio, int idUsuario, string texto) => new()
     {
-        IdAposta = idAposta,
+        IdDesafio = idDesafio,
         IdUsuario = idUsuario,
         Texto = texto.Trim(),
         DataEnvio = DateTimeOffset.UtcNow

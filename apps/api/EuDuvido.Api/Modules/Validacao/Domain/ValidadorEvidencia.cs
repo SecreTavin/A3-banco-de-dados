@@ -2,7 +2,7 @@ namespace EuDuvido.Api.Modules.Validacao.Domain;
 
 // Snapshot de quem podia votar quando a evidencia entrou em votacao.
 // Congelar impede que alguem entrando no grupo mude o quorum retroativamente
-// e faca o resultado da aposta mudar sozinho (ADR 0008).
+// e faca o resultado do desafio mudar sozinho (ADR 0008).
 public class ValidadorEvidencia
 {
     public int IdEvidencia { get; private set; }

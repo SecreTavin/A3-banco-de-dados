@@ -18,7 +18,7 @@ public class VotacaoHub : Hub
 public interface INotificadorVotacao
 {
     Task VotacaoAtualizada(int idGrupo, int idEvidencia, object estado);
-    Task ApostaEncerrada(int idGrupo, int idAposta, string status);
+    Task DesafioEncerrado(int idGrupo, int idDesafio, string status);
 }
 
 public class NotificadorVotacao(IHubContext<VotacaoHub> hub) : INotificadorVotacao
@@ -27,7 +27,7 @@ public class NotificadorVotacao(IHubContext<VotacaoHub> hub) : INotificadorVotac
         hub.Clients.Group(VotacaoHub.Canal(idGrupo))
             .SendAsync("votacaoAtualizada", new { idEvidencia, estado });
 
-    public Task ApostaEncerrada(int idGrupo, int idAposta, string status) =>
+    public Task DesafioEncerrado(int idGrupo, int idDesafio, string status) =>
         hub.Clients.Group(VotacaoHub.Canal(idGrupo))
-            .SendAsync("apostaEncerrada", new { idAposta, status });
+            .SendAsync("desafioEncerrado", new { idDesafio, status });
 }

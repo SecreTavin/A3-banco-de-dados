@@ -2,12 +2,12 @@
 -- DML Seed - Eu Duvido!
 -- =============================================================================
 -- Massa de teste que prepara o estado ANTERIOR ao roteiro de demonstracao:
--- grupo formado, saldos iniciais, historico de apostas encerradas para o
--- ranking nao aparecer vazio, e uma aposta parada em EM_VOTACAO faltando
+-- grupo formado, saldos iniciais, historico de desafios encerrados para o
+-- ranking nao aparecer vazio, e um desafio parado em EM_VOTACAO faltando
 -- exatamente um voto para o quorum.
 --
 -- Escrito a mao de proposito. Um seeder em C# que passasse pelo dominio nao
--- conseguiria criar estados intermediarios (aposta em votacao com escrow aberto)
+-- conseguiria criar estados intermediarios (desafio em votacao com escrow aberto)
 -- sem simular o fluxo inteiro.
 --
 -- Ordem importa: o trigger trg_membro_credito_inicial lanca os 100 CP no ledger
@@ -38,7 +38,7 @@ INSERT INTO identidade.credencial_usuario (id_usuario, provedor, id_externo) VAL
 -- Grupo e membros - cada INSERT dispara 100 CP no ledger (RN06, RN20)
 -- -----------------------------------------------------------------------------
 INSERT INTO grupos.grupo_amigos (nome, descricao, id_criador) VALUES
-('Os Inimigos do Fim', 'Grupo oficial de desafios, futebol e apostas da faculdade', 1);
+('Os Inimigos do Fim', 'Grupo oficial de desafios, futebol e desafios da faculdade', 1);
 
 INSERT INTO grupos.membro_grupo (id_grupo, id_usuario, papel) VALUES
 (1, 1, 'ADMIN'),
@@ -54,20 +54,20 @@ INSERT INTO grupos.convite_grupo (id_grupo, codigo, id_criador, data_expiracao) 
 -- -----------------------------------------------------------------------------
 -- Categorias (lista fixa - sem tela de gestao)
 -- -----------------------------------------------------------------------------
-INSERT INTO apostas.categoria_desafio (nome, descricao) VALUES
+INSERT INTO desafios.categoria_desafio (nome, descricao) VALUES
 ('Esportes & Fitness', 'Desafios de corrida, academia, flexoes e partidas de futebol'),
 ('Prendas & Zoeira',   'Desafios comicos com prendas em publico ou redes sociais'),
-('Games & E-sports',   'Apostas em partidas de FIFA, CS, LoL ou x1 de videogame'),
+('Games & E-sports',   'Desafios em partidas de FIFA, CS, LoL ou x1 de videogame'),
 ('Acadêmico',          'Desafios relacionados a notas de provas e entrega de projetos');
 
 -- -----------------------------------------------------------------------------
--- Apostas
+-- Desafios
 -- -----------------------------------------------------------------------------
 -- 1: EM_VOTACAO - o estado que a demonstracao vai movimentar ao vivo.
 -- 2: EM_ANDAMENTO - desafio aceito, aguardando cumprimento.
 -- 3: FINALIZADA_CUMPRIU - historico para o ranking.
 -- 4: ABERTA - ainda sem participantes.
-INSERT INTO apostas.aposta
+INSERT INTO desafios.desafio
     (id_grupo, id_criador, id_categoria, titulo, descricao, valor_cp,
      tipo_recompensa, valor_monetario, descricao_prenda, data_limite, status,
      data_encerramento) VALUES
@@ -78,9 +78,9 @@ INSERT INTO apostas.aposta
     'Theus duvidou que Lipe vai para a aula do Prof. Mário de dinossauro inflável.',
     15, 'PRENDA_ACAO', NULL, 'Pagar 1 rodada de açaí para todo o grupo',
     '2026-10-05 19:00:00-03', 'EM_ANDAMENTO', NULL),
--- Entra como EM_VOTACAO e e encerrada pela procedure no fim deste script.
+-- Entra como EM_VOTACAO e e encerrado pela procedure no fim deste script.
 -- Semear direto como FINALIZADA_CUMPRIU faria a guarda de idempotencia de
--- encerrar_aposta retornar sem pagar, deixando o pote preso no escrow.
+-- encerrar_desafio retornar sem pagar, deixando o pote preso no escrow.
 (1, 3, 3, 'Ganhar de 3 gols de diferença no FIFA',
     'X1 clássico no PS5 entre Gabriel e Matheus.',
     30, 'MONETARIA', 100.00, NULL, '2026-09-01 22:00:00-03', 'EM_VOTACAO',
@@ -91,23 +91,23 @@ INSERT INTO apostas.aposta
     '2026-12-05 23:59:59-03', 'ABERTA', NULL);
 
 -- -----------------------------------------------------------------------------
--- Participantes (RN09 - 1 DESAFIANTE e 1 DESAFIADO por aposta)
+-- Participantes (RN09 - 1 DESAFIANTE e 1 DESAFIADO por desafio)
 -- -----------------------------------------------------------------------------
-INSERT INTO apostas.participante_aposta (id_aposta, id_usuario, papel_aposta, escolha) VALUES
--- Aposta 1: Tavin cumpre, Biel duvida, Theus aposta a favor.
+INSERT INTO desafios.participante_desafio (id_desafio, id_usuario, papel_desafio, escolha) VALUES
+-- Desafio 1: Tavin cumpre, Biel duvida, Theus desafio a favor.
 (1, 1, 'DESAFIADO',  'VAI_CUMPRIR'),
 (1, 2, 'DESAFIANTE', 'NAO_VAI_CUMPRIR'),
 (1, 3, 'APOSTADOR',  'VAI_CUMPRIR'),
--- Aposta 2
+-- Desafio 2
 (2, 5, 'DESAFIADO',  'VAI_CUMPRIR'),
 (2, 3, 'DESAFIANTE', 'NAO_VAI_CUMPRIR'),
--- Aposta 3 (encerrada - Gabriel cumpriu)
+-- Desafio 3 (encerrado - Gabriel cumpriu)
 (3, 2, 'DESAFIADO',  'VAI_CUMPRIR'),
 (3, 3, 'DESAFIANTE', 'NAO_VAI_CUMPRIR');
 
 -- -----------------------------------------------------------------------------
 -- Escrow: CP debitado no aceite (RN18)
--- Cada chamada gera DOIS lancamentos - debito do usuario, credito da aposta.
+-- Cada chamada gera DOIS lancamentos - debito do usuario, credito do desafio.
 -- -----------------------------------------------------------------------------
 CALL economia.debitar_escrow(1, 1);
 CALL economia.debitar_escrow(1, 2);
@@ -120,17 +120,17 @@ CALL economia.debitar_escrow(3, 3);
 -- -----------------------------------------------------------------------------
 -- Evidencias
 -- -----------------------------------------------------------------------------
--- Aposta 3: ja aceita, historico.
+-- Desafio 3: ja aceito, historico.
 INSERT INTO validacao.evidencia
-    (id_aposta, id_usuario, ordem, tipo_midia, url_comprovante, comentario,
+    (id_desafio, id_usuario, ordem, tipo_midia, url_comprovante, comentario,
      status, data_envio, data_limite_votacao, data_apuracao) VALUES
 (3, 2, 1, 'VIDEO', 'https://midia.euduvido.app/provas/fifa_placar_final.mp4',
     'Placar final 4x1, print do PS5.', 'ACEITA',
     '2026-09-01 22:30:00-03', '2026-09-08 22:30:00-03', '2026-09-01 23:10:00-03');
 
--- Aposta 1: EM_VOTACAO - o alvo da demonstracao.
+-- Desafio 1: EM_VOTACAO - o alvo da demonstracao.
 INSERT INTO validacao.evidencia
-    (id_aposta, id_usuario, ordem, tipo_midia, url_comprovante, comentario,
+    (id_desafio, id_usuario, ordem, tipo_midia, url_comprovante, comentario,
      status, data_limite_votacao) VALUES
 (1, 1, 1, 'FOTO', 'https://midia.euduvido.app/provas/strava_5km_tavin.png',
     'Print do Strava comprovando 5.02 km em 24min32s!', 'EM_VOTACAO',
@@ -139,12 +139,12 @@ INSERT INTO validacao.evidencia
 -- -----------------------------------------------------------------------------
 -- Validadores congelados (RN14 - membros do grupo menos DESAFIANTE e DESAFIADO)
 -- -----------------------------------------------------------------------------
--- Evidencia 1 (aposta 3): desafiado=Biel(2), desafiante=Theus(3).
+-- Evidencia 1 (desafio 3): desafiado=Biel(2), desafiante=Theus(3).
 -- Validadores: Tavin(1), Lari(4), Lipe(5). Quorum = floor(3/2)+1 = 2.
 INSERT INTO validacao.validador_evidencia (id_evidencia, id_usuario) VALUES
 (1, 1), (1, 4), (1, 5);
 
--- Evidencia 2 (aposta 1): desafiado=Tavin(1), desafiante=Biel(2).
+-- Evidencia 2 (desafio 1): desafiado=Tavin(1), desafiante=Biel(2).
 -- Validadores: Theus(3), Lari(4), Lipe(5). Quorum = 2.
 INSERT INTO validacao.validador_evidencia (id_evidencia, id_usuario) VALUES
 (2, 3), (2, 4), (2, 5);
@@ -161,21 +161,21 @@ INSERT INTO validacao.voto_evidencia (id_evidencia, id_usuario, voto, justificat
 (1, 4, 'VALIDO', 'Assisti ao vivo, ganhou limpo.',   '2026-09-01 23:05:00-03');
 ALTER TABLE validacao.voto_evidencia ENABLE TRIGGER trg_voto_evidencia_valida;
 
--- Evidencia 2: UM voto. Quorum e 2 - falta exatamente um para a aposta fechar.
+-- Evidencia 2: UM voto. Quorum e 2 - falta exatamente um para o desafio fechar.
 -- E este voto que sera dado ao vivo na banca.
 INSERT INTO validacao.voto_evidencia (id_evidencia, id_usuario, voto, justificativa) VALUES
-(2, 3, 'VALIDO', 'O tempo bateu com o GPS, aposta paga com justiça.');
+(2, 3, 'VALIDO', 'O tempo bateu com o GPS, desafio pago com justiça.');
 
 -- -----------------------------------------------------------------------------
--- Encerramento da aposta 3 (historico do ranking)
+-- Encerramento do desafio 3 (historico do ranking)
 -- Distribui o pote de 60 CP para quem escolheu VAI_CUMPRIR.
 -- -----------------------------------------------------------------------------
-CALL apostas.encerrar_aposta(3, TRUE);
+CALL desafios.encerrar_desafio(3, TRUE);
 
 -- -----------------------------------------------------------------------------
 -- Comentarios
 -- -----------------------------------------------------------------------------
-INSERT INTO apostas.comentario_aposta (id_aposta, id_usuario, texto) VALUES
+INSERT INTO desafios.comentario_desafio (id_desafio, id_usuario, texto) VALUES
 (1, 2, 'Duvido muito que esse tempo seja real, quero ver o GPS.'),
 (1, 3, 'Eu vi o Strava em tempo real, pode pagar.'),
 (1, 1, 'Tá tudo no print, chora mais.');

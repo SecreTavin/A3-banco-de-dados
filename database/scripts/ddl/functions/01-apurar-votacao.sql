@@ -2,7 +2,7 @@
 -- Procedure de apuracao de votacao - Eu Duvido!
 -- =============================================================================
 -- Coracao do sistema. Decide se uma evidencia foi aceita ou recusada e, quando
--- isso encerra a aposta, transfere o CP do escrow para o vencedor.
+-- isso encerra o desafio, transfere o CP do escrow para o vencedor.
 --
 -- Roda INTEIRA em uma transacao: ou tudo acontece, ou nada acontece. Nao existe
 -- estado em que a evidencia foi aceita mas o CP nao foi pago (ADR 0003).
@@ -15,7 +15,7 @@ CREATE OR REPLACE PROCEDURE validacao.apurar_votacao(p_id_evidencia INT)
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    v_id_aposta        INT;
+    v_id_desafio        INT;
     v_id_grupo         INT;
     v_status_evidencia VARCHAR(20);
     v_data_limite      TIMESTAMPTZ;
@@ -30,10 +30,10 @@ DECLARE
     v_recusadas        INT;
 BEGIN
     -- Trava a evidencia: dois votos simultaneos nao podem apurar em paralelo.
-    SELECT e.id_aposta, e.status, e.data_limite_votacao, e.ordem, a.id_grupo
-      INTO v_id_aposta, v_status_evidencia, v_data_limite, v_ordem, v_id_grupo
+    SELECT e.id_desafio, e.status, e.data_limite_votacao, e.ordem, a.id_grupo
+      INTO v_id_desafio, v_status_evidencia, v_data_limite, v_ordem, v_id_grupo
       FROM validacao.evidencia e
-      JOIN apostas.aposta a ON a.id_aposta = e.id_aposta
+      JOIN desafios.desafio a ON a.id_desafio = e.id_desafio
      WHERE e.id_evidencia = p_id_evidencia
        FOR UPDATE OF e;
 
@@ -90,23 +90,23 @@ BEGIN
     END IF;
 
     -- ---------------------------------------------------------------------
-    -- Encerramento da aposta
+    -- Encerramento do desafio
     -- ---------------------------------------------------------------------
     IF v_novo_status = 'ACEITA' THEN
-        CALL apostas.encerrar_aposta(v_id_aposta, TRUE);
+        CALL desafios.encerrar_desafio(v_id_desafio, TRUE);
     ELSE
         -- RN10: 3 recusadas OU a 5a evidencia esgotada encerra contra o desafiado.
         SELECT COUNT(*) INTO v_recusadas
           FROM validacao.evidencia
-         WHERE id_aposta = v_id_aposta
+         WHERE id_desafio = v_id_desafio
            AND status IN ('RECUSADA', 'EXPIRADA');
 
         IF v_recusadas >= 3 OR v_ordem >= 5 THEN
-            CALL apostas.encerrar_aposta(v_id_aposta, FALSE);
+            CALL desafios.encerrar_desafio(v_id_desafio, FALSE);
         END IF;
     END IF;
 END;
 $$;
 
 COMMENT ON PROCEDURE validacao.apurar_votacao(INT) IS
-    'Apura uma evidencia e, se for o caso, encerra a aposta. Idempotente: chamar de novo em evidencia ja apurada nao faz nada. Usa FOR UPDATE para serializar votos concorrentes.';
+    'Apura uma evidencia e, se for o caso, encerra o desafio. Idempotente: chamar de novo em evidencia ja apurada nao faz nada. Usa FOR UPDATE para serializar votos concorrentes.';

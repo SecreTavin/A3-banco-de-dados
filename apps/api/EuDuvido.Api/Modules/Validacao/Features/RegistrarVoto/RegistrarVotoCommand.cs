@@ -10,4 +10,4 @@ public record VotoRegistradoResponse(
     int VotosContra,
     int Quorum,
     int VotosFaltantes,
-    string? StatusAposta);
+    string? StatusDesafio);

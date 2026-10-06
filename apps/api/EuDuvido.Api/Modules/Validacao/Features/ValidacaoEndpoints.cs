@@ -40,7 +40,7 @@ public static class ValidacaoEndpoints
             using var conexao = await leitura.AbrirAsync(ct);
             return Results.Ok(await conexao.QueryAsync(
                 """
-                SELECT v.id_evidencia AS "idEvidencia", v.id_aposta AS "idAposta",
+                SELECT v.id_evidencia AS "idEvidencia", v.id_desafio AS "idDesafio",
                        v.desafio, v.id_grupo AS "idGrupo", v.status,
                        e.tipo_midia AS "tipoMidia", e.url_comprovante AS "urlComprovante",
                        e.comentario, e.data_limite_votacao AS "dataLimiteVotacao",
@@ -60,15 +60,15 @@ public static class ValidacaoEndpoints
         })
         .WithSummary("Evidencias que este usuario pode validar.");
 
-        app.MapPost("/api/apostas/{idAposta:int}/evidencias", async (
-            int idAposta,
+        app.MapPost("/api/desafios/{idDesafio:int}/evidencias", async (
+            int idDesafio,
             EnviarEvidenciaRequest requisicao,
             EnviarEvidenciaHandler handler,
             IUsuarioAtual usuario,
             CancellationToken ct) =>
         {
             var comando = new EnviarEvidenciaCommand(
-                idAposta, requisicao.TipoMidia, requisicao.UrlComprovante, requisicao.Comentario);
+                idDesafio, requisicao.TipoMidia, requisicao.UrlComprovante, requisicao.Comentario);
 
             var resultado = await handler.Handle(comando, usuario.Id, ct);
             return resultado.ToHttp(id => Results.Created($"/api/evidencias/{id}",

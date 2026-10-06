@@ -1,6 +1,6 @@
 using System.Text;
-using EuDuvido.Api.Modules.Apostas.Features;
-using EuDuvido.Api.Modules.Apostas.Infrastructure;
+using EuDuvido.Api.Modules.Desafios.Features;
+using EuDuvido.Api.Modules.Desafios.Infrastructure;
 using EuDuvido.Api.Modules.Grupos.Features;
 using EuDuvido.Api.Modules.Identidade.Features;
 using EuDuvido.Api.Modules.Ranking.Features;
@@ -97,7 +97,7 @@ app.MapGet("/health", async (EuDuvidoDbContext db, CancellationToken ct) =>
 
 app.MapAuthEndpoints();
 app.MapGruposEndpoints();
-app.MapApostasEndpoints();
+app.MapDesafiosEndpoints();
 app.MapValidacaoEndpoints();
 app.MapRankingEndpoints();
 app.MapHub<VotacaoHub>("/hubs/votacao");

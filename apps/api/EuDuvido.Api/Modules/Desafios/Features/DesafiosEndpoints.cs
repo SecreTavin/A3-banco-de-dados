@@ -1,6 +1,6 @@
 using Dapper;
 using ErrorOr;
-using EuDuvido.Api.Modules.Apostas.Domain;
+using EuDuvido.Api.Modules.Desafios.Domain;
 using EuDuvido.Api.Shared.Auth;
 using EuDuvido.Api.Shared.Database;
 using EuDuvido.Api.Shared.Results;
@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using NpgsqlTypes;
 
-namespace EuDuvido.Api.Modules.Apostas.Features;
+namespace EuDuvido.Api.Modules.Desafios.Features;
 
-public static class ApostasEndpoints
+public static class DesafiosEndpoints
 {
-    public static void MapApostasEndpoints(this IEndpointRouteBuilder app)
+    public static void MapDesafiosEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapGet("/api/categorias", async (IConexaoLeitura leitura, CancellationToken ct) =>
         {
@@ -20,11 +20,11 @@ public static class ApostasEndpoints
             return Results.Ok(await conexao.QueryAsync(
                 """
                 SELECT id_categoria AS "idCategoria", nome, descricao
-                  FROM apostas.categoria_desafio ORDER BY nome
+                  FROM desafios.categoria_desafio ORDER BY nome
                 """));
-        }).RequireAuthorization().WithTags("Apostas");
+        }).RequireAuthorization().WithTags("Desafios");
 
-        var grupo = app.MapGroup("/api/apostas").RequireAuthorization().WithTags("Apostas");
+        var grupo = app.MapGroup("/api/desafios").RequireAuthorization().WithTags("Desafios");
 
         grupo.MapGet("/", async (string? status, IUsuarioAtual usuario,
             IConexaoLeitura leitura, CancellationToken ct) =>
@@ -33,13 +33,13 @@ public static class ApostasEndpoints
             return Results.Ok(await conexao.QueryAsync(
                 """
                 SELECT DISTINCT
-                       a.id_aposta AS "idAposta", a.titulo, a.status, a.valor_cp AS "valorCp",
+                       a.id_desafio AS "idDesafio", a.titulo, a.status, a.valor_cp AS "valorCp",
                        a.tipo_recompensa AS "tipoRecompensa", a.valor_monetario AS "valorMonetario",
                        a.descricao_prenda AS "descricaoPrenda", a.data_limite AS "dataLimite",
                        c.nome AS categoria, g.nome AS grupo, a.id_grupo AS "idGrupo",
                        (a.id_criador = @id) AS "souCriador"
-                  FROM apostas.aposta a
-                  JOIN apostas.categoria_desafio c ON c.id_categoria = a.id_categoria
+                  FROM desafios.desafio a
+                  JOIN desafios.categoria_desafio c ON c.id_categoria = a.id_categoria
                   JOIN grupos.grupo_amigos g ON g.id_grupo = a.id_grupo
                   JOIN grupos.membro_grupo m ON m.id_grupo = a.id_grupo AND m.id_usuario = @id
                  WHERE (@status IS NULL OR a.status = @status)
@@ -52,30 +52,30 @@ public static class ApostasEndpoints
         {
             using var conexao = await leitura.AbrirAsync(ct);
 
-            var aposta = await conexao.QuerySingleOrDefaultAsync(
+            var desafio = await conexao.QuerySingleOrDefaultAsync(
                 """
-                SELECT a.id_aposta AS "idAposta", a.id_grupo AS "idGrupo", a.titulo, a.descricao,
+                SELECT a.id_desafio AS "idDesafio", a.id_grupo AS "idGrupo", a.titulo, a.descricao,
                        a.status, a.valor_cp AS "valorCp", a.tipo_recompensa AS "tipoRecompensa",
                        a.valor_monetario AS "valorMonetario", a.descricao_prenda AS "descricaoPrenda",
                        a.data_limite AS "dataLimite", a.data_encerramento AS "dataEncerramento",
                        a.motivo_cancelamento AS "motivoCancelamento",
                        c.nome AS categoria, g.nome AS grupo,
                        (a.id_criador = @usuario) AS "souCriador"
-                  FROM apostas.aposta a
-                  JOIN apostas.categoria_desafio c ON c.id_categoria = a.id_categoria
+                  FROM desafios.desafio a
+                  JOIN desafios.categoria_desafio c ON c.id_categoria = a.id_categoria
                   JOIN grupos.grupo_amigos g ON g.id_grupo = a.id_grupo
-                 WHERE a.id_aposta = @id
+                 WHERE a.id_desafio = @id
                 """, new { id, usuario = usuario.Id });
 
-            if (aposta is null) return Results.NotFound();
+            if (desafio is null) return Results.NotFound();
 
             var participantes = await conexao.QueryAsync(
                 """
                 SELECT u.id_usuario AS "idUsuario", u.apelido, u.avatar_url AS "avatarUrl",
-                       p.papel_aposta AS "papelAposta", p.escolha
-                  FROM apostas.participante_aposta p
+                       p.papel_desafio AS "papelDesafio", p.escolha
+                  FROM desafios.participante_desafio p
                   JOIN identidade.usuario u ON u.id_usuario = p.id_usuario
-                 WHERE p.id_aposta = @id ORDER BY p.id_participante
+                 WHERE p.id_desafio = @id ORDER BY p.id_participante
                 """, new { id });
 
             var evidencias = await conexao.QueryAsync(
@@ -87,29 +87,29 @@ public static class ApostasEndpoints
                        v.quorum, v.total_validadores AS "totalValidadores"
                   FROM validacao.evidencia e
                   JOIN validacao.vw_status_votacao v ON v.id_evidencia = e.id_evidencia
-                 WHERE e.id_aposta = @id ORDER BY e.ordem
+                 WHERE e.id_desafio = @id ORDER BY e.ordem
                 """, new { id });
 
             var comentarios = await conexao.QueryAsync(
                 """
                 SELECT c.id_comentario AS "idComentario", u.apelido, u.avatar_url AS "avatarUrl",
                        c.texto, c.data_envio AS "dataEnvio"
-                  FROM apostas.comentario_aposta c
+                  FROM desafios.comentario_desafio c
                   JOIN identidade.usuario u ON u.id_usuario = c.id_usuario
-                 WHERE c.id_aposta = @id ORDER BY c.data_envio
+                 WHERE c.id_desafio = @id ORDER BY c.data_envio
                 """, new { id });
 
             return Results.Ok(new
             {
-                aposta.idAposta, aposta.idGrupo, aposta.titulo, aposta.descricao, aposta.status,
-                aposta.valorCp, aposta.tipoRecompensa, aposta.valorMonetario,
-                aposta.descricaoPrenda, aposta.dataLimite, aposta.dataEncerramento,
-                aposta.motivoCancelamento, aposta.categoria, aposta.grupo, aposta.souCriador,
+                desafio.idDesafio, desafio.idGrupo, desafio.titulo, desafio.descricao, desafio.status,
+                desafio.valorCp, desafio.tipoRecompensa, desafio.valorMonetario,
+                desafio.descricaoPrenda, desafio.dataLimite, desafio.dataEncerramento,
+                desafio.motivoCancelamento, desafio.categoria, desafio.grupo, desafio.souCriador,
                 participantes, evidencias, comentarios
             });
         });
 
-        grupo.MapPost("/", async (CriarApostaRequest requisicao, IUsuarioAtual usuario,
+        grupo.MapPost("/", async (CriarDesafioRequest requisicao, IUsuarioAtual usuario,
             EuDuvidoDbContext db, CancellationToken ct) =>
         {
             var erros = ValidarCriacao(requisicao);
@@ -119,45 +119,45 @@ public static class ApostasEndpoints
                 m => m.IdGrupo == requisicao.IdGrupo && m.IdUsuario == usuario.Id, ct);
             if (!ehMembro) return Results.Forbid();
 
-            var aposta = Aposta.Criar(
+            var desafio = Desafio.Criar(
                 requisicao.IdGrupo, usuario.Id, requisicao.IdCategoria,
                 requisicao.Titulo.Trim(), requisicao.Descricao.Trim(), requisicao.ValorCp,
                 requisicao.TipoRecompensa, requisicao.ValorMonetario,
                 requisicao.DescricaoPrenda, requisicao.DataLimite);
 
-            db.Apostas.Add(aposta);
+            db.Desafios.Add(desafio);
             await db.SaveChangesAsync(ct);
 
-            return Results.Created($"/api/apostas/{aposta.IdAposta}",
-                new { idAposta = aposta.IdAposta });
+            return Results.Created($"/api/desafios/{desafio.IdDesafio}",
+                new { idDesafio = desafio.IdDesafio });
         });
 
         grupo.MapPost("/{id:int}/participantes", async (int id, AceitarRequest requisicao,
             IUsuarioAtual usuario, EuDuvidoDbContext db, CancellationToken ct) =>
         {
-            var aposta = await db.Apostas
+            var desafio = await db.Desafios
                 .Include(a => a.Participantes)
-                .FirstOrDefaultAsync(a => a.IdAposta == id, ct);
+                .FirstOrDefaultAsync(a => a.IdDesafio == id, ct);
 
-            if (aposta is null) return Results.NotFound();
+            if (desafio is null) return Results.NotFound();
 
             var saldo = await db.Membros
-                .Where(m => m.IdGrupo == aposta.IdGrupo && m.IdUsuario == usuario.Id)
+                .Where(m => m.IdGrupo == desafio.IdGrupo && m.IdUsuario == usuario.Id)
                 .Select(m => (int?)m.SaldoCp)
                 .FirstOrDefaultAsync(ct);
 
             if (saldo is null) return Results.Forbid();
-            if (saldo < aposta.ValorCp)
+            if (saldo < desafio.ValorCp)
             {
                 ErrorOr.ErrorOr<Success> insuficiente =
-                    ApostaErrors.SaldoInsuficiente(saldo.Value, aposta.ValorCp);
+                    DesafioErrors.SaldoInsuficiente(saldo.Value, desafio.ValorCp);
                 return insuficiente.ToHttp();
             }
 
-            var resultado = aposta.Aceitar(usuario.Id, requisicao.PapelAposta, requisicao.Escolha);
+            var resultado = desafio.Aceitar(usuario.Id, requisicao.PapelDesafio, requisicao.Escolha);
             if (resultado.IsError) return resultado.ToHttp();
 
-            // O debito e a entrada na aposta precisam commitar juntos (RN18).
+            // O debito e a entrada no desafio precisam commitar juntos (RN18).
             var estrategia = db.Database.CreateExecutionStrategy();
             await estrategia.ExecuteAsync(async () =>
             {
@@ -170,25 +170,25 @@ public static class ApostasEndpoints
                 await tx.CommitAsync(ct);
             });
 
-            return Results.Ok(new { idAposta = id, status = aposta.Status });
+            return Results.Ok(new { idDesafio = id, status = desafio.Status });
         });
 
         grupo.MapPost("/{id:int}/cancelar", async (int id, CancelarRequest requisicao,
             IUsuarioAtual usuario, EuDuvidoDbContext db, CancellationToken ct) =>
         {
-            var aposta = await db.Apostas.FirstOrDefaultAsync(a => a.IdAposta == id, ct);
-            if (aposta is null) return Results.NotFound();
+            var desafio = await db.Desafios.FirstOrDefaultAsync(a => a.IdDesafio == id, ct);
+            if (desafio is null) return Results.NotFound();
 
-            var permitido = aposta.Cancelar(usuario.Id, requisicao.Motivo);
+            var permitido = desafio.Cancelar(usuario.Id, requisicao.Motivo);
             if (permitido.IsError) return permitido.ToHttp();
 
             // Estorno e mudanca de status vivem na procedure (RN12).
             await db.Database.ExecuteSqlRawAsync(
-                "CALL apostas.cancelar_aposta(@a, @m)",
+                "CALL desafios.cancelar_desafio(@a, @m)",
                 [new NpgsqlParameter("a", NpgsqlDbType.Integer) { Value = id },
                  new NpgsqlParameter("m", NpgsqlDbType.Varchar) { Value = requisicao.Motivo }], ct);
 
-            return Results.Ok(new { idAposta = id, status = "CANCELADA" });
+            return Results.Ok(new { idDesafio = id, status = "CANCELADA" });
         });
 
         grupo.MapPost("/{id:int}/comentarios", async (int id, ComentarRequest requisicao,
@@ -198,13 +198,13 @@ public static class ApostasEndpoints
                 return Results.ValidationProblem(new Dictionary<string, string[]>
                     { ["texto"] = ["Comentario vazio."] });
 
-            db.Comentarios.Add(ComentarioAposta.Novo(id, usuario.Id, requisicao.Texto));
+            db.Comentarios.Add(ComentarioDesafio.Novo(id, usuario.Id, requisicao.Texto));
             await db.SaveChangesAsync(ct);
             return Results.NoContent();
         });
     }
 
-    private static Dictionary<string, string[]> ValidarCriacao(CriarApostaRequest r)
+    private static Dictionary<string, string[]> ValidarCriacao(CriarDesafioRequest r)
     {
         var erros = new Dictionary<string, string[]>();
 
@@ -213,7 +213,7 @@ public static class ApostasEndpoints
         if (string.IsNullOrWhiteSpace(r.Descricao))
             erros["descricao"] = ["Descricao e obrigatoria."];
         if (r.ValorCp <= 0)
-            erros["valorCp"] = ["A aposta precisa custar ao menos 1 CP."];
+            erros["valorCp"] = ["O desafio precisa custar ao menos 1 CP."];
         if (r.DataLimite <= DateTimeOffset.UtcNow)
             erros["dataLimite"] = ["O prazo precisa estar no futuro."];
         if (r.TipoRecompensa == TipoRecompensa.Monetaria && r.ValorMonetario is <= 0)
@@ -226,11 +226,11 @@ public static class ApostasEndpoints
     }
 }
 
-public record CriarApostaRequest(
+public record CriarDesafioRequest(
     int IdGrupo, int IdCategoria, string Titulo, string Descricao, int ValorCp,
     string TipoRecompensa, decimal? ValorMonetario, string? DescricaoPrenda,
     DateTimeOffset DataLimite);
 
-public record AceitarRequest(string PapelAposta, string Escolha);
+public record AceitarRequest(string PapelDesafio, string Escolha);
 public record CancelarRequest(string Motivo);
 public record ComentarRequest(string Texto);

@@ -8,7 +8,7 @@ public class TransacaoCp
     public int IdTransacao { get; private set; }
     public int IdGrupo { get; private set; }
     public int? IdUsuario { get; private set; }
-    public int? IdAposta { get; private set; }
+    public int? IdDesafio { get; private set; }
     public string Tipo { get; private set; } = null!;
     public int Valor { get; private set; }
     public string Descricao { get; private set; } = null!;
@@ -20,7 +20,7 @@ public class TransacaoCp
 public static class TipoTransacao
 {
     public const string CreditoInicial = "CREDITO_INICIAL";
-    public const string ApostaEscrow = "APOSTA_ESCROW";
+    public const string DesafioEscrow = "DESAFIO_ESCROW";
     public const string Premio = "PREMIO";
     public const string Estorno = "ESTORNO";
     public const string RecompensaVoto = "RECOMPENSA_VOTO";

@@ -18,21 +18,21 @@ public static class RankingEndpoints
             return Results.Ok(await conexao.QueryAsync(
                 """
                 SELECT u.apelido, u.avatar_url AS "avatarUrl", m.saldo_cp AS "saldoCp",
-                       COUNT(DISTINCT p.id_aposta) AS "apostasParticipadas",
-                       COUNT(DISTINCT p.id_aposta) FILTER (
+                       COUNT(DISTINCT p.id_desafio) AS "desafiosParticipadas",
+                       COUNT(DISTINCT p.id_desafio) FILTER (
                            WHERE (a.status = 'FINALIZADA_CUMPRIU' AND p.escolha = 'VAI_CUMPRIR')
                               OR (a.status = 'FINALIZADA_PERDEU' AND p.escolha = 'NAO_VAI_CUMPRIR')
                        ) AS acertos,
-                       COUNT(DISTINCT p.id_aposta) FILTER (
+                       COUNT(DISTINCT p.id_desafio) FILTER (
                            WHERE (a.status = 'FINALIZADA_CUMPRIU' AND p.escolha = 'NAO_VAI_CUMPRIR')
                               OR (a.status = 'FINALIZADA_PERDEU' AND p.escolha = 'VAI_CUMPRIR')
                        ) AS erros,
                        COALESCE(SUM(t.valor) FILTER (WHERE t.tipo = 'PREMIO'), 0) AS "cpGanhoEmPremios"
                   FROM grupos.membro_grupo m
                   JOIN identidade.usuario u ON u.id_usuario = m.id_usuario
-                  LEFT JOIN apostas.aposta a ON a.id_grupo = m.id_grupo
-                  LEFT JOIN apostas.participante_aposta p
-                         ON p.id_aposta = a.id_aposta AND p.id_usuario = m.id_usuario
+                  LEFT JOIN desafios.desafio a ON a.id_grupo = m.id_grupo
+                  LEFT JOIN desafios.participante_desafio p
+                         ON p.id_desafio = a.id_desafio AND p.id_usuario = m.id_usuario
                   LEFT JOIN economia.transacao_cp t
                          ON t.id_grupo = m.id_grupo AND t.id_usuario = m.id_usuario
                  WHERE m.id_grupo = @idGrupo
@@ -41,21 +41,21 @@ public static class RankingEndpoints
                 """, new { idGrupo }));
         });
 
-        grupo.MapGet("/ranking/grupos/{idGrupo:int}/maiores-apostas", async (int idGrupo,
+        grupo.MapGet("/ranking/grupos/{idGrupo:int}/maiores-desafios", async (int idGrupo,
             IConexaoLeitura leitura, CancellationToken ct) =>
         {
             using var conexao = await leitura.AbrirAsync(ct);
             return Results.Ok(await conexao.QueryAsync(
                 """
-                SELECT a.id_aposta AS "idAposta", a.titulo, c.nome AS categoria,
+                SELECT a.id_desafio AS "idDesafio", a.titulo, c.nome AS categoria,
                        a.valor_cp AS "valorCp", COUNT(p.id_participante) AS participantes,
                        a.valor_cp * COUNT(p.id_participante) AS "poteTotalCp",
                        a.tipo_recompensa AS "tipoRecompensa", a.status
-                  FROM apostas.aposta a
-                  JOIN apostas.categoria_desafio c ON c.id_categoria = a.id_categoria
-                  LEFT JOIN apostas.participante_aposta p ON p.id_aposta = a.id_aposta
+                  FROM desafios.desafio a
+                  JOIN desafios.categoria_desafio c ON c.id_categoria = a.id_categoria
+                  LEFT JOIN desafios.participante_desafio p ON p.id_desafio = a.id_desafio
                  WHERE a.id_grupo = @idGrupo
-                 GROUP BY a.id_aposta, a.titulo, c.nome, a.valor_cp, a.tipo_recompensa, a.status
+                 GROUP BY a.id_desafio, a.titulo, c.nome, a.valor_cp, a.tipo_recompensa, a.status
                  ORDER BY poteTotalCp DESC LIMIT 10
                 """, new { idGrupo }));
         });
@@ -84,20 +84,20 @@ public static class RankingEndpoints
             var extrato = await conexao.QueryAsync(
                 """
                 SELECT t.data_lancamento AS data, t.tipo, t.valor, t.descricao,
-                       a.titulo AS aposta,
+                       a.titulo AS desafio,
                        SUM(t.valor) OVER (PARTITION BY t.id_grupo
                                           ORDER BY t.data_lancamento, t.id_transacao)
                            AS "saldoApos"
                   FROM economia.transacao_cp t
-                  LEFT JOIN apostas.aposta a ON a.id_aposta = t.id_aposta
+                  LEFT JOIN desafios.desafio a ON a.id_desafio = t.id_desafio
                  WHERE t.id_usuario = @id
                  ORDER BY t.data_lancamento DESC, t.id_transacao DESC LIMIT 50
                 """, new { id = usuario.Id });
 
             var historico = await conexao.QuerySingleAsync(
                 """
-                SELECT (SELECT count(*) FROM apostas.aposta WHERE id_criador = @id) AS "apostasCriadas",
-                       (SELECT count(*) FROM apostas.participante_aposta WHERE id_usuario = @id) AS participacoes,
+                SELECT (SELECT count(*) FROM desafios.desafio WHERE id_criador = @id) AS "desafiosCriadas",
+                       (SELECT count(*) FROM desafios.participante_desafio WHERE id_usuario = @id) AS participacoes,
                        (SELECT count(*) FROM validacao.evidencia WHERE id_usuario = @id) AS "evidenciasEnviadas"
                 """, new { id = usuario.Id });
 

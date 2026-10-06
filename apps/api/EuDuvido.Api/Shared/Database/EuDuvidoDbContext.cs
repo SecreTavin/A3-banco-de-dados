@@ -1,4 +1,4 @@
-using EuDuvido.Api.Modules.Apostas.Domain;
+using EuDuvido.Api.Modules.Desafios.Domain;
 using EuDuvido.Api.Modules.Economia.Domain;
 using EuDuvido.Api.Modules.Grupos.Domain;
 using EuDuvido.Api.Modules.Identidade.Domain;
@@ -10,7 +10,7 @@ namespace EuDuvido.Api.Shared.Database;
 
 // Toda configuracao usa nomes de constraint explicitos e iguais aos do
 // schema.sql documentado. Os documentos 11, 12 e 17 citam esses nomes; deixar
-// o EF gerar CK_aposta_xxx faria tres entregaveis mentirem.
+// o EF gerar CK_desafio_xxx faria tres entregaveis mentirem.
 public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : DbContext(options)
 {
     public DbSet<Usuario> Usuarios => Set<Usuario>();
@@ -19,9 +19,9 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
     public DbSet<MembroGrupo> Membros => Set<MembroGrupo>();
     public DbSet<ConviteGrupo> Convites => Set<ConviteGrupo>();
     public DbSet<CategoriaDesafio> Categorias => Set<CategoriaDesafio>();
-    public DbSet<Aposta> Apostas => Set<Aposta>();
-    public DbSet<ParticipanteAposta> Participantes => Set<ParticipanteAposta>();
-    public DbSet<ComentarioAposta> Comentarios => Set<ComentarioAposta>();
+    public DbSet<Desafio> Desafios => Set<Desafio>();
+    public DbSet<ParticipanteDesafio> Participantes => Set<ParticipanteDesafio>();
+    public DbSet<ComentarioDesafio> Comentarios => Set<ComentarioDesafio>();
     public DbSet<Evidencia> Evidencias => Set<Evidencia>();
     public DbSet<ValidadorEvidencia> Validadores => Set<ValidadorEvidencia>();
     public DbSet<VotoEvidencia> Votos => Set<VotoEvidencia>();
@@ -33,7 +33,7 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
     {
         ConfigurarIdentidade(b);
         ConfigurarGrupos(b);
-        ConfigurarApostas(b);
+        ConfigurarDesafios(b);
         ConfigurarValidacao(b);
         ConfigurarEconomia(b);
         ConfigurarNotificacoes(b);
@@ -158,11 +158,11 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
         });
     }
 
-    private static void ConfigurarApostas(ModelBuilder b)
+    private static void ConfigurarDesafios(ModelBuilder b)
     {
         b.Entity<CategoriaDesafio>(e =>
         {
-            e.ToTable("categoria_desafio", "apostas");
+            e.ToTable("categoria_desafio", "desafios");
             e.HasKey(x => x.IdCategoria).HasName("pk_categoria_desafio");
             e.Property(x => x.IdCategoria).HasColumnName("id_categoria");
             e.Property(x => x.Nome).HasColumnName("nome").HasMaxLength(50).IsRequired();
@@ -170,26 +170,26 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
             e.HasIndex(x => x.Nome).IsUnique().HasDatabaseName("unq_categoria_nome");
         });
 
-        b.Entity<Aposta>(e =>
+        b.Entity<Desafio>(e =>
         {
-            e.ToTable("aposta", "apostas", t =>
+            e.ToTable("desafio", "desafios", t =>
             {
-                t.HasCheckConstraint("chk_aposta_tipo",
+                t.HasCheckConstraint("chk_desafio_tipo",
                      "tipo_recompensa IN ('MONETARIA', 'PRENDA_ACAO', 'ITEM_MATERIAL', 'OUTRO')");
-                t.HasCheckConstraint("chk_aposta_valor",
+                t.HasCheckConstraint("chk_desafio_valor",
                      "valor_monetario IS NULL OR valor_monetario > 0");
-                t.HasCheckConstraint("chk_aposta_valor_cp", "valor_cp > 0");
-                t.HasCheckConstraint("chk_aposta_status",
+                t.HasCheckConstraint("chk_desafio_valor_cp", "valor_cp > 0");
+                t.HasCheckConstraint("chk_desafio_status",
                      "status IN ('ABERTA', 'EM_ANDAMENTO', 'EM_VOTACAO', " +
                      "'FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA')");
-                t.HasCheckConstraint("chk_aposta_cancelamento",
+                t.HasCheckConstraint("chk_desafio_cancelamento",
                      "status <> 'CANCELADA' OR motivo_cancelamento IS NOT NULL");
-                t.HasCheckConstraint("chk_aposta_encerramento",
+                t.HasCheckConstraint("chk_desafio_encerramento",
                      "status NOT IN ('FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA') " +
                      "OR data_encerramento IS NOT NULL");
             });
-            e.HasKey(x => x.IdAposta).HasName("pk_aposta");
-            e.Property(x => x.IdAposta).HasColumnName("id_aposta");
+            e.HasKey(x => x.IdDesafio).HasName("pk_desafio");
+            e.Property(x => x.IdDesafio).HasColumnName("id_desafio");
             e.Property(x => x.IdGrupo).HasColumnName("id_grupo");
             e.Property(x => x.IdCriador).HasColumnName("id_criador");
             e.Property(x => x.IdCategoria).HasColumnName("id_categoria");
@@ -210,68 +210,68 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
                 .HasColumnName("motivo_cancelamento").HasMaxLength(255);
             e.Property(x => x.DataEncerramento).HasColumnName("data_encerramento");
             e.HasOne<GrupoAmigos>().WithMany().HasForeignKey(x => x.IdGrupo)
-                .HasConstraintName("fk_aposta_grupo").OnDelete(DeleteBehavior.Cascade);
+                .HasConstraintName("fk_desafio_grupo").OnDelete(DeleteBehavior.Cascade);
             e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdCriador)
-                .HasConstraintName("fk_aposta_criador").OnDelete(DeleteBehavior.Restrict);
+                .HasConstraintName("fk_desafio_criador").OnDelete(DeleteBehavior.Restrict);
             e.HasOne<CategoriaDesafio>().WithMany().HasForeignKey(x => x.IdCategoria)
-                .HasConstraintName("fk_aposta_categoria").OnDelete(DeleteBehavior.Restrict);
+                .HasConstraintName("fk_desafio_categoria").OnDelete(DeleteBehavior.Restrict);
             e.HasMany(x => x.Participantes).WithOne()
-                .HasForeignKey(p => p.IdAposta)
-                .HasConstraintName("fk_participante_aposta")
+                .HasForeignKey(p => p.IdDesafio)
+                .HasConstraintName("fk_participante_desafio")
                 .OnDelete(DeleteBehavior.Cascade);
-            e.HasIndex(x => x.IdGrupo).HasDatabaseName("idx_aposta_grupo");
-            e.HasIndex(x => x.Status).HasDatabaseName("idx_aposta_status");
-            e.HasIndex(x => x.DataLimite).HasDatabaseName("idx_aposta_data_limite")
+            e.HasIndex(x => x.IdGrupo).HasDatabaseName("idx_desafio_grupo");
+            e.HasIndex(x => x.Status).HasDatabaseName("idx_desafio_status");
+            e.HasIndex(x => x.DataLimite).HasDatabaseName("idx_desafio_data_limite")
                 .HasFilter("status IN ('ABERTA', 'EM_ANDAMENTO')");
         });
 
-        b.Entity<ParticipanteAposta>(e =>
+        b.Entity<ParticipanteDesafio>(e =>
         {
-            e.ToTable("participante_aposta", "apostas", t =>
+            e.ToTable("participante_desafio", "desafios", t =>
             {
                 t.HasCheckConstraint("chk_participante_papel",
-                     "papel_aposta IN ('DESAFIANTE', 'DESAFIADO', 'APOSTADOR')");
+                     "papel_desafio IN ('DESAFIANTE', 'DESAFIADO', 'APOSTADOR')");
                 t.HasCheckConstraint("chk_participante_escolha",
                      "escolha IN ('VAI_CUMPRIR', 'NAO_VAI_CUMPRIR')");
             });
-            e.HasKey(x => x.IdParticipante).HasName("pk_participante_aposta");
+            e.HasKey(x => x.IdParticipante).HasName("pk_participante_desafio");
             e.Property(x => x.IdParticipante).HasColumnName("id_participante");
-            e.Property(x => x.IdAposta).HasColumnName("id_aposta");
+            e.Property(x => x.IdDesafio).HasColumnName("id_desafio");
             e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
-            e.Property(x => x.PapelAposta).HasColumnName("papel_aposta")
+            e.Property(x => x.PapelDesafio).HasColumnName("papel_desafio")
                 .HasMaxLength(20).IsRequired();
             e.Property(x => x.Escolha).HasColumnName("escolha").HasMaxLength(20).IsRequired();
             e.Property(x => x.DataAceite).HasColumnName("data_aceite")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
             e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdUsuario)
                 .HasConstraintName("fk_participante_usuario").OnDelete(DeleteBehavior.Restrict);
-            e.HasIndex(x => new { x.IdAposta, x.IdUsuario }).IsUnique()
-                .HasDatabaseName("unq_participante_aposta");
+            e.HasIndex(x => new { x.IdDesafio, x.IdUsuario }).IsUnique()
+                .HasDatabaseName("unq_participante_desafio");
             e.HasIndex(x => x.IdUsuario).HasDatabaseName("idx_participante_usuario");
             // RN09: no maximo 1 DESAFIANTE e 1 DESAFIADO. APOSTADOR fica livre.
-            e.HasIndex(x => new { x.IdAposta, x.PapelAposta }).IsUnique()
-                .HasDatabaseName("unq_aposta_papel_unico")
-                .HasFilter("papel_aposta IN ('DESAFIANTE', 'DESAFIADO')");
+            e.HasIndex(x => new { x.IdDesafio, x.PapelDesafio }).IsUnique()
+                .HasDatabaseName("unq_desafio_papel_unico")
+                .HasFilter("papel_desafio IN ('DESAFIANTE', 'DESAFIADO')");
         });
 
-        b.Entity<ComentarioAposta>(e =>
+        b.Entity<ComentarioDesafio>(e =>
         {
-            e.ToTable("comentario_aposta", "apostas", t =>
+            e.ToTable("comentario_desafio", "desafios", t =>
             {
                 t.HasCheckConstraint("chk_comentario_texto", "length(trim(texto)) > 0");
             });
-            e.HasKey(x => x.IdComentario).HasName("pk_comentario_aposta");
+            e.HasKey(x => x.IdComentario).HasName("pk_comentario_desafio");
             e.Property(x => x.IdComentario).HasColumnName("id_comentario");
-            e.Property(x => x.IdAposta).HasColumnName("id_aposta");
+            e.Property(x => x.IdDesafio).HasColumnName("id_desafio");
             e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
             e.Property(x => x.Texto).HasColumnName("texto").HasMaxLength(500).IsRequired();
             e.Property(x => x.DataEnvio).HasColumnName("data_envio")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
-            e.HasOne<Aposta>().WithMany().HasForeignKey(x => x.IdAposta)
-                .HasConstraintName("fk_comentario_aposta").OnDelete(DeleteBehavior.Cascade);
+            e.HasOne<Desafio>().WithMany().HasForeignKey(x => x.IdDesafio)
+                .HasConstraintName("fk_comentario_desafio").OnDelete(DeleteBehavior.Cascade);
             e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdUsuario)
                 .HasConstraintName("fk_comentario_usuario").OnDelete(DeleteBehavior.Restrict);
-            e.HasIndex(x => x.IdAposta).HasDatabaseName("idx_comentario_aposta");
+            e.HasIndex(x => x.IdDesafio).HasDatabaseName("idx_comentario_desafio");
         });
     }
 
@@ -293,7 +293,7 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
             });
             e.HasKey(x => x.IdEvidencia).HasName("pk_evidencia");
             e.Property(x => x.IdEvidencia).HasColumnName("id_evidencia");
-            e.Property(x => x.IdAposta).HasColumnName("id_aposta");
+            e.Property(x => x.IdDesafio).HasColumnName("id_desafio");
             e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
             e.Property(x => x.Ordem).HasColumnName("ordem");
             e.Property(x => x.TipoMidia).HasColumnName("tipo_midia").HasMaxLength(20).IsRequired();
@@ -306,8 +306,8 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
             e.Property(x => x.DataLimiteVotacao).HasColumnName("data_limite_votacao");
             e.Property(x => x.DataApuracao).HasColumnName("data_apuracao");
-            e.HasOne<Aposta>().WithMany().HasForeignKey(x => x.IdAposta)
-                .HasConstraintName("fk_evidencia_aposta").OnDelete(DeleteBehavior.Cascade);
+            e.HasOne<Desafio>().WithMany().HasForeignKey(x => x.IdDesafio)
+                .HasConstraintName("fk_evidencia_desafio").OnDelete(DeleteBehavior.Cascade);
             e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdUsuario)
                 .HasConstraintName("fk_evidencia_usuario").OnDelete(DeleteBehavior.Restrict);
             e.HasMany(x => x.Validadores).WithOne()
@@ -318,9 +318,9 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
                 .HasForeignKey(v => v.IdEvidencia)
                 .HasConstraintName("fk_voto_evidencia")
                 .OnDelete(DeleteBehavior.Cascade);
-            e.HasIndex(x => new { x.IdAposta, x.Ordem }).IsUnique()
+            e.HasIndex(x => new { x.IdDesafio, x.Ordem }).IsUnique()
                 .HasDatabaseName("unq_evidencia_ordem");
-            e.HasIndex(x => x.IdAposta).HasDatabaseName("idx_evidencia_aposta");
+            e.HasIndex(x => x.IdDesafio).HasDatabaseName("idx_evidencia_desafio");
             e.HasIndex(x => x.DataLimiteVotacao).HasDatabaseName("idx_evidencia_pendente")
                 .HasFilter("status = 'EM_VOTACAO'");
         });
@@ -367,22 +367,25 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
     {
         b.Entity<TransacaoCp>(e =>
         {
+            // APOSTA_ESCROW e o nome antigo de DESAFIO_ESCROW. O ledger e append-only
+            // (ADR 0007): lancamentos antigos nao sao reescritos, entao o valor legado
+            // continua aceito, mas nenhum codigo novo o grava.
             e.ToTable("transacao_cp", "economia", t =>
             {
                 t.HasCheckConstraint("chk_transacao_tipo",
-                     "tipo IN ('CREDITO_INICIAL', 'APOSTA_ESCROW', 'PREMIO', " +
+                     "tipo IN ('CREDITO_INICIAL', 'DESAFIO_ESCROW', 'APOSTA_ESCROW', 'PREMIO', " +
                      "'ESTORNO', 'RECOMPENSA_VOTO')");
                 t.HasCheckConstraint("chk_transacao_valor", "valor <> 0");
                 t.HasCheckConstraint("chk_transacao_conta",
-                     "id_usuario IS NOT NULL OR id_aposta IS NOT NULL");
+                     "id_usuario IS NOT NULL OR id_desafio IS NOT NULL");
                 t.HasCheckConstraint("chk_transacao_escrow",
-                     "tipo <> 'APOSTA_ESCROW' OR id_aposta IS NOT NULL");
+                     "tipo NOT IN ('DESAFIO_ESCROW', 'APOSTA_ESCROW') OR id_desafio IS NOT NULL");
             });
             e.HasKey(x => x.IdTransacao).HasName("pk_transacao_cp");
             e.Property(x => x.IdTransacao).HasColumnName("id_transacao");
             e.Property(x => x.IdGrupo).HasColumnName("id_grupo");
             e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
-            e.Property(x => x.IdAposta).HasColumnName("id_aposta");
+            e.Property(x => x.IdDesafio).HasColumnName("id_desafio");
             e.Property(x => x.Tipo).HasColumnName("tipo").HasMaxLength(20).IsRequired();
             e.Property(x => x.Valor).HasColumnName("valor");
             e.Property(x => x.Descricao).HasColumnName("descricao").HasMaxLength(255).IsRequired();
@@ -392,10 +395,10 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
                 .HasConstraintName("fk_transacao_grupo").OnDelete(DeleteBehavior.Cascade);
             e.HasOne<Usuario>().WithMany().HasForeignKey(x => x.IdUsuario)
                 .HasConstraintName("fk_transacao_usuario").OnDelete(DeleteBehavior.Restrict);
-            e.HasOne<Aposta>().WithMany().HasForeignKey(x => x.IdAposta)
-                .HasConstraintName("fk_transacao_aposta").OnDelete(DeleteBehavior.Restrict);
+            e.HasOne<Desafio>().WithMany().HasForeignKey(x => x.IdDesafio)
+                .HasConstraintName("fk_transacao_desafio").OnDelete(DeleteBehavior.Restrict);
             e.HasIndex(x => new { x.IdGrupo, x.IdUsuario }).HasDatabaseName("idx_transacao_conta");
-            e.HasIndex(x => x.IdAposta).HasDatabaseName("idx_transacao_aposta");
+            e.HasIndex(x => x.IdDesafio).HasDatabaseName("idx_transacao_desafio");
         });
     }
 
@@ -407,7 +410,7 @@ public class EuDuvidoDbContext(DbContextOptions<EuDuvidoDbContext> options) : Db
             {
                 t.HasCheckConstraint("chk_notificacao_tipo",
                     "tipo IN ('PRAZO_VENCENDO', 'EVIDENCIA_ENVIADA', 'VOTACAO_ABERTA', " +
-                    "'APOSTA_ENCERRADA', 'CONVITE_ACEITO')");
+                    "'DESAFIO_ENCERRADO', 'CONVITE_ACEITO')");
             });
             e.HasKey(x => x.IdNotificacao).HasName("pk_notificacao");
             e.Property(x => x.IdNotificacao).HasColumnName("id_notificacao");

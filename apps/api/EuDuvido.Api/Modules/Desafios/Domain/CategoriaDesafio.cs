@@ -1,4 +1,4 @@
-namespace EuDuvido.Api.Modules.Apostas.Domain;
+namespace EuDuvido.Api.Modules.Desafios.Domain;
 
 public class CategoriaDesafio
 {

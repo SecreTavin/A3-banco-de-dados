@@ -32,6 +32,6 @@ public static class TipoNotificacao
     public const string PrazoVencendo = "PRAZO_VENCENDO";
     public const string EvidenciaEnviada = "EVIDENCIA_ENVIADA";
     public const string VotacaoAberta = "VOTACAO_ABERTA";
-    public const string ApostaEncerrada = "APOSTA_ENCERRADA";
+    public const string DesafioEncerrado = "DESAFIO_ENCERRADO";
     public const string ConviteAceito = "CONVITE_ACEITO";
 }

@@ -8,10 +8,10 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
 {
     private NpgsqlConnection Conectar() => new(banco.ConnectionString);
 
-    [Fact(DisplayName = "Quorum atingido encerra a aposta e liquida o CP na mesma transacao")]
+    [Fact(DisplayName = "Quorum atingido encerra o desafio e liquida o CP na mesma transacao")]
     public async Task CicloCompleto()
     {
-        var cenario = await new CenarioAposta(banco.ConnectionString).MontarAsync(membros: 5);
+        var cenario = await new CenarioDesafio(banco.ConnectionString).MontarAsync(membros: 5);
         var idEvidencia = await cenario.EnviarEvidenciaAsync();
 
         await using var c = Conectar();
@@ -20,25 +20,25 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
         // 3 validadores => quorum 2. O primeiro voto nao pode encerrar nada.
         await cenario.VotarAsync(idEvidencia, cenario.IdsValidadores[0], "VALIDO");
 
-        var apos1 = await c.QuerySingleAsync<(string Evidencia, string Aposta)>(
+        var apos1 = await c.QuerySingleAsync<(string Evidencia, string Desafio)>(
             """
             SELECT e.status, a.status FROM validacao.evidencia e
-            JOIN apostas.aposta a ON a.id_aposta = e.id_aposta
+            JOIN desafios.desafio a ON a.id_desafio = e.id_desafio
             WHERE e.id_evidencia = @id
             """, new { id = idEvidencia });
         apos1.Evidencia.Should().Be("EM_VOTACAO");
-        apos1.Aposta.Should().Be("EM_VOTACAO");
+        apos1.Desafio.Should().Be("EM_VOTACAO");
 
         await cenario.VotarAsync(idEvidencia, cenario.IdsValidadores[1], "VALIDO");
 
-        var apos2 = await c.QuerySingleAsync<(string Evidencia, string Aposta)>(
+        var apos2 = await c.QuerySingleAsync<(string Evidencia, string Desafio)>(
             """
             SELECT e.status, a.status FROM validacao.evidencia e
-            JOIN apostas.aposta a ON a.id_aposta = e.id_aposta
+            JOIN desafios.desafio a ON a.id_desafio = e.id_desafio
             WHERE e.id_evidencia = @id
             """, new { id = idEvidencia });
         apos2.Evidencia.Should().Be("ACEITA");
-        apos2.Aposta.Should().Be("FINALIZADA_CUMPRIU");
+        apos2.Desafio.Should().Be("FINALIZADA_CUMPRIU");
 
         // Pote de 40 CP (2 participantes x 20) vai inteiro para quem apostou
         // VAI_CUMPRIR - o desafiado. Ele pagou 20, entao fecha em 120.
@@ -62,7 +62,7 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
     [Fact(DisplayName = "A view de reconciliacao fica vazia apos o ciclo completo")]
     public async Task ReconciliacaoFecha()
     {
-        var cenario = await new CenarioAposta(banco.ConnectionString).MontarAsync(membros: 5);
+        var cenario = await new CenarioDesafio(banco.ConnectionString).MontarAsync(membros: 5);
         var idEvidencia = await cenario.EnviarEvidenciaAsync();
         await cenario.VotarAsync(idEvidencia, cenario.IdsValidadores[0], "VALIDO");
         await cenario.VotarAsync(idEvidencia, cenario.IdsValidadores[1], "VALIDO");
@@ -76,13 +76,13 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
 
         var orfaos = await c.QuerySingleAsync<int>(
             "SELECT count(*) FROM economia.vw_escrow_orfao");
-        orfaos.Should().Be(0, "aposta encerrada nao pode reter CP no escrow");
+        orfaos.Should().Be(0, "desafio encerrado nao pode reter CP no escrow");
     }
 
     [Fact(DisplayName = "Soma do ledger do grupo bate com creditos iniciais mais recompensas")]
     public async Task LedgerBalanceia()
     {
-        var cenario = await new CenarioAposta(banco.ConnectionString).MontarAsync(membros: 5);
+        var cenario = await new CenarioDesafio(banco.ConnectionString).MontarAsync(membros: 5);
         var idEvidencia = await cenario.EnviarEvidenciaAsync();
         await cenario.VotarAsync(idEvidencia, cenario.IdsValidadores[0], "VALIDO");
         await cenario.VotarAsync(idEvidencia, cenario.IdsValidadores[1], "VALIDO");
@@ -103,7 +103,7 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
     [Fact(DisplayName = "Apurar duas vezes nao altera nada")]
     public async Task ApuracaoIdempotente()
     {
-        var cenario = await new CenarioAposta(banco.ConnectionString).MontarAsync(membros: 5);
+        var cenario = await new CenarioDesafio(banco.ConnectionString).MontarAsync(membros: 5);
         var idEvidencia = await cenario.EnviarEvidenciaAsync();
         await cenario.VotarAsync(idEvidencia, cenario.IdsValidadores[0], "VALIDO");
         await cenario.VotarAsync(idEvidencia, cenario.IdsValidadores[1], "VALIDO");
@@ -125,10 +125,10 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
         depois.Should().Be(antes);
     }
 
-    [Fact(DisplayName = "Maioria INVALIDO recusa a evidencia sem encerrar a aposta na primeira")]
+    [Fact(DisplayName = "Maioria INVALIDO recusa a evidencia sem encerrar o desafio na primeira")]
     public async Task EvidenciaRecusada()
     {
-        var cenario = await new CenarioAposta(banco.ConnectionString).MontarAsync(membros: 5);
+        var cenario = await new CenarioDesafio(banco.ConnectionString).MontarAsync(membros: 5);
         var idEvidencia = await cenario.EnviarEvidenciaAsync();
         await cenario.VotarAsync(idEvidencia, cenario.IdsValidadores[0], "INVALIDO");
         await cenario.VotarAsync(idEvidencia, cenario.IdsValidadores[1], "INVALIDO");
@@ -136,22 +136,22 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
         await using var c = Conectar();
         await c.OpenAsync();
 
-        var estado = await c.QuerySingleAsync<(string Evidencia, string Aposta)>(
+        var estado = await c.QuerySingleAsync<(string Evidencia, string Desafio)>(
             """
             SELECT e.status, a.status FROM validacao.evidencia e
-            JOIN apostas.aposta a ON a.id_aposta = e.id_aposta
+            JOIN desafios.desafio a ON a.id_desafio = e.id_desafio
             WHERE e.id_evidencia = @id
             """, new { id = idEvidencia });
 
         estado.Evidencia.Should().Be("RECUSADA");
         // RN10: so a terceira recusa encerra contra o desafiado.
-        estado.Aposta.Should().Be("EM_VOTACAO");
+        estado.Desafio.Should().Be("EM_VOTACAO");
     }
 
-    [Fact(DisplayName = "Tres evidencias recusadas encerram a aposta contra o desafiado")]
+    [Fact(DisplayName = "Tres evidencias recusadas encerram o desafio contra o desafiado")]
     public async Task TresRecusasEncerram()
     {
-        var cenario = await new CenarioAposta(banco.ConnectionString).MontarAsync(membros: 5);
+        var cenario = await new CenarioDesafio(banco.ConnectionString).MontarAsync(membros: 5);
 
         for (var ordem = 1; ordem <= 3; ordem++)
         {
@@ -164,7 +164,7 @@ public class ApuracaoTests(BancoDeTeste banco) : IClassFixture<BancoDeTeste>
         await c.OpenAsync();
 
         var status = await c.QuerySingleAsync<string>(
-            "SELECT status FROM apostas.aposta WHERE id_aposta = @a", new { a = cenario.IdAposta });
+            "SELECT status FROM desafios.desafio WHERE id_desafio = @a", new { a = cenario.IdDesafio });
         status.Should().Be("FINALIZADA_PERDEU");
 
         var orfaos = await c.QuerySingleAsync<int>(
