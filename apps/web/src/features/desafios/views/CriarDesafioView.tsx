@@ -7,8 +7,8 @@ import { rotuloRecompensa } from '../../../shared/ui/status'
 import type { TipoRecompensa } from '../../../shared/api/tipos'
 import { useGruposQuery } from '../../grupos/hooks/useGruposQuery'
 import { useCategoriasQuery } from '../hooks/useCategoriasQuery'
-import { useCriarApostaCommand } from '../hooks/useCriarApostaCommand'
-import estilos from '../apostas.module.css'
+import { useCriarDesafioCommand } from '../hooks/useCriarDesafioCommand'
+import estilos from '../desafios.module.css'
 
 const TIPOS_RECOMPENSA: TipoRecompensa[] = ['MONETARIA', 'PRENDA_ACAO', 'ITEM_MATERIAL', 'OUTRO']
 
@@ -18,10 +18,10 @@ function agoraLocal() {
   return new Date(agora.getTime() - agora.getTimezoneOffset() * 60_000).toISOString().slice(0, 16)
 }
 
-export function CriarApostaView() {
+export function CriarDesafioView() {
   const { dados: grupos, carregando: carregandoGrupos } = useGruposQuery()
   const { dados: categorias, carregando: carregandoCategorias } = useCategoriasQuery()
-  const criar = useCriarApostaCommand()
+  const criar = useCriarDesafioCommand()
   const navegar = useNavigate()
 
   const [idGrupo, setIdGrupo] = useState('')
@@ -51,17 +51,17 @@ export function CriarApostaView() {
       dataLimite: paraIso(dataLimite),
     })
 
-    if (resultado.ok) navegar(`/apostas/${resultado.dados.idAposta}`, { replace: true })
+    if (resultado.ok) navegar(`/desafios/${resultado.dados.idDesafio}`, { replace: true })
   }
 
   if (carregandoGrupos || carregandoCategorias) return <SpinnerCentral />
 
   return (
     <>
-      <LinkVoltar para="/apostas" rotulo="Minhas apostas" />
+      <LinkVoltar para="/desafios" rotulo="Meus desafios" />
       <CabecalhoPagina
-        titulo="Nova aposta"
-        descricao="A aposta não pode ser editada depois de criada — só cancelada, com motivo."
+        titulo="Novo desafio"
+        descricao="O desafio não pode ser editado depois de criado — só cancelado, com motivo."
       />
 
       <Card>
@@ -171,9 +171,9 @@ export function CriarApostaView() {
 
           <div className={estilos.formularioBotoes}>
             <Botao type="submit" carregando={criar.enviando}>
-              Criar aposta
+              Criar desafio
             </Botao>
-            <Botao type="button" variante="fantasma" onClick={() => navegar('/apostas')}>
+            <Botao type="button" variante="fantasma" onClick={() => navegar('/desafios')}>
               Cancelar
             </Botao>
           </div>

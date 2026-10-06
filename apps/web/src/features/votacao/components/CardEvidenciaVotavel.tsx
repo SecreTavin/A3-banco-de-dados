@@ -20,7 +20,7 @@ export function CardEvidenciaVotavel({ evidencia, votando, aoVotar }: Props) {
   return (
     <article className={estilos.evidencia}>
       <header className={estilos.cabecalho}>
-        <Link to={`/apostas/${evidencia.idAposta}`} className={estilos.desafio}>
+        <Link to={`/desafios/${evidencia.idDesafio}`} className={estilos.desafio}>
           {evidencia.desafio}
         </Link>
         {evidencia.jaVotei && (

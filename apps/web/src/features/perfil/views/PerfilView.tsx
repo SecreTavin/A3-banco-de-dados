@@ -43,8 +43,8 @@ export function PerfilView() {
       <Secao titulo="Histórico">
         <div className={estilos.numeros}>
           <Card className={estilos.numero}>
-            <span className={estilos.numeroValor}>{historico.apostasCriadas}</span>
-            <span className={estilos.numeroRotulo}>apostas criadas</span>
+            <span className={estilos.numeroValor}>{historico.desafiosCriadas}</span>
+            <span className={estilos.numeroRotulo}>desafios criados</span>
           </Card>
           <Card className={estilos.numero}>
             <span className={estilos.numeroValor}>{historico.participacoes}</span>
@@ -81,7 +81,7 @@ export function PerfilView() {
         {extrato.length === 0 ? (
           <EstadoVazio
             titulo="Sem movimentações"
-            descricao="Aceitar uma aposta ou votar numa evidência já mexe no seu saldo."
+            descricao="Aceitar um desafio ou votar numa evidência já mexe no seu saldo."
           />
         ) : (
           <ul className={estilos.extrato}>

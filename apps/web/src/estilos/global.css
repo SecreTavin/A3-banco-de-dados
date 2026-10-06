@@ -1,4 +1,5 @@
-:root {
+:root,
+:root[data-tema='escuro'] {
   color-scheme: dark;
 
   --fundo: #0a0b11;
@@ -26,11 +27,56 @@
   --perdeu: #ef4444;
   --cancelada: #6b7280;
 
+  --topo-fundo: rgba(16, 18, 27, 0.9);
+  --nav-fundo: rgba(16, 18, 27, 0.96);
+  --erro-texto: #fca5a5;
+  --ok-texto: #86efac;
+  --destaque-texto: #c4b5fd;
+
   --raio: 14px;
   --raio-pequeno: 9px;
   --sombra: 0 10px 30px rgba(0, 0, 0, 0.45);
   --largura-maxima: 940px;
   --altura-nav: 62px;
+}
+
+/* Tema claro. O atributo data-tema vem do script em index.html (preferencia
+   salva ou, na falta dela, a do sistema) e do botao de tema no topo. */
+:root[data-tema='claro'] {
+  color-scheme: light;
+
+  --fundo: #f4f5fa;
+  --fundo-topo: #ffffff;
+  --superficie: #ffffff;
+  --superficie-alta: #eceef6;
+  --borda: #d6d9e8;
+  --borda-forte: #bcc2da;
+
+  --texto: #11131e;
+  --texto-suave: #444b63;
+  --texto-fraco: #646b84;
+
+  --primaria: #5b3fd6;
+  --primaria-forte: #4a2fc4;
+  --primaria-fraca: rgba(91, 63, 214, 0.12);
+
+  --cp: #8a5a00;
+  --cp-fraca: rgba(214, 150, 0, 0.16);
+
+  --aberta: #1d4ed8;
+  --em-andamento: #b45309;
+  --em-votacao: #7e22ce;
+  --cumpriu: #15803d;
+  --perdeu: #dc2626;
+  --cancelada: #4b5563;
+
+  --topo-fundo: rgba(255, 255, 255, 0.92);
+  --nav-fundo: rgba(255, 255, 255, 0.97);
+  --erro-texto: #b91c1c;
+  --ok-texto: #15803d;
+  --destaque-texto: #4a2fc4;
+
+  --sombra: 0 10px 30px rgba(30, 36, 70, 0.12);
 }
 
 *,
@@ -39,14 +85,18 @@
   box-sizing: border-box;
 }
 
+/* Prototipo de apresentacao: a pagina nao rola na vertical. O layout ocupa
+   exatamente a janela (100dvh) e o conteudo se ajusta a ela. */
 html,
 body,
 #root {
   height: 100%;
+  overflow: hidden;
 }
 
 body {
   margin: 0;
+  overscroll-behavior: none;
   background:
     radial-gradient(900px 480px at 12% -8%, rgba(124, 92, 255, 0.16), transparent 60%),
     radial-gradient(700px 420px at 100% 0%, rgba(34, 197, 94, 0.08), transparent 55%),
@@ -54,7 +104,7 @@ body {
   background-attachment: fixed;
   color: var(--texto);
   font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }

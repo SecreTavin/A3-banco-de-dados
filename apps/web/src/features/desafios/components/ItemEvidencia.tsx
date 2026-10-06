@@ -2,7 +2,7 @@ import { Badge } from '../../../shared/ui'
 import { descreverPrazo, formatarDataHora } from '../../../shared/ui/formato'
 import { aparenciaStatusEvidencia, rotuloMidia } from '../../../shared/ui/status'
 import type { Evidencia } from '../../../shared/api/tipos'
-import estilos from '../apostas.module.css'
+import estilos from '../desafios.module.css'
 
 export function ItemEvidencia({ evidencia }: { evidencia: Evidencia }) {
   const status = aparenciaStatusEvidencia[evidencia.status]

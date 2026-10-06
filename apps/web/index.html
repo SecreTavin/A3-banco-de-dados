@@ -2,7 +2,20 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
+    <script>
+      // Aplica o tema antes da primeira pintura, para nao piscar: preferencia
+      // salva ou, na falta dela, a do sistema.
+      (function () {
+        var tema = null
+        try { tema = localStorage.getItem('tema') } catch (e) {}
+        if (tema !== 'claro' && tema !== 'escuro') {
+          tema = window.matchMedia('(prefers-color-scheme: light)').matches ? 'claro' : 'escuro'
+        }
+        document.documentElement.setAttribute('data-tema', tema)
+      })()
+    </script>
     <title>Eu Duvido!</title>
   </head>
   <body>

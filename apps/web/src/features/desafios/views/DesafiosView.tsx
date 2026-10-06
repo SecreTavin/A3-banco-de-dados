@@ -8,36 +8,36 @@ import {
   Secao,
   SpinnerCentral,
 } from '../../../shared/ui'
-import { ORDEM_STATUS, aparenciaStatusAposta } from '../../../shared/ui/status'
-import { CardAposta } from '../components/CardAposta'
-import { useApostasQuery } from '../hooks/useApostasQuery'
-import type { FiltroStatus } from '../hooks/useApostasQuery'
-import estilos from '../apostas.module.css'
+import { ORDEM_STATUS, aparenciaStatusDesafio } from '../../../shared/ui/status'
+import { CardDesafio } from '../components/CardDesafio'
+import { useDesafiosQuery } from '../hooks/useDesafiosQuery'
+import type { FiltroStatus } from '../hooks/useDesafiosQuery'
+import estilos from '../desafios.module.css'
 
 const FILTROS: { valor: FiltroStatus; rotulo: string }[] = [
   { valor: 'TODAS', rotulo: 'Todas' },
   ...ORDEM_STATUS.map((status) => ({
     valor: status as FiltroStatus,
-    rotulo: aparenciaStatusAposta[status].rotulo,
+    rotulo: aparenciaStatusDesafio[status].rotulo,
   })),
 ]
 
-export function ApostasView() {
+export function DesafiosView() {
   const [filtro, setFiltro] = useState<FiltroStatus>('TODAS')
-  const { dados: apostas, carregando, erro } = useApostasQuery(filtro)
+  const { dados: desafios, carregando, erro } = useDesafiosQuery(filtro)
   const navegar = useNavigate()
 
-  const criei = apostas?.filter((aposta) => aposta.souCriador) ?? []
-  const participo = apostas?.filter((aposta) => !aposta.souCriador) ?? []
+  const criei = desafios?.filter((desafio) => desafio.souCriador) ?? []
+  const participo = desafios?.filter((desafio) => !desafio.souCriador) ?? []
   const vazio = criei.length === 0 && participo.length === 0
 
   return (
     <>
       <CabecalhoPagina
-        titulo="Minhas apostas"
+        titulo="Meus desafios"
         descricao="Ordenadas pelo prazo mais próximo."
         acao={
-          <Botao onClick={() => navegar('/apostas/nova')}>Nova aposta</Botao>
+          <Botao onClick={() => navegar('/desafios/nova')}>Novo desafio</Botao>
         }
       />
 
@@ -64,8 +64,8 @@ export function ApostasView() {
         !erro && (
           <EstadoVazio
             titulo="Nada por aqui"
-            descricao="Nenhuma aposta neste filtro. Que tal duvidar de alguém?"
-            acao={<Botao onClick={() => navegar('/apostas/nova')}>Criar aposta</Botao>}
+            descricao="Nenhum desafio neste filtro. Que tal duvidar de alguém?"
+            acao={<Botao onClick={() => navegar('/desafios/nova')}>Criar desafio</Botao>}
           />
         )
       ) : (
@@ -73,8 +73,8 @@ export function ApostasView() {
           {criei.length > 0 && (
             <Secao titulo="Criei" contagem={criei.length}>
               <div className={estilos.lista}>
-                {criei.map((aposta) => (
-                  <CardAposta key={aposta.idAposta} aposta={aposta} />
+                {criei.map((desafio) => (
+                  <CardDesafio key={desafio.idDesafio} desafio={desafio} />
                 ))}
               </div>
             </Secao>
@@ -83,8 +83,8 @@ export function ApostasView() {
           {participo.length > 0 && (
             <Secao titulo="Participo" contagem={participo.length}>
               <div className={estilos.lista}>
-                {participo.map((aposta) => (
-                  <CardAposta key={aposta.idAposta} aposta={aposta} />
+                {participo.map((desafio) => (
+                  <CardDesafio key={desafio.idDesafio} desafio={desafio} />
                 ))}
               </div>
             </Secao>

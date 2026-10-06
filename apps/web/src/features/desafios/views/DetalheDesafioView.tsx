@@ -16,42 +16,42 @@ import {
 } from '../../../shared/ui'
 import { descreverPrazo, formatarDataCompleta } from '../../../shared/ui/formato'
 import {
-  aparenciaStatusAposta,
+  aparenciaStatusDesafio,
   descreverRecompensa,
   rotuloEscolha,
   rotuloMidia,
-  rotuloPapelAposta,
+  rotuloPapelDesafio,
 } from '../../../shared/ui/status'
 import { useAuth } from '../../../shared/auth/AuthContext'
-import type { Escolha, PapelAposta, StatusAposta, TipoMidia } from '../../../shared/api/tipos'
+import type { Escolha, PapelDesafio, StatusDesafio, TipoMidia } from '../../../shared/api/tipos'
 import { ItemComentario } from '../components/ItemComentario'
 import { ItemEvidencia } from '../components/ItemEvidencia'
 import { LinhaParticipante } from '../components/LinhaParticipante'
-import { useAceitarApostaCommand } from '../hooks/useAceitarApostaCommand'
-import { useApostaQuery } from '../hooks/useApostaQuery'
-import { useCancelarApostaCommand } from '../hooks/useCancelarApostaCommand'
+import { useAceitarDesafioCommand } from '../hooks/useAceitarDesafioCommand'
+import { useDesafioQuery } from '../hooks/useDesafioQuery'
+import { useCancelarDesafioCommand } from '../hooks/useCancelarDesafioCommand'
 import { useComentarCommand } from '../hooks/useComentarCommand'
 import { useEnviarEvidenciaCommand } from '../hooks/useEnviarEvidenciaCommand'
-import estilos from '../apostas.module.css'
+import estilos from '../desafios.module.css'
 
-const ENCERRADAS: StatusAposta[] = ['FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA']
-const PAPEIS: PapelAposta[] = ['DESAFIANTE', 'DESAFIADO', 'APOSTADOR']
+const ENCERRADAS: StatusDesafio[] = ['FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA']
+const PAPEIS: PapelDesafio[] = ['DESAFIANTE', 'DESAFIADO', 'APOSTADOR']
 const ESCOLHAS: Escolha[] = ['VAI_CUMPRIR', 'NAO_VAI_CUMPRIR']
 const MIDIAS: TipoMidia[] = ['FOTO', 'VIDEO', 'LINK', 'TEXTO']
 const MAXIMO_EVIDENCIAS = 5
 
-export function DetalheApostaView() {
+export function DetalheDesafioView() {
   const { id } = useParams()
-  const idAposta = Number(id)
+  const idDesafio = Number(id)
   const { usuario } = useAuth()
-  const { dados: aposta, carregando, erro, recarregar } = useApostaQuery(idAposta)
+  const { dados: desafio, carregando, erro, recarregar } = useDesafioQuery(idDesafio)
 
-  const aceitar = useAceitarApostaCommand(idAposta)
-  const cancelar = useCancelarApostaCommand(idAposta)
-  const comentar = useComentarCommand(idAposta)
-  const enviarEvidencia = useEnviarEvidenciaCommand(idAposta)
+  const aceitar = useAceitarDesafioCommand(idDesafio)
+  const cancelar = useCancelarDesafioCommand(idDesafio)
+  const comentar = useComentarCommand(idDesafio)
+  const enviarEvidencia = useEnviarEvidenciaCommand(idDesafio)
 
-  const [papelAposta, setPapelAposta] = useState<PapelAposta>('APOSTADOR')
+  const [papelDesafio, setPapelDesafio] = useState<PapelDesafio>('APOSTADOR')
   const [escolha, setEscolha] = useState<Escolha>('VAI_CUMPRIR')
   const [motivo, setMotivo] = useState('')
   const [pedindoCancelamento, setPedindoCancelamento] = useState(false)
@@ -62,24 +62,24 @@ export function DetalheApostaView() {
 
   if (carregando) return <SpinnerCentral />
   if (erro) return <Alerta>{erro}</Alerta>
-  if (!aposta) return <EstadoVazio titulo="Aposta não encontrada" />
+  if (!desafio) return <EstadoVazio titulo="Desafio não encontrado" />
 
-  const status = aparenciaStatusAposta[aposta.status]
-  const prazo = descreverPrazo(aposta.dataLimite)
-  const encerrada = ENCERRADAS.includes(aposta.status)
-  const minhaParticipacao = aposta.participantes.find((p) => p.idUsuario === usuario?.idUsuario)
+  const status = aparenciaStatusDesafio[desafio.status]
+  const prazo = descreverPrazo(desafio.dataLimite)
+  const encerrada = ENCERRADAS.includes(desafio.status)
+  const minhaParticipacao = desafio.participantes.find((p) => p.idUsuario === usuario?.idUsuario)
 
-  const podeAceitar = aposta.status === 'ABERTA' && !minhaParticipacao
-  const podeCancelar = aposta.souCriador && !encerrada
+  const podeAceitar = desafio.status === 'ABERTA' && !minhaParticipacao
+  const podeCancelar = desafio.souCriador && !encerrada
   const podeEnviarEvidencia =
-    minhaParticipacao?.papelAposta === 'DESAFIADO' &&
-    (aposta.status === 'EM_ANDAMENTO' || aposta.status === 'EM_VOTACAO') &&
-    aposta.evidencias.length < MAXIMO_EVIDENCIAS &&
-    !aposta.evidencias.some((evidencia) => evidencia.status === 'EM_VOTACAO')
+    minhaParticipacao?.papelDesafio === 'DESAFIADO' &&
+    (desafio.status === 'EM_ANDAMENTO' || desafio.status === 'EM_VOTACAO') &&
+    desafio.evidencias.length < MAXIMO_EVIDENCIAS &&
+    !desafio.evidencias.some((evidencia) => evidencia.status === 'EM_VOTACAO')
 
   const submeterAceite = async (evento: FormEvent) => {
     evento.preventDefault()
-    const resultado = await aceitar.executar({ papelAposta, escolha })
+    const resultado = await aceitar.executar({ papelDesafio, escolha })
     if (resultado.ok) recarregar()
   }
 
@@ -118,73 +118,73 @@ export function DetalheApostaView() {
 
   return (
     <>
-      <LinkVoltar para="/apostas" rotulo="Minhas apostas" />
+      <LinkVoltar para="/desafios" rotulo="Meus desafios" />
       <CabecalhoPagina
-        titulo={aposta.titulo}
-        descricao={`${aposta.grupo} · ${aposta.categoria}`}
+        titulo={desafio.titulo}
+        descricao={`${desafio.grupo} · ${desafio.categoria}`}
         acao={<Badge cor={status.cor}>{status.rotulo}</Badge>}
       />
 
       <Card className={estilos.resumo}>
-        {aposta.descricao && <p className={estilos.resumoDescricao}>{aposta.descricao}</p>}
+        {desafio.descricao && <p className={estilos.resumoDescricao}>{desafio.descricao}</p>}
 
         <dl className={estilos.resumoGrade}>
           <div className={estilos.resumoItem}>
             <dt>Custo por participante</dt>
             <dd>
-              <SaldoCp valor={aposta.valorCp} />
+              <SaldoCp valor={desafio.valorCp} />
             </dd>
           </div>
           <div className={estilos.resumoItem}>
             <dt>Pote em jogo</dt>
             <dd>
-              <SaldoCp valor={aposta.valorCp * aposta.participantes.length} />
+              <SaldoCp valor={desafio.valorCp * desafio.participantes.length} />
             </dd>
           </div>
           <div className={estilos.resumoItem}>
             <dt>Recompensa</dt>
             <dd>
               {descreverRecompensa(
-                aposta.tipoRecompensa,
-                aposta.valorMonetario,
-                aposta.descricaoPrenda,
+                desafio.tipoRecompensa,
+                desafio.valorMonetario,
+                desafio.descricaoPrenda,
               )}
             </dd>
           </div>
           <div className={estilos.resumoItem}>
             <dt>Prazo</dt>
             <dd>
-              {formatarDataCompleta(aposta.dataLimite)}
+              {formatarDataCompleta(desafio.dataLimite)}
               {!encerrada && <span className={estilos.prazoNota}> — {prazo.texto}</span>}
             </dd>
           </div>
         </dl>
       </Card>
 
-      {aposta.status === 'CANCELADA' && (
-        <Alerta>Aposta cancelada. Motivo: {aposta.motivoCancelamento ?? 'não informado'}.</Alerta>
+      {desafio.status === 'CANCELADA' && (
+        <Alerta>Desafio cancelado. Motivo: {desafio.motivoCancelamento ?? 'não informado'}.</Alerta>
       )}
-      {aposta.status === 'FINALIZADA_CUMPRIU' && (
+      {desafio.status === 'FINALIZADA_CUMPRIU' && (
         <Alerta tom="ok">
           Desafio cumprido
-          {aposta.dataEncerramento && ` em ${formatarDataCompleta(aposta.dataEncerramento)}`}. O CP
+          {desafio.dataEncerramento && ` em ${formatarDataCompleta(desafio.dataEncerramento)}`}. O CP
           já foi liquidado.
         </Alerta>
       )}
-      {aposta.status === 'FINALIZADA_PERDEU' && (
+      {desafio.status === 'FINALIZADA_PERDEU' && (
         <Alerta>
           Desafio perdido
-          {aposta.dataEncerramento && ` em ${formatarDataCompleta(aposta.dataEncerramento)}`}. O CP
+          {desafio.dataEncerramento && ` em ${formatarDataCompleta(desafio.dataEncerramento)}`}. O CP
           já foi liquidado.
         </Alerta>
       )}
 
-      <Secao titulo="Participantes" contagem={aposta.participantes.length}>
-        {aposta.participantes.length === 0 ? (
+      <Secao titulo="Participantes" contagem={desafio.participantes.length}>
+        {desafio.participantes.length === 0 ? (
           <EstadoVazio titulo="Ninguém aceitou ainda" />
         ) : (
           <ul className={estilos.participantes}>
-            {aposta.participantes.map((participante) => (
+            {desafio.participantes.map((participante) => (
               <LinhaParticipante key={participante.idUsuario} participante={participante} />
             ))}
           </ul>
@@ -196,18 +196,18 @@ export function DetalheApostaView() {
               <div className={estilos.formularioLinha}>
                 <Campo rotulo="Entro como">
                   <select
-                    value={papelAposta}
-                    onChange={(e) => setPapelAposta(e.target.value as PapelAposta)}
+                    value={papelDesafio}
+                    onChange={(e) => setPapelDesafio(e.target.value as PapelDesafio)}
                   >
                     {PAPEIS.map((papel) => (
                       <option key={papel} value={papel}>
-                        {rotuloPapelAposta[papel]}
+                        {rotuloPapelDesafio[papel]}
                       </option>
                     ))}
                   </select>
                 </Campo>
 
-                <Campo rotulo="Minha aposta">
+                <Campo rotulo="Meu desafio">
                   <select value={escolha} onChange={(e) => setEscolha(e.target.value as Escolha)}>
                     {ESCOLHAS.map((opcao) => (
                       <option key={opcao} value={opcao}>
@@ -222,7 +222,7 @@ export function DetalheApostaView() {
 
               <div className={estilos.formularioBotoes}>
                 <Botao type="submit" carregando={aceitar.enviando}>
-                  Aceitar por {aposta.valorCp} CP
+                  Aceitar por {desafio.valorCp} CP
                 </Botao>
               </div>
             </form>
@@ -230,12 +230,12 @@ export function DetalheApostaView() {
         )}
       </Secao>
 
-      <Secao titulo="Evidências" contagem={aposta.evidencias.length}>
-        {aposta.evidencias.length === 0 ? (
+      <Secao titulo="Evidências" contagem={desafio.evidencias.length}>
+        {desafio.evidencias.length === 0 ? (
           <EstadoVazio titulo="Nenhuma evidência enviada" />
         ) : (
           <ul className={estilos.evidencias}>
-            {aposta.evidencias.map((evidencia) => (
+            {desafio.evidencias.map((evidencia) => (
               <ItemEvidencia key={evidencia.idEvidencia} evidencia={evidencia} />
             ))}
           </ul>
@@ -291,10 +291,10 @@ export function DetalheApostaView() {
         )}
       </Secao>
 
-      <Secao titulo="Comentários" contagem={aposta.comentarios.length}>
-        {aposta.comentarios.length > 0 && (
+      <Secao titulo="Comentários" contagem={desafio.comentarios.length}>
+        {desafio.comentarios.length > 0 && (
           <ul className={estilos.comentarios}>
-            {aposta.comentarios.map((comentario) => (
+            {desafio.comentarios.map((comentario) => (
               <ItemComentario key={comentario.idComentario} comentario={comentario} />
             ))}
           </ul>
@@ -350,7 +350,7 @@ export function DetalheApostaView() {
             </Card>
           ) : (
             <Botao variante="perigo" onClick={() => setPedindoCancelamento(true)}>
-              Cancelar aposta
+              Cancelar desafio
             </Botao>
           )}
         </Secao>

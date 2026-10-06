@@ -16,7 +16,7 @@ export function LoginView() {
     setEscolhido(apelido)
     const resultado = await entrar(apelido)
 
-    if (resultado.ok) navegar('/apostas', { replace: true })
+    if (resultado.ok) navegar('/desafios', { replace: true })
     else setEscolhido(null)
   }
 
@@ -27,7 +27,7 @@ export function LoginView() {
           <span className={estilos.logo}>?</span>
           <h1 className={estilos.titulo}>Eu Duvido!</h1>
           <p className={estilos.subtitulo}>
-            Apostas entre amigos, decididas pelo grupo — e pagas em CP.
+            Desafios entre amigos, decididas pelo grupo — e pagas em CP.
           </p>
         </div>
 

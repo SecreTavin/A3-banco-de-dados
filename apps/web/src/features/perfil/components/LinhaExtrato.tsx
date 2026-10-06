@@ -12,7 +12,7 @@ export function LinhaExtrato({ lancamento }: { lancamento: LancamentoCp }) {
         </span>
         <span className={estilos.lancamentoMeta}>
           {formatarDataHora(lancamento.data)}
-          {lancamento.aposta && ` · ${lancamento.aposta}`}
+          {lancamento.desafio && ` · ${lancamento.desafio}`}
         </span>
       </div>
 

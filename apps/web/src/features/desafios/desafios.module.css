@@ -18,7 +18,7 @@
   border-radius: 999px;
   background: var(--superficie);
   color: var(--texto-suave);
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
@@ -47,7 +47,7 @@
   }
 }
 
-.aposta {
+.desafio {
   position: relative;
   display: grid;
   gap: 8px;
@@ -58,43 +58,43 @@
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
-.aposta:hover {
+.desafio:hover {
   transform: translateY(-2px);
   border-color: var(--primaria);
 }
 
-.apostaTopo {
+.desafioTopo {
   display: flex;
   align-items: flex-start;
   gap: 10px;
 }
 
-.apostaTitulo {
+.desafioTitulo {
   flex: 1;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
 }
 
 /* O card inteiro navega para o detalhe, mas só o título é um <a> — links aninhados
    (o CTA da votação) seriam HTML inválido. */
-.apostaTitulo::after {
+.desafioTitulo::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: var(--raio);
 }
 
-.apostaMeta {
-  font-size: 12.5px;
+.desafioMeta {
+  font-size: 14px;
   color: var(--texto-fraco);
 }
 
-.apostaRecompensa {
-  font-size: 13px;
+.desafioRecompensa {
+  font-size: 14.5px;
   color: var(--texto-suave);
 }
 
-.apostaRodape {
+.desafioRodape {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -106,7 +106,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--texto-fraco);
 }
 
@@ -122,7 +122,7 @@
   border: 1px solid var(--em-votacao);
   border-radius: 999px;
   color: var(--em-votacao);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
 }
 
@@ -137,7 +137,7 @@
 }
 
 .resumoDescricao {
-  font-size: 14px;
+  font-size: 15.5px;
   color: var(--texto-suave);
   white-space: pre-line;
 }
@@ -151,7 +151,7 @@
 
 .resumoItem dt {
   margin-bottom: 5px;
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -160,7 +160,7 @@
 
 .resumoItem dd {
   margin: 0;
-  font-size: 14px;
+  font-size: 15.5px;
 }
 
 .prazoNota {
@@ -203,7 +203,7 @@
   flex: 1;
   min-width: 90px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15.5px;
 }
 
 .evidencias {
@@ -239,13 +239,13 @@
 .evidenciaLink {
   justify-self: start;
   color: var(--primaria-forte);
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 600;
   text-decoration: underline;
 }
 
 .evidenciaTexto {
-  font-size: 13.5px;
+  font-size: 15px;
   color: var(--texto-suave);
 }
 
@@ -253,7 +253,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 12.5px;
+  font-size: 14px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -272,7 +272,7 @@
 }
 
 .evidenciaRodape {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--texto-fraco);
 }
 
@@ -293,7 +293,7 @@
 .comentarioCorpo {
   display: grid;
   gap: 3px;
-  font-size: 13.5px;
+  font-size: 15px;
 }
 
 .comentarioTopo {
@@ -303,7 +303,7 @@
 }
 
 .comentarioData {
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--texto-fraco);
 }
 
