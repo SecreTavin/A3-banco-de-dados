@@ -19,7 +19,7 @@ Gestão de grupos privados de amigos (RF02).
 - Usuário pode sair do grupo por conta própria.
 
 ## Resolvido na arquitetura
-- **Saldo de CP na tela:** `grupos.membro_grupo.saldo_cp` é exibido tanto na lista de grupos (meu saldo) quanto na lista de membros. Todo membro entra com 100 CP (RN06) e o saldo nunca fica negativo (RN08); a fonte da verdade é o ledger `transacao_cp` ([ADR 0007](../../02-arquitetura/adr/0007-ledger-append-only.md)).
+- **Saldo de CP na tela:** `membro_grupo.saldo_cp` é exibido tanto na lista de grupos (meu saldo) quanto na lista de membros. Todo membro entra com 100 CP (RN06) e o saldo nunca fica negativo (RN08); a fonte da verdade é o ledger `transacao_cp` ([ADR 0007](../../02-arquitetura/adr/0007-ledger-append-only.md)).
 
 ## TODOs para validação com o time
 Nenhum pendente — ver **Resolvido na arquitetura**.

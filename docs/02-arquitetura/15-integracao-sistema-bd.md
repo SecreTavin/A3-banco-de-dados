@@ -46,7 +46,7 @@ sequenceDiagram
     rect rgb(240, 240, 240)
         Note over APP,PG: TRANSAÇÃO
         APP->>PG: INSERT evidencia (status EM_VOTACAO, prazo +7d)
-        APP->>PG: INSERT validador_evidencia (snapshot do júri)
+        APP->>PG: INSERT jurado_evidencia (júri congelado, voto nulo)
         APP->>PG: UPDATE desafio SET status = 'EM_VOTACAO'
         PG-->>APP: COMMIT
     end
@@ -67,9 +67,9 @@ sequenceDiagram
     participant APP as Aplicação
     participant PG as PostgreSQL
 
-    APP->>PG: INSERT voto_evidencia
+    APP->>PG: UPDATE jurado_evidencia SET voto (preenche a linha do jurado)
     Note over PG: trigger valida prazo e status
-    APP->>PG: CALL validacao.apurar_votacao(id)
+    APP->>PG: CALL apurar_votacao(id)
 
     rect rgb(240, 240, 240)
         Note over PG: TUDO DENTRO DA PROCEDURE
