@@ -65,6 +65,10 @@ services:
       Auth__Chave: "chave-de-desenvolvimento-nao-usar-em-producao-min-32-chars"
       Cors__Origens__0: "http://localhost:8080"
       Cors__Origens__1: "http://localhost:5173"
+      # Moderacao de desafios por IA na Groq (ADR 0015). A chave vem do .env.
+      Ia__BaseUrl: "${IA_BASE_URL:-https://api.groq.com/openai/v1}"
+      Ia__Modelo: "${IA_MODELO:-openai/gpt-oss-120b}"
+      Ia__ApiKey: "${IA_API_KEY:-}"
       Storage__Endpoint: "http://storage:9000"
       Storage__Bucket: "evidencias"
       Storage__AccessKey: "euduvido"

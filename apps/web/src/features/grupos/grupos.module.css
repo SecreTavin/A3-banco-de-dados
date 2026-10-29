@@ -49,13 +49,6 @@
   color: var(--texto-fraco);
 }
 
-.acoes {
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-bottom: 18px;
-}
-
 .formulario {
   display: grid;
   gap: 12px;
@@ -88,28 +81,16 @@
   font-size: 15.5px;
 }
 
-.convite {
-  display: grid;
+.moderacao {
+  display: flex;
+  align-items: center;
   gap: 10px;
-  justify-items: center;
-  text-align: center;
+  flex-wrap: wrap;
 }
 
-.codigo {
-  padding: 10px 20px;
-  border: 1px dashed var(--primaria);
-  border-radius: var(--raio-pequeno);
-  background: var(--primaria-fraca);
-  color: var(--primaria-forte);
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: 0.3em;
-  text-indent: 0.3em;
-}
-
-.expiracao {
+.aviso {
   font-size: 14px;
-  color: var(--texto-fraco);
+  color: var(--texto-suave);
 }
 
 .resumoGrupo {

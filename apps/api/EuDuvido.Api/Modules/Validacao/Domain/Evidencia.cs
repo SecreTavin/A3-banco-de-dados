@@ -19,11 +19,8 @@ public class Evidencia
     public DateTimeOffset DataLimiteVotacao { get; private set; }
     public DateTimeOffset? DataApuracao { get; private set; }
 
-    private readonly List<ValidadorEvidencia> _validadores = [];
-    public IReadOnlyCollection<ValidadorEvidencia> Validadores => _validadores;
-
-    private readonly List<VotoEvidencia> _votos = [];
-    public IReadOnlyCollection<VotoEvidencia> Votos => _votos;
+    private readonly List<JuradoEvidencia> _jurados = [];
+    public IReadOnlyCollection<JuradoEvidencia> Jurados => _jurados;
 
     private Evidencia() { }
 
@@ -42,6 +39,7 @@ public class Evidencia
         if (ordem > MaximoPorDesafio)
             return EvidenciaErrors.LimiteAtingido;
 
+        var agora = DateTimeOffset.UtcNow;
         var evidencia = new Evidencia
         {
             IdDesafio = idDesafio,
@@ -51,17 +49,17 @@ public class Evidencia
             UrlComprovante = urlComprovante,
             Comentario = comentario,
             Status = StatusEvidencia.EmVotacao,
-            DataEnvio = DateTimeOffset.UtcNow,
-            DataLimiteVotacao = DateTimeOffset.UtcNow.Add(PrazoVotacao)
+            DataEnvio = agora,
+            DataLimiteVotacao = agora.Add(PrazoVotacao)
         };
 
         foreach (var idUsuario in elegiveis.Distinct())
-            evidencia._validadores.Add(ValidadorEvidencia.De(idUsuario));
+            evidencia._jurados.Add(JuradoEvidencia.Congelar(idUsuario));
 
         return evidencia;
     }
 
-    public ErrorOr<VotoEvidencia> Votar(int idUsuario, string voto, string? justificativa)
+    public ErrorOr<JuradoEvidencia> Votar(int idUsuario, string voto, string? justificativa)
     {
         if (Status != StatusEvidencia.EmVotacao)
             return EvidenciaErrors.NaoEstaEmVotacao;
@@ -69,17 +67,17 @@ public class Evidencia
         if (DateTimeOffset.UtcNow > DataLimiteVotacao)
             return EvidenciaErrors.PrazoExpirado;
 
-        if (_validadores.All(v => v.IdUsuario != idUsuario))
+        var jurado = _jurados.FirstOrDefault(j => j.IdUsuario == idUsuario);
+        if (jurado is null)
             return EvidenciaErrors.NaoEhValidador;
 
-        if (_votos.Any(v => v.IdUsuario == idUsuario))
+        if (jurado.JaVotou)
             return EvidenciaErrors.JaVotou;
 
-        var novo = VotoEvidencia.Novo(idUsuario, voto, justificativa);
-        _votos.Add(novo);
-        return novo;
+        jurado.Votar(voto, justificativa);
+        return jurado;
     }
 
-    // RN15: maioria simples sobre o snapshot, nao sobre o grupo atual.
-    public int Quorum => (int)Math.Floor(_validadores.Count / 2.0) + 1;
+    // RN15: maioria simples sobre o juri congelado, nao sobre o grupo atual.
+    public int Quorum => (int)Math.Floor(_jurados.Count / 2.0) + 1;
 }

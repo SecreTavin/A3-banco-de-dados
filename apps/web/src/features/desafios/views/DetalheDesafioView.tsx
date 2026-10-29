@@ -24,13 +24,11 @@ import {
 } from '../../../shared/ui/status'
 import { useAuth } from '../../../shared/auth/AuthContext'
 import type { Escolha, PapelDesafio, StatusDesafio, TipoMidia } from '../../../shared/api/tipos'
-import { ItemComentario } from '../components/ItemComentario'
 import { ItemEvidencia } from '../components/ItemEvidencia'
 import { LinhaParticipante } from '../components/LinhaParticipante'
 import { useAceitarDesafioCommand } from '../hooks/useAceitarDesafioCommand'
 import { useDesafioQuery } from '../hooks/useDesafioQuery'
 import { useCancelarDesafioCommand } from '../hooks/useCancelarDesafioCommand'
-import { useComentarCommand } from '../hooks/useComentarCommand'
 import { useEnviarEvidenciaCommand } from '../hooks/useEnviarEvidenciaCommand'
 import estilos from '../desafios.module.css'
 
@@ -48,14 +46,12 @@ export function DetalheDesafioView() {
 
   const aceitar = useAceitarDesafioCommand(idDesafio)
   const cancelar = useCancelarDesafioCommand(idDesafio)
-  const comentar = useComentarCommand(idDesafio)
   const enviarEvidencia = useEnviarEvidenciaCommand(idDesafio)
 
   const [papelDesafio, setPapelDesafio] = useState<PapelDesafio>('APOSTADOR')
   const [escolha, setEscolha] = useState<Escolha>('VAI_CUMPRIR')
   const [motivo, setMotivo] = useState('')
   const [pedindoCancelamento, setPedindoCancelamento] = useState(false)
-  const [texto, setTexto] = useState('')
   const [tipoMidia, setTipoMidia] = useState<TipoMidia>('FOTO')
   const [urlComprovante, setUrlComprovante] = useState('')
   const [notaEvidencia, setNotaEvidencia] = useState('')
@@ -107,15 +103,6 @@ export function DetalheDesafioView() {
     recarregar()
   }
 
-  const submeterComentario = async (evento: FormEvent) => {
-    evento.preventDefault()
-    const resultado = await comentar.executar(texto.trim())
-    if (!resultado.ok) return
-
-    setTexto('')
-    recarregar()
-  }
-
   return (
     <>
       <LinkVoltar para="/desafios" rotulo="Meus desafios" />
@@ -144,11 +131,7 @@ export function DetalheDesafioView() {
           <div className={estilos.resumoItem}>
             <dt>Recompensa</dt>
             <dd>
-              {descreverRecompensa(
-                desafio.tipoRecompensa,
-                desafio.valorMonetario,
-                desafio.descricaoPrenda,
-              )}
+              {descreverRecompensa(desafio.tipoRecompensa, desafio.descricaoRecompensa)}
             </dd>
           </div>
           <div className={estilos.resumoItem}>
@@ -289,30 +272,6 @@ export function DetalheDesafioView() {
             </form>
           </Card>
         )}
-      </Secao>
-
-      <Secao titulo="Comentários" contagem={desafio.comentarios.length}>
-        {desafio.comentarios.length > 0 && (
-          <ul className={estilos.comentarios}>
-            {desafio.comentarios.map((comentario) => (
-              <ItemComentario key={comentario.idComentario} comentario={comentario} />
-            ))}
-          </ul>
-        )}
-
-        <form className={estilos.novoComentario} onSubmit={submeterComentario}>
-          <input
-            value={texto}
-            onChange={(e) => setTexto(e.target.value)}
-            placeholder="Escreva algo para o grupo"
-            maxLength={500}
-            required
-          />
-          <Botao type="submit" variante="secundaria" carregando={comentar.enviando}>
-            Enviar
-          </Botao>
-        </form>
-        {comentar.erro && <Alerta>{comentar.erro}</Alerta>}
       </Secao>
 
       {podeCancelar && (

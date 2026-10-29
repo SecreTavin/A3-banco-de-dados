@@ -3,7 +3,7 @@ using Npgsql;
 
 namespace EuDuvido.Api.Tests;
 
-// Monta um grupo com N membros e um desafio pronta para receber evidencia.
+// Monta um grupo com N membros e um desafio pronto para receber evidencia.
 // Usa SQL direto porque precisa criar estados intermediarios que o dominio
 // so alcancaria simulando o fluxo inteiro.
 public class CenarioDesafio(string connectionString)
@@ -26,29 +26,29 @@ public class CenarioDesafio(string connectionString)
             var sufixo = Guid.NewGuid().ToString("N")[..8];
             ids.Add(await c.QuerySingleAsync<int>(
                 """
-                INSERT INTO identidade.usuario (nome, email, apelido)
-                VALUES (@nome, @email, @apelido) RETURNING id_usuario
+                INSERT INTO usuario (nome, email, apelido, data_nascimento)
+                VALUES (@nome, @email, @apelido, DATE '2000-01-01') RETURNING id_usuario
                 """,
                 new { nome = $"Teste {sufixo}", email = $"{sufixo}@teste.com", apelido = sufixo }));
         }
         IdsUsuarios = [.. ids];
 
         IdGrupo = await c.QuerySingleAsync<int>(
-            "INSERT INTO grupos.grupo_amigos (nome, id_criador) VALUES ('Grupo Teste', @id) RETURNING id_grupo",
+            "INSERT INTO grupo_amigos (nome, id_criador) VALUES ('Grupo Teste', @id) RETURNING id_grupo",
             new { id = ids[0] });
 
         foreach (var id in ids)
             await c.ExecuteAsync(
-                "INSERT INTO grupos.membro_grupo (id_grupo, id_usuario, papel) VALUES (@g, @u, 'MEMBRO')",
+                "INSERT INTO membro_grupo (id_grupo, id_usuario, papel) VALUES (@g, @u, 'MEMBRO')",
                 new { g = IdGrupo, u = id });
 
         var idCategoria = await c.QuerySingleAsync<int>(
-            "INSERT INTO desafios.categoria_desafio (nome) VALUES (@n) RETURNING id_categoria",
+            "INSERT INTO categoria_desafio (nome) VALUES (@n) RETURNING id_categoria",
             new { n = $"Cat {Guid.NewGuid():N}" });
 
         IdDesafio = await c.QuerySingleAsync<int>(
             """
-            INSERT INTO desafios.desafio
+            INSERT INTO desafio
                 (id_grupo, id_criador, id_categoria, titulo, descricao, valor_cp,
                  tipo_recompensa, data_limite, status)
             VALUES (@g, @u, @c, 'Desafio de teste', 'Descricao', @v,
@@ -59,20 +59,21 @@ public class CenarioDesafio(string connectionString)
 
         await c.ExecuteAsync(
             """
-            INSERT INTO desafios.participante_desafio (id_desafio, id_usuario, papel_desafio, escolha)
+            INSERT INTO participante_desafio (id_desafio, id_usuario, papel_desafio, escolha)
             VALUES (@a, @desafiado, 'DESAFIADO', 'VAI_CUMPRIR'),
                    (@a, @desafiante, 'DESAFIANTE', 'NAO_VAI_CUMPRIR')
             """,
             new { a = IdDesafio, desafiado = IdDesafiado, desafiante = IdDesafiante });
 
-        await c.ExecuteAsync("CALL economia.debitar_escrow(@a, @u)",
+        await c.ExecuteAsync("CALL debitar_escrow(@a, @u)",
             new { a = IdDesafio, u = IdDesafiado });
-        await c.ExecuteAsync("CALL economia.debitar_escrow(@a, @u)",
+        await c.ExecuteAsync("CALL debitar_escrow(@a, @u)",
             new { a = IdDesafio, u = IdDesafiante });
 
         return this;
     }
 
+    // Evidencia + juri congelado: uma linha por validador, voto nulo.
     public async Task<int> EnviarEvidenciaAsync(int ordem = 1)
     {
         await using var c = new NpgsqlConnection(connectionString);
@@ -80,7 +81,7 @@ public class CenarioDesafio(string connectionString)
 
         var idEvidencia = await c.QuerySingleAsync<int>(
             """
-            INSERT INTO validacao.evidencia
+            INSERT INTO evidencia
                 (id_desafio, id_usuario, ordem, tipo_midia, url_comprovante,
                  status, data_limite_votacao)
             VALUES (@a, @u, @o, 'FOTO', 'https://exemplo/prova.png',
@@ -91,26 +92,28 @@ public class CenarioDesafio(string connectionString)
 
         foreach (var id in IdsValidadores)
             await c.ExecuteAsync(
-                "INSERT INTO validacao.validador_evidencia (id_evidencia, id_usuario) VALUES (@e, @u)",
+                "INSERT INTO jurado_evidencia (id_evidencia, id_usuario) VALUES (@e, @u)",
                 new { e = idEvidencia, u = id });
 
         await c.ExecuteAsync(
-            "UPDATE desafios.desafio SET status = 'EM_VOTACAO' WHERE id_desafio = @a",
+            "UPDATE desafio SET status = 'EM_VOTACAO' WHERE id_desafio = @a",
             new { a = IdDesafio });
 
         return idEvidencia;
     }
 
+    // Votar e preencher a linha do jurado, seguido da apuracao - como a API faz.
     public async Task VotarAsync(int idEvidencia, int idUsuario, string voto)
     {
         await using var c = new NpgsqlConnection(connectionString);
         await c.OpenAsync();
         await c.ExecuteAsync(
             """
-            INSERT INTO validacao.voto_evidencia (id_evidencia, id_usuario, voto)
-            VALUES (@e, @u, @v)
+            UPDATE jurado_evidencia
+               SET voto = @v, data_voto = CURRENT_TIMESTAMP
+             WHERE id_evidencia = @e AND id_usuario = @u
             """,
             new { e = idEvidencia, u = idUsuario, v = voto });
-        await c.ExecuteAsync("CALL validacao.apurar_votacao(@e)", new { e = idEvidencia });
+        await c.ExecuteAsync("CALL apurar_votacao(@e)", new { e = idEvidencia });
     }
 }

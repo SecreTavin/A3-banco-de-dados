@@ -13,6 +13,7 @@ export type TipoMidia = 'FOTO' | 'VIDEO' | 'LINK' | 'TEXTO'
 export type StatusEvidencia = 'EM_VOTACAO' | 'ACEITA' | 'RECUSADA' | 'EXPIRADA'
 export type TipoVoto = 'VALIDO' | 'INVALIDO'
 export type PapelGrupo = 'ADMIN' | 'MEMBRO'
+export type NivelFiltro = 'LEVE' | 'MODERADO' | 'PESADO'
 
 export interface Usuario {
   idUsuario: number
@@ -34,6 +35,7 @@ export interface GrupoResumo {
   totalMembros: number
   saldoCp: number
   papel: PapelGrupo
+  nivelFiltro: NivelFiltro
 }
 
 export interface MembroGrupo {
@@ -48,12 +50,26 @@ export interface GrupoDetalhe {
   idGrupo: number
   nome: string
   descricao: string | null
+  nivelFiltro: NivelFiltro
+  meuPapel: PapelGrupo
   membros: MembroGrupo[]
 }
 
-export interface Convite {
-  codigo: string
-  dataExpiracao: string
+export interface GrupoCriado {
+  idGrupo: number
+  nome: string
+  descricao: string | null
+  nivelFiltro: NivelFiltro
+}
+
+export interface NivelFiltroAlterado {
+  idGrupo: number
+  nivelFiltro: NivelFiltro
+}
+
+export interface MembroAdicionado {
+  idUsuario: number
+  apelido: string
 }
 
 export interface DesafioResumo {
@@ -63,8 +79,7 @@ export interface DesafioResumo {
   status: StatusDesafio
   valorCp: number
   tipoRecompensa: TipoRecompensa
-  valorMonetario: number | null
-  descricaoPrenda: string | null
+  descricaoRecompensa: string | null
   dataLimite: string
   categoria: string
   grupo: string
@@ -94,21 +109,12 @@ export interface Evidencia {
   totalValidadores: number
 }
 
-export interface ComentarioDesafio {
-  idComentario: number
-  apelido: string
-  avatarUrl: string | null
-  texto: string
-  dataEnvio: string
-}
-
 export interface DesafioDetalhe extends DesafioResumo {
   descricao: string | null
   dataEncerramento: string | null
   motivoCancelamento: string | null
   participantes: ParticipanteDesafio[]
   evidencias: Evidencia[]
-  comentarios: ComentarioDesafio[]
 }
 
 export interface Categoria {
@@ -176,6 +182,19 @@ export interface Perfil {
 export interface NovoGrupo {
   nome: string
   descricao: string
+  nivelFiltro: NivelFiltro
+}
+
+export interface NovoMembro {
+  email: string
+}
+
+export interface NovoCadastro {
+  nome: string
+  email: string
+  apelido: string
+  /** `YYYY-MM-DD`, direto do `<input type="date">`. */
+  dataNascimento: string
 }
 
 export interface NovaDesafio {
@@ -185,8 +204,7 @@ export interface NovaDesafio {
   descricao: string
   valorCp: number
   tipoRecompensa: TipoRecompensa
-  valorMonetario: number | null
-  descricaoPrenda: string | null
+  descricaoRecompensa: string | null
   dataLimite: string
 }
 

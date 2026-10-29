@@ -276,38 +276,7 @@
   color: var(--texto-fraco);
 }
 
-.comentarios {
-  display: grid;
-  gap: 10px;
-}
-
-.comentario {
-  display: flex;
-  gap: 11px;
-  padding: 11px 13px;
-  border: 1px solid var(--borda);
-  border-radius: var(--raio-pequeno);
-  background: var(--superficie);
-}
-
-.comentarioCorpo {
-  display: grid;
-  gap: 3px;
-  font-size: 15px;
-}
-
-.comentarioTopo {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-
-.comentarioData {
-  font-size: 13px;
+.notaIa {
+  font-size: 13.5px;
   color: var(--texto-fraco);
-}
-
-.novoComentario {
-  display: flex;
-  gap: 10px;
 }

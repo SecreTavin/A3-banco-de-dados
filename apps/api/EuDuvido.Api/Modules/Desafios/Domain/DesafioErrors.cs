@@ -1,4 +1,5 @@
 using ErrorOr;
+using EuDuvido.Api.Shared.Results;
 
 namespace EuDuvido.Api.Modules.Desafios.Domain;
 
@@ -32,4 +33,16 @@ public static class DesafioErrors
     public static Error SomenteCriadorCancela =>
         Error.Forbidden("Desafio.SomenteCriadorCancela",
             "Apenas quem criou o desafio pode cancela-lo.");
+
+    public static Error NaoMembroDoGrupo =>
+        Error.Forbidden("Desafio.NaoMembroDoGrupo",
+            "So membros do grupo podem criar desafios nele.");
+
+    public static Error CategoriaInexistente =>
+        Error.Validation("Desafio.CategoriaInexistente", "Categoria de desafio inexistente.");
+
+    // RN28: a IA de moderacao barrou o desafio no nivel de filtro do grupo.
+    public static Error DesafioRecusado(string motivo) =>
+        Error.Custom(TipoErro.Recusado, "Desafio.DesafioRecusado",
+            $"A IA de moderacao recusou a proposta de desafio: {motivo}");
 }

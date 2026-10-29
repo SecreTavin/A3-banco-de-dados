@@ -1,8 +1,8 @@
 namespace EuDuvido.Api.Modules.Economia.Domain;
 
 // Ledger append-only. Trigger no banco bloqueia UPDATE e DELETE - estorno e
-// lancamento novo. Todo debito tem credito correspondente, entao a soma dos
-// lancamentos de um grupo e sempre 100 * membros + recompensas (ADR 0007).
+// lancamento novo. O saldo materializado de cada membro sempre bate com a soma
+// dos lancamentos dele (vw_reconciliacao_saldo vazia - ADR 0007).
 public class TransacaoCp
 {
     public int IdTransacao { get; private set; }
@@ -24,4 +24,5 @@ public static class TipoTransacao
     public const string Premio = "PREMIO";
     public const string Estorno = "ESTORNO";
     public const string RecompensaVoto = "RECOMPENSA_VOTO";
+    public const string SaidaGrupo = "SAIDA_GRUPO";
 }

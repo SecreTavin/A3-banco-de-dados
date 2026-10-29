@@ -1,5 +1,6 @@
 import type {
   Escolha,
+  NivelFiltro,
   PapelDesafio,
   PapelGrupo,
   StatusDesafio,
@@ -7,7 +8,6 @@ import type {
   TipoMidia,
   TipoRecompensa,
 } from '../api/tipos'
-import { formatarMoeda } from './formato'
 
 interface Aparencia {
   rotulo: string
@@ -60,6 +60,21 @@ export const rotuloPapelGrupo: Record<PapelGrupo, string> = {
   MEMBRO: 'Membro',
 }
 
+export const rotuloNivelFiltro: Record<NivelFiltro, string> = {
+  LEVE: 'Leve',
+  MODERADO: 'Moderado',
+  PESADO: 'Pesado',
+}
+
+/** O que a moderação de IA barra em cada nível ao criar um desafio. */
+export const descricaoNivelFiltro: Record<NivelFiltro, string> = {
+  LEVE: 'Só barra o absurdo, como desafios que envolvem se machucar.',
+  MODERADO: 'Meio-termo: barra o que é perigoso ou ofensivo, sem ser rígido.',
+  PESADO: 'Rigoroso, para grupos com adolescentes: barra qualquer coisa que arrisque a imagem ou a reputação de alguém.',
+}
+
+export const NIVEIS_FILTRO: NivelFiltro[] = ['LEVE', 'MODERADO', 'PESADO']
+
 export const ORDEM_STATUS: StatusDesafio[] = [
   'ABERTA',
   'EM_ANDAMENTO',
@@ -69,12 +84,15 @@ export const ORDEM_STATUS: StatusDesafio[] = [
   'CANCELADA',
 ]
 
-/** O que foi combinado fora do app: valor em dinheiro ou a prenda descrita (RN02). */
-export function descreverRecompensa(
-  tipo: TipoRecompensa,
-  valorMonetario: number | null,
-  descricaoPrenda: string | null,
-): string {
-  if (tipo === 'MONETARIA' && valorMonetario !== null) return formatarMoeda(valorMonetario)
-  return descricaoPrenda?.trim() || rotuloRecompensa[tipo]
+/** O que foi combinado fora do app, em texto livre (RN02). Sem descrição, cai no tipo. */
+export function descreverRecompensa(tipo: TipoRecompensa, descricao: string | null): string {
+  return descricao?.trim() || rotuloRecompensa[tipo]
+}
+
+/** Exemplo do que escrever na descrição da recompensa, por tipo. */
+export const exemploRecompensa: Record<TipoRecompensa, string> = {
+  MONETARIA: 'R$ 20 no Pix',
+  PRENDA_ACAO: 'Paga o rodízio de domingo',
+  ITEM_MATERIAL: 'Uma caixa de bombom',
+  OUTRO: 'Escolhe o filme da próxima sessão',
 }

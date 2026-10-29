@@ -23,8 +23,7 @@ export function CardDesafio({ desafio }: { desafio: DesafioResumo }) {
       </p>
 
       <p className={estilos.desafioRecompensa}>
-        Vale{' '}
-        {descreverRecompensa(desafio.tipoRecompensa, desafio.valorMonetario, desafio.descricaoPrenda)}
+        Vale {descreverRecompensa(desafio.tipoRecompensa, desafio.descricaoRecompensa)}
       </p>
 
       <div className={estilos.desafioRodape}>

@@ -45,21 +45,45 @@ Para conferir que a contabilidade fechou:
 
 ```bash
 docker exec euduvido-db-1 psql -U euduvido -d euduvido \
-  -c "SELECT * FROM economia.vw_reconciliacao_saldo;" \
-  -c "SELECT * FROM economia.vw_escrow_orfao;"
+  -c "SELECT * FROM vw_reconciliacao_saldo;" \
+  -c "SELECT * FROM vw_escrow_orfao;"
 ```
 
 As duas views devem vir **vazias**. Qualquer linha é bug de contabilidade.
+
+### Moderação de desafios por IA
+
+Toda proposta de desafio passa por um modelo de linguagem antes de virar desafio,
+no nível de filtro do grupo
+([ADR 0015](docs/02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)). O
+provedor é a **Groq**. A chave fica fora do repositório: copie `.env.example`
+para `.env` (ignorado pelo git) e preencha `IA_API_KEY` — o `docker compose` lê
+o arquivo sozinho.
+
+| Variável (`docker compose`) | Configuração da API | Padrão |
+| --- | --- | --- |
+| `IA_API_KEY` | `Ia__ApiKey` | vazio — a chave da Groq |
+| `IA_BASE_URL` | `Ia__BaseUrl` | `https://api.groq.com/openai/v1` |
+| `IA_MODELO` | `Ia__Modelo` | `openai/gpt-oss-120b` |
+
+O ADR 0015 cita modelos Llama, mas a Groq aposentou o `llama-3.3-70b-versatile`
+em 16/08/2026 e já não oferece Llama no plano gratuito. O padrão passou a ser o
+`openai/gpt-oss-120b`, também de pesos abertos e indicado pela própria Groq como
+substituto. Trocar de modelo é só mudar `IA_MODELO`.
+
+Sem a chave a API sobe normalmente, mas criar desafio responde **503** — nada é
+aprovado sem avaliação. O roteiro de demonstração acima não depende da IA.
 
 ## Desenvolvimento local
 
 ```bash
 docker compose up -d db storage        # só a infraestrutura
-cd apps/api/EuDuvido.Api && dotnet run # API em http://localhost:5080
+cd apps/api/EuDuvido.Api && dotnet run # API em http://localhost:5100
 cd apps/web && npm install && npm run dev
 ```
 
-A API aplica as migrations na subida.
+A API aplica as migrations na subida. O front procura a API em `VITE_API_URL`
+(veja `apps/web/.env.example`); sem a variável, usa `http://localhost:5100`.
 
 ## Estrutura
 
@@ -68,7 +92,7 @@ apps/
   api/                   API .NET 10 - monólito modular, vertical slice
     EuDuvido.Api/
       Modules/           Identidade, Grupos, Desafios, Validacao, Economia, Ranking
-      Shared/            Auth, Database, Results, Realtime
+      Shared/            Auth, Database, Ia, Results, Realtime
     EuDuvido.Api.Tests/  Testes de constraint, domínio e integração
   web/                   React + TypeScript + Vite
 database/scripts/

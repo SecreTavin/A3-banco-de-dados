@@ -47,13 +47,12 @@ public static class ValidacaoEndpoints
                        v.total_validadores AS "totalValidadores", v.quorum,
                        v.total_votos AS "totalVotos", v.votos_favoraveis AS "votosFavoraveis",
                        v.votos_contra AS "votosContra", v.votos_faltantes AS "votosFaltantes",
-                       EXISTS (SELECT 1 FROM validacao.voto_evidencia x
-                                WHERE x.id_evidencia = v.id_evidencia
-                                  AND x.id_usuario = @id) AS "jaVotei"
-                  FROM validacao.vw_status_votacao v
-                  JOIN validacao.evidencia e ON e.id_evidencia = v.id_evidencia
-                  JOIN validacao.validador_evidencia val
-                    ON val.id_evidencia = v.id_evidencia AND val.id_usuario = @id
+                       (j.voto IS NOT NULL) AS "jaVotei"
+                  FROM vw_status_votacao v
+                  JOIN evidencia e ON e.id_evidencia = v.id_evidencia
+                  -- So aparece para quem esta no juri congelado desta evidencia.
+                  JOIN jurado_evidencia j
+                    ON j.id_evidencia = v.id_evidencia AND j.id_usuario = @id
                  WHERE v.status = 'EM_VOTACAO'
                  ORDER BY e.data_limite_votacao
                 """, new { id = usuario.Id }));
@@ -63,6 +62,7 @@ public static class ValidacaoEndpoints
         app.MapPost("/api/desafios/{idDesafio:int}/evidencias", async (
             int idDesafio,
             EnviarEvidenciaRequest requisicao,
+            IValidator<EnviarEvidenciaCommand> validador,
             EnviarEvidenciaHandler handler,
             IUsuarioAtual usuario,
             CancellationToken ct) =>
@@ -70,8 +70,12 @@ public static class ValidacaoEndpoints
             var comando = new EnviarEvidenciaCommand(
                 idDesafio, requisicao.TipoMidia, requisicao.UrlComprovante, requisicao.Comentario);
 
+            var validacao = await validador.ValidateAsync(comando, ct);
+            if (!validacao.IsValid)
+                return Results.ValidationProblem(validacao.ToDictionary());
+
             var resultado = await handler.Handle(comando, usuario.Id, ct);
-            return resultado.ToHttp(id => Results.Created($"/api/evidencias/{id}",
+            return resultado.ToHttp(id => Results.Created($"/api/desafios/{idDesafio}",
                 new { idEvidencia = id }));
         })
         .RequireAuthorization()

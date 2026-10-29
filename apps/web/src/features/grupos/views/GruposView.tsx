@@ -1,48 +1,40 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Alerta, Botao, CabecalhoPagina, Campo, Card, EstadoVazio, SpinnerCentral } from '../../../shared/ui'
+import { NIVEIS_FILTRO, descricaoNivelFiltro, rotuloNivelFiltro } from '../../../shared/ui/status'
+import type { NivelFiltro } from '../../../shared/api/tipos'
 import { CardGrupo } from '../components/CardGrupo'
 import { useCriarGrupoCommand } from '../hooks/useCriarGrupoCommand'
-import { useEntrarPorCodigoCommand } from '../hooks/useEntrarPorCodigoCommand'
 import { useGruposQuery } from '../hooks/useGruposQuery'
 import estilos from '../grupos.module.css'
-
-type Painel = 'nenhum' | 'criar' | 'entrar'
 
 export function GruposView() {
   const { dados: grupos, carregando, erro, recarregar } = useGruposQuery()
   const criar = useCriarGrupoCommand()
-  const entrar = useEntrarPorCodigoCommand()
 
-  const [painel, setPainel] = useState<Painel>('nenhum')
+  const [criando, setCriando] = useState(false)
   const [nome, setNome] = useState('')
   const [descricao, setDescricao] = useState('')
-  const [codigo, setCodigo] = useState('')
+  const [nivelFiltro, setNivelFiltro] = useState<NivelFiltro>('MODERADO')
 
-  function alternar(alvo: Painel) {
-    setPainel((atual) => (atual === alvo ? 'nenhum' : alvo))
+  function alternar() {
+    setCriando((atual) => !atual)
     criar.limparErro()
-    entrar.limparErro()
   }
 
   async function submeterCriacao(evento: FormEvent) {
     evento.preventDefault()
-    const resultado = await criar.executar({ nome: nome.trim(), descricao: descricao.trim() })
+    const resultado = await criar.executar({
+      nome: nome.trim(),
+      descricao: descricao.trim(),
+      nivelFiltro,
+    })
     if (!resultado.ok) return
 
     setNome('')
     setDescricao('')
-    setPainel('nenhum')
-    recarregar()
-  }
-
-  async function submeterEntrada(evento: FormEvent) {
-    evento.preventDefault()
-    const resultado = await entrar.executar(codigo)
-    if (!resultado.ok) return
-
-    setCodigo('')
-    setPainel('nenhum')
+    setNivelFiltro('MODERADO')
+    setCriando(false)
     recarregar()
   }
 
@@ -51,56 +43,40 @@ export function GruposView() {
       <CabecalhoPagina
         titulo="Meus grupos"
         descricao="Cada grupo tem seu próprio saldo de CP e seu próprio histórico."
+        acao={
+          <Botao variante={criando ? 'secundaria' : 'primaria'} onClick={alternar}>
+            Criar grupo
+          </Botao>
+        }
       />
 
-      <div className={estilos.acoes}>
-        <Botao variante={painel === 'criar' ? 'secundaria' : 'primaria'} onClick={() => alternar('criar')}>
-          Criar grupo
-        </Botao>
-        <Botao variante="secundaria" onClick={() => alternar('entrar')}>
-          Entrar com código
-        </Botao>
-      </div>
-
-      {painel === 'criar' && (
+      {criando && (
         <Card className={estilos.formularioCartao}>
           <form className={estilos.formulario} onSubmit={submeterCriacao}>
             <Campo rotulo="Nome do grupo">
               <input value={nome} onChange={(e) => setNome(e.target.value)} maxLength={80} required />
             </Campo>
-            <Campo rotulo="Descrição" dica="Opcional — ajuda quem entra pelo convite a se situar.">
+            <Campo rotulo="Descrição" dica="Opcional — ajuda quem for adicionado a se situar.">
               <input value={descricao} onChange={(e) => setDescricao(e.target.value)} maxLength={200} />
+            </Campo>
+            <Campo rotulo="Moderação de IA" dica={descricaoNivelFiltro[nivelFiltro]}>
+              <select
+                value={nivelFiltro}
+                onChange={(e) => setNivelFiltro(e.target.value as NivelFiltro)}
+              >
+                {NIVEIS_FILTRO.map((nivel) => (
+                  <option key={nivel} value={nivel}>
+                    {rotuloNivelFiltro[nivel]}
+                  </option>
+                ))}
+              </select>
             </Campo>
             {criar.erro && <Alerta>{criar.erro}</Alerta>}
             <div className={estilos.formularioBotoes}>
               <Botao type="submit" carregando={criar.enviando}>
                 Criar
               </Botao>
-              <Botao type="button" variante="fantasma" onClick={() => setPainel('nenhum')}>
-                Cancelar
-              </Botao>
-            </div>
-          </form>
-        </Card>
-      )}
-
-      {painel === 'entrar' && (
-        <Card className={estilos.formularioCartao}>
-          <form className={estilos.formulario} onSubmit={submeterEntrada}>
-            <Campo rotulo="Código do convite" dica="Seis caracteres, uso único.">
-              <input
-                value={codigo}
-                onChange={(e) => setCodigo(e.target.value.toUpperCase())}
-                maxLength={6}
-                required
-              />
-            </Campo>
-            {entrar.erro && <Alerta>{entrar.erro}</Alerta>}
-            <div className={estilos.formularioBotoes}>
-              <Botao type="submit" carregando={entrar.enviando}>
-                Entrar
-              </Botao>
-              <Botao type="button" variante="fantasma" onClick={() => setPainel('nenhum')}>
+              <Botao type="button" variante="fantasma" onClick={() => setCriando(false)}>
                 Cancelar
               </Botao>
             </div>
@@ -122,7 +98,7 @@ export function GruposView() {
         !erro && (
           <EstadoVazio
             titulo="Você ainda não está em nenhum grupo"
-            descricao="Crie o seu ou entre com o código que alguém te passou."
+            descricao="Crie o seu ou peça para o admin de um grupo te adicionar pelo seu e-mail."
           />
         )
       )}

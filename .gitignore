@@ -14,9 +14,10 @@ obj/
 *.pyc
 __pycache__/
 
-# Ambiente
+# Ambiente - ignora todos os .env, exceto os de exemplo
 .env
-.env.local
+.env.*
+!.env.example
 .vscode/
 .DS_Store
 

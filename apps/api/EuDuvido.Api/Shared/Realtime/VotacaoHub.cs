@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace EuDuvido.Api.Shared.Realtime;
 
 // O hub NOTIFICA que a transacao commitou; nunca decide resultado.
-// Quem decide e validacao.apurar_votacao (ADR 0011).
+// Quem decide e a procedure apurar_votacao (ADR 0011).
 public class VotacaoHub : Hub
 {
     public Task EntrarNoGrupo(int idGrupo) =>

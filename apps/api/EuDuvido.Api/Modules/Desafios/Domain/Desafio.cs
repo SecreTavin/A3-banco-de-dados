@@ -12,8 +12,7 @@ public class Desafio
     public string Descricao { get; private set; } = null!;
     public int ValorCp { get; private set; }
     public string TipoRecompensa { get; private set; } = null!;
-    public decimal? ValorMonetario { get; private set; }
-    public string? DescricaoPrenda { get; private set; }
+    public string? DescricaoRecompensa { get; private set; }
     public DateTimeOffset DataCriacao { get; private set; }
     public DateTimeOffset DataLimite { get; private set; }
     public string Status { get; private set; } = null!;
@@ -33,8 +32,7 @@ public class Desafio
         string descricao,
         int valorCp,
         string tipoRecompensa,
-        decimal? valorMonetario,
-        string? descricaoPrenda,
+        string? descricaoRecompensa,
         DateTimeOffset dataLimite) => new()
         {
             IdGrupo = idGrupo,
@@ -44,9 +42,8 @@ public class Desafio
             Descricao = descricao,
             ValorCp = valorCp,
             TipoRecompensa = tipoRecompensa,
-            // Descritivo apenas: nenhum calculo le esta coluna (ADR 0006).
-            ValorMonetario = valorMonetario,
-            DescricaoPrenda = descricaoPrenda,
+            // Descritivo apenas: nenhum calculo le esta coluna (RN02, ADR 0006).
+            DescricaoRecompensa = descricaoRecompensa,
             DataCriacao = DateTimeOffset.UtcNow,
             DataLimite = dataLimite,
             Status = StatusDesafio.Aberta

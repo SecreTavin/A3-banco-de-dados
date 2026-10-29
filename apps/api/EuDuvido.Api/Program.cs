@@ -1,5 +1,7 @@
+using System.Net.Http.Headers;
 using System.Text;
 using EuDuvido.Api.Modules.Desafios.Features;
+using EuDuvido.Api.Modules.Desafios.Features.CriarDesafio;
 using EuDuvido.Api.Modules.Desafios.Infrastructure;
 using EuDuvido.Api.Modules.Grupos.Features;
 using EuDuvido.Api.Modules.Identidade.Features;
@@ -10,6 +12,7 @@ using EuDuvido.Api.Modules.Validacao.Features.RegistrarVoto;
 using EuDuvido.Api.Modules.Validacao.Infrastructure;
 using EuDuvido.Api.Shared.Auth;
 using EuDuvido.Api.Shared.Database;
+using EuDuvido.Api.Shared.Ia;
 using EuDuvido.Api.Shared.Realtime;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -34,8 +37,23 @@ builder.Services.AddSingleton<IConexaoLeitura>(new ConexaoLeitura(conexao));
 builder.Services.AddScoped<IApuracao, Apuracao>();
 builder.Services.AddScoped<RegistrarVotoHandler>();
 builder.Services.AddScoped<EnviarEvidenciaHandler>();
+builder.Services.AddScoped<CriarDesafioHandler>();
 builder.Services.AddHostedService<PrazosWorker>();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+// IA de moderacao de desafios, na Groq (ADR 0015). Sem Ia:BaseUrl e Ia:Modelo
+// a API sobe normalmente; so criar desafio responde 503.
+var ia = builder.Configuration.GetSection(IaOptions.Secao).Get<IaOptions>() ?? new IaOptions();
+builder.Services.AddSingleton(ia);
+builder.Services.AddHttpClient<IChatIa, ChatIa>(http =>
+{
+    http.Timeout = TimeSpan.FromSeconds(ia.TimeoutSegundos);
+    if (!string.IsNullOrWhiteSpace(ia.ApiKey))
+        http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ia.ApiKey);
+});
+builder.Services.AddScoped<IModeradorDesafio, ModeradorDesafio>();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<TratadorIaIndisponivel>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUsuarioAtual, UsuarioAtual>();
@@ -83,6 +101,7 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
 
 var app = builder.Build();
 
+app.UseExceptionHandler();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
