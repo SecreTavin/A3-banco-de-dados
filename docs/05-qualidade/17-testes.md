@@ -1,8 +1,10 @@
 # 17 - Casos de Teste e Validação
 
-Quatro níveis de teste, com prioridade deliberada: **as constraints do banco vêm
+Cinco níveis de teste, com prioridade deliberada: **as constraints do banco vêm
 primeiro**, porque são o que a disciplina avalia e o que é mais barato de
-escrever ([ADR 0014](../02-arquitetura/adr/0014-estrategia-de-testes.md)).
+escrever ([ADR 0014](../02-arquitetura/adr/0014-estrategia-de-testes.md)). Os
+níveis 1 a 4 são automatizados no código; o nível 5 testa o sistema no ar, de
+ponta a ponta.
 
 > **Situação em 2026-10-29 (modelo v3):** 147 casos implementados e
 > **passando** — 19 de constraint, 108 de domínio e aplicação sem banco e 20 de
@@ -94,6 +96,48 @@ de alguém lembrar na revisão:
 * Nenhum handler de `Query` referencia `DbContext`.
 * Nenhum handler de `Command` referencia Dapper.
 * Nenhum módulo referencia tipos internos de outro módulo.
+
+## Nível 5 — Sistema funcionando, de ponta a ponta
+
+Os níveis anteriores testam o banco e o código isolados. Este testa o sistema
+como a banca vai vê-lo: `docker compose up` com banco recém-povoado, chamadas à
+API real como o frontend faz, e o efeito de cada passo conferido direto no
+PostgreSQL. Cobre o que a seção 12 do edital lista — cadastro, consulta,
+alteração, exclusão, relacionamentos, validação, dados inválidos e comunicação
+entre sistema e banco.
+
+Roteiro em [`scripts/testes/roteiro-e2e.py`](../../scripts/testes/roteiro-e2e.py):
+
+```bash
+docker compose down -v && docker compose up -d --build
+python3 scripts/testes/roteiro-e2e.py
+```
+
+| ID | Procedimento | Resultado esperado | Resultado obtido |
+| --- | --- | --- | --- |
+| E01 | Abrir o login de desenvolvimento | Os 9 usuários do seed listados | Aprovado |
+| E02 | Consultar os grupos do Tavin | 2 grupos, com saldo e nível de filtro de cada um | Aprovado |
+| E03 | Abrir a Central de Votação como Lari | A evidência "Correr 5km" pendente | Aprovado |
+| E04 | Lari vota `VALIDO` (roteiro da demo) | Evidência `ACEITA`, desafio `FINALIZADA_CUMPRIU`, pote de 60 CP dividido entre Tavin e Theus, 2 CP para cada votante, contabilidade fechando | Aprovado |
+| E05 | Lari vota de novo na mesma evidência | Recusado (HTTP 409) | Aprovado |
+| E06 | Cadastrar usuário com 12 anos | Recusado (HTTP 422, RN26), nada gravado | Aprovado |
+| E07 | Cadastrar usuário com 22 anos | Usuário criado (HTTP 201) | Aprovado |
+| E08 | ADMIN adiciona o novo usuário ao grupo | Membro entra com 100 CP lançados no ledger (RN06, RN25) | Aprovado |
+| E09 | Membro comum tenta adicionar alguém | Recusado (HTTP 403) | Aprovado |
+| E10 | Membro comum tenta mudar o nível de filtro | Recusado (HTTP 403), nível inalterado (RN27) | Aprovado |
+| E11 | ADMIN muda o nível para `PESADO`; depois tenta `EXTREMO` | Primeiro aceito; valor inválido recusado (HTTP 400) | Aprovado |
+| E12 | Criar desafio sem a IA disponível | HTTP 503 e nenhuma linha em `desafio` nem em `moderacao_desafio` (RN28) | Aprovado |
+| E13 | Theus aceita um desafio aberto | 10 CP debitados e retidos em escrow (RN18) | Aprovado |
+| E14 | ADMIN remove membro que está num desafio em andamento | Recusado (HTTP 409), membro continua (RN25) | Aprovado |
+| E15 | ADMIN remove membro sem pendências | Removido; saldo zerado por `SAIDA_GRUPO` (ADR 0018) | Aprovado |
+| E16 | Criador cancela um desafio com motivo | `CANCELADA`, CP estornado aos participantes (RN12) | Aprovado |
+| E17 | Consultar o ranking do grupo; não-membro tenta o mesmo | Ranking devolvido; não-membro não vê (HTTP 404) | Aprovado |
+| E18 | Conferir a contabilidade depois de tudo | `vw_reconciliacao_saldo` e `vw_escrow_orfao` vazias | Aprovado |
+
+Executado em 29/10/2026: **18 de 18 aprovados**, duas vezes, cada uma num banco
+recém-criado. Na mesma data, as telas de login, desafios, criação de desafio e
+detalhe do grupo foram conferidas no navegador. Sem a chave da Groq, a tela de
+criação mostra o motivo do bloqueio e não cria nada.
 
 ## Execução
 
