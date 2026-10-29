@@ -7,8 +7,10 @@ prática.
 
 ## Backend — monólito modular com vertical slice
 
-Seis módulos de domínio, cada um com seu schema no PostgreSQL. Dentro de cada
-módulo, a organização é por **feature**, não por camada técnica:
+Seis módulos de domínio — `Identidade`, `Grupos`, `Desafios`, `Validacao`,
+`Economia` e `Ranking` —, todos sobre o mesmo schema do PostgreSQL
+([ADR 0016](adr/0016-schema-unico-e-modelo-enxuto.md)). Dentro de cada módulo,
+a organização é por **feature**, não por camada técnica:
 
 ```text
 Modules/Desafios/
@@ -40,9 +42,10 @@ O domínio define interfaces (portas); a infraestrutura as implementa
 
 | Porta (Domain) | Adaptador (Infrastructure) |
 | --- | --- |
-| `IDesafioRepository` | EF Core sobre `desafios.desafio` |
-| `IArmazenamentoMidia` | Cliente do Cloudflare R2 |
-| `INotificador` | Web Push + `notificacoes.notificacao` |
+| `IModeradorDesafio` | Moderação por IA na Groq ([ADR 0015](adr/0015-idade-minima-e-moderacao-ia.md)) |
+| `IChatIa` | Cliente do protocolo de chat compatível com a OpenAI |
+| `IApuracao` | `CALL apurar_votacao` no PostgreSQL |
+| `INotificadorVotacao` | SignalR, disparado depois do commit |
 
 ### Result Pattern
 
@@ -110,10 +113,10 @@ Refinamento de cada tela, com dados de origem e decisões, em
 | Tela | Feature principal |
 | --- | --- |
 | Autenticação | Login Google |
-| Meus Grupos | Grupos, convite por código, saldo de CP |
+| Meus Grupos | Grupos, nível de filtro, ADMIN adiciona e remove membros, saldo de CP |
 | Meus desafios | Dashboard filtrado por status |
 | Criar Desafio | Criação com custo em CP e participantes |
-| Detalhe do desafio | Evidências, comentários, resultado |
+| Detalhe do desafio | Evidências, júri, resultado |
 | Central de Votação | Votação com atualização ao vivo |
 | Ranking | Consultas analíticas por grupo |
 | Perfil | Dados, histórico e extrato de CP |

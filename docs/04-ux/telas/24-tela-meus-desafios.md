@@ -17,7 +17,7 @@ Dashboard principal do usuário com os desafios em que está envolvido (RF04, RF
 - Desafios `EM_VOTACAO` mostram um CTA direto para a Central de Votação.
 
 ## Resolvido na arquitetura
-- **Custo em CP no card:** cada card mostra `desafios.desafio.valor_cp` — o custo fixo por participante (RN07). A `descricao_recompensa` aparece no card apenas como texto descritivo do que foi combinado fora do app ([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md)).
+- **Custo em CP no card:** cada card mostra `desafio.valor_cp` — o custo fixo por participante (RN07). A `descricao_recompensa` aparece no card apenas como texto descritivo do que foi combinado fora do app ([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md)).
 - **Cancelamento automático:** desafio que chega à `data_limite` ainda `ABERTA` é cancelado por um `BackgroundService` (RN21), e some dos filtros ativos da tela como `CANCELADA`.
 
 ## TODOs para validação com o time

@@ -1,5 +1,5 @@
 {
-  "$comment": "Fonte da verdade das entregas do Projeto A3 (UC Banco de Dados). Cada item vira uma linha da checklist gerada em docs/07-entregas/*.md. 'caminho' e relativo a raiz do repo. 'requerConteudo' exige que TODAS as substrings apareçam no arquivo (case-insensitive). 'minLinhas' exige um numero minimo de linhas - forma simples de flagar arquivo que ainda e so um stub de titulo. 'minArquivos' exige um numero minimo de arquivos dentro de uma pasta.",
+  "$comment": "Fonte da verdade das entregas do Projeto A3 (UC Banco de Dados). Cada item vira uma linha da checklist gerada em docs/07-entregas/*.md. 'caminho' e relativo a raiz do repo. 'requerConteudo' exige que TODAS as substrings apareçam no arquivo (case-insensitive). 'minLinhas' exige um numero minimo de linhas - forma simples de flagar arquivo que ainda e so um stub de titulo. 'minArquivos' exige um numero minimo de arquivos dentro de uma pasta. 'naoPodeConter' recusa o arquivo se QUALQUER substring aparecer - usado na Entrega 3 para que arquivo ainda no modelo antigo nao conte como pronto.",
   "entregas": [
     {
       "id": "entrega-1",
@@ -115,11 +115,24 @@
         },
         {
           "label": "Implementação do Banco de Dados (DDL)",
-          "caminho": "docs/03-banco-de-dados/implementacao/12-ddl-schema.md"
+          "caminho": "docs/03-banco-de-dados/implementacao/12-ddl-schema.md",
+          "requerConteudo": [
+            "jurado_evidencia",
+            "AlinhamentoModeloV3"
+          ],
+          "naoPodeConter": [
+            "Validação pendente",
+            "validador_evidencia"
+          ]
         },
         {
           "label": "Script de criação (schema.sql, gerado por migration)",
-          "caminho": "database/scripts/ddl/schema.sql"
+          "caminho": "database/scripts/ddl/schema.sql",
+          "requerConteudo": [
+            "AlinhamentoModeloV3",
+            "jurado_evidencia",
+            "moderacao_desafio"
+          ]
         },
         {
           "label": "Procedures, triggers e views",
@@ -128,19 +141,51 @@
         {
           "label": "Povoamento — documento",
           "caminho": "docs/03-banco-de-dados/implementacao/13-povoamento-dml.md",
-          "minLinhas": 3
+          "minLinhas": 20,
+          "requerConteudo": [
+            "vw_reconciliacao_saldo"
+          ]
         },
         {
           "label": "Povoamento — script (seed.sql)",
-          "caminho": "database/scripts/dml/seed.sql"
+          "caminho": "database/scripts/dml/seed.sql",
+          "requerConteudo": [
+            "jurado_evidencia",
+            "moderacao_desafio"
+          ],
+          "naoPodeConter": [
+            "validador_evidencia",
+            "voto_evidencia",
+            "identidade.",
+            "validacao.",
+            "economia."
+          ]
         },
         {
           "label": "Consultas SQL — documento",
-          "caminho": "docs/03-banco-de-dados/implementacao/16-consultas-sql.md"
+          "caminho": "docs/03-banco-de-dados/implementacao/16-consultas-sql.md",
+          "requerConteudo": [
+            "jurado_evidencia",
+            "Q10"
+          ],
+          "naoPodeConter": [
+            "validador_evidencia"
+          ]
         },
         {
           "label": "Consultas SQL — script executável",
-          "caminho": "database/scripts/queries/analytical_queries.sql"
+          "caminho": "database/scripts/queries/analytical_queries.sql",
+          "requerConteudo": [
+            "jurado_evidencia",
+            "moderacao_desafio"
+          ],
+          "naoPodeConter": [
+            "validador_evidencia",
+            "voto_evidencia",
+            "identidade.",
+            "validacao.",
+            "economia."
+          ]
         }
       ]
     },

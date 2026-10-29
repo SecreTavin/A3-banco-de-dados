@@ -34,12 +34,12 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
 * **RN21 —** O desafio sai de `ABERTA` para `EM_ANDAMENTO` quando `DESAFIANTE` e
   `DESAFIADO` aceitaram. Desafio que atinge a `data_limite` ainda `ABERTA` é
   cancelada automaticamente — sem isso ela ficaria aberta para sempre.
-  *`BackgroundService` + `desafios.cancelar_desafio`.*
+  *`BackgroundService` + `cancelar_desafio`.*
 
 * **RN12 —** Cancelamento exige motivo e estorna o CP de todos os participantes.
   A partir do início da validação, o motivo precisa ser aprovado por ao menos
   metade dos integrantes (`APOSTADOR` não conta para esse quórum).
-  *Constraint `chk_desafio_cancelamento` + procedure `desafios.cancelar_desafio`.*
+  *Constraint `chk_desafio_cancelamento` + procedure `cancelar_desafio`.*
 
 ## Evidências
 
@@ -72,20 +72,20 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
   entra no grupo depois não vota nem conta para o quórum. Sem esse
   congelamento, o resultado de um desafio mudaria sozinho
   ([ADR 0008](../02-arquitetura/adr/0008-quorum-congelado.md)).
-  *Tabela `validador_evidencia` + FK composta em `voto_evidencia`.*
+  *Tabela `jurado_evidencia`, chave primária `(id_evidencia, id_usuario)`.*
 
 * **RN15 —** Quórum é `floor(n/2) + 1` sobre os validadores congelados. A
   evidência é aceita quando os votos `VALIDO` atingem o quórum, e recusada
   quando os `INVALIDO` o atingem.
-  *Procedure `validacao.apurar_votacao`.*
+  *Procedure `apurar_votacao`.*
 
 * **RN16 —** Empate mantém a votação aberta. Se o prazo expira sem maioria, a
   evidência é **recusada** — o ônus da prova é de quem a enviou. Prazo expirado
   sem nenhum voto resulta em `'EXPIRADA'`.
-  *Procedure `validacao.apurar_votacao`.*
+  *Procedure `apurar_votacao`.*
 
 * **RN19 —** Só se vota em evidência `EM_VOTACAO` e dentro do prazo.
-  *Trigger `trg_voto_evidencia_valida`.*
+  *Trigger `trg_jurado_evidencia_valida`.*
 
 ## Economia de CP
 
@@ -97,21 +97,22 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
 
 * **RN18 —** O CP é debitado **no aceite** do desafio e fica retido na conta do desafio (escrow) até a resolução. Impede apostar o mesmo CP em vários desafios
   simultâneos.
-  *Procedure `economia.debitar_escrow`.*
+  *Procedure `debitar_escrow`.*
 
 * **RN17 —** Quem votou numa evidência que atingiu quórum recebe 2 CP. O
   pagamento ocorre na apuração, não por voto individual — pagar por clique
   incentivaria votar sem analisar.
-  *Procedure `economia.creditar_recompensa_voto`.*
+  *Procedure `creditar_recompensa_voto`.*
 
 * **RN23 —** O pote é dividido igualmente entre os participantes que acertaram.
   Como CP é inteiro, o resto da divisão vai para o primeiro vencedor, de modo
   que a soma dos prêmios seja exatamente o pote.
-  *Procedure `desafios.encerrar_desafio`.*
+  *Procedure `encerrar_desafio`.*
 
 * **RN24 —** O ledger é **append-only**: nunca sofre `UPDATE` nem `DELETE`.
   Estorno é lançamento novo. A soma de todos os lançamentos de um grupo é sempre
-  `100 × número de membros`.
+  igual à soma dos saldos dos membros mais o CP retido em desafios
+  ([ADR 0018](../02-arquitetura/adr/0018-saida-de-membro-e-invariante-do-ledger.md)).
   *Trigger `trg_transacao_cp_imutavel` + view `vw_reconciliacao_saldo`.*
 
 ## Identidade e acesso
@@ -122,8 +123,12 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
 
 * **RN25 —** Remoção de membro e edição/exclusão do grupo são restritas a
   `ADMIN`. O criador do grupo é `ADMIN` por padrão. Qualquer usuário pode sair
-  do grupo por conta própria.
-  *Aplicação.*
+  do grupo por conta própria. A saída ou remoção é **recusada** enquanto o
+  membro participa de desafio `ABERTA`, `EM_ANDAMENTO` ou `EM_VOTACAO`, ou
+  integra júri de evidência `EM_VOTACAO`. Ao sair, o saldo é zerado por um
+  lançamento `SAIDA_GRUPO`
+  ([ADR 0018](../02-arquitetura/adr/0018-saida-de-membro-e-invariante-do-ledger.md)).
+  *Aplicação (papel `ADMIN`) + procedure `remover_membro`.*
 
 ## Idade mínima e moderação de conteúdo
 

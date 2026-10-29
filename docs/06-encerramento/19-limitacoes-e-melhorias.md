@@ -8,14 +8,15 @@ modelagem sem pagar o custo de implementação.
 
 | Item | Onde está no modelo | Por que ficou de fora |
 | --- | --- | --- |
-| Login por email e senha | `identidade.credencial_usuario` já aceita `provedor = 'SENHA'` com `segredo_hash` | Google resolve o acesso do público-alvo; a tabela comporta a extensão sem migração estrutural |
 | Upload de avatar próprio | `usuario.avatar_url` existe | Usa a foto do Google; upload exigiria fluxo de mídia próprio |
 
 ## Fora do escopo por decisão
 
 | Item | Decisão |
 | --- | --- |
-| Chat por grupo | Substituído por comentários no desafio (`desafios.comentario_desafio`). Chat seria feature grande sem retorno na avaliação |
+| Convite por código, comentários, notificações e Web Push | Saíram do modelo na simplificação de 02/10 ([ADR 0016](../02-arquitetura/adr/0016-schema-unico-e-modelo-enxuto.md)). Todos dependem do núcleo e podem voltar sem alterá-lo |
+| Login por e-mail e senha | Só Google; a tabela de credenciais saiu junto ([ADR 0016](../02-arquitetura/adr/0016-schema-unico-e-modelo-enxuto.md)) |
+| Chat por grupo | Feature grande sem retorno na avaliação |
 | Cache distribuído (Redis/Valkey) | Sem carga que justifique. O dataset é um grupo de amigos e a query mais pesada agrega dezenas de linhas |
 | Fila de mensagens (Kafka/Redpanda) | Nenhum produtor e consumidor desacoplados no domínio. Os eventos reais são transições de estado que precisam ser atômicas com a escrita |
 | Aplicativo nativo iOS/Android | Nenhum ponto da avaliação depende disso; site responsivo atende |
@@ -29,19 +30,17 @@ migrations rodam no deploy. Um merge aprovado altera o banco de produção
 imediatamente. Aceito conscientemente pelo tamanho do time, mas é o risco mais
 concreto do projeto — especialmente na véspera da apresentação.
 
-**Web Push é frágil no iOS.** A entrega exige que o usuário adicione o site à
-tela de início; sem isso, nada chega. A demonstração não deve depender de push.
-
 **Recompensa por voto pode ser explorada.** Votar em evidência que atinge quórum
 rende 2 CP, o que incentiva participar. Num grupo grande e mal-intencionado,
 alguém poderia votar sem analisar para acumular CP. Mitigado parcialmente por
 pagar só na apuração, não por voto individual — mas não eliminado.
 
-**Quórum congelado não acomoda saída de membro.** Se um validador sai do grupo
-durante a votação, ele continua no snapshot e o quórum continua contando com
-ele. Uma evidência pode travar por falta de um voto que nunca virá, até o prazo
-expirar. É o preço de ter resultado estável, e o prazo de uma semana limita o
-dano.
+**Saída de membro bloqueada durante desafio ou votação.** Para o júri congelado
+não travar à espera de um voto que nunca viria, quem participa de desafio em
+andamento ou integra júri aberto não pode sair do grupo
+([ADR 0018](../02-arquitetura/adr/0018-saida-de-membro-e-invariante-do-ledger.md)).
+O custo é que alguém pode ficar preso ao grupo até o fim de um desafio — no
+máximo o prazo do desafio mais uma semana de votação.
 
 **Limites do plano gratuito.** Aiven free oferece 1 CPU, 1 GB de RAM, 1 GB de
 disco e 20 conexões sem pooling. Suficiente para a demonstração, insuficiente
@@ -61,7 +60,7 @@ para uso real.
 
 * Ranking global além do ranking por grupo
 * Desafios com valor variável por participante, com rateio proporcional
-* Chat por grupo, se a discussão em comentários se mostrar insuficiente
+* Convite por código, comentários no desafio e notificações (ADR 0016)
 * Histórico de reputação como validador — quem julga bem versus quem só clica
 
 **Evolução técnica:**

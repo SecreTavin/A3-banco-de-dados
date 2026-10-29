@@ -29,7 +29,7 @@ decisão foi formalizar o que o DDL já assumia.
 | Separação de infra | Hexagonal, portas e adaptadores por interface | Em uso | [0002](adr/0002-monolito-modular-vertical-slice.md) |
 | Domínio | DDD com domínio rico | Em uso | [0002](adr/0002-monolito-modular-vertical-slice.md) |
 | Erros de negócio | Result Pattern (exceção só para falha de infra) | Em uso | [0002](adr/0002-monolito-modular-vertical-slice.md) |
-| Tempo real | SignalR, apenas na Central de Votação | Em uso | [0011](adr/0011-notificacoes-web-push.md) |
+| Tempo real | SignalR, apenas na Central de Votação | Em uso | [0011](adr/0011-notificacoes-web-push.md) (substituído pelo [0016](adr/0016-schema-unico-e-modelo-enxuto.md) no que se refere a notificações) |
 | Tarefas agendadas | `BackgroundService` no processo da API | Em uso | [0011](adr/0011-notificacoes-web-push.md) |
 
 ## Frontend
@@ -41,7 +41,7 @@ decisão foi formalizar o que o DDL já assumia.
 | Formato | Site responsivo mobile-first | Em uso | [0001](adr/0001-stack-tecnologica.md) |
 | Organização | Componente burro / componente visual / hook | Em uso | [0002](adr/0002-monolito-modular-vertical-slice.md) |
 | Cliente da API | Gerado a partir do OpenAPI | Em uso | [0012](adr/0012-contrato-openapi.md) |
-| Service worker | Somente para Web Push | Em uso | [0011](adr/0011-notificacoes-web-push.md) |
+| Service worker | Não usado — Web Push saiu do escopo | Removido | [0016](adr/0016-schema-unico-e-modelo-enxuto.md) |
 
 A separação do React acompanha o CQRS do backend: hooks de leitura chamam-se
 `useXQuery` e hooks de escrita `useXCommand`. A convenção é deliberada — torna o

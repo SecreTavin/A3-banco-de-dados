@@ -23,7 +23,7 @@ flowchart TB
     end
 
     subgraph Dados
-        PG[("PostgreSQL<br/>schema por módulo<br/>procedures + triggers")]
+        PG[("PostgreSQL<br/>schema único<br/>procedures + triggers")]
         R2[("Cloudflare R2<br/>fotos e vídeos")]
     end
 
@@ -82,7 +82,7 @@ CQRS de forma pura: só Dapper, só SQL, nenhuma escrita.
 
 ## Fluxo principal
 
-O ciclo de vida completo de um desafio, do convite à liquidação:
+O ciclo de vida completo de um desafio, da moderação à liquidação:
 
 ```mermaid
 sequenceDiagram
@@ -102,7 +102,7 @@ sequenceDiagram
     API-->>D: presigned URL
     D->>R2: envia arquivo
     D->>API: confirma upload
-    API->>PG: cria evidencia + congela validadores
+    API->>PG: cria evidencia + congela o júri (jurado_evidencia)
     Note over PG: status do desafio → EM_VOTACAO
 
     Note over V,PG: Votação
@@ -129,13 +129,16 @@ sequenceDiagram
 | Monólito modular com vertical slice | [0002](adr/0002-monolito-modular-vertical-slice.md) |
 | CQRS: Dapper lê, EF escreve | [0003](adr/0003-cqrs-dapper-ef.md) |
 | `schema.sql` gerado por migration | [0004](adr/0004-schema-sql-gerado-por-migration.md) |
-| Um schema Postgres por módulo | [0005](adr/0005-schema-por-modulo-postgres.md) |
+| ~~Um schema Postgres por módulo~~ → schema único e modelo enxuto | ~~[0005](adr/0005-schema-por-modulo-postgres.md)~~ → [0016](adr/0016-schema-unico-e-modelo-enxuto.md) |
 | CP como moeda única | [0006](adr/0006-cp-como-moeda.md) |
 | Ledger append-only com escrow | [0007](adr/0007-ledger-append-only.md) |
 | Validadores congelados por evidência | [0008](adr/0008-quorum-congelado.md) |
 | Mídia no R2 com URL assinada | [0009](adr/0009-armazenamento-de-midia-r2.md) |
 | Hospedagem e deploy | [0010](adr/0010-hospedagem-e-deploy.md) |
-| Notificações e tempo real | [0011](adr/0011-notificacoes-web-push.md) |
+| ~~Notificações e tempo real~~ (substituído) | ~~[0011](adr/0011-notificacoes-web-push.md)~~ → [0016](adr/0016-schema-unico-e-modelo-enxuto.md) |
+| Idade mínima e moderação por IA | [0015](adr/0015-idade-minima-e-moderacao-ia.md) |
+| "Desafio" no lugar de "aposta" | [0017](adr/0017-desafio-no-lugar-de-aposta.md) |
+| Saída de membro e invariante do ledger | [0018](adr/0018-saida-de-membro-e-invariante-do-ledger.md) |
 | Contrato via OpenAPI | [0012](adr/0012-contrato-openapi.md) |
 | Observabilidade | [0013](adr/0013-observabilidade.md) |
 | Estratégia de testes | [0014](adr/0014-estrategia-de-testes.md) |
@@ -150,7 +153,6 @@ decisão de implementação que é fácil descobrir tarde demais.
 | Aiven free: **20 conexões**, sem pooling | [Aiven docs](https://aiven.io/docs/products/postgresql/concepts/pg-free-tier) | Definir `Maximum Pool Size=15` na connection string — o padrão do Npgsql é 100. EF, Dapper e SignalR compartilham o mesmo pool. |
 | Aiven free: 1 CPU, 1 GB RAM, 1 GB disco | Aiven docs | Suficiente para a demonstração; monitorar pelo Grafana. |
 | Sem `plpythonu`/`plperlu` (exigem superusuário) | Aiven docs | Irrelevante — todas as procedures usam `plpgsql`, que é permitido. |
-| Web Push no iOS **exige** o site adicionado à tela de início | [WebKit](https://webkit.org/blog/13878/web-push-for-web-apps-on-ios-and-ipados/) | Onboarding específico para iOS. A demonstração da banca **não deve depender** de push chegar. |
 | EF Core não possui `migrationBuilder.SqlFile()` | [MS Learn](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/operations) | Carregar o `.sql` como *embedded resource* e passar a string para `migrationBuilder.Sql()`. |
 | Transação manual é incompatível com `EnableRetryOnFailure` | [MS Learn](https://learn.microsoft.com/en-us/ef/core/saving/transactions) | Envolver a unidade de trabalho em `strategy.ExecuteAsync(...)`. |
 | Npgsql não tem MARS | Npgsql | Materializar (`ToListAsync`) antes de emitir comando Dapper na mesma conexão. |

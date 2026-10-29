@@ -35,7 +35,8 @@ As que mais são violadas por engano:
 
 * **Query nunca toca EF Core.** Leitura é Dapper com SQL escrito à mão.
 * **Command nunca lê por Dapper.** Escrita é EF Core, com domínio rico.
-* Há teste de arquitetura no CI que falha se isso for violado.
+* Não há teste automático dessa regra: endpoints de leitura e escrita convivem
+  no mesmo arquivo, então ela é conferida na revisão do PR.
 * No React a convenção acompanha: `useXQuery` para leitura, `useXCommand` para
   escrita.
 
@@ -72,21 +73,25 @@ Dispare o evento depois do commit.
 Não transforme falha de infra em `Result` — isso esconde bug real dentro de um
 `if (result.IsFailure)`.
 
-### Módulos e schemas
+### Módulos no código, schema único no banco
 
-Seis módulos, cada um com seu schema no Postgres: `identidade`, `grupos`,
-`desafios`, `validacao`, `economia`, `notificacoes`. FKs atravessam schemas
-normalmente — a separação é lógica, a integridade é do banco. **Não remova FK
-entre módulos.**
+Seis módulos no código: `Identidade`, `Grupos`, `Desafios`, `Validacao`,
+`Economia`, `Ranking`. No PostgreSQL tudo vive no schema `public` — dez tabelas,
+sem prefixo de schema nas consultas
+([ADR 0016](docs/02-arquitetura/adr/0016-schema-unico-e-modelo-enxuto.md)). A
+fronteira entre módulos é do código; a integridade é do banco. **Não remova FK
+entre tabelas de módulos diferentes.**
 
 Dentro de cada módulo, *vertical slice*: cada feature é uma pasta com Command ou
 Query, Handler, Validator e Endpoint juntos.
 
 ### O ledger é append-only
 
-`economia.transacao_cp` nunca sofre `UPDATE` nem `DELETE` — há trigger que
-bloqueia. Estorno é lançamento novo. A view `economia.vw_reconciliacao_saldo`
-deve estar sempre vazia; se retornar linha, há bug de contabilidade.
+`transacao_cp` nunca sofre `UPDATE` nem `DELETE` — há trigger que bloqueia.
+Estorno é lançamento novo; saída de membro é um `SAIDA_GRUPO`
+([ADR 0018](docs/02-arquitetura/adr/0018-saida-de-membro-e-invariante-do-ledger.md)).
+As views `vw_reconciliacao_saldo` e `vw_escrow_orfao` devem estar sempre
+vazias; se retornarem linha, há bug de contabilidade.
 
 ## Restrições do ambiente
 
@@ -95,7 +100,6 @@ deve estar sempre vazia; se retornar linha, há bug de contabilidade.
 | Aiven free: `max_connections=20`, sem pooling | `Maximum Pool Size=15` na connection string (padrão do Npgsql é 100) |
 | Npgsql não tem MARS | Materializar com `ToListAsync` antes de comando Dapper na mesma conexão |
 | Transação manual × `EnableRetryOnFailure` | Envolver em `strategy.ExecuteAsync(...)` |
-| Web Push no iOS exige site na tela de início | Onboarding específico; a demo não pode depender de push |
 | Uniões discriminadas em C# são preview | Usar biblioteca de `Result` |
 
 ## Convenções de escrita

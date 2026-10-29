@@ -3,10 +3,9 @@
 Dez tabelas em um **único schema** (`public`), agrupadas por área só para
 leitura. Para o desenho veja [10 - DER](10-der.md).
 
-> **Estado do modelo.** Este é o modelo de referência. O DDL em
-> [12 - DDL](../implementacao/12-ddl-schema.md), o `schema.sql` e o seed ainda
-> descrevem um desenho anterior e serão alinhados numa migration futura. Até
-> lá os documentos divergem de propósito.
+> **Estado do modelo.** Implementado pela migration `AlinhamentoModeloV3` e
+> conferido no banco em execução: tabelas, colunas, tipos e constraints batem
+> com este documento ([12 - DDL](../implementacao/12-ddl-schema.md)).
 
 Convenção: **PK** chave primária, **FK** chave estrangeira, **UQ** unicidade,
 **NN** obrigatória. A coluna *Regra* cita a RN de
@@ -33,7 +32,7 @@ identidade é o e-mail (RN05).
 | `data_nascimento` | `DATE` | | NN, `trg_usuario_idade_minima`: idade ≥ 16 anos na data do cadastro | RN26 |
 | `data_cadastro` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
 
-A idade mínima é garantida por **trigger** `BEFORE INSERT`, não por `CHECK`: a
+A idade mínima é garantida por **trigger** `BEFORE INSERT OR UPDATE`, não por `CHECK`: a
 regra depende da data corrente, e o PostgreSQL só aceita expressões imutáveis
 em `CHECK`. O trigger compara com `data_cadastro`, não com `CURRENT_DATE`, para
 que a linha continue válida em qualquer reavaliação.
@@ -220,7 +219,7 @@ Ledger append-only de partidas dobradas. Nunca sofre `UPDATE` nem `DELETE`.
 | `id_grupo` | `INT` | FK → `grupo_amigos` | NN, `ON DELETE CASCADE` | |
 | `id_usuario` | `INT` | FK → `usuario` | Nulo = conta do desafio (escrow) | RN18 |
 | `id_desafio` | `INT` | FK → `desafio` | | RN18 |
-| `tipo` | `VARCHAR(20)` | | NN, `chk_transacao_tipo`: `CREDITO_INICIAL`, `DESAFIO_ESCROW`, `PREMIO`, `ESTORNO`, `RECOMPENSA_VOTO` | RN06, RN12, RN17, RN18, RN23 |
+| `tipo` | `VARCHAR(20)` | | NN, `chk_transacao_tipo`: `CREDITO_INICIAL`, `DESAFIO_ESCROW`, `PREMIO`, `ESTORNO`, `RECOMPENSA_VOTO`, `SAIDA_GRUPO` (+ legado `APOSTA_ESCROW`) | RN06, RN12, RN17, RN18, RN23, RN25 |
 | `valor` | `INT` | | NN, `chk_transacao_valor`: `<> 0` — positivo credita, negativo debita | RN24 |
 | `descricao` | `VARCHAR(255)` | | NN | |
 | `data_lancamento` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
@@ -228,3 +227,9 @@ Ledger append-only de partidas dobradas. Nunca sofre `UPDATE` nem `DELETE`.
 `chk_transacao_conta` exige que o lançamento pertença a um usuário ou a um desafio; `chk_transacao_escrow` exige `id_desafio` quando o tipo é
 `DESAFIO_ESCROW`. A imutabilidade é do trigger `trg_transacao_cp_imutavel`
 (RN24); estorno é lançamento novo.
+
+* `SAIDA_GRUPO` é o lançamento negativo que zera o saldo de quem sai do grupo
+  ([ADR 0018](../../02-arquitetura/adr/0018-saida-de-membro-e-invariante-do-ledger.md)).
+* `APOSTA_ESCROW` é o nome antigo de `DESAFIO_ESCROW`. Lançamentos gravados antes
+  da renomeação não podem ser reescritos, então a constraint aceita os dois
+  ([ADR 0017](../../02-arquitetura/adr/0017-desafio-no-lugar-de-aposta.md)).
