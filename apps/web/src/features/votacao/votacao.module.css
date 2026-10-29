@@ -21,7 +21,7 @@
 
 .desafio {
   flex: 1;
-  font-size: 15.5px;
+  font-size: 17px;
   font-weight: 700;
 }
 
@@ -38,7 +38,7 @@
 
 .link {
   color: var(--primaria-forte);
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 600;
   text-decoration: underline;
 }
@@ -52,34 +52,15 @@
 }
 
 .relato {
-  font-size: 13.5px;
+  font-size: 15px;
   color: var(--texto-suave);
-}
-
-.parecer {
-  display: grid;
-  gap: 4px;
-  padding: 10px 12px;
-  border: 1px dashed var(--borda-forte);
-  border-radius: var(--raio-pequeno);
-  background: var(--fundo);
-  font-size: 13px;
-  color: var(--texto-suave);
-}
-
-.parecerRotulo {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--texto-fraco);
 }
 
 .placar {
   display: flex;
   align-items: center;
   gap: 14px;
-  font-size: 13px;
+  font-size: 14.5px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -98,7 +79,7 @@
   align-items: center;
   gap: 6px;
   margin-left: auto;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -139,7 +120,7 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--texto-fraco);
 }
 

@@ -1,5 +1,5 @@
 const CAMINHOS = {
-  apostas: 'M4 6h16M4 12h10M4 18h7M17 15l2.5 2.5L23 13',
+  desafios: 'M4 6h16M4 12h10M4 18h7M17 15l2.5 2.5L23 13',
   votacao: 'M9 12l2 2 4-4M4 5h16v14H4z',
   grupos: 'M16 19v-1a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v1M9.5 9.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM21 19v-1a4 4 0 0 0-3-3.8M16.5 3.7a3 3 0 0 1 0 5.8',
   ranking: 'M4 20V10M10 20V4M16 20v-7M22 20H2',

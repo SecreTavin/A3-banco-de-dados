@@ -10,7 +10,7 @@
 -- Consulta central do produto. Note que o denominador do quorum vem do
 -- snapshot congelado (validador_evidencia), nao do tamanho atual do grupo.
 -- -----------------------------------------------------------------------------
-SELECT a.id_aposta,
+SELECT a.id_desafio,
        a.titulo                                        AS desafio,
        u.apelido                                       AS enviou_evidencia,
        e.tipo_midia,
@@ -25,28 +25,28 @@ SELECT a.id_aposta,
            100.0 * COUNT(DISTINCT v.id_usuario) FILTER (WHERE v.voto = 'VALIDO')
            / NULLIF(COUNT(DISTINCT v.id_usuario), 0), 1) AS percentual_aprovacao
   FROM validacao.evidencia e
-  INNER JOIN apostas.aposta a       ON a.id_aposta   = e.id_aposta
+  INNER JOIN desafios.desafio a       ON a.id_desafio   = e.id_desafio
   INNER JOIN identidade.usuario u   ON u.id_usuario  = e.id_usuario
   LEFT  JOIN validacao.validador_evidencia val ON val.id_evidencia = e.id_evidencia
   LEFT  JOIN validacao.voto_evidencia v        ON v.id_evidencia   = e.id_evidencia
- GROUP BY a.id_aposta, a.titulo, u.apelido, e.tipo_midia,
+ GROUP BY a.id_desafio, a.titulo, u.apelido, e.tipo_midia,
           e.url_comprovante, e.status
- ORDER BY a.id_aposta;
+ ORDER BY a.id_desafio;
 
 -- -----------------------------------------------------------------------------
 -- Q2 - Ranking por grupo: historico completo de cada membro.
--- Resolve o TODO da tela 28 - como CP e a moeda unica, apostas de prenda e
+-- Resolve o TODO da tela 28 - como CP e a moeda unica, desafios de prenda e
 -- monetarias sao comparaveis na mesma coluna (ADR 0006).
 -- -----------------------------------------------------------------------------
 SELECT g.nome                                       AS grupo,
        u.apelido,
        m.saldo_cp                                   AS saldo_atual,
-       COUNT(DISTINCT p.id_aposta)                  AS apostas_participadas,
-       COUNT(DISTINCT p.id_aposta) FILTER (
+       COUNT(DISTINCT p.id_desafio)                  AS desafios_participadas,
+       COUNT(DISTINCT p.id_desafio) FILTER (
            WHERE (a.status = 'FINALIZADA_CUMPRIU' AND p.escolha = 'VAI_CUMPRIR')
               OR (a.status = 'FINALIZADA_PERDEU'  AND p.escolha = 'NAO_VAI_CUMPRIR')
        )                                            AS acertos,
-       COUNT(DISTINCT p.id_aposta) FILTER (
+       COUNT(DISTINCT p.id_desafio) FILTER (
            WHERE (a.status = 'FINALIZADA_CUMPRIU' AND p.escolha = 'NAO_VAI_CUMPRIR')
               OR (a.status = 'FINALIZADA_PERDEU'  AND p.escolha = 'VAI_CUMPRIR')
        )                                            AS erros,
@@ -54,18 +54,18 @@ SELECT g.nome                                       AS grupo,
   FROM grupos.membro_grupo m
   INNER JOIN grupos.grupo_amigos g  ON g.id_grupo   = m.id_grupo
   INNER JOIN identidade.usuario u   ON u.id_usuario = m.id_usuario
-  LEFT  JOIN apostas.aposta a       ON a.id_grupo   = m.id_grupo
-  LEFT  JOIN apostas.participante_aposta p
-         ON p.id_aposta = a.id_aposta AND p.id_usuario = m.id_usuario
+  LEFT  JOIN desafios.desafio a       ON a.id_grupo   = m.id_grupo
+  LEFT  JOIN desafios.participante_desafio p
+         ON p.id_desafio = a.id_desafio AND p.id_usuario = m.id_usuario
   LEFT  JOIN economia.transacao_cp t
          ON t.id_grupo = m.id_grupo AND t.id_usuario = m.id_usuario
  GROUP BY g.nome, u.apelido, m.saldo_cp
  ORDER BY m.saldo_cp DESC, acertos DESC;
 
 -- -----------------------------------------------------------------------------
--- Q3 - Maiores apostas por valor em CP, com o pote efetivamente em jogo.
+-- Q3 - Maiores desafios por valor em CP, com o pote efetivamente em jogo.
 -- -----------------------------------------------------------------------------
-SELECT a.id_aposta,
+SELECT a.id_desafio,
        a.titulo,
        c.nome                       AS categoria,
        a.valor_cp                   AS custo_por_participante,
@@ -74,30 +74,30 @@ SELECT a.id_aposta,
        a.tipo_recompensa,
        a.valor_monetario            AS valor_combinado_fora_do_app,
        a.status
-  FROM apostas.aposta a
-  INNER JOIN apostas.categoria_desafio c ON c.id_categoria = a.id_categoria
-  LEFT  JOIN apostas.participante_aposta p ON p.id_aposta = a.id_aposta
- GROUP BY a.id_aposta, a.titulo, c.nome, a.valor_cp,
+  FROM desafios.desafio a
+  INNER JOIN desafios.categoria_desafio c ON c.id_categoria = a.id_categoria
+  LEFT  JOIN desafios.participante_desafio p ON p.id_desafio = a.id_desafio
+ GROUP BY a.id_desafio, a.titulo, c.nome, a.valor_cp,
           a.tipo_recompensa, a.valor_monetario, a.status
  ORDER BY pote_total_cp DESC
  LIMIT 10;
 
 -- -----------------------------------------------------------------------------
--- Q4 - Distribuicao de apostas por categoria e tipo de recompensa.
+-- Q4 - Distribuicao de desafios por categoria e tipo de recompensa.
 -- Atende "contagem de prendas por categoria" do documento 16.
 -- -----------------------------------------------------------------------------
 SELECT c.nome                                                       AS categoria,
-       COUNT(a.id_aposta)                                           AS total_apostas,
-       COUNT(a.id_aposta) FILTER (WHERE a.tipo_recompensa = 'MONETARIA')     AS monetarias,
-       COUNT(a.id_aposta) FILTER (WHERE a.tipo_recompensa = 'PRENDA_ACAO')   AS prendas_acao,
-       COUNT(a.id_aposta) FILTER (WHERE a.tipo_recompensa = 'ITEM_MATERIAL') AS itens_materiais,
-       COUNT(a.id_aposta) FILTER (WHERE a.status = 'FINALIZADA_CUMPRIU')     AS cumpridas,
-       COUNT(a.id_aposta) FILTER (WHERE a.status = 'FINALIZADA_PERDEU')      AS perdidas,
+       COUNT(a.id_desafio)                                           AS total_desafios,
+       COUNT(a.id_desafio) FILTER (WHERE a.tipo_recompensa = 'MONETARIA')     AS monetarias,
+       COUNT(a.id_desafio) FILTER (WHERE a.tipo_recompensa = 'PRENDA_ACAO')   AS prendas_acao,
+       COUNT(a.id_desafio) FILTER (WHERE a.tipo_recompensa = 'ITEM_MATERIAL') AS itens_materiais,
+       COUNT(a.id_desafio) FILTER (WHERE a.status = 'FINALIZADA_CUMPRIU')     AS cumpridas,
+       COUNT(a.id_desafio) FILTER (WHERE a.status = 'FINALIZADA_PERDEU')      AS perdidas,
        ROUND(AVG(a.valor_cp), 1)                                    AS custo_medio_cp
-  FROM apostas.categoria_desafio c
-  LEFT JOIN apostas.aposta a ON a.id_categoria = c.id_categoria
+  FROM desafios.categoria_desafio c
+  LEFT JOIN desafios.desafio a ON a.id_categoria = c.id_categoria
  GROUP BY c.nome
- ORDER BY total_apostas DESC;
+ ORDER BY total_desafios DESC;
 
 -- -----------------------------------------------------------------------------
 -- Q5 - Extrato de CP de um usuario em um grupo.
@@ -108,13 +108,13 @@ SELECT t.data_lancamento,
        t.tipo,
        t.valor,
        t.descricao,
-       a.titulo AS aposta,
+       a.titulo AS desafio,
        SUM(t.valor) OVER (
            PARTITION BY t.id_grupo, t.id_usuario
            ORDER BY t.data_lancamento, t.id_transacao
        ) AS saldo_apos_lancamento
   FROM economia.transacao_cp t
-  LEFT JOIN apostas.aposta a ON a.id_aposta = t.id_aposta
+  LEFT JOIN desafios.desafio a ON a.id_desafio = t.id_desafio
  WHERE t.id_grupo = 1
    AND t.id_usuario = 1
  ORDER BY t.data_lancamento, t.id_transacao;
@@ -160,22 +160,22 @@ SELECT g.nome                                          AS grupo,
  GROUP BY g.id_grupo, g.nome;
 
 -- -----------------------------------------------------------------------------
--- Q8 - Apostas com prazo vencendo, alimentando as notificacoes.
--- Usa o indice parcial idx_aposta_data_limite.
+-- Q8 - Desafios com prazo vencendo, alimentando as notificacoes.
+-- Usa o indice parcial idx_desafio_data_limite.
 -- -----------------------------------------------------------------------------
-SELECT a.id_aposta,
+SELECT a.id_desafio,
        a.titulo,
        a.status,
        a.data_limite,
        a.data_limite - CURRENT_TIMESTAMP AS tempo_restante,
        u.apelido                         AS criador,
        COUNT(p.id_participante)          AS n_participantes
-  FROM apostas.aposta a
+  FROM desafios.desafio a
   INNER JOIN identidade.usuario u ON u.id_usuario = a.id_criador
-  LEFT  JOIN apostas.participante_aposta p ON p.id_aposta = a.id_aposta
+  LEFT  JOIN desafios.participante_desafio p ON p.id_desafio = a.id_desafio
  WHERE a.status IN ('ABERTA', 'EM_ANDAMENTO')
    AND a.data_limite BETWEEN CURRENT_TIMESTAMP AND CURRENT_TIMESTAMP + INTERVAL '48 hours'
- GROUP BY a.id_aposta, a.titulo, a.status, a.data_limite, u.apelido
+ GROUP BY a.id_desafio, a.titulo, a.status, a.data_limite, u.apelido
  ORDER BY a.data_limite;
 
 -- =============================================================================
@@ -184,7 +184,7 @@ SELECT a.id_aposta,
 -- Para demonstrar o efeito dos indices, comparar o plano antes e depois:
 --
 --   EXPLAIN (ANALYZE, BUFFERS)
---   SELECT * FROM apostas.aposta
+--   SELECT * FROM desafios.desafio
 --    WHERE status IN ('ABERTA','EM_ANDAMENTO')
 --      AND data_limite < CURRENT_TIMESTAMP + INTERVAL '48 hours';
 --

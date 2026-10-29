@@ -6,9 +6,9 @@
 
 ## Contexto
 
-O sistema tem estados que erram **em silencio**. Uma aposta que fica presa em
+O sistema tem estados que erram **em silencio**. Um desafio que fica preso em
 `EM_VOTACAO` porque o quorum congelado ([0008](0008-quorum-congelado.md)) nunca
-sera atingido nao lanca excecao. CP preso em escrow de uma aposta que ninguem
+sera atingido nao lanca excecao. CP preso em escrow de um desafio que ninguem
 resolve nao lanca excecao. Uma divergencia entre saldo materializado e ledger
 ([0007](0007-ledger-append-only.md)) nao lanca excecao. Sao todos numeros
 errados, nao erros.
@@ -39,8 +39,8 @@ Nao de infraestrutura — **de negocio**. Os paineis principais sao:
 
 | Painel | Fonte | O que revela |
 | --- | --- | --- |
-| Apostas por status | `apostas.aposta` agrupada por status | Aposta parada em `EM_VOTACAO` alem do prazo |
-| CP em escrow por grupo | `economia.vw_cp_em_escrow` | CP preso em aposta que ninguem resolve |
+| Desafios por status | `desafios.desafio` agrupado por status | Desafio parado em `EM_VOTACAO` alem do prazo |
+| CP em escrow por grupo | `economia.vw_cp_em_escrow` | CP preso em desafio que ninguem resolve |
 | Evidencias aguardando quorum | `validacao.vw_status_votacao` | Votacao que nunca vai fechar, com `votos_faltantes` maior que o possivel |
 | Divergencia de saldo | `economia.vw_reconciliacao_saldo` | **Qualquer linha e bug** — painel que deve estar sempre em zero |
 
@@ -93,8 +93,8 @@ responder.
 
 | Alternativa | Pros | Contras | Por que nao |
 | --- | --- | --- | --- |
-| Sem observabilidade | Zero configuracao, zero servico externo | Aposta travada, CP preso e divergencia de saldo continuam invisiveis; sem dado de performance para justificar indice | Os erros deste sistema sao numeros errados, nao excecoes — sem painel, ninguem ve |
-| Apenas logs (`stdout` da Render) | Simples, ja vem pronto | Log responde "o que aconteceu nessa requisicao", nunca "quantas apostas estao presas" | Nao cobre nenhuma das metricas de dominio, que sao o motivo da decisao |
+| Sem observabilidade | Zero configuracao, zero servico externo | Desafio travado, CP preso e divergencia de saldo continuam invisiveis; sem dado de performance para justificar indice | Os erros deste sistema sao numeros errados, nao excecoes — sem painel, ninguem ve |
+| Apenas logs (`stdout` da Render) | Simples, ja vem pronto | Log responde "o que aconteceu nessa requisicao", nunca "quantos desafios estao presos" | Nao cobre nenhuma das metricas de dominio, que sao o motivo da decisao |
 | APM completo com tracing distribuido | Visao ponta a ponta de cada requisicao | Instrumentacao em todo handler, mais dependencias, plano gratuito mais apertado | Custo sem retorno num monolito de um processo — a pergunta que o tracing responde nao existe aqui |
 | Metricas so de infraestrutura (CPU, memoria, latencia HTTP) | Padrao, facil de coletar | Nao detecta nenhum dos tres erros silenciosos; um sistema com contabilidade quebrada tem CPU saudavel | Mede a maquina, nao o produto |
 | Consultar as views a mao quando desconfiar | Zero infraestrutura | Depende de alguem desconfiar; e nao gera historico para comparar antes e depois de um indice | Sem serie temporal nao ha comparacao de performance — que e metade da justificativa |

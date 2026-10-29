@@ -20,7 +20,7 @@ export function useVotacaoAoVivo(grupos: number[], aoMudar: () => void) {
       .build()
 
     hub.on('votacaoAtualizada', () => callback.current())
-    hub.on('apostaEncerrada', () => callback.current())
+    hub.on('desafioEncerrado', () => callback.current())
 
     let vivo = true
     void hub

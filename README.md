@@ -1,4 +1,4 @@
-# Eu Duvido! - Plataforma de Apostas Sociais e Desafios Entre Amigos
+# Eu Duvido! - Plataforma de Desafios Sociais Entre Amigos
 
 Projeto A3 da Unidade Curricular de **Banco de Dados** (Grupo Ânima Educação /
 Centro Universitário UNA).
@@ -33,11 +33,10 @@ Google — porque `Auth:Provider` está em `Dev`. Os cinco usuários disponívei
 O seed deixa o sistema no estado exato para isto:
 
 1. Entre como **Lari** e vá para a Central de Votação.
-2. A evidência da aposta *"Correr 5km abaixo de 25 minutos"* está aguardando um
+2. A evidência do desafio *"Correr 5km abaixo de 25 minutos"* está aguardando um
    voto — o quórum é 2 e já há 1 voto favorável.
 3. Vote `VÁLIDO`.
-4. A apuração roda dentro do banco, numa transação: a evidência vira `ACEITA`, a
-   aposta vira `FINALIZADA_CUMPRIU`, o pote de CP é transferido aos vencedores e
+4. A apuração roda dentro do banco, numa transação: a evidência vira `ACEITA`, o desafio vira `FINALIZADA_CUMPRIU`, o pote de CP é transferido aos vencedores e
    quem votou recebe 2 CP.
 5. Abra a mesma tela em outro navegador antes de votar — a contagem se move ao
    vivo por SignalR.
@@ -52,42 +51,39 @@ docker exec euduvido-db-1 psql -U euduvido -d euduvido \
 
 As duas views devem vir **vazias**. Qualquer linha é bug de contabilidade.
 
-### IA de moderação e de verificação de prova
+### Moderação de desafios por IA
 
-Criar aposta e enviar evidência passam por um modelo de linguagem
-([ADR 0015](docs/02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md),
-[ADR 0017](docs/02-arquitetura/adr/0017-ia-propria-e-verificacao-de-prova.md)).
-Qualquer servidor compatível com a API de chat da OpenAI serve. Com Ollama numa
-máquina do time, exposto pelo ngrok:
+Toda proposta de desafio passa por um modelo de linguagem antes de virar desafio,
+no nível de filtro do grupo
+([ADR 0015](docs/02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)). O
+provedor é a **Groq**. A chave fica fora do repositório: copie `.env.example`
+para `.env` (ignorado pelo git) e preencha `IA_API_KEY` — o `docker compose` lê
+o arquivo sozinho.
 
-```bash
-ollama pull qwen2.5:7b            # texto: moderação de desafios
-ollama pull qwen2.5vl:7b          # visão: olha a foto da prova
-ngrok http 11434 --host-header="localhost:11434"
-```
+| Variável (`docker compose`) | Configuração da API | Padrão |
+| --- | --- | --- |
+| `IA_API_KEY` | `Ia__ApiKey` | vazio — a chave da Groq |
+| `IA_BASE_URL` | `Ia__BaseUrl` | `https://api.groq.com/openai/v1` |
+| `IA_MODELO` | `Ia__Modelo` | `openai/gpt-oss-120b` |
 
-E na API (variáveis de ambiente, ou um `.env` ao lado do `docker-compose.yml`):
+O ADR 0015 cita modelos Llama, mas a Groq aposentou o `llama-3.3-70b-versatile`
+em 16/08/2026 e já não oferece Llama no plano gratuito. O padrão passou a ser o
+`openai/gpt-oss-120b`, também de pesos abertos e indicado pela própria Groq como
+substituto. Trocar de modelo é só mudar `IA_MODELO`.
 
-| Variável | Exemplo |
-| --- | --- |
-| `IA_BASE_URL` (`Ia__BaseUrl`) | `https://abcd-1234.ngrok-free.app/v1` |
-| `IA_MODELO` (`Ia__Modelo`) | `qwen2.5:7b` |
-| `IA_MODELO_VISAO` (`Ia__ModeloVisao`) | `qwen2.5vl:7b` |
-| `IA_API_KEY` (`Ia__ApiKey`) | vazio no Ollama; obrigatório em Groq/OpenAI |
-
-Sem essas variáveis a API sobe normalmente, mas criar aposta e enviar
-evidência respondem 503 — nada é aprovado sem avaliação. O endereço do ngrok
-gratuito muda a cada reinício: atualize `IA_BASE_URL` quando isso acontecer.
+Sem a chave a API sobe normalmente, mas criar desafio responde **503** — nada é
+aprovado sem avaliação. O roteiro de demonstração acima não depende da IA.
 
 ## Desenvolvimento local
 
 ```bash
 docker compose up -d db storage        # só a infraestrutura
-cd apps/api/EuDuvido.Api && dotnet run # API em http://localhost:5080
+cd apps/api/EuDuvido.Api && dotnet run # API em http://localhost:5100
 cd apps/web && npm install && npm run dev
 ```
 
-A API aplica as migrations na subida.
+A API aplica as migrations na subida. O front procura a API em `VITE_API_URL`
+(veja `apps/web/.env.example`); sem a variável, usa `http://localhost:5100`.
 
 ## Estrutura
 
@@ -95,7 +91,7 @@ A API aplica as migrations na subida.
 apps/
   api/                   API .NET 10 - monólito modular, vertical slice
     EuDuvido.Api/
-      Modules/           Identidade, Grupos, Apostas, Validacao, Economia, Ranking
+      Modules/           Identidade, Grupos, Desafios, Validacao, Economia, Ranking
       Shared/            Auth, Database, Ia, Results, Realtime
     EuDuvido.Api.Tests/  Testes de constraint, domínio e integração
   web/                   React + TypeScript + Vite

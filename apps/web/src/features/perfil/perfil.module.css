@@ -17,13 +17,13 @@
 }
 
 .apelido {
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--primaria-forte);
 }
 
 .contato {
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--texto-fraco);
 }
 
@@ -48,7 +48,7 @@
 }
 
 .numeroRotulo {
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--texto-fraco);
 }
 
@@ -70,7 +70,7 @@
 .saldoGrupo {
   flex: 1;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 15.5px;
 }
 
 .saldoGrupo:hover {
@@ -100,12 +100,12 @@
 }
 
 .lancamentoDescricao {
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 600;
 }
 
 .lancamentoMeta {
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--texto-fraco);
 }
 
@@ -116,7 +116,7 @@
 }
 
 .lancamentoSaldo {
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--texto-fraco);
   font-variant-numeric: tabular-nums;
 }

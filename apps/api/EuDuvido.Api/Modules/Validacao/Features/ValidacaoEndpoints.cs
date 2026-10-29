@@ -40,29 +40,27 @@ public static class ValidacaoEndpoints
             using var conexao = await leitura.AbrirAsync(ct);
             return Results.Ok(await conexao.QueryAsync(
                 """
-                SELECT v.id_evidencia AS "idEvidencia", v.id_aposta AS "idAposta",
+                SELECT v.id_evidencia AS "idEvidencia", v.id_desafio AS "idDesafio",
                        v.desafio, v.id_grupo AS "idGrupo", v.status,
                        e.tipo_midia AS "tipoMidia", e.url_comprovante AS "urlComprovante",
                        e.comentario, e.data_limite_votacao AS "dataLimiteVotacao",
                        v.total_validadores AS "totalValidadores", v.quorum,
                        v.total_votos AS "totalVotos", v.votos_favoraveis AS "votosFavoraveis",
                        v.votos_contra AS "votosContra", v.votos_faltantes AS "votosFaltantes",
-                       (j.voto IS NOT NULL) AS "jaVotei",
-                       ve.parecer AS "parecerIa"
+                       (j.voto IS NOT NULL) AS "jaVotei"
                   FROM vw_status_votacao v
                   JOIN evidencia e ON e.id_evidencia = v.id_evidencia
                   -- So aparece para quem esta no juri congelado desta evidencia.
                   JOIN jurado_evidencia j
                     ON j.id_evidencia = v.id_evidencia AND j.id_usuario = @id
-                  LEFT JOIN verificacao_evidencia ve ON ve.id_evidencia = e.id_evidencia
                  WHERE v.status = 'EM_VOTACAO'
                  ORDER BY e.data_limite_votacao
                 """, new { id = usuario.Id }));
         })
         .WithSummary("Evidencias que este usuario pode validar.");
 
-        app.MapPost("/api/apostas/{idAposta:int}/evidencias", async (
-            int idAposta,
+        app.MapPost("/api/desafios/{idDesafio:int}/evidencias", async (
+            int idDesafio,
             EnviarEvidenciaRequest requisicao,
             IValidator<EnviarEvidenciaCommand> validador,
             EnviarEvidenciaHandler handler,
@@ -70,19 +68,19 @@ public static class ValidacaoEndpoints
             CancellationToken ct) =>
         {
             var comando = new EnviarEvidenciaCommand(
-                idAposta, requisicao.TipoMidia, requisicao.UrlComprovante, requisicao.Comentario);
+                idDesafio, requisicao.TipoMidia, requisicao.UrlComprovante, requisicao.Comentario);
 
             var validacao = await validador.ValidateAsync(comando, ct);
             if (!validacao.IsValid)
                 return Results.ValidationProblem(validacao.ToDictionary());
 
             var resultado = await handler.Handle(comando, usuario.Id, ct);
-            return resultado.ToHttp(enviada => Results.Created(
-                $"/api/apostas/{idAposta}", enviada));
+            return resultado.ToHttp(id => Results.Created($"/api/desafios/{idDesafio}",
+                new { idEvidencia = id }));
         })
         .RequireAuthorization()
         .WithTags("Validacao")
-        .WithSummary("A IA confere a prova; se reconhecer, vira evidencia e o juri e congelado.");
+        .WithSummary("Envia evidencia e congela o juri.");
     }
 }
 

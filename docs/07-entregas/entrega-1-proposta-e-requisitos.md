@@ -8,14 +8,14 @@
 
 ## Resposta síntese (formato pedido no RT01)
 
-O projeto **Eu Duvido!** pretende resolver o problema de apostas e
-desafios combinados verbalmente entre amigos, que terminam em calote,
+O projeto **Eu Duvido!** pretende resolver o problema de desafios
+combinados verbalmente entre amigos, que terminam em calote,
 esquecimento ou discussão sobre quem realmente venceu — por falta de prova
 centralizada e de um critério neutro de julgamento —, o que afeta grupos
-de amigos que fazem esse tipo de aposta informal no dia a dia: quem propõe
+de amigos que fazem esse tipo de desafio informal no dia a dia: quem propõe
 o desafio, quem o aceita, e o restante do grupo, que hoje não tem papel
 formal de júri. Para isso, será desenvolvido um sistema capaz de
-formalizar apostas dentro de grupos privados, com custo em créditos
+formalizar desafios dentro de grupos privados, com custo em créditos
 virtuais (CP) e validação por votação dos próprios membros do grupo,
 oferecendo funcionalidades como criação de grupos e desafios, submissão de
 evidências de cumprimento (foto, vídeo, link ou texto), votação de
@@ -23,7 +23,7 @@ validação, apuração automática do resultado com liquidação de CP e rankin
 por grupo.
 
 A necessidade de um Banco de Dados fica evidente porque toda a lógica
-central do sistema depende de integridade referencial entre aposta,
+central do sistema depende de integridade referencial entre desafio,
 participante e evidência, e de uma transação atômica que garanta que a
 evidência aceita e o crédito transferido nunca fiquem inconsistentes entre
 si — dados espalhados em conversas de WhatsApp não sustentam essa garantia.

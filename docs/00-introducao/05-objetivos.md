@@ -1,24 +1,36 @@
 # 05 - Objetivos
 
 ## Objetivo Geral
-Desenvolver um protótipo funcional do sistema **Eu Duvido!**, estruturado sobre um Banco de Dados relacional normalizado, povoado e integrado a uma interface de gerenciamento de apostas, prendas e votações.
+Desenvolver um protótipo funcional de uma **plataforma web de desafios sociais entre amigos** (o **Eu Duvido!**), na qual grupos criam desafios, enviam evidências de cumprimento e decidem o resultado por votação do júri do grupo, com recompensas em créditos virtuais ou prendas. A plataforma é estruturada sobre um Banco de Dados relacional normalizado, povoado e integrado a uma interface de gerenciamento de desafios, desafios e votações.
 
 ## Objetivos Específicos
 
-* Modelar um esquema relacional normalizado para o domínio de apostas
-  sociais, em um único schema, com integridade referencial
-  garantida pelo SGBD.
-* Implementar a apuração de quórum de validação e a liquidação do saldo de
-  CP como lógica transacional dentro do PostgreSQL (procedure), eliminando a
-  possibilidade de estado em que a evidência foi aceita e o CP não foi
-  transferido.
-* Garantir um ledger de transações de CP append-only e auditável, sem
-  divergência entre saldo calculado e saldo lançado (RNF03).
-* Construir uma API e um frontend que leiam e escrevam no banco pelo padrão
-  CQRS (leitura via Dapper, escrita via EF Core), demonstrando uso efetivo —
-  não apenas incidental — do Banco de Dados modelado.
-* Prover validação de evidências por votação dos membros do grupo, com
-  atualização em tempo real da contagem (RF07, RNF02).
-* Produzir consultas analíticas sobre os dados povoados — ranking por grupo,
-  histórico de apostas e percentual de aprovação (RF08) — que evidenciem o
-  aproveitamento do modelo relacional para além do CRUD básico.
+O que se pretende atingir com o uso da plataforma pelos grupos de amigos:
+
+* **Divertir:** transformar brincadeiras e desafios soltos em um momento de
+  lazer em grupo, com a graça de desafiar, torcer, provocar e cobrar a prenda.
+* **Desestressar:** tirar do caminho o que estraga a brincadeira — esquecimento,
+  discussão e calote — para que o desafio relaxe o grupo em vez de gerar
+  desgaste.
+* **Decidir com justiça:** resolver cada desafio pelo consenso do júri do
+  grupo, e não por quem insiste mais alto, para que o resultado seja aceito
+  por todos.
+* **Manter a graça viva:** dar a cada grupo ranking e histórico de desafios, de
+  modo que cumprir e perder virem assunto e motivo para o próximo desafio.
+* **Brincar com segurança:** limitar o acesso a maiores de 16 anos e moderar os
+  desafios por IA, para que o tom de zoeira não vire risco real a alguém.
+* **Ser fácil de usar:** funcionar no navegador do celular, sem instalação,
+  para caber na rotina do grupo (RNF01).
+
+## Objetivos Técnicos
+
+O que o projeto A3 precisa demonstrar no banco de dados e na aplicação está
+detalhado fora desta seção:
+
+* Requisitos e integridade garantida pelo SGBD: [07 - Requisitos](../01-negocio/07-requisitos.md)
+  (RF07, RF08, RF13, RNF02, RNF03).
+* Modelagem, constraints e procedures:
+  [03 - Banco de Dados](../03-banco-de-dados/README.md).
+* Apuração de quórum e liquidação de CP em procedure, e padrão CQRS (Dapper
+  para leitura, EF Core para escrita):
+  [15 - Integração Sistema e Banco de Dados](../02-arquitetura/15-integracao-sistema-bd.md).

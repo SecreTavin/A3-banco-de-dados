@@ -1,7 +1,8 @@
 .tela {
   display: grid;
   place-items: center;
-  min-height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   padding: 32px 18px;
 }
 
@@ -37,7 +38,7 @@
 
 .subtitulo {
   color: var(--texto-suave);
-  font-size: 14px;
+  font-size: 15.5px;
   max-width: 320px;
 }
 
@@ -47,7 +48,7 @@
 }
 
 .rotuloLista {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -89,7 +90,7 @@
 }
 
 .usuarioNome {
-  font-size: 12.5px;
+  font-size: 14px;
   color: var(--texto-fraco);
 }
 
@@ -105,6 +106,6 @@
 
 .rodape {
   text-align: center;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--texto-fraco);
 }

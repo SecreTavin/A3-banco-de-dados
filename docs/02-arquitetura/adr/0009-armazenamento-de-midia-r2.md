@@ -34,7 +34,7 @@ fazia; esta decisao formaliza a contraparte de infraestrutura.
 **Upload por URL assinada (presigned URL):**
 
 1. O cliente pede a API uma URL de upload, informando tipo e tamanho do arquivo.
-2. A API valida (membro do grupo, aposta em estado que aceita evidencia, tipo de
+2. A API valida (membro do grupo, desafio em estado que aceita evidencia, tipo de
    midia permitido) e devolve uma **presigned URL** com expiracao curta.
 3. O **navegador envia o arquivo direto ao R2**. O byte nao passa pela API.
 4. O R2 confirma o upload ao cliente.
@@ -62,7 +62,7 @@ custo dominante. A API do R2 e compativel com S3, entao a decisao nao amarra:
 trocar de provedor e trocar endpoint e credencial.
 
 O bucket e **privado para escrita e para leitura**; a leitura tambem sai por URL
-assinada, com expiracao. Evidencia de aposta e conteudo de grupo fechado, nao
+assinada, com expiracao. Evidencia de desafio e conteudo de grupo fechado, nao
 material publico.
 
 ## Alternativas consideradas
@@ -96,5 +96,5 @@ de configuracao a gerenciar em cada deploy.
 [15-integracao-sistema-bd.md](../15-integracao-sistema-bd.md) (fluxo de upload em tres passos),
 [12-ddl-schema.md](../../03-banco-de-dados/implementacao/12-ddl-schema.md)
 (semantica de `url_comprovante`),
-[26-tela-detalhe-aposta.md](../../04-ux/telas/26-tela-detalhe-aposta.md) (envio de evidencia),
+[26-tela-detalhe-desafio.md](../../04-ux/telas/26-tela-detalhe-desafio.md) (envio de evidencia),
 [27-tela-central-votacao.md](../../04-ux/telas/27-tela-central-votacao.md) (exibicao da midia).

@@ -11,26 +11,26 @@ Seis módulos de domínio, cada um com seu schema no PostgreSQL. Dentro de cada
 módulo, a organização é por **feature**, não por camada técnica:
 
 ```text
-Modules/Apostas/
+Modules/Desafios/
   Domain/
-    Aposta.cs                    # agregado rico: invariantes e transições
-    ParticipanteAposta.cs
-    ApostaErrors.cs              # erros de negócio como valores
+    Desafio.cs                    # agregado rico: invariantes e transições
+    ParticipanteDesafio.cs
+    DesafioErrors.cs              # erros de negócio como valores
   Features/
-    CriarAposta/
-      CriarApostaCommand.cs
-      CriarApostaHandler.cs      # EF Core
-      CriarApostaValidator.cs
-      CriarApostaEndpoint.cs
-    ListarApostasDoUsuario/
-      ListarApostasQuery.cs
-      ListarApostasHandler.cs    # Dapper
-      ListarApostasEndpoint.cs
+    CriarDesafio/
+      CriarDesafioCommand.cs
+      CriarDesafioHandler.cs      # EF Core
+      CriarDesafioValidator.cs
+      CriarDesafioEndpoint.cs
+    ListarDesafiosDoUsuario/
+      ListarDesafiosQuery.cs
+      ListarDesafiosHandler.cs    # Dapper
+      ListarDesafiosEndpoint.cs
   Infrastructure/
-    ApostaRepository.cs          # implementa a porta definida no Domain
+    DesafioRepository.cs          # implementa a porta definida no Domain
 ```
 
-Uma feature inteira vive numa pasta. Alterar "criar aposta" não exige navegar
+Uma feature inteira vive numa pasta. Alterar "criar desafio" não exige navegar
 por quatro diretórios diferentes — que é o custo real da organização por camadas.
 
 ### Hexagonal: onde ficam as portas
@@ -40,7 +40,7 @@ O domínio define interfaces (portas); a infraestrutura as implementa
 
 | Porta (Domain) | Adaptador (Infrastructure) |
 | --- | --- |
-| `IApostaRepository` | EF Core sobre `apostas.aposta` |
+| `IDesafioRepository` | EF Core sobre `desafios.desafio` |
 | `IArmazenamentoMidia` | Cliente do Cloudflare R2 |
 | `INotificador` | Web Push + `notificacoes.notificacao` |
 
@@ -99,7 +99,7 @@ A convenção de nome torna o lado da operação explícito no ponto de uso:
 ### Tempo real
 
 A Central de Votação assina um hub SignalR (`@microsoft/signalr`) e recebe a
-contagem de votos e o encerramento da aposta sem recarregar. O evento chega
+contagem de votos e o encerramento do desafio sem recarregar. O evento chega
 **depois** que a transação commitou — o socket informa, nunca decide.
 
 ## Telas
@@ -111,9 +111,9 @@ Refinamento de cada tela, com dados de origem e decisões, em
 | --- | --- |
 | Autenticação | Login Google |
 | Meus Grupos | Grupos, convite por código, saldo de CP |
-| Minhas Apostas | Dashboard filtrado por status |
+| Meus desafios | Dashboard filtrado por status |
 | Criar Desafio | Criação com custo em CP e participantes |
-| Detalhe da Aposta | Evidências, comentários, resultado |
+| Detalhe do desafio | Evidências, comentários, resultado |
 | Central de Votação | Votação com atualização ao vivo |
 | Ranking | Consultas analíticas por grupo |
 | Perfil | Dados, histórico e extrato de CP |

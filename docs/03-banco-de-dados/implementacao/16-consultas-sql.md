@@ -42,8 +42,8 @@ resultado não podem discordar (RN14, RN15).
 
 ### `economia.vw_cp_em_escrow`
 
-CP retido em apostas ainda não resolvidas, agregado por grupo, com a contagem de
-apostas abertas. Mede o quanto da economia está parado (RN18).
+CP retido em desafios ainda não resolvidos, agregado por grupo, com a contagem de
+desafios abertos. Mede o quanto da economia está parado (RN18).
 
 ## Painel do Grafana é consulta analítica
 
@@ -67,17 +67,17 @@ mesmo pool limitado do Aiven, que é a razão de `Maximum Pool Size=15`
 
 ### Apuração de votos por evidência
 
-Única consulta escrita até agora. Para uma aposta, lista as evidências com
+Única consulta escrita até agora. Para um desafio, lista as evidências com
 `tipo_midia`, `url_comprovante`, total de votos, votos favoráveis, votos contra
 e o percentual de aprovação.
 
-Exercita `INNER JOIN` (aposta → evidência → usuário desafiado), `LEFT JOIN`
+Exercita `INNER JOIN` (desafio → evidência → usuário desafiado), `LEFT JOIN`
 (evidência → voto, para não sumir com evidência ainda sem voto), agregação
 condicional com `CASE` dentro de `SUM` e `GROUP BY` sobre todas as colunas não
 agregadas.
 
-> A consulta usa nomes de tabela **sem qualificação de schema** (`FROM aposta`),
-> herdados da v1 do modelo. Precisa ser reescrita como `apostas.aposta`,
+> A consulta usa nomes de tabela **sem qualificação de schema** (`FROM desafio`),
+> herdados da v1 do modelo. Precisa ser reescrita como `desafios.desafio`,
 > `validacao.evidencia`, `identidade.usuario` e `validacao.voto_evidencia` antes
 > de rodar contra o schema atual.
 
@@ -89,14 +89,14 @@ mesma agregação cinco vezes.
 
 | Consulta | O que responde | Recursos que exercita |
 | --- | --- | --- |
-| Ranking por grupo | Ordem dos membros por CP e por apostas ganhas | Window function (`RANK()`/`ROW_NUMBER()`), `PARTITION BY id_grupo` |
-| Maiores apostas | As apostas de maior pote e quem participou | Subconsulta ou CTE sobre `transacao_cp`, `ORDER BY … LIMIT` |
-| Prendas por categoria | Quantas apostas de cada categoria, por tipo de recompensa | `GROUP BY` com `FILTER`, `LEFT JOIN` para categoria sem aposta |
+| Ranking por grupo | Ordem dos membros por CP e por desafios ganhos | Window function (`RANK()`/`ROW_NUMBER()`), `PARTITION BY id_grupo` |
+| Maiores desafios | Os desafios de maior pote e quem participou | Subconsulta ou CTE sobre `transacao_cp`, `ORDER BY … LIMIT` |
+| Prendas por categoria | Quantos desafios de cada categoria, por tipo de recompensa | `GROUP BY` com `FILTER`, `LEFT JOIN` para categoria sem desafio |
 | Extrato de CP por usuário | Histórico de lançamentos com saldo corrente | Window function acumulativa (`SUM(valor) OVER (ORDER BY data_lancamento)`) |
 | Taxa de aprovação por validador | Com que frequência cada validador vota junto com a maioria | `JOIN` de voto contra o resultado apurado da evidência, agregação condicional |
 
 O ranking e o extrato dependem exclusivamente do ledger
-([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md)): como aposta de
+([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md)): como desafio de
 prenda também custa CP, prenda e dinheiro entram no mesmo ranking — o que a v1
 do modelo não permitia (ver
 [09 - Evolução da Modelagem](../modelagem/09-evolucao-modelagem.md)).

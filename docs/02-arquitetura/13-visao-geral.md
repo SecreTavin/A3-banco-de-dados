@@ -19,7 +19,7 @@ flowchart TB
         REST["Minimal API"]
         HUB["SignalR Hub<br/>(Central de Votação)"]
         BG["BackgroundService<br/>(prazos e notificações)"]
-        MOD["Módulos: Identidade, Grupos,<br/>Apostas, Validação, Economia, Ranking"]
+        MOD["Módulos: Identidade, Grupos,<br/>Desafios, Validação, Economia, Ranking"]
     end
 
     subgraph Dados
@@ -52,7 +52,7 @@ flowchart TB
 | Camada | Responsabilidade | O que **não** faz |
 | --- | --- | --- |
 | React | Renderizar, capturar entrada, enviar arquivo ao R2 | Nenhuma regra de negócio |
-| Minimal API | Autenticar, validar entrada, orquestrar o caso de uso | Não decide resultado de aposta |
+| Minimal API | Autenticar, validar entrada, orquestrar o caso de uso | Não decide resultado de desafio |
 | Domínio (C#) | Invariantes de agregado, máquina de estados, `Result` | Não acessa banco diretamente |
 | **PostgreSQL** | **Integridade referencial, apuração de quórum, liquidação de CP** | — |
 | R2 | Guardar bytes | Não sabe nada do domínio |
@@ -68,12 +68,12 @@ estado intermediário em que a evidência foi aceita mas o CP não foi transferi
 | --- | --- | --- | --- |
 | Identidade | Usuario | `identidade` | Command + Query |
 | Grupos | Grupo | `grupos` | Command + Query |
-| Apostas | Aposta | `apostas` | Command + Query |
+| Desafios | Desafio | `desafios` | Command + Query |
 | Validação | Evidencia | `validacao` | Command + Query |
 | Economia | Carteira | `economia` | Command + Query |
 | Ranking | — | (lê os demais) | **Somente Query** |
 
-**Validação é módulo separado de Apostas** porque é onde vivem o quórum, a
+**Validação é módulo separado de Desafios** porque é onde vivem o quórum, a
 máquina de estados e a procedure de apuração — a parte mais complexa do sistema,
 isolada para ser testável sozinha.
 
@@ -82,7 +82,7 @@ CQRS de forma pura: só Dapper, só SQL, nenhuma escrita.
 
 ## Fluxo principal
 
-O ciclo de vida completo de uma aposta, do convite à liquidação:
+O ciclo de vida completo de um desafio, do convite à liquidação:
 
 ```mermaid
 sequenceDiagram
@@ -93,9 +93,9 @@ sequenceDiagram
     participant R2
 
     Note over API,PG: Criação
-    API->>PG: cria aposta (status ABERTA, valor_cp)
+    API->>PG: cria desafio (status ABERTA, valor_cp)
     API->>PG: debitar_escrow por participante que aceita
-    Note over PG: CP sai da carteira → conta da aposta
+    Note over PG: CP sai da carteira → conta do desafio
 
     Note over D,R2: Cumprimento
     D->>API: solicita URL assinada
@@ -103,7 +103,7 @@ sequenceDiagram
     D->>R2: envia arquivo
     D->>API: confirma upload
     API->>PG: cria evidencia + congela validadores
-    Note over PG: status da aposta → EM_VOTACAO
+    Note over PG: status do desafio → EM_VOTACAO
 
     Note over V,PG: Votação
     loop cada voto
@@ -117,7 +117,7 @@ sequenceDiagram
     Note over PG: Quórum atingido — tudo em uma transação
     PG->>PG: evidencia → ACEITA
     PG->>PG: recompensa CP a quem votou
-    PG->>PG: aposta → FINALIZADA_CUMPRIU
+    PG->>PG: desafio → FINALIZADA_CUMPRIU
     PG->>PG: pote transferido aos vencedores
 ```
 
@@ -162,11 +162,11 @@ decisão de implementação que é fácil descobrir tarde demais.
 apps/
   api/                      # .NET
     Modules/
-      Apostas/
+      Desafios/
         Domain/             # agregado, invariantes, Result
         Features/
-          CriarAposta/      # Command + Handler + Validator + Endpoint
-          ListarApostas/    # Query + Handler (Dapper) + Endpoint
+          CriarDesafio/      # Command + Handler + Validator + Endpoint
+          ListarDesafios/    # Query + Handler (Dapper) + Endpoint
         Infrastructure/     # adaptadores das portas
       Validacao/
       Economia/

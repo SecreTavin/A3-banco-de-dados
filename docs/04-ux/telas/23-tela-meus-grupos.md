@@ -7,7 +7,7 @@ Gestão de grupos privados de amigos (RF02).
 - **Lista de grupos:** nome, descrição, nº de membros, meu saldo de CP no grupo
 - **Criar grupo:** nome, descrição
 - **Adicionar membro:** o `ADMIN` adiciona ao grupo um usuário já cadastrado
-- **Detalhe do grupo:** lista de membros (com papel `ADMIN`/`MEMBRO` e saldo de CP), apostas do grupo
+- **Detalhe do grupo:** lista de membros (com papel `ADMIN`/`MEMBRO` e saldo de CP), desafios do grupo
 - **Nível de filtro:** `LEVE`/`MODERADO`/`PESADO`, alterável só pelo `ADMIN` (RN27)
 
 ## Dados (origem: `grupo_amigos`, `membro_grupo`)

@@ -22,14 +22,44 @@ namespace EuDuvido.Api.Shared.Database.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("EuDuvido.Api.Modules.Apostas.Domain.Aposta", b =>
+            modelBuilder.Entity("EuDuvido.Api.Modules.Desafios.Domain.CategoriaDesafio", b =>
                 {
-                    b.Property<int>("IdAposta")
+                    b.Property<int>("IdCategoria")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("id_aposta");
+                        .HasColumnName("id_categoria");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdAposta"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdCategoria"));
+
+                    b.Property<string>("Descricao")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("descricao");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("nome");
+
+                    b.HasKey("IdCategoria")
+                        .HasName("pk_categoria_desafio");
+
+                    b.HasIndex("Nome")
+                        .IsUnique()
+                        .HasDatabaseName("unq_categoria_nome");
+
+                    b.ToTable("categoria_desafio", (string)null);
+                });
+
+            modelBuilder.Entity("EuDuvido.Api.Modules.Desafios.Domain.Desafio", b =>
+                {
+                    b.Property<int>("IdDesafio")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_desafio");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdDesafio"));
 
                     b.Property<DateTimeOffset>("DataCriacao")
                         .ValueGeneratedOnAdd()
@@ -96,11 +126,11 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("valor_cp");
 
-                    b.HasKey("IdAposta")
-                        .HasName("pk_aposta");
+                    b.HasKey("IdDesafio")
+                        .HasName("pk_desafio");
 
                     b.HasIndex("DataLimite")
-                        .HasDatabaseName("idx_aposta_data_limite")
+                        .HasDatabaseName("idx_desafio_data_limite")
                         .HasFilter("status IN ('ABERTA', 'EM_ANDAMENTO')");
 
                     b.HasIndex("IdCategoria");
@@ -108,56 +138,26 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                     b.HasIndex("IdCriador");
 
                     b.HasIndex("IdGrupo")
-                        .HasDatabaseName("idx_aposta_grupo");
+                        .HasDatabaseName("idx_desafio_grupo");
 
                     b.HasIndex("Status")
-                        .HasDatabaseName("idx_aposta_status");
+                        .HasDatabaseName("idx_desafio_status");
 
-                    b.ToTable("aposta", t =>
+                    b.ToTable("desafio", null, t =>
                         {
-                            t.HasCheckConstraint("chk_aposta_cancelamento", "status <> 'CANCELADA' OR motivo_cancelamento IS NOT NULL");
+                            t.HasCheckConstraint("chk_desafio_cancelamento", "status <> 'CANCELADA' OR motivo_cancelamento IS NOT NULL");
 
-                            t.HasCheckConstraint("chk_aposta_encerramento", "status NOT IN ('FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA') OR data_encerramento IS NOT NULL");
+                            t.HasCheckConstraint("chk_desafio_encerramento", "status NOT IN ('FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA') OR data_encerramento IS NOT NULL");
 
-                            t.HasCheckConstraint("chk_aposta_status", "status IN ('ABERTA', 'EM_ANDAMENTO', 'EM_VOTACAO', 'FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA')");
+                            t.HasCheckConstraint("chk_desafio_status", "status IN ('ABERTA', 'EM_ANDAMENTO', 'EM_VOTACAO', 'FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA')");
 
-                            t.HasCheckConstraint("chk_aposta_tipo", "tipo_recompensa IN ('MONETARIA', 'PRENDA_ACAO', 'ITEM_MATERIAL', 'OUTRO')");
+                            t.HasCheckConstraint("chk_desafio_tipo", "tipo_recompensa IN ('MONETARIA', 'PRENDA_ACAO', 'ITEM_MATERIAL', 'OUTRO')");
 
-                            t.HasCheckConstraint("chk_aposta_valor_cp", "valor_cp > 0");
+                            t.HasCheckConstraint("chk_desafio_valor_cp", "valor_cp > 0");
                         });
                 });
 
-            modelBuilder.Entity("EuDuvido.Api.Modules.Apostas.Domain.CategoriaDesafio", b =>
-                {
-                    b.Property<int>("IdCategoria")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id_categoria");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdCategoria"));
-
-                    b.Property<string>("Descricao")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)")
-                        .HasColumnName("descricao");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("nome");
-
-                    b.HasKey("IdCategoria")
-                        .HasName("pk_categoria_desafio");
-
-                    b.HasIndex("Nome")
-                        .IsUnique()
-                        .HasDatabaseName("unq_categoria_nome");
-
-                    b.ToTable("categoria_desafio");
-                });
-
-            modelBuilder.Entity("EuDuvido.Api.Modules.Apostas.Domain.ModeracaoDesafio", b =>
+            modelBuilder.Entity("EuDuvido.Api.Modules.Desafios.Domain.ModeracaoDesafio", b =>
                 {
                     b.Property<int>("IdModeracao")
                         .ValueGeneratedOnAdd()
@@ -181,13 +181,13 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         .HasColumnType("text")
                         .HasColumnName("descricao");
 
-                    b.Property<int?>("IdAposta")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_aposta");
-
                     b.Property<int>("IdCriador")
                         .HasColumnType("integer")
                         .HasColumnName("id_criador");
+
+                    b.Property<int?>("IdDesafio")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_desafio");
 
                     b.Property<int>("IdGrupo")
                         .HasColumnType("integer")
@@ -213,19 +213,19 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                     b.HasKey("IdModeracao")
                         .HasName("pk_moderacao_desafio");
 
-                    b.HasIndex("IdAposta")
-                        .IsUnique()
-                        .HasDatabaseName("unq_moderacao_aposta");
-
                     b.HasIndex("IdCriador")
                         .HasDatabaseName("idx_moderacao_criador");
+
+                    b.HasIndex("IdDesafio")
+                        .IsUnique()
+                        .HasDatabaseName("unq_moderacao_desafio");
 
                     b.HasIndex("IdGrupo")
                         .HasDatabaseName("idx_moderacao_grupo");
 
-                    b.ToTable("moderacao_desafio", t =>
+                    b.ToTable("moderacao_desafio", null, t =>
                         {
-                            t.HasCheckConstraint("chk_moderacao_aposta", "id_aposta IS NULL OR aprovado");
+                            t.HasCheckConstraint("chk_moderacao_desafio", "id_desafio IS NULL OR aprovado");
 
                             t.HasCheckConstraint("chk_moderacao_motivo", "aprovado OR motivo IS NOT NULL");
 
@@ -233,7 +233,7 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         });
                 });
 
-            modelBuilder.Entity("EuDuvido.Api.Modules.Apostas.Domain.ParticipanteAposta", b =>
+            modelBuilder.Entity("EuDuvido.Api.Modules.Desafios.Domain.ParticipanteDesafio", b =>
                 {
                     b.Property<int>("IdParticipante")
                         .ValueGeneratedOnAdd()
@@ -254,40 +254,40 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         .HasColumnType("character varying(20)")
                         .HasColumnName("escolha");
 
-                    b.Property<int>("IdAposta")
+                    b.Property<int>("IdDesafio")
                         .HasColumnType("integer")
-                        .HasColumnName("id_aposta");
+                        .HasColumnName("id_desafio");
 
                     b.Property<int>("IdUsuario")
                         .HasColumnType("integer")
                         .HasColumnName("id_usuario");
 
-                    b.Property<string>("PapelAposta")
+                    b.Property<string>("PapelDesafio")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
-                        .HasColumnName("papel_aposta");
+                        .HasColumnName("papel_desafio");
 
                     b.HasKey("IdParticipante")
-                        .HasName("pk_participante_aposta");
+                        .HasName("pk_participante_desafio");
 
                     b.HasIndex("IdUsuario")
                         .HasDatabaseName("idx_participante_usuario");
 
-                    b.HasIndex("IdAposta", "IdUsuario")
+                    b.HasIndex("IdDesafio", "IdUsuario")
                         .IsUnique()
-                        .HasDatabaseName("unq_participante_aposta");
+                        .HasDatabaseName("unq_participante_desafio");
 
-                    b.HasIndex("IdAposta", "PapelAposta")
+                    b.HasIndex("IdDesafio", "PapelDesafio")
                         .IsUnique()
-                        .HasDatabaseName("unq_aposta_papel_unico")
-                        .HasFilter("papel_aposta IN ('DESAFIANTE', 'DESAFIADO')");
+                        .HasDatabaseName("unq_desafio_papel_unico")
+                        .HasFilter("papel_desafio IN ('DESAFIANTE', 'DESAFIADO')");
 
-                    b.ToTable("participante_aposta", t =>
+                    b.ToTable("participante_desafio", null, t =>
                         {
                             t.HasCheckConstraint("chk_participante_escolha", "escolha IN ('VAI_CUMPRIR', 'NAO_VAI_CUMPRIR')");
 
-                            t.HasCheckConstraint("chk_participante_papel", "papel_aposta IN ('DESAFIANTE', 'DESAFIADO', 'APOSTADOR')");
+                            t.HasCheckConstraint("chk_participante_papel", "papel_desafio IN ('DESAFIANTE', 'DESAFIADO', 'APOSTADOR')");
                         });
                 });
 
@@ -312,9 +312,9 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("descricao");
 
-                    b.Property<int?>("IdAposta")
+                    b.Property<int?>("IdDesafio")
                         .HasColumnType("integer")
-                        .HasColumnName("id_aposta");
+                        .HasColumnName("id_desafio");
 
                     b.Property<int>("IdGrupo")
                         .HasColumnType("integer")
@@ -337,21 +337,21 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                     b.HasKey("IdTransacao")
                         .HasName("pk_transacao_cp");
 
-                    b.HasIndex("IdAposta")
-                        .HasDatabaseName("idx_transacao_aposta");
+                    b.HasIndex("IdDesafio")
+                        .HasDatabaseName("idx_transacao_desafio");
 
                     b.HasIndex("IdUsuario");
 
                     b.HasIndex("IdGrupo", "IdUsuario")
                         .HasDatabaseName("idx_transacao_conta");
 
-                    b.ToTable("transacao_cp", t =>
+                    b.ToTable("transacao_cp", null, t =>
                         {
-                            t.HasCheckConstraint("chk_transacao_conta", "id_usuario IS NOT NULL OR id_aposta IS NOT NULL");
+                            t.HasCheckConstraint("chk_transacao_conta", "id_usuario IS NOT NULL OR id_desafio IS NOT NULL");
 
-                            t.HasCheckConstraint("chk_transacao_escrow", "tipo <> 'APOSTA_ESCROW' OR id_aposta IS NOT NULL");
+                            t.HasCheckConstraint("chk_transacao_escrow", "tipo NOT IN ('DESAFIO_ESCROW', 'APOSTA_ESCROW') OR id_desafio IS NOT NULL");
 
-                            t.HasCheckConstraint("chk_transacao_tipo", "tipo IN ('CREDITO_INICIAL', 'APOSTA_ESCROW', 'PREMIO', 'ESTORNO', 'RECOMPENSA_VOTO', 'SAIDA_GRUPO')");
+                            t.HasCheckConstraint("chk_transacao_tipo", "tipo IN ('CREDITO_INICIAL', 'DESAFIO_ESCROW', 'APOSTA_ESCROW', 'PREMIO', 'ESTORNO', 'RECOMPENSA_VOTO', 'SAIDA_GRUPO')");
 
                             t.HasCheckConstraint("chk_transacao_valor", "valor <> 0");
                         });
@@ -400,7 +400,7 @@ namespace EuDuvido.Api.Shared.Database.Migrations
 
                     b.HasIndex("IdCriador");
 
-                    b.ToTable("grupo_amigos", t =>
+                    b.ToTable("grupo_amigos", null, t =>
                         {
                             t.HasCheckConstraint("chk_grupo_nivel_filtro", "nivel_filtro IN ('LEVE', 'MODERADO', 'PESADO')");
                         });
@@ -453,7 +453,7 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         .IsUnique()
                         .HasDatabaseName("unq_membro_grupo");
 
-                    b.ToTable("membro_grupo", t =>
+                    b.ToTable("membro_grupo", null, t =>
                         {
                             t.HasCheckConstraint("chk_membro_papel", "papel IN ('ADMIN', 'MEMBRO')");
 
@@ -510,7 +510,7 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         .IsUnique()
                         .HasDatabaseName("unq_usuario_email");
 
-                    b.ToTable("usuario");
+                    b.ToTable("usuario", (string)null);
                 });
 
             modelBuilder.Entity("EuDuvido.Api.Modules.Validacao.Domain.Evidencia", b =>
@@ -540,9 +540,9 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("data_limite_votacao");
 
-                    b.Property<int>("IdAposta")
+                    b.Property<int>("IdDesafio")
                         .HasColumnType("integer")
-                        .HasColumnName("id_aposta");
+                        .HasColumnName("id_desafio");
 
                     b.Property<int>("IdUsuario")
                         .HasColumnType("integer")
@@ -579,16 +579,16 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         .HasDatabaseName("idx_evidencia_pendente")
                         .HasFilter("status = 'EM_VOTACAO'");
 
-                    b.HasIndex("IdAposta")
-                        .HasDatabaseName("idx_evidencia_aposta");
+                    b.HasIndex("IdDesafio")
+                        .HasDatabaseName("idx_evidencia_desafio");
 
                     b.HasIndex("IdUsuario");
 
-                    b.HasIndex("IdAposta", "Ordem")
+                    b.HasIndex("IdDesafio", "Ordem")
                         .IsUnique()
                         .HasDatabaseName("unq_evidencia_ordem");
 
-                    b.ToTable("evidencia", t =>
+                    b.ToTable("evidencia", null, t =>
                         {
                             t.HasCheckConstraint("chk_evidencia_apuracao", "status = 'EM_VOTACAO' OR data_apuracao IS NOT NULL");
 
@@ -632,7 +632,7 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                     b.HasIndex("IdUsuario")
                         .HasDatabaseName("idx_jurado_usuario");
 
-                    b.ToTable("jurado_evidencia", t =>
+                    b.ToTable("jurado_evidencia", null, t =>
                         {
                             t.HasCheckConstraint("chk_jurado_voto", "voto IN ('VALIDO', 'INVALIDO')");
 
@@ -640,118 +640,44 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         });
                 });
 
-            modelBuilder.Entity("EuDuvido.Api.Modules.Validacao.Domain.VerificacaoEvidencia", b =>
+            modelBuilder.Entity("EuDuvido.Api.Modules.Desafios.Domain.Desafio", b =>
                 {
-                    b.Property<int>("IdVerificacao")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id_verificacao");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdVerificacao"));
-
-                    b.Property<bool>("Aprovado")
-                        .HasColumnType("boolean")
-                        .HasColumnName("aprovado");
-
-                    b.Property<string>("Comentario")
-                        .HasColumnType("text")
-                        .HasColumnName("comentario");
-
-                    b.Property<DateTimeOffset>("DataAvaliacao")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("data_avaliacao")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<int>("IdAposta")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_aposta");
-
-                    b.Property<int?>("IdEvidencia")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_evidencia");
-
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("integer")
-                        .HasColumnName("id_usuario");
-
-                    b.Property<string>("Parecer")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("parecer");
-
-                    b.Property<string>("TipoMidia")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("tipo_midia");
-
-                    b.Property<string>("UrlComprovante")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("url_comprovante");
-
-                    b.HasKey("IdVerificacao")
-                        .HasName("pk_verificacao_evidencia");
-
-                    b.HasIndex("IdAposta")
-                        .HasDatabaseName("idx_verificacao_aposta");
-
-                    b.HasIndex("IdEvidencia")
-                        .IsUnique()
-                        .HasDatabaseName("unq_verificacao_evidencia");
-
-                    b.HasIndex("IdUsuario")
-                        .HasDatabaseName("idx_verificacao_usuario");
-
-                    b.ToTable("verificacao_evidencia", t =>
-                        {
-                            t.HasCheckConstraint("chk_verificacao_evidencia", "id_evidencia IS NULL OR aprovado");
-
-                            t.HasCheckConstraint("chk_verificacao_midia", "tipo_midia IN ('FOTO', 'VIDEO', 'LINK', 'TEXTO')");
-                        });
-                });
-
-            modelBuilder.Entity("EuDuvido.Api.Modules.Apostas.Domain.Aposta", b =>
-                {
-                    b.HasOne("EuDuvido.Api.Modules.Apostas.Domain.CategoriaDesafio", null)
+                    b.HasOne("EuDuvido.Api.Modules.Desafios.Domain.CategoriaDesafio", null)
                         .WithMany()
                         .HasForeignKey("IdCategoria")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_aposta_categoria");
+                        .HasConstraintName("fk_desafio_categoria");
 
                     b.HasOne("EuDuvido.Api.Modules.Identidade.Domain.Usuario", null)
                         .WithMany()
                         .HasForeignKey("IdCriador")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("fk_aposta_criador");
+                        .HasConstraintName("fk_desafio_criador");
 
                     b.HasOne("EuDuvido.Api.Modules.Grupos.Domain.GrupoAmigos", null)
                         .WithMany()
                         .HasForeignKey("IdGrupo")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_aposta_grupo");
+                        .HasConstraintName("fk_desafio_grupo");
                 });
 
-            modelBuilder.Entity("EuDuvido.Api.Modules.Apostas.Domain.ModeracaoDesafio", b =>
+            modelBuilder.Entity("EuDuvido.Api.Modules.Desafios.Domain.ModeracaoDesafio", b =>
                 {
-                    b.HasOne("EuDuvido.Api.Modules.Apostas.Domain.Aposta", null)
-                        .WithMany()
-                        .HasForeignKey("IdAposta")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("fk_moderacao_aposta");
-
                     b.HasOne("EuDuvido.Api.Modules.Identidade.Domain.Usuario", null)
                         .WithMany()
                         .HasForeignKey("IdCriador")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("fk_moderacao_criador");
+
+                    b.HasOne("EuDuvido.Api.Modules.Desafios.Domain.Desafio", null)
+                        .WithMany()
+                        .HasForeignKey("IdDesafio")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_moderacao_desafio");
 
                     b.HasOne("EuDuvido.Api.Modules.Grupos.Domain.GrupoAmigos", null)
                         .WithMany()
@@ -761,14 +687,14 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         .HasConstraintName("fk_moderacao_grupo");
                 });
 
-            modelBuilder.Entity("EuDuvido.Api.Modules.Apostas.Domain.ParticipanteAposta", b =>
+            modelBuilder.Entity("EuDuvido.Api.Modules.Desafios.Domain.ParticipanteDesafio", b =>
                 {
-                    b.HasOne("EuDuvido.Api.Modules.Apostas.Domain.Aposta", null)
+                    b.HasOne("EuDuvido.Api.Modules.Desafios.Domain.Desafio", null)
                         .WithMany("Participantes")
-                        .HasForeignKey("IdAposta")
+                        .HasForeignKey("IdDesafio")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_participante_aposta");
+                        .HasConstraintName("fk_participante_desafio");
 
                     b.HasOne("EuDuvido.Api.Modules.Identidade.Domain.Usuario", null)
                         .WithMany()
@@ -780,11 +706,11 @@ namespace EuDuvido.Api.Shared.Database.Migrations
 
             modelBuilder.Entity("EuDuvido.Api.Modules.Economia.Domain.TransacaoCp", b =>
                 {
-                    b.HasOne("EuDuvido.Api.Modules.Apostas.Domain.Aposta", null)
+                    b.HasOne("EuDuvido.Api.Modules.Desafios.Domain.Desafio", null)
                         .WithMany()
-                        .HasForeignKey("IdAposta")
+                        .HasForeignKey("IdDesafio")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("fk_transacao_aposta");
+                        .HasConstraintName("fk_transacao_desafio");
 
                     b.HasOne("EuDuvido.Api.Modules.Grupos.Domain.GrupoAmigos", null)
                         .WithMany()
@@ -829,12 +755,12 @@ namespace EuDuvido.Api.Shared.Database.Migrations
 
             modelBuilder.Entity("EuDuvido.Api.Modules.Validacao.Domain.Evidencia", b =>
                 {
-                    b.HasOne("EuDuvido.Api.Modules.Apostas.Domain.Aposta", null)
+                    b.HasOne("EuDuvido.Api.Modules.Desafios.Domain.Desafio", null)
                         .WithMany()
-                        .HasForeignKey("IdAposta")
+                        .HasForeignKey("IdDesafio")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_evidencia_aposta");
+                        .HasConstraintName("fk_evidencia_desafio");
 
                     b.HasOne("EuDuvido.Api.Modules.Identidade.Domain.Usuario", null)
                         .WithMany()
@@ -861,30 +787,7 @@ namespace EuDuvido.Api.Shared.Database.Migrations
                         .HasConstraintName("fk_jurado_usuario");
                 });
 
-            modelBuilder.Entity("EuDuvido.Api.Modules.Validacao.Domain.VerificacaoEvidencia", b =>
-                {
-                    b.HasOne("EuDuvido.Api.Modules.Apostas.Domain.Aposta", null)
-                        .WithMany()
-                        .HasForeignKey("IdAposta")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_verificacao_aposta");
-
-                    b.HasOne("EuDuvido.Api.Modules.Validacao.Domain.Evidencia", null)
-                        .WithMany()
-                        .HasForeignKey("IdEvidencia")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("fk_verificacao_evidencia");
-
-                    b.HasOne("EuDuvido.Api.Modules.Identidade.Domain.Usuario", null)
-                        .WithMany()
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_verificacao_usuario");
-                });
-
-            modelBuilder.Entity("EuDuvido.Api.Modules.Apostas.Domain.Aposta", b =>
+            modelBuilder.Entity("EuDuvido.Api.Modules.Desafios.Domain.Desafio", b =>
                 {
                     b.Navigation("Participantes");
                 });

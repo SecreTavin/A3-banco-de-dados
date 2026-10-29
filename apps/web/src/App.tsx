@@ -3,9 +3,9 @@ import { AppShell } from './shared/ui'
 import type { AbaNavegacao } from './shared/ui'
 import { useAuth } from './shared/auth/AuthContext'
 import { LoginView } from './features/autenticacao/views/LoginView'
-import { ApostasView } from './features/apostas/views/ApostasView'
-import { CriarApostaView } from './features/apostas/views/CriarApostaView'
-import { DetalheApostaView } from './features/apostas/views/DetalheApostaView'
+import { DesafiosView } from './features/desafios/views/DesafiosView'
+import { CriarDesafioView } from './features/desafios/views/CriarDesafioView'
+import { DetalheDesafioView } from './features/desafios/views/DetalheDesafioView'
 import { GruposView } from './features/grupos/views/GruposView'
 import { DetalheGrupoView } from './features/grupos/views/DetalheGrupoView'
 import { VotacaoView } from './features/votacao/views/VotacaoView'
@@ -13,7 +13,7 @@ import { RankingView } from './features/ranking/views/RankingView'
 import { PerfilView } from './features/perfil/views/PerfilView'
 
 const ABAS: AbaNavegacao[] = [
-  { rota: '/apostas', rotulo: 'Apostas', icone: 'apostas' },
+  { rota: '/desafios', rotulo: 'Desafios', icone: 'desafios' },
   { rota: '/votacao', rotulo: 'Votação', icone: 'votacao' },
   { rota: '/grupos', rotulo: 'Grupos', icone: 'grupos' },
   { rota: '/ranking', rotulo: 'Ranking', icone: 'ranking' },
@@ -31,7 +31,7 @@ function AreaAutenticada() {
 
 function AreaPublica() {
   const { usuario } = useAuth()
-  return usuario ? <Navigate to="/apostas" replace /> : <Outlet />
+  return usuario ? <Navigate to="/desafios" replace /> : <Outlet />
 }
 
 export function App() {
@@ -42,9 +42,9 @@ export function App() {
       </Route>
 
       <Route element={<AreaAutenticada />}>
-        <Route path="/apostas" element={<ApostasView />} />
-        <Route path="/apostas/nova" element={<CriarApostaView />} />
-        <Route path="/apostas/:id" element={<DetalheApostaView />} />
+        <Route path="/desafios" element={<DesafiosView />} />
+        <Route path="/desafios/nova" element={<CriarDesafioView />} />
+        <Route path="/desafios/:id" element={<DetalheDesafioView />} />
         <Route path="/grupos" element={<GruposView />} />
         <Route path="/grupos/:id" element={<DetalheGrupoView />} />
         <Route path="/votacao" element={<VotacaoView />} />
@@ -52,7 +52,7 @@ export function App() {
         <Route path="/perfil" element={<PerfilView />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/apostas" replace />} />
+      <Route path="*" element={<Navigate to="/desafios" replace />} />
     </Routes>
   )
 }

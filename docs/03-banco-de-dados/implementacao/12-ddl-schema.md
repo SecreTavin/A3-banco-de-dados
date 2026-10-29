@@ -39,7 +39,7 @@ passando a string para `migrationBuilder.Sql()` (o EF Core não tem
 
 Um schema por módulo do monólito
 ([ADR 0005](../../02-arquitetura/adr/0005-schema-por-modulo-postgres.md)):
-`identidade`, `grupos`, `apostas`, `validacao`, `economia`, `notificacoes`.
+`identidade`, `grupos`, `desafios`, `validacao`, `economia`, `notificacoes`.
 
 A separação é lógica. As chaves estrangeiras atravessam schemas normalmente e a
 integridade referencial é do banco, não da aplicação.
@@ -56,7 +56,7 @@ pela aplicação após cada voto e pelo `BackgroundService` ao expirar o prazo.
 * Calcula o quórum sobre `validador_evidencia`, nunca sobre o grupo atual (RN14, RN15).
 * Decide `ACEITA` / `RECUSADA` / `EXPIRADA`; empate dentro do prazo mantém aberto (RN16).
 * Aciona `economia.creditar_recompensa_voto` quando a decisão coletiva se concretiza (RN17).
-* Encerra a aposta em `ACEITA`, ou quando acumulam 3 recusadas ou a quinta evidência se esgota (RN10).
+* Encerra o desafio em `ACEITA`, ou quando acumulam 3 recusadas ou a quinta evidência se esgota (RN10).
 
 Roda inteira em uma transação: não existe estado em que a evidência foi aceita
 mas o CP não foi pago.
@@ -70,8 +70,8 @@ Toda movimentação de CP passa por aqui.
 | `economia.lancar` | Lançamento primitivo: escreve no ledger e atualiza o saldo materializado na mesma transação | RN24 |
 | `economia.debitar_escrow` | Débito no aceite — duas linhas, o CP muda de lugar e não é destruído | RN18 |
 | `economia.creditar_recompensa_voto` | 2 CP para quem votou em evidência que atingiu quórum | RN17 |
-| `apostas.encerrar_aposta` | Divide o pote entre quem acertou; o resto da divisão inteira vai para o primeiro vencedor | RN23 |
-| `apostas.cancelar_aposta` | Estorna o escrow de cada participante e grava o motivo | RN12 |
+| `desafios.encerrar_desafio` | Divide o pote entre quem acertou; o resto da divisão inteira vai para o primeiro vencedor | RN23 |
+| `desafios.cancelar_desafio` | Estorna o escrow de cada participante e grava o motivo | RN12 |
 
 ### [`03-triggers-e-views.sql`](../../../database/scripts/ddl/functions/03-triggers-e-views.sql)
 
@@ -99,15 +99,15 @@ Views no mesmo arquivo: `economia.vw_reconciliacao_saldo`,
 | `chk_membro_saldo` | `membro_grupo` | Saldo negativo | RN08 |
 | `chk_convite_expiracao` | `convite_grupo` | Expiração anterior à criação | RN20 |
 | `chk_convite_uso` | `convite_grupo` | Uso pela metade (só um dos dois campos) | RN20 |
-| `chk_aposta_tipo` | `aposta` | Tipo de recompensa fora dos 4 valores | RN01 |
-| `chk_aposta_valor` | `aposta` | Valor monetário ≤ 0 | RN02 |
-| `chk_aposta_valor_cp` | `aposta` | Aposta que não custa CP | RN07 |
-| `chk_aposta_status` | `aposta` | Status fora dos 6 valores | RN03 |
-| `chk_aposta_cancelamento` | `aposta` | Cancelamento sem motivo | RN12 |
-| `chk_aposta_encerramento` | `aposta` | Status terminal sem `data_encerramento` | RN03 |
-| `chk_participante_papel` | `participante_aposta` | Papel fora de `DESAFIANTE`, `DESAFIADO`, `APOSTADOR` | RN09 |
-| `chk_participante_escolha` | `participante_aposta` | Escolha fora de `VAI_CUMPRIR`, `NAO_VAI_CUMPRIR` | — |
-| `chk_comentario_texto` | `comentario_aposta` | Comentário vazio ou só espaços | — |
+| `chk_desafio_tipo` | `desafio` | Tipo de recompensa fora dos 4 valores | RN01 |
+| `chk_desafio_valor` | `desafio` | Valor monetário ≤ 0 | RN02 |
+| `chk_desafio_valor_cp` | `desafio` | Desafio que não custa CP | RN07 |
+| `chk_desafio_status` | `desafio` | Status fora dos 6 valores | RN03 |
+| `chk_desafio_cancelamento` | `desafio` | Cancelamento sem motivo | RN12 |
+| `chk_desafio_encerramento` | `desafio` | Status terminal sem `data_encerramento` | RN03 |
+| `chk_participante_papel` | `participante_desafio` | Papel fora de `DESAFIANTE`, `DESAFIADO`, `APOSTADOR` | RN09 |
+| `chk_participante_escolha` | `participante_desafio` | Escolha fora de `VAI_CUMPRIR`, `NAO_VAI_CUMPRIR` | — |
+| `chk_comentario_texto` | `comentario_desafio` | Comentário vazio ou só espaços | — |
 | `chk_evidencia_midia` | `evidencia` | Mídia fora de `FOTO`, `VIDEO`, `LINK`, `TEXTO` | — |
 | `chk_evidencia_status` | `evidencia` | Status fora dos 4 valores | RN13 |
 | `chk_evidencia_ordem` | `evidencia` | Ordem fora de 1..5 | RN10 |
@@ -116,8 +116,8 @@ Views no mesmo arquivo: `economia.vw_reconciliacao_saldo`,
 | `chk_voto_tipo` | `voto_evidencia` | Voto fora de `VALIDO`, `INVALIDO` | RN15 |
 | `chk_transacao_tipo` | `transacao_cp` | Tipo fora dos 5 lançamentos previstos | RN24 |
 | `chk_transacao_valor` | `transacao_cp` | Lançamento de valor zero | RN24 |
-| `chk_transacao_conta` | `transacao_cp` | Lançamento sem usuário e sem aposta | RN24 |
-| `chk_transacao_escrow` | `transacao_cp` | `APOSTA_ESCROW` sem aposta | RN18 |
+| `chk_transacao_conta` | `transacao_cp` | Lançamento sem usuário e sem desafio | RN24 |
+| `chk_transacao_escrow` | `transacao_cp` | `DESAFIO_ESCROW` sem desafio | RN18 |
 | `chk_notificacao_tipo` | `notificacao` | Tipo fora dos 5 valores | — |
 
 ### `UNIQUE` e chaves compostas
@@ -130,7 +130,7 @@ Views no mesmo arquivo: `economia.vw_reconciliacao_saldo`,
 | `unq_membro_grupo` | `membro_grupo` | Entrada duplicada no grupo | — |
 | `convite_grupo.codigo` | `convite_grupo` | Código de convite repetido | RN20 |
 | `categoria_desafio.nome` | `categoria_desafio` | Categoria duplicada | — |
-| `unq_participante_aposta` | `participante_aposta` | Dois papéis para o mesmo usuário na aposta | RN09 |
+| `unq_participante_desafio` | `participante_desafio` | Dois papéis para o mesmo usuário no desafio | RN09 |
 | `unq_evidencia_ordem` | `evidencia` | Duas evidências na mesma posição da sequência | RN10 |
 | `pk_validador_evidencia` | `validador_evidencia` | Validador duplicado no júri | RN14 |
 | `unq_voto_usuario` | `voto_evidencia` | Voto em dobro | RN04 |
@@ -145,8 +145,8 @@ crescendo.
 
 | Índice | Predicado | Por que existe |
 | --- | --- | --- |
-| `unq_aposta_papel_unico` | `WHERE papel_aposta IN ('DESAFIANTE','DESAFIADO')` | **Único**, não de busca. Uma `UNIQUE (id_aposta, papel_aposta)` completa proibiria o segundo `APOSTADOR`; o predicado aplica a unicidade só onde a RN09 pede |
-| `idx_aposta_data_limite` | `WHERE status IN ('ABERTA','EM_ANDAMENTO')` | O `BackgroundService` varre prazos vencidos a cada ciclo (RN21). Aposta encerrada nunca aparece nessa varredura e não precisa estar no índice |
+| `unq_desafio_papel_unico` | `WHERE papel_desafio IN ('DESAFIANTE','DESAFIADO')` | **Único**, não de busca. Uma `UNIQUE (id_desafio, papel_desafio)` completa proibiria o segundo `APOSTADOR`; o predicado aplica a unicidade só onde a RN09 pede |
+| `idx_desafio_data_limite` | `WHERE status IN ('ABERTA','EM_ANDAMENTO')` | O `BackgroundService` varre prazos vencidos a cada ciclo (RN21). Desafio encerrado nunca aparece nessa varredura e não precisa estar no índice |
 | `idx_evidencia_pendente` | `WHERE status = 'EM_VOTACAO'` | Mesma varredura, do lado da votação: só evidência em aberto pode expirar (RN16) |
 
 Há ainda um quarto índice com predicado, `idx_notificacao_nao_lida`

@@ -8,7 +8,7 @@
 
 A stack ja estava definida em [0001](0001-stack-tecnologica.md), mas nao a forma
 de organizar o codigo dentro de `apps/api`. O sistema tem uma regra de negocio
-que nao e trivial: a aposta passa por uma maquina de estados, a validacao do
+que nao e trivial: o desafio passa por uma maquina de estados, a validacao do
 resultado depende de quorum entre participantes e a economia de moedas so pode
 ser movimentada quando essa validacao fecha. Colocar isso tudo em um `Service`
 por entidade produz classes de mil linhas que ninguem consegue defender na banca.
@@ -32,7 +32,7 @@ Monolito modular, um unico deploy, dividido em **seis modulos de dominio**:
 | --- | --- |
 | Identidade | Usuario, credencial, sessao |
 | Grupos | Grupo, membro, convite |
-| Apostas | Desafio, palpite, ciclo de vida da aposta |
+| Desafios | Desafio, palpite, ciclo de vida do desafio |
 | Validacao | Maquina de estados do resultado, votacao, quorum |
 | Economia | Saldo, extrato, transacao de moedas |
 | Ranking | Leitura consolidada de pontuacao (read-only) |
@@ -45,8 +45,7 @@ Dentro de cada modulo, **vertical slice**: cada feature e uma pasta que contem o
 infraestrutura (banco, provedor de identidade, push) implementa. O modulo nao
 conhece o Postgres, conhece a porta.
 
-**DDD com dominio rico:** as invariantes moram na entidade, nao no handler. Uma
-aposta nao aceita palpite depois de fechada porque a propria aposta recusa, nao
+**DDD com dominio rico:** as invariantes moram na entidade, nao no handler. Um desafio nao aceita palpite depois de fechado porque o proprio desafio recusa, nao
 porque algum `if` no servico lembrou de checar.
 
 **Result Pattern em vez de excecao para regra de negocio.** Falha de regra e
@@ -54,7 +53,7 @@ valor de retorno (`Result<T>`), nao `throw`. Excecao fica reservada para falha d
 infraestrutura — banco fora, timeout, bug. Validacao de formato de entrada nao
 chega ao handler: e barrada pelo `Validator` antes.
 
-O modulo **Validacao e separado de Apostas de proposito**. E onde vivem a maquina
+O modulo **Validacao e separado de Desafios de proposito**. E onde vivem a maquina
 de estados e a regra de quorum — a parte mais complexa do sistema. Isolada, ela
 tem teste proprio e pode ser explicada para a banca sem arrastar junto o CRUD de
 desafio. **Ranking e read-only**: so tem `Query`, nenhum `Command`.
@@ -73,7 +72,7 @@ desafio. **Ranking e read-only**: so tem `Query`, nenhum `Command`.
 **Positivas:** cada feature cabe numa pasta — facil de gerar com IA, facil de
 revisar, quase sem conflito de merge entre os tres devs. Os modulos sao
 fronteiras reais: se algum dia fizer sentido extrair um servico, o corte ja
-existe. A separacao Validacao/Apostas deixa a parte complexa testavel isoladamente.
+existe. A separacao Validacao/Desafios deixa a parte complexa testavel isoladamente.
 
 **Negativas:** ha duplicacao entre slices — dois handlers parecidos nao viram um
 metodo compartilhado por padrao, e isso e intencional. Exige disciplina para nao

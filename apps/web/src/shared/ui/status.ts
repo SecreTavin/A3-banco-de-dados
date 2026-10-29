@@ -1,9 +1,9 @@
 import type {
   Escolha,
   NivelFiltro,
-  PapelAposta,
+  PapelDesafio,
   PapelGrupo,
-  StatusAposta,
+  StatusDesafio,
   StatusEvidencia,
   TipoMidia,
   TipoRecompensa,
@@ -14,7 +14,7 @@ interface Aparencia {
   cor: string
 }
 
-export const aparenciaStatusAposta: Record<StatusAposta, Aparencia> = {
+export const aparenciaStatusDesafio: Record<StatusDesafio, Aparencia> = {
   ABERTA: { rotulo: 'Aberta', cor: 'var(--aberta)' },
   EM_ANDAMENTO: { rotulo: 'Em andamento', cor: 'var(--em-andamento)' },
   EM_VOTACAO: { rotulo: 'Em votação', cor: 'var(--em-votacao)' },
@@ -37,7 +37,7 @@ export const rotuloRecompensa: Record<TipoRecompensa, string> = {
   OUTRO: 'Outro',
 }
 
-export const rotuloPapelAposta: Record<PapelAposta, string> = {
+export const rotuloPapelDesafio: Record<PapelDesafio, string> = {
   DESAFIANTE: 'Desafiante',
   DESAFIADO: 'Desafiado',
   APOSTADOR: 'Apostador',
@@ -75,7 +75,7 @@ export const descricaoNivelFiltro: Record<NivelFiltro, string> = {
 
 export const NIVEIS_FILTRO: NivelFiltro[] = ['LEVE', 'MODERADO', 'PESADO']
 
-export const ORDEM_STATUS: StatusAposta[] = [
+export const ORDEM_STATUS: StatusDesafio[] = [
   'ABERTA',
   'EM_ANDAMENTO',
   'EM_VOTACAO',

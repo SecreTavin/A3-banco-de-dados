@@ -12,8 +12,8 @@
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE lancar(
     p_id_grupo   INT,
-    p_id_usuario INT,          -- NULL = conta da aposta (escrow)
-    p_id_aposta  INT,
+    p_id_usuario INT,          -- NULL = conta do desafio (escrow)
+    p_id_desafio  INT,
     p_tipo       VARCHAR(20),
     p_valor      INT,
     p_descricao  VARCHAR(255)
@@ -22,11 +22,11 @@ LANGUAGE plpgsql
 AS $$
 BEGIN
     INSERT INTO transacao_cp
-        (id_grupo, id_usuario, id_aposta, tipo, valor, descricao)
+        (id_grupo, id_usuario, id_desafio, tipo, valor, descricao)
     VALUES
-        (p_id_grupo, p_id_usuario, p_id_aposta, p_tipo, p_valor, p_descricao);
+        (p_id_grupo, p_id_usuario, p_id_desafio, p_tipo, p_valor, p_descricao);
 
-    -- Conta da aposta nao tem saldo materializado - e derivada do ledger.
+    -- Conta do desafio nao tem saldo materializado - e derivada do ledger.
     IF p_id_usuario IS NOT NULL THEN
         UPDATE membro_grupo
            SET saldo_cp = saldo_cp + p_valor
@@ -43,11 +43,11 @@ END;
 $$;
 
 -- -----------------------------------------------------------------------------
--- Debito no aceite: CP sai da carteira e entra na conta da aposta (RN18).
+-- Debito no aceite: CP sai da carteira e entra na conta do desafio (RN18).
 -- Duas linhas no ledger - o CP muda de lugar, nao e destruido.
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE debitar_escrow(
-    p_id_aposta  INT,
+    p_id_desafio  INT,
     p_id_usuario INT
 )
 LANGUAGE plpgsql
@@ -59,18 +59,18 @@ DECLARE
 BEGIN
     SELECT id_grupo, valor_cp, titulo
       INTO v_id_grupo, v_valor_cp, v_titulo
-      FROM aposta
-     WHERE id_aposta = p_id_aposta;
+      FROM desafio
+     WHERE id_desafio = p_id_desafio;
 
     IF NOT FOUND THEN
-        RAISE EXCEPTION 'Aposta % nao encontrada', p_id_aposta;
+        RAISE EXCEPTION 'Desafio % nao encontrado', p_id_desafio;
     END IF;
 
-    CALL lancar(v_id_grupo, p_id_usuario, p_id_aposta,
-        'APOSTA_ESCROW', -v_valor_cp, 'Entrada na aposta: ' || v_titulo);
+    CALL lancar(v_id_grupo, p_id_usuario, p_id_desafio,
+        'DESAFIO_ESCROW', -v_valor_cp, 'Entrada no desafio: ' || v_titulo);
 
-    CALL lancar(v_id_grupo, NULL, p_id_aposta,
-        'APOSTA_ESCROW', v_valor_cp, 'Escrow recebido de participante');
+    CALL lancar(v_id_grupo, NULL, p_id_desafio,
+        'DESAFIO_ESCROW', v_valor_cp, 'Escrow recebido de participante');
 END;
 $$;
 
@@ -105,8 +105,8 @@ $$;
 -- p_cumpriu = TRUE  -> ganham os que escolheram VAI_CUMPRIR
 -- p_cumpriu = FALSE -> ganham os que escolheram NAO_VAI_CUMPRIR
 -- -----------------------------------------------------------------------------
-CREATE OR REPLACE PROCEDURE encerrar_aposta(
-    p_id_aposta INT,
+CREATE OR REPLACE PROCEDURE encerrar_desafio(
+    p_id_desafio INT,
     p_cumpriu   BOOLEAN
 )
 LANGUAGE plpgsql
@@ -124,11 +124,11 @@ DECLARE
 BEGIN
     SELECT id_grupo, status
       INTO v_id_grupo, v_status
-      FROM aposta
-     WHERE id_aposta = p_id_aposta
+      FROM desafio
+     WHERE id_desafio = p_id_desafio
        FOR UPDATE;
 
-    -- Ja encerrada: idempotente.
+    -- Ja encerrado: idempotente.
     IF v_status IN ('FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA') THEN
         RETURN;
     END IF;
@@ -137,11 +137,11 @@ BEGIN
 
     SELECT COALESCE(SUM(valor), 0) INTO v_pote
       FROM transacao_cp
-     WHERE id_aposta = p_id_aposta AND id_usuario IS NULL;
+     WHERE id_desafio = p_id_desafio AND id_usuario IS NULL;
 
     SELECT COUNT(*) INTO v_n_vencedores
-      FROM participante_aposta
-     WHERE id_aposta = p_id_aposta AND escolha = v_escolha_vence;
+      FROM participante_desafio
+     WHERE id_desafio = p_id_desafio AND escolha = v_escolha_vence;
 
     IF v_n_vencedores > 0 AND v_pote > 0 THEN
         -- CP e inteiro: o resto da divisao vai para o primeiro vencedor,
@@ -150,33 +150,33 @@ BEGIN
         v_resto  := v_pote - (v_premio * v_n_vencedores);
 
         FOR v_vencedor IN
-            SELECT id_usuario FROM participante_aposta
-             WHERE id_aposta = p_id_aposta AND escolha = v_escolha_vence
+            SELECT id_usuario FROM participante_desafio
+             WHERE id_desafio = p_id_desafio AND escolha = v_escolha_vence
              ORDER BY id_participante
         LOOP
-            CALL lancar(v_id_grupo, v_vencedor.id_usuario, p_id_aposta,
+            CALL lancar(v_id_grupo, v_vencedor.id_usuario, p_id_desafio,
                 'PREMIO', v_premio + CASE WHEN v_primeiro THEN v_resto ELSE 0 END,
-                'Premio da aposta');
+                'Premio do desafio');
             v_primeiro := FALSE;
         END LOOP;
 
-        CALL lancar(v_id_grupo, NULL, p_id_aposta,
+        CALL lancar(v_id_grupo, NULL, p_id_desafio,
             'PREMIO', -v_pote, 'Pote distribuido aos vencedores');
     END IF;
 
-    UPDATE aposta
+    UPDATE desafio
        SET status = CASE WHEN p_cumpriu THEN 'FINALIZADA_CUMPRIU'
                                         ELSE 'FINALIZADA_PERDEU' END,
            data_encerramento = CURRENT_TIMESTAMP
-     WHERE id_aposta = p_id_aposta;
+     WHERE id_desafio = p_id_desafio;
 END;
 $$;
 
 -- -----------------------------------------------------------------------------
 -- Cancelamento: estorna o escrow para cada participante (RN12).
 -- -----------------------------------------------------------------------------
-CREATE OR REPLACE PROCEDURE cancelar_aposta(
-    p_id_aposta INT,
+CREATE OR REPLACE PROCEDURE cancelar_desafio(
+    p_id_desafio INT,
     p_motivo    VARCHAR(255)
 )
 LANGUAGE plpgsql
@@ -189,8 +189,8 @@ DECLARE
 BEGIN
     SELECT id_grupo, valor_cp, status
       INTO v_id_grupo, v_valor_cp, v_status
-      FROM aposta
-     WHERE id_aposta = p_id_aposta
+      FROM desafio
+     WHERE id_desafio = p_id_desafio
        FOR UPDATE;
 
     IF v_status IN ('FINALIZADA_CUMPRIU', 'FINALIZADA_PERDEU', 'CANCELADA') THEN
@@ -198,20 +198,20 @@ BEGIN
     END IF;
 
     FOR v_participante IN
-        SELECT id_usuario FROM participante_aposta
-         WHERE id_aposta = p_id_aposta
+        SELECT id_usuario FROM participante_desafio
+         WHERE id_desafio = p_id_desafio
     LOOP
-        CALL lancar(v_id_grupo, v_participante.id_usuario, p_id_aposta,
+        CALL lancar(v_id_grupo, v_participante.id_usuario, p_id_desafio,
             'ESTORNO', v_valor_cp, 'Estorno por cancelamento');
-        CALL lancar(v_id_grupo, NULL, p_id_aposta,
+        CALL lancar(v_id_grupo, NULL, p_id_desafio,
             'ESTORNO', -v_valor_cp, 'Estorno devolvido ao participante');
     END LOOP;
 
-    UPDATE aposta
+    UPDATE desafio
        SET status = 'CANCELADA',
            motivo_cancelamento = p_motivo,
            data_encerramento = CURRENT_TIMESTAMP
-     WHERE id_aposta = p_id_aposta;
+     WHERE id_desafio = p_id_desafio;
 END;
 $$;
 
@@ -221,7 +221,7 @@ $$;
 -- zera a conta. Sem ele, quem voltasse ao grupo ganharia 100 CP novos por cima
 -- do historico antigo e a reconciliacao acusaria divergencia.
 --
--- Recusa a saida enquanto o membro participa de aposta em curso ou integra
+-- Recusa a saida enquanto o membro participa de desafio em curso ou integra
 -- juri de votacao aberta: a liquidacao pagaria CP a quem ja nao e membro e
 -- lancar() abortaria a apuracao inteira.
 -- Essas recusas usam o SQLSTATE proprio EUD01, para a API distingui-las de
@@ -247,13 +247,13 @@ BEGIN
 
     IF EXISTS (
         SELECT 1
-          FROM participante_aposta p
-          JOIN aposta a ON a.id_aposta = p.id_aposta
+          FROM participante_desafio p
+          JOIN desafio a ON a.id_desafio = p.id_desafio
          WHERE a.id_grupo = p_id_grupo
            AND p.id_usuario = p_id_usuario
            AND a.status IN ('ABERTA', 'EM_ANDAMENTO', 'EM_VOTACAO'))
     THEN
-        RAISE EXCEPTION 'Usuario % participa de aposta em curso no grupo %',
+        RAISE EXCEPTION 'Usuario % participa de desafio em curso no grupo %',
             p_id_usuario, p_id_grupo
             USING ERRCODE = 'EUD01';
     END IF;
@@ -262,7 +262,7 @@ BEGIN
         SELECT 1
           FROM jurado_evidencia j
           JOIN evidencia e ON e.id_evidencia = j.id_evidencia
-          JOIN aposta a    ON a.id_aposta = e.id_aposta
+          JOIN desafio a    ON a.id_desafio = e.id_desafio
          WHERE a.id_grupo = p_id_grupo
            AND j.id_usuario = p_id_usuario
            AND e.status = 'EM_VOTACAO')

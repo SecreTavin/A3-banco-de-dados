@@ -7,13 +7,11 @@ namespace EuDuvido.Api.Shared.Database.Migrations;
 /// <inheritdoc />
 public partial class ProceduresTriggersViews : Migration
 {
-    // Versao congelada dos scripts (Sql/v1): esta migration roda antes do
-    // alinhamento ao modelo v3, contra as tabelas ainda separadas por schema.
     private static readonly string[] Arquivos =
     [
-        "v1.01-apurar-votacao.sql",
-        "v1.02-economia.sql",
-        "v1.03-triggers-e-views.sql"
+        "01-apurar-votacao.sql",
+        "02-economia.sql",
+        "03-triggers-e-views.sql"
     ];
 
     /// <inheritdoc />

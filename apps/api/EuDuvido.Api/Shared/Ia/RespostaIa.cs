@@ -4,8 +4,8 @@ using System.Text.RegularExpressions;
 namespace EuDuvido.Api.Shared.Ia;
 
 // Modelos abertos nem sempre obedecem "responda so o JSON": alguns embrulham em
-// ```json, outros (Qwen3, DeepSeek-R1) pensam em voz alta dentro de <think>.
-// Aqui se aceita o primeiro objeto JSON valido do texto e nada mais.
+// ```json, outros pensam em voz alta dentro de <think>. Aqui se aceita o primeiro
+// objeto JSON valido do texto e nada mais.
 public static partial class RespostaIa
 {
     public static JsonElement? ExtrairJson(string? texto)

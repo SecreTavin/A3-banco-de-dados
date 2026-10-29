@@ -60,7 +60,7 @@ public class GrupoAmigos
 
     // RN25: ADMIN remove qualquer membro; qualquer um pode sair por conta
     // propria. A remocao em si (lancamento de saida + DELETE) e da procedure
-    // remover_membro, que tambem recusa quem tem aposta ou juri em curso.
+    // remover_membro, que tambem recusa quem tem desafio ou juri em curso.
     public ErrorOr<Success> PodeRemover(int idSolicitante, int idUsuario)
     {
         var alvo = _membros.FirstOrDefault(m => m.IdUsuario == idUsuario);
@@ -117,6 +117,6 @@ public static class GrupoErrors
 
     public static Error MembroComPendencias =>
         Error.Conflict("Grupo.MembroComPendencias",
-            "O membro participa de aposta em curso ou de um juri aberto. " +
-            "Ele so pode sair depois que essas apostas forem encerradas.");
+            "O membro participa de desafio em curso ou de um juri aberto. " +
+            "Ele so pode sair depois que eles forem encerrados.");
 }

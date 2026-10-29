@@ -6,7 +6,7 @@ namespace EuDuvido.Api.Shared.Results;
 public static class TipoErro
 {
     // Entrada bem formada, mas recusada pelo que ela diz: idade abaixo da minima,
-    // desafio barrado pela moderacao, prova que a IA nao reconheceu. HTTP 422.
+    // proposta de desafio barrada pela moderacao. HTTP 422.
     public const int Recusado = StatusCodes.Status422UnprocessableEntity;
 }
 

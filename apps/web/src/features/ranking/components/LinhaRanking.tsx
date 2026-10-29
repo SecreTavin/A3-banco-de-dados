@@ -21,7 +21,7 @@ export function LinhaRanking({ posicao, linha }: Props) {
       <div className={estilos.identidade}>
         <span className={estilos.apelido}>{linha.apelido}</span>
         <span className={estilos.numeros}>
-          {linha.apostasParticipadas} apostas · {linha.acertos}A/{linha.erros}E
+          {linha.desafiosParticipadas} desafios · {linha.acertos}A/{linha.erros}E
           {aproveitamento !== null && ` · ${aproveitamento}%`}
         </span>
       </div>

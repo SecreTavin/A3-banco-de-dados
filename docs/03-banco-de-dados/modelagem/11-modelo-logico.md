@@ -1,12 +1,12 @@
 # 11 - Modelo Lógico
 
-Onze tabelas em um **único schema** (`public`), agrupadas por área só para
+Dez tabelas em um **único schema** (`public`), agrupadas por área só para
 leitura. Para o desenho veja [10 - DER](10-der.md).
 
-> **Estado do modelo.** Este é o modelo de referência, e a migration
-> `AlinhamentoModeloV3` leva o banco até ele, preservando os dados existentes.
-> O `schema.sql` gerado, o seed e o [12 - DDL](../implementacao/12-ddl-schema.md)
-> ainda precisam ser regenerados a partir dessa migration.
+> **Estado do modelo.** Este é o modelo de referência. O DDL em
+> [12 - DDL](../implementacao/12-ddl-schema.md), o `schema.sql` e o seed ainda
+> descrevem um desenho anterior e serão alinhados numa migration futura. Até
+> lá os documentos divergem de propósito.
 
 Convenção: **PK** chave primária, **FK** chave estrangeira, **UQ** unicidade,
 **NN** obrigatória. A coluna *Regra* cita a RN de
@@ -33,7 +33,7 @@ identidade é o e-mail (RN05).
 | `data_nascimento` | `DATE` | | NN, `trg_usuario_idade_minima`: idade ≥ 16 anos na data do cadastro | RN26 |
 | `data_cadastro` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
 
-A idade mínima é garantida por **trigger** `BEFORE INSERT OR UPDATE`, não por `CHECK`: a
+A idade mínima é garantida por **trigger** `BEFORE INSERT`, não por `CHECK`: a
 regra depende da data corrente, e o PostgreSQL só aceita expressões imutáveis
 em `CHECK`. O trigger compara com `data_cadastro`, não com `CURRENT_DATE`, para
 que a linha continue válida em qualquer reavaliação.
@@ -44,7 +44,7 @@ que a linha continue válida em qualquer reavaliação.
 
 ### `grupo_amigos`
 
-Turma onde as apostas acontecem. É a fronteira de visibilidade e da economia de
+Turma onde os desafios acontecem. É a fronteira de visibilidade e da economia de
 CP.
 
 | Coluna | Tipo | Chave | Restrição | Regra |
@@ -79,11 +79,11 @@ view `vw_reconciliacao_saldo` (sempre vazia) detecta divergência.
 
 ---
 
-## Área: apostas
+## Área: desafios
 
 ### `categoria_desafio`
 
-Classificação do desafio, extraída de `aposta` para satisfazer a 3FN.
+Classificação do desafio, extraída de `desafio` para satisfazer a 3FN.
 
 | Coluna | Tipo | Chave | Restrição | Regra |
 | --- | --- | --- | --- | --- |
@@ -91,26 +91,26 @@ Classificação do desafio, extraída de `aposta` para satisfazer a 3FN.
 | `nome` | `VARCHAR(50)` | UQ | NN | |
 | `descricao` | `VARCHAR(200)` | | | |
 
-### `aposta`
+### `desafio`
 
 O desafio. Entidade central e detentora da máquina de estados.
 
 | Coluna | Tipo | Chave | Restrição | Regra |
 | --- | --- | --- | --- | --- |
-| `id_aposta` | `IDENTITY` | PK | | |
+| `id_desafio` | `IDENTITY` | PK | | |
 | `id_grupo` | `INT` | FK → `grupo_amigos` | NN, `ON DELETE CASCADE` | |
 | `id_criador` | `INT` | FK → `usuario` | NN | |
 | `id_categoria` | `INT` | FK → `categoria_desafio` | NN | |
 | `titulo` | `VARCHAR(120)` | | NN | |
 | `descricao` | `TEXT` | | NN | |
-| `valor_cp` | `INT` | | NN, `chk_aposta_valor_cp`: `> 0` — custo **por participante** | RN07 |
-| `tipo_recompensa` | `VARCHAR(20)` | | NN, `chk_aposta_tipo`: `MONETARIA`, `PRENDA_ACAO`, `ITEM_MATERIAL`, `OUTRO` | RN01 |
+| `valor_cp` | `INT` | | NN, `chk_desafio_valor_cp`: `> 0` — custo **por participante** | RN07 |
+| `tipo_recompensa` | `VARCHAR(20)` | | NN, `chk_desafio_tipo`: `MONETARIA`, `PRENDA_ACAO`, `ITEM_MATERIAL`, `OUTRO` | RN01 |
 | `descricao_recompensa` | `VARCHAR(255)` | | O que foi combinado fora do app (dinheiro, prenda, item) — **descritivo** | RN02 |
 | `data_criacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
 | `data_limite` | `TIMESTAMPTZ` | | NN | RN21 |
-| `status` | `VARCHAR(30)` | | NN, default `ABERTA`, `chk_aposta_status`: `ABERTA`, `EM_ANDAMENTO`, `EM_VOTACAO`, `FINALIZADA_CUMPRIU`, `FINALIZADA_PERDEU`, `CANCELADA` | RN03 |
-| `motivo_cancelamento` | `VARCHAR(255)` | | `chk_aposta_cancelamento`: obrigatório se `CANCELADA` | RN12 |
-| `data_encerramento` | `TIMESTAMPTZ` | | `chk_aposta_encerramento`: obrigatória em status terminal | RN03 |
+| `status` | `VARCHAR(30)` | | NN, default `ABERTA`, `chk_desafio_status`: `ABERTA`, `EM_ANDAMENTO`, `EM_VOTACAO`, `FINALIZADA_CUMPRIU`, `FINALIZADA_PERDEU`, `CANCELADA` | RN03 |
+| `motivo_cancelamento` | `VARCHAR(255)` | | `chk_desafio_cancelamento`: obrigatório se `CANCELADA` | RN12 |
+| `data_encerramento` | `TIMESTAMPTZ` | | `chk_desafio_encerramento`: obrigatória em status terminal | RN03 |
 
 O pote é `valor_cp × n_participantes`. A recompensa combinada fora do app é
 texto, não número: nenhum cálculo do sistema a usa
@@ -120,15 +120,15 @@ texto, não número: nenhum cálculo do sistema a usa
 
 Auditoria da moderação por IA: uma linha por avaliação, aprovada ou não
 ([ADR 0015](../../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)).
-Desafio reprovado **não vira `aposta`**, por isso a tabela guarda o texto
-avaliado e não depende de FK para a aposta.
+Proposta reprovada **não vira `desafio`**, por isso a tabela guarda o texto
+avaliado e não depende de FK para o desafio.
 
 | Coluna | Tipo | Chave | Restrição | Regra |
 | --- | --- | --- | --- | --- |
 | `id_moderacao` | `IDENTITY` | PK | | |
 | `id_grupo` | `INT` | FK → `grupo_amigos` | NN, `ON DELETE CASCADE` | RN28 |
 | `id_criador` | `INT` | FK → `usuario` | NN | RN28 |
-| `id_aposta` | `INT` | FK → `aposta`, UQ | Nulo se reprovado, `ON DELETE SET NULL`, `chk_moderacao_aposta` | RN28 |
+| `id_desafio` | `INT` | FK → `desafio`, UQ | Nulo se reprovado, `ON DELETE SET NULL`, `chk_moderacao_desafio` | RN28 |
 | `nivel_filtro` | `VARCHAR(10)` | | NN, `chk_moderacao_nivel`: `LEVE`, `MODERADO`, `PESADO` — **cópia** do nível no momento | RN27 |
 | `titulo` | `VARCHAR(120)` | | NN — texto avaliado | RN28 |
 | `descricao` | `TEXT` | | NN — texto avaliado | RN28 |
@@ -138,25 +138,25 @@ avaliado e não depende de FK para a aposta.
 
 * `nivel_filtro` é copiado porque o admin pode mudar o nível do grupo depois;
   sem a cópia, a taxa de bloqueio por nível mentiria.
-* `chk_moderacao_aposta`: `id_aposta` só pode estar preenchido se
-  `aprovado = true`. `unq_moderacao_aposta` garante uma avaliação por aposta.
+* `chk_moderacao_desafio`: `id_desafio` só pode estar preenchido se
+  `aprovado = true`. `unq_moderacao_desafio` garante uma avaliação por desafio.
 
-### `participante_aposta`
+### `participante_desafio`
 
-Associativa usuário × aposta.
+Associativa usuário × desafio.
 
 | Coluna | Tipo | Chave | Restrição | Regra |
 | --- | --- | --- | --- | --- |
 | `id_participante` | `IDENTITY` | PK | | |
-| `id_aposta` | `INT` | FK → `aposta`, UQ | NN, `ON DELETE CASCADE` | |
+| `id_desafio` | `INT` | FK → `desafio`, UQ | NN, `ON DELETE CASCADE` | |
 | `id_usuario` | `INT` | FK → `usuario`, UQ | NN | RN09 |
-| `papel_aposta` | `VARCHAR(20)` | | NN, `chk_participante_papel`: `DESAFIANTE`, `DESAFIADO`, `APOSTADOR` | RN09 |
+| `papel_desafio` | `VARCHAR(20)` | | NN, `chk_participante_papel`: `DESAFIANTE`, `DESAFIADO`, `APOSTADOR` | RN09 |
 | `escolha` | `VARCHAR(20)` | | NN, `chk_participante_escolha`: `VAI_CUMPRIR`, `NAO_VAI_CUMPRIR` | |
 | `data_aceite` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | RN18 |
 
-Duas restrições cobrem a RN09: `unq_participante_aposta (id_aposta, id_usuario)`
+Duas restrições cobrem a RN09: `unq_participante_desafio (id_desafio, id_usuario)`
 dá um papel por usuário, e o índice parcial único
-`unq_aposta_papel_unico (id_aposta, papel_aposta) WHERE papel_aposta IN
+`unq_desafio_papel_unico (id_desafio, papel_desafio) WHERE papel_desafio IN
 ('DESAFIANTE','DESAFIADO')` limita a um de cada papel único sem restringir a
 quantidade de `APOSTADOR`.
 
@@ -166,13 +166,13 @@ quantidade de `APOSTADOR`.
 
 ### `evidencia`
 
-Prova de cumprimento enviada pelo desafiado. Uma aposta admite até cinco, em
+Prova de cumprimento enviada pelo desafiado. Um desafio admite até cinco, em
 sequência.
 
 | Coluna | Tipo | Chave | Restrição | Regra |
 | --- | --- | --- | --- | --- |
 | `id_evidencia` | `IDENTITY` | PK | | |
-| `id_aposta` | `INT` | FK → `aposta`, UQ | NN, `ON DELETE CASCADE` | |
+| `id_desafio` | `INT` | FK → `desafio`, UQ | NN, `ON DELETE CASCADE` | |
 | `id_usuario` | `INT` | FK → `usuario` | NN | |
 | `ordem` | `INT` | UQ | NN, `chk_evidencia_ordem`: `BETWEEN 1 AND 5` | RN10 |
 | `tipo_midia` | `VARCHAR(20)` | | NN, `chk_evidencia_midia`: `FOTO`, `VIDEO`, `LINK`, `TEXTO` | |
@@ -183,35 +183,9 @@ sequência.
 | `data_limite_votacao` | `TIMESTAMPTZ` | | NN, `chk_evidencia_votacao`: `> data_envio` | RN11 |
 | `data_apuracao` | `TIMESTAMPTZ` | | `chk_evidencia_apuracao`: obrigatória se status ≠ `EM_VOTACAO` | RN13 |
 
-`unq_evidencia_ordem (id_aposta, ordem)` impede duas evidências na mesma
+`unq_evidencia_ordem (id_desafio, ordem)` impede duas evidências na mesma
 posição da sequência. `status` é um fato gravado uma única vez pela procedure
 de apuração, não uma reinterpretação de votos.
-
-### `verificacao_evidencia`
-
-Auditoria da triagem de prova por IA: uma linha por análise, aprovada ou não
-([ADR 0017](../../02-arquitetura/adr/0017-ia-propria-e-verificacao-de-prova.md)).
-Mesmo desenho de `moderacao_desafio`: prova recusada **não vira `evidencia`**,
-por isso a tabela guarda o que foi analisado e a FK para a evidência é opcional.
-
-| Coluna | Tipo | Chave | Restrição | Regra |
-| --- | --- | --- | --- | --- |
-| `id_verificacao` | `IDENTITY` | PK | | |
-| `id_aposta` | `INT` | FK → `aposta` | NN, `ON DELETE CASCADE` | RN29 |
-| `id_usuario` | `INT` | FK → `usuario` | NN — quem enviou a prova | RN29 |
-| `id_evidencia` | `INT` | FK → `evidencia`, UQ | Nulo se recusada, `ON DELETE SET NULL`, `chk_verificacao_evidencia` | RN29 |
-| `tipo_midia` | `VARCHAR(20)` | | NN, `chk_verificacao_midia`: `FOTO`, `VIDEO`, `LINK`, `TEXTO` | |
-| `url_comprovante` | `VARCHAR(500)` | | NN — o que foi analisado | RN29 |
-| `comentario` | `TEXT` | | | |
-| `aprovado` | `BOOLEAN` | | NN | RN29 |
-| `parecer` | `VARCHAR(500)` | | NN — o que a IA viu; mostrado ao júri quando aprovada | RN29 |
-| `data_avaliacao` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
-
-* `chk_verificacao_evidencia`: `id_evidencia` só pode estar preenchido se
-  `aprovado = true`. `unq_verificacao_evidencia` garante uma análise por
-  evidência.
-* O parecer é **consultivo**: a decisão é do júri (RN15) e a liquidação é da
-  procedure `apurar_votacao`.
 
 ### `jurado_evidencia`
 
@@ -227,13 +201,8 @@ criada no envio da evidência com `voto` nulo; votar é preencher a linha.
 | `data_voto` | `TIMESTAMPTZ` | | `chk_jurado_voto_data`: preenchida se, e somente se, `voto` preenchido | RN15 |
 
 A PK composta `(id_evidencia, id_usuario)` garante **voto único** (RN04) e
-**voto só de quem está no júri** (RN14), sem FK composta. O trigger
-`trg_jurado_evidencia_valida` completa as regras que a chave não alcança:
-
-* no `INSERT`, o jurado nasce sem voto e não pode ser `DESAFIANTE` nem
-  `DESAFIADO` da aposta (RN14);
-* no `UPDATE`, recusa voto fora do prazo ou em evidência que não está
-  `EM_VOTACAO` (RN19) e recusa alterar um voto já registrado (RN04).
+**voto só de quem está no júri** (RN14), sem FK composta. Um trigger recusa
+alterar `voto` fora do prazo ou em evidência que não está `EM_VOTACAO` (RN19).
 Quórum: `floor(count(*)/2) + 1` sobre as linhas da evidência
 ([ADR 0008](../../02-arquitetura/adr/0008-quorum-congelado.md)).
 
@@ -249,16 +218,13 @@ Ledger append-only de partidas dobradas. Nunca sofre `UPDATE` nem `DELETE`.
 | --- | --- | --- | --- | --- |
 | `id_transacao` | `IDENTITY` | PK | | |
 | `id_grupo` | `INT` | FK → `grupo_amigos` | NN, `ON DELETE CASCADE` | |
-| `id_usuario` | `INT` | FK → `usuario` | Nulo = conta da aposta (escrow) | RN18 |
-| `id_aposta` | `INT` | FK → `aposta` | | RN18 |
-| `tipo` | `VARCHAR(20)` | | NN, `chk_transacao_tipo`: `CREDITO_INICIAL`, `APOSTA_ESCROW`, `PREMIO`, `ESTORNO`, `RECOMPENSA_VOTO`, `SAIDA_GRUPO` | RN06, RN12, RN17, RN18, RN23, RN25 |
+| `id_usuario` | `INT` | FK → `usuario` | Nulo = conta do desafio (escrow) | RN18 |
+| `id_desafio` | `INT` | FK → `desafio` | | RN18 |
+| `tipo` | `VARCHAR(20)` | | NN, `chk_transacao_tipo`: `CREDITO_INICIAL`, `DESAFIO_ESCROW`, `PREMIO`, `ESTORNO`, `RECOMPENSA_VOTO` | RN06, RN12, RN17, RN18, RN23 |
 | `valor` | `INT` | | NN, `chk_transacao_valor`: `<> 0` — positivo credita, negativo debita | RN24 |
 | `descricao` | `VARCHAR(255)` | | NN | |
 | `data_lancamento` | `TIMESTAMPTZ` | | NN, default `CURRENT_TIMESTAMP` | |
 
-`chk_transacao_conta` exige que o lançamento pertença a um usuário ou a uma
-aposta; `chk_transacao_escrow` exige `id_aposta` quando o tipo é
-`APOSTA_ESCROW`. A imutabilidade é do trigger `trg_transacao_cp_imutavel`
-(RN24); estorno é lançamento novo. `SAIDA_GRUPO` é lançado pela procedure
-`remover_membro` e zera a conta de quem sai do grupo (RN25): o histórico fica,
-e quem voltar recomeça com os 100 CP do crédito inicial sem divergir do ledger.
+`chk_transacao_conta` exige que o lançamento pertença a um usuário ou a um desafio; `chk_transacao_escrow` exige `id_desafio` quando o tipo é
+`DESAFIO_ESCROW`. A imutabilidade é do trigger `trg_transacao_cp_imutavel`
+(RN24); estorno é lançamento novo.

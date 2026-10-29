@@ -4,7 +4,7 @@ namespace EuDuvido.Api.Modules.Validacao.Domain;
 // evidencia com voto nulo; votar e preencher a linha. A PK (id_evidencia,
 // id_usuario) garante voto unico (RN04) e voto so de quem esta no juri (RN14).
 // Congelar impede que alguem entrando no grupo mude o quorum retroativamente
-// e faca o resultado da aposta mudar sozinho (ADR 0008).
+// e faca o resultado do desafio mudar sozinho (ADR 0008).
 public class JuradoEvidencia
 {
     public int IdEvidencia { get; private set; }

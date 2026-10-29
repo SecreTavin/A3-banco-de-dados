@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import type { Usuario } from '../api/tipos'
 import { Avatar } from './Avatar'
+import { BotaoTema } from './BotaoTema'
 import { Icone } from './Icone'
 import type { NomeIcone } from './Icone'
 import estilos from './shell.module.css'
@@ -32,6 +33,8 @@ export function AppShell({ usuario, abas, aoSair }: Props) {
           <Avatar apelido={usuario.apelido} url={usuario.avatarUrl} />
           <span className={estilos.apelido}>{usuario.apelido}</span>
         </span>
+
+        <BotaoTema />
 
         <button className={estilos.sair} onClick={aoSair} title="Sair" aria-label="Sair">
           <Icone nome="sair" tamanho={18} />

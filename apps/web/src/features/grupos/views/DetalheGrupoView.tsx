@@ -176,7 +176,7 @@ export function DetalheGrupoView() {
           <Card className={estilos.formularioCartao}>
             <div className={estilos.formulario}>
               <p className={estilos.aviso}>
-                Seu saldo de CP neste grupo sai de circulação. Não dá para sair com aposta em
+                Seu saldo de CP neste grupo sai de circulação. Não dá para sair com desafio em
                 andamento, com júri aberto ou sendo o único admin enquanto houver outros membros.
               </p>
 

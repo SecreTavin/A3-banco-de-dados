@@ -52,7 +52,7 @@ disciplina avalia.
 
 ### Nivel 2 — Testes unitarios de dominio, em xUnit, sem banco
 
-Para a logica que **e** de C#: a maquina de estados da aposta (quais transicoes
+Para a logica que **e** de C#: a maquina de estados do desafio (quais transicoes
 sao validas), o calculo de quorum sobre um conjunto de validadores, as
 invariantes do agregado e os retornos de `Result`
 ([0002](0002-monolito-modular-vertical-slice.md)).
@@ -67,10 +67,10 @@ o escopo e deliberadamente estreito — **so onde um bug e invisivel e caro**:
 
 * **A procedure de apuracao** (`validacao.apurar_votacao`). Votos entrando ate o
   quorum, e a verificacao de que **em uma unica transacao** a evidencia virou
-  `ACEITA`, os validadores foram recompensados, a aposta virou
+  `ACEITA`, os validadores foram recompensados, o desafio virou
   `FINALIZADA_CUMPRIU` e o pote foi distribuido. Se um desses passos falhar
   sozinho, o sistema fica em estado que nao deveria existir — e nada avisa.
-* **A reconciliacao do ledger.** Um ciclo completo de aposta: criacao, aceite com
+* **A reconciliacao do ledger.** Um ciclo completo de desafio: criacao, aceite com
   escrow, evidencia, votacao, resolucao. E entao:
 
 > `SELECT * FROM economia.vw_reconciliacao_saldo` **tem que retornar zero

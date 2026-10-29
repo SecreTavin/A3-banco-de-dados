@@ -6,19 +6,18 @@
 
 * **RF01:** Cadastro e autenticação de usuários via Google (OAuth/OIDC). O
   sistema não possui senha própria.
-* **RF02:** Gestão de grupos privados de amigos, com papéis `ADMIN` e `MEMBRO`;
-  o `ADMIN` adiciona membros já cadastrados pelo e-mail.
+* **RF02:** Gestão de grupos privados de amigos, com papéis `ADMIN` e `MEMBRO`.
 * **RF10:** Perfil do usuário com nome, apelido, avatar e histórico pessoal de
-  apostas, participações e evidências.
+  desafios, participações e evidências.
 
-### Apostas
+### Desafios
 
 * **RF03:** Categorias de desafios (Esportes, Jogos, Prendas, Acadêmico) — lista
   fixa, sem tela de gestão.
-* **RF04:** Criação de apostas com custo em CP e recompensa monetária ou prenda.
+* **RF04:** Criação de desafios com custo em CP e recompensa monetária ou prenda.
 * **RF05:** Registro de participantes com papel (`DESAFIANTE`, `DESAFIADO`,
   `APOSTADOR`) e escolha (`VAI_CUMPRIR`, `NAO_VAI_CUMPRIR`).
-* **RF12:** Cancelamento de aposta com motivo, estornando o CP dos participantes.
+* **RF12:** Cancelamento de desafio com motivo, estornando o CP dos participantes.
 
 ### Validação
 
@@ -26,21 +25,18 @@
   cumprimento, com upload direto para o storage de objetos.
 * **RF07:** Votação de validação pelos membros do grupo, com justificativa.
 * **RF13:** Apuração automática do resultado quando o quórum é atingido,
-  encerrando a aposta e liquidando o CP na mesma transação.
+  encerrando o desafio e liquidando o CP na mesma transação.
 
 ### Moderação
 
 * **RF16:** Idade mínima de 16 anos no cadastro e moderação por IA de todo
   desafio, no nível de filtro do grupo, com registro da avaliação.
-* **RF17:** Triagem por IA de toda prova antes do júri: a IA confere se a
-  prova (inclusive a foto) mostra o que o desafio pede, barra a que claramente
-  não comprova e entrega ao júri um parecer consultivo, com registro da análise.
 
 ### Economia e ranking
 
 * **RF14:** Carteira de CP por grupo, com saldo e extrato de lançamentos.
-* **RF08:** Ranking por grupo com histórico completo — maiores apostas,
-  percentual de aprovação e apostas cumpridas versus perdidas.
+* **RF08:** Ranking por grupo com histórico completo — maiores desafios,
+  percentual de aprovação e desafios cumpridos versus perdidos.
 
 
 ## 7.2 Requisitos Não Funcionais (RNF)
@@ -48,7 +44,7 @@
 * **RNF01:** Interface responsiva mobile-first, utilizável no navegador do
   celular sem instalação.
 * **RNF02:** Atualização ao vivo da Central de Votação — a contagem de votos e o
-  encerramento da aposta chegam sem recarregar a página.
+  encerramento do desafio chegam sem recarregar a página.
 * **RNF03:** Integridade referencial e transacional garantidas pelo SGBD, não
   apenas pela aplicação.
 * **RNF04:** Observabilidade com logs estruturados, métricas de domínio e
@@ -64,7 +60,7 @@ Registrado aqui para que a ausência seja deliberada, não esquecimento. Ver
 | Item | Situação |
 | --- | --- |
 | Convite para grupo por código | Fora do escopo; o `ADMIN` adiciona membros |
-| Comentários na aposta e chat por grupo | Fora do escopo |
+| Comentários no desafio e chat por grupo | Fora do escopo |
 | Notificações e Web Push | Fora do escopo |
 | Login por email e senha | Fora do escopo; só Google |
 | Upload de avatar próprio | Usa a foto do Google |

@@ -5,13 +5,13 @@ lógica de resultado **não** está na aplicação.
 
 ## Princípio
 
-O sistema não decide o resultado de uma aposta. Ele registra votos e **pede ao
+O sistema não decide o resultado de um desafio. Ele registra votos e **pede ao
 banco que apure**. A apuração de quórum, a mudança de status e a liquidação de CP
 acontecem dentro de uma procedure PostgreSQL, em uma única transação.
 
 A razão é de correção, não de estilo: se a aplicação contasse os votos, mudasse o
 status e depois transferisse o CP em três operações separadas, uma falha entre
-elas deixaria o sistema num estado impossível — evidência aceita, aposta aberta,
+elas deixaria o sistema num estado impossível — evidência aceita, desafio aberto,
 CP no limbo. Dentro da transação, ou tudo acontece ou nada acontece.
 
 ## Os dois caminhos de acesso
@@ -47,7 +47,7 @@ sequenceDiagram
         Note over APP,PG: TRANSAÇÃO
         APP->>PG: INSERT evidencia (status EM_VOTACAO, prazo +7d)
         APP->>PG: INSERT validador_evidencia (snapshot do júri)
-        APP->>PG: UPDATE aposta SET status = 'EM_VOTACAO'
+        APP->>PG: UPDATE desafio SET status = 'EM_VOTACAO'
         PG-->>APP: COMMIT
     end
 
@@ -78,7 +78,7 @@ sequenceDiagram
         PG->>PG: quórum atingido? senão RETURN
         PG->>PG: UPDATE evidencia SET status
         PG->>PG: CALL creditar_recompensa_voto
-        PG->>PG: CALL encerrar_aposta
+        PG->>PG: CALL encerrar_desafio
         PG->>PG: transfere pote aos vencedores (ledger + saldo)
     end
 
@@ -89,7 +89,7 @@ sequenceDiagram
 Três detalhes que a procedure resolve e que seriam armadilha na aplicação:
 
 * **`SELECT ... FOR UPDATE`** — dois votos simultâneos não podem apurar em
-  paralelo e fechar a aposta duas vezes.
+  paralelo e fechar o desafio duas vezes.
 * **Idempotência** — chamar `apurar_votacao` numa evidência já apurada não faz
   nada. A aplicação pode chamar sem medo após cada voto.
 * **Escrita dupla no ledger** — cada movimento de CP gera débito e crédito na

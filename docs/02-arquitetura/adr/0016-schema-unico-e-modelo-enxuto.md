@@ -15,7 +15,7 @@ obrigava a qualificar cada nome sem acrescentar integridade.
 ## Decisão
 
 Um único schema (`public`) e um modelo de dez tabelas que mantém o núcleo do
-domínio: grupos, apostas, evidência com júri congelado, ledger de CP e a
+domínio: grupos, desafios, evidência com júri congelado, ledger de CP e a
 moderação exigida na revisão da Entrega 1 ([0015](0015-idade-minima-e-moderacao-ia.md)).
 
 Saem do modelo convite de grupo, comentários, credenciais, notificações e

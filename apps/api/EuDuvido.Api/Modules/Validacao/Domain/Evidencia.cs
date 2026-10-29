@@ -4,11 +4,11 @@ namespace EuDuvido.Api.Modules.Validacao.Domain;
 
 public class Evidencia
 {
-    public const int MaximoPorAposta = 5;
+    public const int MaximoPorDesafio = 5;
     public static readonly TimeSpan PrazoVotacao = TimeSpan.FromDays(7);
 
     public int IdEvidencia { get; private set; }
-    public int IdAposta { get; private set; }
+    public int IdDesafio { get; private set; }
     public int IdUsuario { get; private set; }
     public int Ordem { get; private set; }
     public string TipoMidia { get; private set; } = null!;
@@ -28,7 +28,7 @@ public class Evidencia
     /// Membros do grupo menos DESAFIANTE e DESAFIADO. Fica congelado aqui.
     /// </param>
     public static ErrorOr<Evidencia> Enviar(
-        int idAposta,
+        int idDesafio,
         int idAutor,
         int ordem,
         string tipoMidia,
@@ -36,13 +36,13 @@ public class Evidencia
         string? comentario,
         IEnumerable<int> elegiveis)
     {
-        if (ordem > MaximoPorAposta)
+        if (ordem > MaximoPorDesafio)
             return EvidenciaErrors.LimiteAtingido;
 
         var agora = DateTimeOffset.UtcNow;
         var evidencia = new Evidencia
         {
-            IdAposta = idAposta,
+            IdDesafio = idDesafio,
             IdUsuario = idAutor,
             Ordem = ordem,
             TipoMidia = tipoMidia,

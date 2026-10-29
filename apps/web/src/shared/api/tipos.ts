@@ -1,4 +1,4 @@
-export type StatusAposta =
+export type StatusDesafio =
   | 'ABERTA'
   | 'EM_ANDAMENTO'
   | 'EM_VOTACAO'
@@ -7,7 +7,7 @@ export type StatusAposta =
   | 'CANCELADA'
 
 export type TipoRecompensa = 'MONETARIA' | 'PRENDA_ACAO' | 'ITEM_MATERIAL' | 'OUTRO'
-export type PapelAposta = 'DESAFIANTE' | 'DESAFIADO' | 'APOSTADOR'
+export type PapelDesafio = 'DESAFIANTE' | 'DESAFIADO' | 'APOSTADOR'
 export type Escolha = 'VAI_CUMPRIR' | 'NAO_VAI_CUMPRIR'
 export type TipoMidia = 'FOTO' | 'VIDEO' | 'LINK' | 'TEXTO'
 export type StatusEvidencia = 'EM_VOTACAO' | 'ACEITA' | 'RECUSADA' | 'EXPIRADA'
@@ -72,11 +72,11 @@ export interface MembroAdicionado {
   apelido: string
 }
 
-export interface ApostaResumo {
-  idAposta: number
+export interface DesafioResumo {
+  idDesafio: number
   idGrupo: number
   titulo: string
-  status: StatusAposta
+  status: StatusDesafio
   valorCp: number
   tipoRecompensa: TipoRecompensa
   descricaoRecompensa: string | null
@@ -86,11 +86,11 @@ export interface ApostaResumo {
   souCriador: boolean
 }
 
-export interface ParticipanteAposta {
+export interface ParticipanteDesafio {
   idUsuario: number
   apelido: string
   avatarUrl: string | null
-  papelAposta: PapelAposta
+  papelDesafio: PapelDesafio
   escolha: Escolha | null
 }
 
@@ -107,14 +107,13 @@ export interface Evidencia {
   votosContra: number
   quorum: number
   totalValidadores: number
-  parecerIa: string | null
 }
 
-export interface ApostaDetalhe extends ApostaResumo {
+export interface DesafioDetalhe extends DesafioResumo {
   descricao: string | null
   dataEncerramento: string | null
   motivoCancelamento: string | null
-  participantes: ParticipanteAposta[]
+  participantes: ParticipanteDesafio[]
   evidencias: Evidencia[]
 }
 
@@ -126,7 +125,7 @@ export interface Categoria {
 
 export interface EvidenciaPendente {
   idEvidencia: number
-  idAposta: number
+  idDesafio: number
   idGrupo: number
   desafio: string
   tipoMidia: TipoMidia
@@ -140,14 +139,13 @@ export interface EvidenciaPendente {
   votosContra: number
   votosFaltantes: number
   jaVotei: boolean
-  parecerIa: string | null
 }
 
 export interface PosicaoRanking {
   apelido: string
   avatarUrl: string | null
   saldoCp: number
-  apostasParticipadas: number
+  desafiosParticipadas: number
   acertos: number
   erros: number
   cpGanhoEmPremios: number
@@ -164,12 +162,12 @@ export interface LancamentoCp {
   tipo: string
   valor: number
   descricao: string
-  aposta: string | null
+  desafio: string | null
   saldoApos: number
 }
 
 export interface HistoricoPerfil {
-  apostasCriadas: number
+  desafiosCriadas: number
   participacoes: number
   evidenciasEnviadas: number
 }
@@ -199,7 +197,7 @@ export interface NovoCadastro {
   dataNascimento: string
 }
 
-export interface NovaAposta {
+export interface NovaDesafio {
   idGrupo: number
   idCategoria: number
   titulo: string
@@ -211,7 +209,7 @@ export interface NovaAposta {
 }
 
 export interface NovaParticipacao {
-  papelAposta: PapelAposta
+  papelDesafio: PapelDesafio
   escolha: Escolha
 }
 
@@ -219,11 +217,6 @@ export interface NovaEvidencia {
   tipoMidia: TipoMidia
   urlComprovante: string
   comentario: string
-}
-
-export interface EvidenciaEnviada {
-  idEvidencia: number
-  parecerIa: string | null
 }
 
 export interface NovoVoto {

@@ -1,8 +1,8 @@
 using System.Net.Http.Headers;
 using System.Text;
-using EuDuvido.Api.Modules.Apostas.Features;
-using EuDuvido.Api.Modules.Apostas.Features.CriarAposta;
-using EuDuvido.Api.Modules.Apostas.Infrastructure;
+using EuDuvido.Api.Modules.Desafios.Features;
+using EuDuvido.Api.Modules.Desafios.Features.CriarDesafio;
+using EuDuvido.Api.Modules.Desafios.Infrastructure;
 using EuDuvido.Api.Modules.Grupos.Features;
 using EuDuvido.Api.Modules.Identidade.Features;
 using EuDuvido.Api.Modules.Ranking.Features;
@@ -37,28 +37,21 @@ builder.Services.AddSingleton<IConexaoLeitura>(new ConexaoLeitura(conexao));
 builder.Services.AddScoped<IApuracao, Apuracao>();
 builder.Services.AddScoped<RegistrarVotoHandler>();
 builder.Services.AddScoped<EnviarEvidenciaHandler>();
-builder.Services.AddScoped<CriarApostaHandler>();
+builder.Services.AddScoped<CriarDesafioHandler>();
 builder.Services.AddHostedService<PrazosWorker>();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
-// IA de moderacao e de verificacao de prova (ADR 0015, ADR 0017). Sem Ia:BaseUrl
-// a API sobe normalmente; so criar aposta e enviar evidencia respondem 503.
+// IA de moderacao de desafios, na Groq (ADR 0015). Sem Ia:BaseUrl e Ia:Modelo
+// a API sobe normalmente; so criar desafio responde 503.
 var ia = builder.Configuration.GetSection(IaOptions.Secao).Get<IaOptions>() ?? new IaOptions();
 builder.Services.AddSingleton(ia);
 builder.Services.AddHttpClient<IChatIa, ChatIa>(http =>
 {
     http.Timeout = TimeSpan.FromSeconds(ia.TimeoutSegundos);
-    // O ngrok gratuito pode responder com uma pagina de aviso no lugar da API;
-    // este cabecalho a dispensa.
-    http.DefaultRequestHeaders.Add("ngrok-skip-browser-warning", "true");
     if (!string.IsNullOrWhiteSpace(ia.ApiKey))
         http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ia.ApiKey);
 });
-builder.Services.AddHttpClient<IBaixadorDeImagem, BaixadorDeImagem>(http =>
-        http.Timeout = TimeSpan.FromSeconds(20))
-    .ConfigurePrimaryHttpMessageHandler(BaixadorDeImagem.CriarHandler);
 builder.Services.AddScoped<IModeradorDesafio, ModeradorDesafio>();
-builder.Services.AddScoped<IVerificadorEvidencia, VerificadorEvidencia>();
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<TratadorIaIndisponivel>();
 
@@ -123,7 +116,7 @@ app.MapGet("/health", async (EuDuvidoDbContext db, CancellationToken ct) =>
 
 app.MapAuthEndpoints();
 app.MapGruposEndpoints();
-app.MapApostasEndpoints();
+app.MapDesafiosEndpoints();
 app.MapValidacaoEndpoints();
 app.MapRankingEndpoints();
 app.MapHub<VotacaoHub>("/hubs/votacao");

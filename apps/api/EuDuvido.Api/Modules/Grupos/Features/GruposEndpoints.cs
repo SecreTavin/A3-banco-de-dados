@@ -153,7 +153,7 @@ public static class GruposEndpoints
             }
             catch (PostgresException e) when (e.SqlState == "EUD01")
             {
-                // A procedure recusa quem tem aposta ou juri em curso: regra de
+                // A procedure recusa quem tem desafio ou juri em curso: regra de
                 // negocio garantida no banco, devolvida como conflito.
                 return ((ErrorOr<Success>)GrupoErrors.MembroComPendencias).ToHttp();
             }
