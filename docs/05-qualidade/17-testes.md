@@ -139,6 +139,52 @@ recém-criado. Na mesma data, as telas de login, desafios, criação de desafio 
 detalhe do grupo foram conferidas no navegador. Sem a chave da Groq, a tela de
 criação mostra o motivo do bloqueio e não cria nada.
 
+### Nível 5b — Os mesmos fluxos, pela tela
+
+O roteiro de API prova a regra; este prova que **a tela** a entrega. Ele abre o
+Chrome de verdade, faz o que um usuário faria (login, formulários, botões,
+caixa de confirmação) e, a cada escrita, confere o efeito direto no PostgreSQL.
+Os dados são descobertos na hora, sem ids fixos, então roda em banco semeado.
+
+Roteiro em [`scripts/testes/roteiro-e2e-ui.mjs`](../../scripts/testes/roteiro-e2e-ui.mjs):
+
+```bash
+npm i --no-save playwright-core                 # uma vez, fora do package.json
+node scripts/testes/roteiro-e2e-ui.mjs          # navegador visível (padrão)
+HEADED=0 node scripts/testes/roteiro-e2e-ui.mjs # sem janela
+```
+
+O roteiro **escreve** no banco e consome um desafio aberto e uma evidência por
+rodada. Para repetir, volte ao seed (`docker compose down -v` e `up`, ou
+`pg_restore` de um dump do banco recém-semeado).
+
+| ID | Procedimento | Resultado esperado (tela e banco) | Resultado obtido |
+| --- | --- | --- | --- |
+| U01 | Entrar como Tavin | `/desafios` lista os desafios dos grupos dele (7 = 7 no banco) | Aprovado |
+| U02 | Abrir o detalhe de um desafio | Título da tela igual ao do banco | Aprovado |
+| U03 | Criar um grupo pelo formulário | Grupo na lista; criador `ADMIN` com 100 CP e `CREDITO_INICIAL` | Aprovado |
+| U04 | Adicionar um membro por e-mail e removê-lo (caixa de confirmação) | Entra com 100 CP; sai com `SAIDA_GRUPO` e ledger do membro em zero | Aprovado |
+| U05 | Criar desafio sem a IA | A tela explica o bloqueio; `desafio` e `moderacao_desafio` inalteradas (RN28) | Aprovado |
+| U06 | Dois membros aceitam um desafio aberto, como Desafiado e Desafiante | Cada um debitado do valor e retido em escrow; desafio `EM_ANDAMENTO` (RN18, RN21) | Aprovado |
+| U07 | O Desafiado envia a evidência | `EM_VOTACAO`; júri congelado sem Desafiante nem Desafiado (RN14) | Aprovado |
+| U08 | Os jurados votam `VÁLIDO` na Central de Votação até o quórum | Evidência `ACEITA`, desafio `FINALIZADA_CUMPRIU`, pote pago, 2 CP por voto, views de contabilidade vazias | Aprovado |
+| U09 | Quem já votou volta à Central | A tela não oferece mais Válido/Inválido; 1 voto no banco | Aprovado |
+| U10 | Perfil e Ranking | Saldos iguais aos do banco, por grupo e por membro | Aprovado |
+| U11 | Alternar o tema, recarregar e percorrer 8 telas em 1440x900 | Tema persiste; nenhuma tela rola na vertical | Aprovado |
+| U12 | Celular 390x844: login, desafios e detalhe do grupo | Nenhum overflow horizontal | Aprovado |
+
+Executado em 30/10/2026 num banco recém-semeado: **12 de 12 aprovados**, uma vez
+com o navegador visível e outra sem janela.
+
+O que a tela **não** cobre, e onde cada coisa é testada:
+
+* **Segundo voto na mesma evidência (HTTP 409):** a tela esconde os botões de
+  quem já votou, então não há como tentar. O erro da API é o cenário E05.
+* **Criar desafio com a IA funcionando:** exige a chave da Groq, que o ambiente
+  de teste não tem. Só o caminho de bloqueio (U05) é exercitado.
+* **Envio de arquivo de evidência:** não existe; o comprovante é uma URL
+  ([documento 16](../02-arquitetura/16-execucao-local.md)).
+
 ## Execução
 
 ```bash
