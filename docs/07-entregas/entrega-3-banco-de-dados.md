@@ -7,7 +7,7 @@
 | **Pergunta que a entrega precisa responder** | O modelo foi efetivamente transformado em um Banco de Dados funcional? |
 
 <!-- entregas:status:start -->
-🔵 **Pronta para entrega** — 8/8 itens prontos · revisão em sala: 2026-10-30
+🟢 **Entregue** — tag `entrega-3` em 2026-10-30 · 8/8 itens prontos
 <!-- entregas:status:end -->
 
 ## Checklist
