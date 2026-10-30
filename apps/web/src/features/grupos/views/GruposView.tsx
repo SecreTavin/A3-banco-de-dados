@@ -44,14 +44,25 @@ export function GruposView() {
         titulo="Meus grupos"
         descricao="Cada grupo tem seu próprio saldo de CP e seu próprio histórico."
         acao={
-          <Botao variante={criando ? 'secundaria' : 'primaria'} onClick={alternar}>
+          <Botao
+            variante={criando ? 'secundaria' : 'primaria'}
+            className={estilos.botaoCriarGrupo}
+            onClick={alternar}
+          >
             Criar grupo
           </Botao>
         }
       />
 
-      {criando && (
-        <Card className={estilos.formularioCartao}>
+      {erro && <Alerta>{erro}</Alerta>}
+
+      <div className={estilos.corpoGrupos}>
+      {/* No desktop o formulário fica sempre à direita; no celular só aparece ao clicar em "Criar grupo". */}
+      <Card
+        className={[estilos.formularioCartao, estilos.criarGrupo, criando && estilos.criarAberto]
+          .filter(Boolean)
+          .join(' ')}
+      >
           <form className={estilos.formulario} onSubmit={submeterCriacao}>
             <Campo rotulo="Nome do grupo">
               <input value={nome} onChange={(e) => setNome(e.target.value)} maxLength={80} required />
@@ -76,15 +87,17 @@ export function GruposView() {
               <Botao type="submit" carregando={criar.enviando}>
                 Criar
               </Botao>
-              <Botao type="button" variante="fantasma" onClick={() => setCriando(false)}>
+              <Botao
+                type="button"
+                variante="fantasma"
+                className={estilos.cancelarCriacao}
+                onClick={() => setCriando(false)}
+              >
                 Cancelar
               </Botao>
             </div>
           </form>
-        </Card>
-      )}
-
-      {erro && <Alerta>{erro}</Alerta>}
+      </Card>
 
       {carregando ? (
         <SpinnerCentral />
@@ -102,6 +115,7 @@ export function GruposView() {
           />
         )
       )}
+      </div>
     </>
   )
 }

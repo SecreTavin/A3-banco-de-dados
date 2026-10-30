@@ -13,7 +13,12 @@ import {
   Secao,
   SpinnerCentral,
 } from '../../../shared/ui'
-import { NIVEIS_FILTRO, descricaoNivelFiltro, rotuloNivelFiltro } from '../../../shared/ui/status'
+import {
+  NIVEIS_FILTRO,
+  descricaoNivelFiltro,
+  rotuloNivelFiltro,
+  rotuloPapelGrupo,
+} from '../../../shared/ui/status'
 import { useAuth } from '../../../shared/auth/AuthContext'
 import type { MembroGrupo, NivelFiltro } from '../../../shared/api/tipos'
 import { LinhaMembro } from '../components/LinhaMembro'
@@ -84,9 +89,20 @@ export function DetalheGrupoView() {
   return (
     <>
       <LinkVoltar para="/grupos" rotulo="Meus grupos" />
-      <CabecalhoPagina titulo={grupo.nome} descricao={grupo.descricao ?? undefined} />
+      <CabecalhoPagina
+        titulo={grupo.nome}
+        descricao={grupo.descricao ?? undefined}
+        acao={
+          <span className={estilos.papelGrupo}>
+            <Badge cor={souAdmin ? 'var(--em-votacao)' : 'var(--texto-suave)'}>
+              {rotuloPapelGrupo[grupo.meuPapel]}
+            </Badge>
+          </span>
+        }
+      />
 
-      <Secao titulo="Moderação de IA">
+      <div className={estilos.corpoDetalhe}>
+      <Secao titulo="Moderação de IA" className={estilos.areaModeracao}>
         {souAdmin ? (
           <Card className={estilos.formularioCartao}>
             <form className={estilos.formulario} onSubmit={submeterNivel}>
@@ -127,9 +143,9 @@ export function DetalheGrupoView() {
         )}
       </Secao>
 
-      <Secao titulo="Membros" contagem={grupo.membros.length}>
+      <Secao titulo="Membros" contagem={grupo.membros.length} className={estilos.areaMembros}>
         {souAdmin && (
-          <Card className={estilos.formularioCartao}>
+          <Card className={[estilos.formularioCartao, estilos.areaAdicionar].join(' ')}>
             <form className={estilos.formulario} onSubmit={submeterMembro}>
               <Campo rotulo="Adicionar por e-mail" dica="A pessoa precisa já ter conta no Eu Duvido!.">
                 <input
@@ -171,7 +187,7 @@ export function DetalheGrupoView() {
         {remover.erro && <Alerta>{remover.erro}</Alerta>}
       </Secao>
 
-      <Secao titulo="Sair do grupo">
+      <Secao titulo="Sair do grupo" className={estilos.areaSair}>
         {confirmandoSaida ? (
           <Card className={estilos.formularioCartao}>
             <div className={estilos.formulario}>
@@ -204,6 +220,7 @@ export function DetalheGrupoView() {
           </Botao>
         )}
       </Secao>
+      </div>
     </>
   )
 }
