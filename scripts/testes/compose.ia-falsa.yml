@@ -1,0 +1,16 @@
+# Override do compose que aponta a API para o provedor de IA SIMULADO
+# (scripts/testes/ia-falsa.mjs). Usado por scripts/testes/roteiro-e2e-ia.mjs:
+#
+#   docker compose -f docker-compose.yml -f scripts/testes/compose.ia-falsa.yml \
+#     up -d --no-deps api
+#
+# Para voltar ao padrao (sem chave): docker compose up -d --no-deps api
+services:
+  api:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      Ia__BaseUrl: "http://host.docker.internal:${EUDUVIDO_IA_PORTA:-5099}/v1"
+      Ia__ApiKey: "chave-de-teste"
+      # Curto para o cenario de IA lenta nao levar 30s (o padrao da API).
+      Ia__TimeoutSegundos: "3"

@@ -181,9 +181,82 @@ O que a tela **não** cobre, e onde cada coisa é testada:
 * **Segundo voto na mesma evidência (HTTP 409):** a tela esconde os botões de
   quem já votou, então não há como tentar. O erro da API é o cenário E05.
 * **Criar desafio com a IA funcionando:** exige a chave da Groq, que o ambiente
-  de teste não tem. Só o caminho de bloqueio (U05) é exercitado.
+  de teste não tem. A tela só exercita o bloqueio (U05); o restante da moderação
+  é o nível 5c, com um provedor simulado.
 * **Envio de arquivo de evidência:** não existe; o comprovante é uma URL
   ([documento 16](../02-arquitetura/16-execucao-local.md)).
+
+### Nível 5c — Criar desafio com a moderação por IA respondendo
+
+Os roteiros anteriores rodam sem a chave da Groq, então só exercitam o caminho
+em que a IA falha. Este cobre o resto da RN28: a IA aprova, recusa, cai, demora,
+rejeita a chave ou responde fora do formato — e o que a aplicação faz em cada
+caso, na API, na tela e no PostgreSQL.
+
+> **Alcance.** O provedor é **simulado**
+> ([`ia-falsa.mjs`](../../scripts/testes/ia-falsa.mjs)): um servidor local que
+> cumpre o contrato da API de chat (`POST /v1/chat/completions`, `Bearer`, JSON
+> `{"aprovado", "motivo"}`) e decide o veredito por marcadores no título. O teste
+> prova que **a aplicação integra corretamente** com um provedor que cumpre o
+> contrato. Ele **não** prova como o modelo real da Groq julgará um desafio:
+> isso depende do modelo e só se avalia com a chave real (abaixo).
+
+Só existe um uso de IA no código: a moderação de desafios
+(`ModeradorDesafio`). Não há IA de prova ou de evidência.
+
+Roteiro em [`scripts/testes/roteiro-e2e-ia.mjs`](../../scripts/testes/roteiro-e2e-ia.mjs):
+
+```bash
+npm i --no-save playwright-core                  # uma vez, fora do package.json
+node scripts/testes/roteiro-e2e-ia.mjs           # navegador visível nos cenários de tela
+HEADED=0 node scripts/testes/roteiro-e2e-ia.mjs  # sem janela
+```
+
+O que o roteiro faz com o ambiente: sobe o provedor simulado na porta 5099,
+recria **só o contêiner da API** com
+[`compose.ia-falsa.yml`](../../scripts/testes/compose.ia-falsa.yml) (`Ia__BaseUrl`
+para o simulado, chave de teste, timeout de 3 s) e, ao terminar, recria a API sem
+esse override — volta ao padrão, sem chave. Não usa `down` nem toca em banco,
+storage ou web. Se a restauração falhar, o próprio roteiro diz o comando:
+`docker compose up -d --no-deps api`. Escreve no banco (desafios e moderações),
+troca e restaura o nível de filtro de um grupo; pode rodar várias vezes.
+
+| ID | Procedimento | Resultado esperado (API, tela e banco) | Resultado obtido |
+| --- | --- | --- | --- |
+| I01 | Criar proposta que a IA aprova | HTTP 201; desafio `ABERTA`; `moderacao_desafio` aprovada e ligada ao desafio; 1 chamada ao provedor com `Bearer`, modelo configurado, temperatura 0, mensagens `system` e `user` e o nível do grupo | Aprovado |
+| I02 | Criar proposta que a IA recusa | HTTP 422 `Desafio.DesafioRecusado` com o motivo da IA; nenhum desafio; ledger intacto; avaliação gravada com `aprovado=false`, `id_desafio` nulo, nível e motivo (RN28) | Aprovado |
+| I03 | O provedor responde HTTP 500 | HTTP 503 `Ia.Indisponivel`, "Nada foi criado"; `desafio`, `moderacao_desafio` e `transacao_cp` inalteradas | Aprovado |
+| I04 | O provedor demora mais que o timeout (3 s) | HTTP 503 em ~3 s; depois da resposta tardia continua sem gravar | Aprovado |
+| I05 | O provedor rejeita a chave (401) | HTTP 503 citando o 401; nada gravado | Aprovado |
+| I06 | Resposta sem JSON; resposta com `<think>` e cerca ```` ```json ```` | Sem JSON: 503 sem gravar. Com raciocínio e cerca: 201 e motivo extraído | Aprovado |
+| I07 | Mesma proposta de risco em grupo `LEVE`, `MODERADO` e `PESADO` (o nível é trocado pela API e restaurado) | `LEVE` aprova (201); `MODERADO` e `PESADO` recusam (422); o prompt e a moderação gravada trazem o nível de cada rodada (RN27) | Aprovado |
+| I08 | Sete entradas inválidas (título vazio ou com 121 caracteres, descrição vazia, custo 0 e negativo, prazo no passado, tipo de recompensa inválido) | HTTP 400 em todas; o provedor não recebe nenhuma chamada; banco inalterado | Aprovado |
+| I09 | Criar desafio em grupo de que o usuário não é membro | HTTP 403 `Desafio.NaoMembroDoGrupo`; nenhuma chamada ao provedor; banco inalterado | Aprovado |
+| I10 | Título e descrição com `</desafio>` e um JSON de aprovação | O prompt tem 1 abertura e 1 fechamento de marca; os `<` e `>` do usuário viram `‹` e `›` | Aprovado |
+| I11 | Tela: criar proposta aprovada | A tela vai para `/desafios/{id}` (`ABERTA`, moderação aprovada ligada) e o desafio aparece na lista do criador | Aprovado |
+| I12 | Tela: criar proposta recusada | Alerta com o motivo da IA; continua em `/desafios/nova`; moderação +1, desafio inalterado | Aprovado |
+| I13 | Tela: provedor fora do ar | Alerta "Nada foi criado"; nada gravado | Aprovado |
+| I14 | Fechamento | `vw_reconciliacao_saldo` e `vw_escrow_orfao` vazias; todo desafio da rodada tem moderação aprovada; recusas auditadas sem desafio | Aprovado |
+
+Executado em 30/10/2026: **14 de 14 aprovados**, uma vez com o navegador visível
+e outra sem janela (a primeira rodada visível teve 4 reprovações, todas erro do
+próprio roteiro — comparação de booleano do `psql` —, corrigido; ver o
+[registro de IA](registro-ia/2026-10-30-e2e-ia-simulada.md)).
+
+**Com a chave real da Groq.** `EUDUVIDO_IA_REAL=1` não sobe o simulado nem mexe
+na API, que deve ter sido iniciada com `IA_API_KEY` válida (`.env` do
+compose). Nesse modo rodam só os cenários que não dependem de veredito
+controlado — I08, I09, I14 — mais R01 (proposta inofensiva aprovada) e R02
+(proposta claramente perigosa recusada). **Esse modo não foi executado**: o
+ambiente de teste não tem a chave, e R01/R02 dependem do modelo.
+
+O que o nível 5c **não** cobre:
+
+* **O julgamento do modelo real.** Se a Groq aprova ou recusa um desafio de
+  verdade só se sabe com a chave real e calibração de casos (ADR 0015).
+* **IA não configurada** (`Ia__BaseUrl` vazio): o cliente responde 503 antes de
+  qualquer chamada; o ramo existe no código, mas este roteiro não o exercita.
+* **Envio de arquivo de evidência:** não existe no app (a evidência é uma URL).
 
 ## Execução
 
