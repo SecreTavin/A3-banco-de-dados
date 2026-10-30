@@ -39,6 +39,7 @@ sequenceDiagram
     participant PG as PostgreSQL
 
     APP->>APP: valida que quem envia é o DESAFIADO
+    Note over APP,R2: Previsto (ADR 0009). Hoje a aplicação recebe a URL do comprovante e pula os passos do R2
     APP->>R2: gera URL assinada
     Note over APP,R2: cliente envia o arquivo direto ao R2
     R2-->>APP: upload confirmado
@@ -58,6 +59,11 @@ O passo 4 é o que a maioria dos sistemas erra: a linha em `evidencia` só é cr
 **depois** que o R2 confirma o upload. Criar antes deixaria `url_comprovante`
 apontando para um arquivo que não existe, e o júri votaria numa prova fantasma
 ([ADR 0009](adr/0009-armazenamento-de-midia-r2.md)).
+
+> **Estado atual (30/10/2026).** O upload direto ao R2 não foi implementado. A
+> transação abaixo é a que roda hoje, mas com a URL do comprovante vinda do
+> desafiado, sem o passo de confirmação do storage. Ver
+> [19 - Limitações](../06-encerramento/19-limitacoes-e-melhorias.md).
 
 ## Fluxo transacional: encerramento após apuração
 

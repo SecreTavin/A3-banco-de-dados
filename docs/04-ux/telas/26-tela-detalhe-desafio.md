@@ -23,7 +23,7 @@ Visão completa de um desafio específica: participantes, evidências e resultad
 - **Status da evidência existe no banco:** `evidencia.status` com `EM_VOTACAO`/`ACEITA`/`RECUSADA`/`EXPIRADA` (constraint `chk_evidencia_status`, RN13), escrito pela procedure de apuração. Com isso, a regra "3 recusadas e o desafiado perde" passa a ser **derivável do banco** — basta contar as evidências `RECUSADA` do desafio, sem estado paralelo na aplicação (RN10).
 - **Limite de 5 evidências:** garantido por `chk_evidencia_ordem` (`ordem BETWEEN 1 AND 5`) e `unq_evidencia_ordem` (`UNIQUE (id_desafio, ordem)`) — a linha de tempo não aceita uma sexta evidência nem duas na mesma posição (RN10).
 - **Cancelamento com motivo:** `chk_desafio_cancelamento` recusa no banco qualquer desafio `CANCELADA` sem `motivo_cancelamento`. O cancelamento é executado pela procedure `cancelar_desafio`, que **estorna o CP** de todos os participantes com um lançamento novo no ledger — nunca apagando o original (RN12, RN24, [ADR 0007](../../02-arquitetura/adr/0007-ledger-append-only.md)).
-- **Mídia da evidência:** a linha em `evidencia` só é criada **após** o storage confirmar o upload, para o júri nunca votar em evidência inexistente (RN22, [ADR 0009](../../02-arquitetura/adr/0009-armazenamento-de-midia-r2.md)).
+- **Mídia da evidência:** a linha em `evidencia` só é criada **após** o storage confirmar o upload, para o júri nunca votar em evidência inexistente (RN22, [ADR 0009](../../02-arquitetura/adr/0009-armazenamento-de-midia-r2.md)). **Estado atual:** o upload direto não foi implementado; a tela recebe a URL do comprovante e a evidência é criada com ela.
 
 ## TODOs para validação com o time
 Nenhum pendente — ver **Resolvido na arquitetura**.

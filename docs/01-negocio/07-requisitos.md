@@ -23,6 +23,9 @@
 
 * **RF06:** Submissão de fotos, vídeos, links ou texto como evidência de
   cumprimento, com upload direto para o storage de objetos.
+  **Estado:** implementada para link e texto; foto e vídeo entram como link
+  externo (`url_comprovante`). O upload direto de arquivo para o storage
+  **não foi implementado** — ver [19 - Limitações](../06-encerramento/19-limitacoes-e-melhorias.md).
 * **RF07:** Votação de validação pelos membros do grupo, com justificativa.
 * **RF13:** Apuração automática do resultado quando o quórum é atingido,
   encerrando o desafio e liquidando o CP na mesma transação.
