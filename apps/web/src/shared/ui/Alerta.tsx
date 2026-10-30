@@ -15,5 +15,9 @@ export function Alerta({ children, tom = 'erro' }: Props) {
     .filter(Boolean)
     .join(' ')
 
-  return <div className={classes}>{children}</div>
+  return (
+    <div className={classes} role="alert">
+      {children}
+    </div>
+  )
 }

@@ -29,16 +29,18 @@ export function AppShell({ usuario, abas, aoSair }: Props) {
 
         <span className={estilos.espaco} />
 
-        <span className={estilos.usuario}>
-          <Avatar apelido={usuario.apelido} url={usuario.avatarUrl} />
-          <span className={estilos.apelido}>{usuario.apelido}</span>
+        <span className={estilos.acoes}>
+          <span className={estilos.usuario}>
+            <Avatar apelido={usuario.apelido} url={usuario.avatarUrl} />
+            <span className={estilos.apelido}>{usuario.apelido}</span>
+          </span>
+
+          <BotaoTema />
+
+          <button className={estilos.sair} onClick={aoSair} title="Sair" aria-label="Sair">
+            <Icone nome="sair" tamanho={18} />
+          </button>
         </span>
-
-        <BotaoTema />
-
-        <button className={estilos.sair} onClick={aoSair} title="Sair" aria-label="Sair">
-          <Icone nome="sair" tamanho={18} />
-        </button>
       </header>
 
       <nav className={estilos.nav}>

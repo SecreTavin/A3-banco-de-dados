@@ -5,11 +5,13 @@ interface Props {
   apelido: string
   url?: string | null
   grande?: boolean
+  /** Só cresce no desktop (cartões de login); no celular fica do tamanho normal. */
+  enorme?: boolean
 }
 
-export function Avatar({ apelido, url, grande = false }: Props) {
+export function Avatar({ apelido, url, grande = false, enorme = false }: Props) {
   const [falhou, setFalhou] = useState<string | null>(null)
-  const classes = [estilos.avatar, grande && estilos.avatarGrande].filter(Boolean).join(' ')
+  const classes = [estilos.avatar, grande && estilos.avatarGrande, enorme && estilos.avatarEnorme].filter(Boolean).join(' ')
 
   // Foto que não carrega (URL do seed, link morto) cai nas iniciais em vez de mostrar o alt quebrado.
   if (url && falhou !== url) {
