@@ -31,7 +31,7 @@ cada arquivo.
 
 ## Registros
 
-29 registros, em ordem cronológica.
+30 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -64,6 +64,7 @@ cada arquivo.
 | 2026-10-29 | [Fechamento da Entrega 3: seed, consultas, documentos e CI](registro-ia/2026-10-29-fechamento-entrega-3.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-29 | [Verificação do GitBook e do sistema funcionando](registro-ia/2026-10-29-verificacao-gitbook-e-sistema.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-30 | [Correções de responsividade, legibilidade e toque no front](registro-ia/2026-10-30-correcoes-ux-responsividade.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
+| 2026-10-30 | [Redesign desktop: sem rolagem de página, textos maiores, menos margem lateral](registro-ia/2026-10-30-redesign-desktop.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 
 ## Consolidação final
 
