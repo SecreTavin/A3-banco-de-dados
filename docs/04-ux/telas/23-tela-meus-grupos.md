@@ -17,6 +17,7 @@ Gestão de grupos privados de amigos (RF02).
 - Remoção de membro: qualquer `ADMIN` pode remover (o criador do grupo já é `ADMIN` por padrão).
 - Edição/exclusão do grupo: restrita a `ADMIN`/criador.
 - Usuário pode sair do grupo por conta própria.
+- **Desktop (>= 1100px):** o formulário de criar grupo fica sempre visível à direita da lista (no celular continua atrás do botão "Criar grupo"). No detalhe, os membros ficam à esquerda e moderação, convite e saída à direita.
 
 ## Resolvido na arquitetura
 - **Saldo de CP na tela:** `membro_grupo.saldo_cp` é exibido tanto na lista de grupos (meu saldo) quanto na lista de membros. Todo membro entra com 100 CP (RN06) e o saldo nunca fica negativo (RN08); a fonte da verdade é o ledger `transacao_cp` ([ADR 0007](../../02-arquitetura/adr/0007-ledger-append-only.md)).

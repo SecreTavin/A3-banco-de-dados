@@ -99,6 +99,7 @@
     * [2026-10-29 - Fechamento da Entrega 3: seed, consultas, documentos e CI](docs/05-qualidade/registro-ia/2026-10-29-fechamento-entrega-3.md)
     * [2026-10-29 - Verificação do GitBook e do sistema funcionando](docs/05-qualidade/registro-ia/2026-10-29-verificacao-gitbook-e-sistema.md)
     * [2026-10-30 - Correções de responsividade, legibilidade e toque no front](docs/05-qualidade/registro-ia/2026-10-30-correcoes-ux-responsividade.md)
+    * [2026-10-30 - Redesign desktop: sem rolagem de página, textos maiores, menos margem lateral](docs/05-qualidade/registro-ia/2026-10-30-redesign-desktop.md)
 
 ## Produto
 

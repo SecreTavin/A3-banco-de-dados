@@ -26,6 +26,11 @@ export function LinhaRanking({ posicao, linha }: Props) {
         </span>
       </div>
 
+      <span className={estilos.coluna}>{linha.desafiosParticipadas}</span>
+      <span className={estilos.coluna}>{linha.acertos}</span>
+      <span className={estilos.coluna}>{linha.erros}</span>
+      <span className={estilos.coluna}>{linha.cpGanhoEmPremios}</span>
+
       <div className={estilos.saldos}>
         <SaldoCp valor={linha.saldoCp} />
         <span className={estilos.premios}>+{linha.cpGanhoEmPremios} em prêmios</span>

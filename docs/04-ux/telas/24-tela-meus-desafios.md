@@ -15,6 +15,7 @@ Dashboard principal do usuário com os desafios em que está envolvido (RF04, RF
 ## Decisões (validado com o time)
 - Ordenação padrão: prazo mais próximo primeiro (lista com prioridade por `data_limite`).
 - Desafios `EM_VOTACAO` mostram um CTA direto para a Central de Votação.
+- **Desktop (>= 1100px):** os cards de "Criei" e "Participo" ficam numa única grade de 3 colunas, sem rolagem da página; a separação vira dois contadores ("Criei · N", "Participo · N") ao lado do filtro. No celular a separação em seções continua.
 
 ## Resolvido na arquitetura
 - **Custo em CP no card:** cada card mostra `desafio.valor_cp` — o custo fixo por participante (RN07). A `descricao_recompensa` aparece no card apenas como texto descritivo do que foi combinado fora do app ([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md)).

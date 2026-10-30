@@ -58,11 +58,23 @@ export function RankingView() {
       {carregando ? (
         <SpinnerCentral />
       ) : ranking && ranking.length > 0 ? (
-        <ul className={estilos.lista}>
-          {ranking.map((linha, indice) => (
-            <LinhaRanking key={linha.apelido} posicao={indice + 1} linha={linha} />
-          ))}
-        </ul>
+        <>
+          <div className={estilos.cabecalhoTabela} aria-hidden="true">
+            <span>#</span>
+            <span />
+            <span>Jogador</span>
+            <span>Desafios</span>
+            <span>Acertos</span>
+            <span>Erros</span>
+            <span>CP em prêmios</span>
+            <span>Saldo</span>
+          </div>
+          <ul className={estilos.lista}>
+            {ranking.map((linha, indice) => (
+              <LinhaRanking key={linha.apelido} posicao={indice + 1} linha={linha} />
+            ))}
+          </ul>
+        </>
       ) : (
         !erro && <EstadoVazio titulo="Este grupo ainda não tem histórico" />
       )}

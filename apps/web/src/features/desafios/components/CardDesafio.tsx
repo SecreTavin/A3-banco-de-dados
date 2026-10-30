@@ -12,22 +12,33 @@ export function CardDesafio({ desafio }: { desafio: DesafioResumo }) {
   return (
     <article className={estilos.desafio}>
       <div className={estilos.desafioTopo}>
-        <Link to={`/desafios/${desafio.idDesafio}`} className={estilos.desafioTitulo}>
+        <Link
+          to={`/desafios/${desafio.idDesafio}`}
+          className={estilos.desafioTitulo}
+          title={desafio.titulo}
+        >
           {desafio.titulo}
         </Link>
-        <Badge cor={status.cor}>{status.rotulo}</Badge>
+        <span className={estilos.desafioStatus}>
+          <Badge cor={status.cor}>{status.rotulo}</Badge>
+        </span>
       </div>
 
       <p className={estilos.desafioMeta}>
         {desafio.grupo} · {desafio.categoria}
       </p>
 
-      <p className={estilos.desafioRecompensa}>
+      <p
+        className={estilos.desafioRecompensa}
+        title={`Vale ${descreverRecompensa(desafio.tipoRecompensa, desafio.descricaoRecompensa)}`}
+      >
         Vale {descreverRecompensa(desafio.tipoRecompensa, desafio.descricaoRecompensa)}
       </p>
 
       <div className={estilos.desafioRodape}>
-        <SaldoCp valor={desafio.valorCp} />
+        <span className={estilos.desafioCp}>
+          <SaldoCp valor={desafio.valorCp} />
+        </span>
         <span className={prazo.urgente || prazo.vencido ? estilos.prazoUrgente : estilos.prazo}>
           <Icone nome="relogio" tamanho={14} />
           {prazo.texto}

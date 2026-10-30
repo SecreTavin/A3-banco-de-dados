@@ -1,7 +1,16 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Alerta, Botao, CabecalhoPagina, Campo, Card, LinkVoltar, SpinnerCentral } from '../../../shared/ui'
+import {
+  Alerta,
+  Botao,
+  CabecalhoPagina,
+  Campo,
+  Card,
+  Icone,
+  LinkVoltar,
+  SpinnerCentral,
+} from '../../../shared/ui'
 import { paraIso } from '../../../shared/ui/formato'
 import { exemploRecompensa, rotuloNivelFiltro, rotuloRecompensa } from '../../../shared/ui/status'
 import type { TipoRecompensa } from '../../../shared/api/tipos'
@@ -62,8 +71,9 @@ export function CriarDesafioView() {
         descricao="O desafio não pode ser editado depois de criado — só cancelado, com motivo."
       />
 
-      <Card>
-        <form className={estilos.formulario} onSubmit={submeter}>
+      <Card className={estilos.cartaoCriar}>
+        <form className={[estilos.formulario, estilos.formularioCriar].join(' ')} onSubmit={submeter}>
+          <div className={estilos.camposCriar}>
           <div className={estilos.formularioLinha}>
             <Campo rotulo="Grupo">
               <select value={idGrupo} onChange={(e) => setIdGrupo(e.target.value)} required>
@@ -154,6 +164,14 @@ export function CriarDesafioView() {
             />
           </Campo>
 
+          </div>
+
+          <aside className={estilos.moderacao}>
+          <h2 className={estilos.moderacaoTitulo}>
+            <Icone nome="escudo" tamanho={26} />
+            Moderação de IA
+          </h2>
+
           {criar.erro && <Alerta>{criar.erro}</Alerta>}
 
           <p className={estilos.notaIa}>
@@ -163,6 +181,13 @@ export function CriarDesafioView() {
             {criar.enviando && ' A IA está avaliando — pode levar alguns segundos.'}
           </p>
 
+          {grupoEscolhido && (
+            <div className={estilos.nivelGrupo}>
+              <span className={estilos.nivelRotulo}>Nível do filtro do grupo</span>
+              <span className={estilos.nivelValor}>{rotuloNivelFiltro[grupoEscolhido.nivelFiltro]}</span>
+            </div>
+          )}
+
           <div className={estilos.formularioBotoes}>
             <Botao type="submit" carregando={criar.enviando}>
               Criar desafio
@@ -171,6 +196,7 @@ export function CriarDesafioView() {
               Cancelar
             </Botao>
           </div>
+          </aside>
         </form>
       </Card>
     </>

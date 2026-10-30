@@ -1,3 +1,7 @@
+.tituloPagina {
+  display: none;
+}
+
 .identidade {
   display: flex;
   align-items: center;
@@ -127,4 +131,169 @@
   font-size: 13px;
   color: var(--texto-fraco);
   font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Desktop (>= 1100px): resumo à esquerda, extrato à direita ---------- */
+@media (min-width: 1100px) {
+  .tituloPagina {
+    display: block;
+  }
+
+  .corpoPerfil {
+    flex: 1 1 0;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(360px, 440px) minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .colunaResumo {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .identidade {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    margin-bottom: 0;
+    gap: 14px 16px;
+  }
+
+  .identidade > :last-child {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .nome {
+    font-size: 26px;
+  }
+
+  .apelido {
+    font-size: 18px;
+  }
+
+  .contato {
+    font-size: 16px;
+  }
+
+  .numeros {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .numero {
+    grid-template-columns: 1fr auto;
+    justify-items: stretch;
+    align-items: center;
+    padding: 10px 18px;
+    text-align: left;
+  }
+
+  .numeroValor {
+    grid-column: 2;
+    grid-row: 1;
+    font-size: 30px;
+  }
+
+  .numeroRotulo {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 18px;
+    color: var(--texto-suave);
+  }
+
+  .saldo {
+    padding: 14px 18px;
+  }
+
+  .saldoGrupo {
+    font-size: 20px;
+  }
+
+  .areaExtrato {
+    align-content: start;
+    min-height: 0;
+    overflow: hidden;
+    padding: 24px;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio);
+    background: linear-gradient(180deg, var(--superficie-alta), var(--superficie));
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .areaExtrato > h2 {
+    gap: 10px;
+    color: var(--texto);
+    font-size: 30px;
+    letter-spacing: -0.02em;
+    text-transform: none;
+  }
+
+  .areaExtrato > h2 > span {
+    font-size: 15px;
+    letter-spacing: 0;
+  }
+
+  .extrato {
+    min-height: 0;
+    align-content: start;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    gap: 8px;
+  }
+
+  .lancamento {
+    padding: 8px 20px;
+    gap: 16px;
+  }
+
+  .lancamentoValores {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .lancamentoDescricao {
+    font-size: 18px;
+  }
+
+  .lancamentoMeta,
+  .lancamentoSaldo {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1100px) and (max-height: 820px) {
+  .colunaResumo {
+    gap: 12px;
+  }
+
+  .identidade {
+    gap: 8px 14px;
+  }
+
+  .numero {
+    padding: 6px 16px;
+  }
+
+  .numeroValor {
+    font-size: 26px;
+  }
+
+  .saldo {
+    padding: 10px 16px;
+  }
+
+  .areaExtrato {
+    padding: 18px 20px;
+  }
+
+  .lancamento {
+    padding: 6px 18px;
+  }
 }

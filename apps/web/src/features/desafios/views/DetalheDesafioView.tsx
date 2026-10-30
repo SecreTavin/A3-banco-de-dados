@@ -138,7 +138,12 @@ export function DetalheDesafioView() {
             <dt>Prazo</dt>
             <dd>
               {formatarDataCompleta(desafio.dataLimite)}
-              {!encerrada && <span className={estilos.prazoNota}> — {prazo.texto}</span>}
+              {!encerrada && (
+                <span className={estilos.prazoNota}>
+                  <span className={estilos.travessao}> — </span>
+                  {prazo.texto}
+                </span>
+              )}
             </dd>
           </div>
         </dl>
@@ -162,6 +167,7 @@ export function DetalheDesafioView() {
         </Alerta>
       )}
 
+      <div className={estilos.corpo}>
       <Secao titulo="Participantes" contagem={desafio.participantes.length}>
         {desafio.participantes.length === 0 ? (
           <EstadoVazio titulo="Ninguém aceitou ainda" />
@@ -275,7 +281,7 @@ export function DetalheDesafioView() {
       </Secao>
 
       {podeCancelar && (
-        <Secao titulo="Cancelamento">
+        <Secao titulo="Cancelamento" className={estilos.cancelamento}>
           {pedindoCancelamento ? (
             <Card>
               <form className={estilos.formulario} onSubmit={submeterCancelamento}>
@@ -314,6 +320,7 @@ export function DetalheDesafioView() {
           )}
         </Secao>
       )}
+      </div>
     </>
   )
 }
