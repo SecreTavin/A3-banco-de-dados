@@ -60,7 +60,8 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
 * **RN22 —** A linha em `evidencia` só é criada após o upload do arquivo ser
   confirmado pelo storage. Registrar antes deixaria o júri votando em
   evidência inexistente ([ADR 0009](../02-arquitetura/adr/0009-armazenamento-de-midia-r2.md)).
-  *Aplicação.*
+  *Aplicação.* **Estado:** depende do upload direto (RF06), ainda não
+  implementado; hoje a evidência é criada com a URL informada pelo desafiado.
 
 ## Votação
 

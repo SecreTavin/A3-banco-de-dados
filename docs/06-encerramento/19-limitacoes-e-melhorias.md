@@ -9,6 +9,7 @@ modelagem sem pagar o custo de implementação.
 | Item | Onde está no modelo | Por que ficou de fora |
 | --- | --- | --- |
 | Upload de avatar próprio | `usuario.avatar_url` existe | Usa a foto do Google; upload exigiria fluxo de mídia próprio |
+| Upload direto de foto e vídeo da evidência (RF06, RN22) | `evidencia.url_comprovante`, `tipo_midia` (`FOTO`, `VIDEO`, `LINK`, `TEXTO`), bucket `evidencias` no MinIO e o desenho de URL assinada do [ADR 0009](../02-arquitetura/adr/0009-armazenamento-de-midia-r2.md) | A prioridade foi o núcleo transacional (júri congelado, quórum, liquidação de CP e ledger). Hoje o desafiado informa a URL do comprovante, e a mídia fica hospedada fora do sistema. O bucket sobe no `docker compose`, mas a API não grava nele |
 
 ## Fora do escopo por decisão
 

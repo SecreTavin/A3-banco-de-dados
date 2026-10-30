@@ -32,7 +32,7 @@ flowchart TB
 
     WEB -->|"REST (cliente gerado do OpenAPI)"| REST
     WEB <-->|"WebSocket"| HUB
-    WEB -->|"upload direto via URL assinada"| R2
+    WEB -.->|"upload direto via URL assinada (previsto)"| R2
     WEB --> GOOGLE
     SW -.->|"Web Push"| WEB
 
@@ -97,7 +97,7 @@ sequenceDiagram
     API->>PG: debitar_escrow por participante que aceita
     Note over PG: CP sai da carteira → conta do desafio
 
-    Note over D,R2: Cumprimento
+    Note over D,R2: Cumprimento (o envio do arquivo ao R2 é previsto, mas hoje o desafiado informa a URL do comprovante)
     D->>API: solicita URL assinada
     API-->>D: presigned URL
     D->>R2: envia arquivo
