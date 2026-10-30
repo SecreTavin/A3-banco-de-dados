@@ -104,6 +104,7 @@
     * [2026-10-30 - Atualiza o plano de trabalho para o fechamento da Entrega 3](docs/05-qualidade/registro-ia/2026-10-30-atualiza-plano-entrega-3.md)
     * [2026-10-30 - Registro dos testes de aceitação do protótipo](docs/05-qualidade/registro-ia/2026-10-30-registro-testes-de-aceitacao.md)
     * [2026-10-30 - E2E de tela dos fluxos principais](docs/05-qualidade/registro-ia/2026-10-30-e2e-de-tela.md)
+    * [2026-10-30 - Documenta que o upload direto de evidência não foi implementado](docs/05-qualidade/registro-ia/2026-10-30-upload-de-evidencia-nao-implementado.md)
 
 ## Produto
 
