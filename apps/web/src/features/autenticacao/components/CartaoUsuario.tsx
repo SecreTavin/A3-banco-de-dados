@@ -17,7 +17,7 @@ export function CartaoUsuario({ usuario, entrando, desabilitado, aoSelecionar }:
       disabled={desabilitado}
       onClick={() => aoSelecionar(usuario.apelido)}
     >
-      <Avatar apelido={usuario.apelido} url={usuario.avatarUrl} />
+      <Avatar apelido={usuario.apelido} url={usuario.avatarUrl} enorme />
       <span className={estilos.usuarioTextos}>
         <span className={estilos.usuarioApelido}>{usuario.apelido}</span>
         <span className={estilos.usuarioNome}>{usuario.nome}</span>

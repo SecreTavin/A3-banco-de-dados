@@ -63,13 +63,18 @@ export function LoginView() {
           </p>
         </div>
 
+        <div className={[estilos.entrada, cadastrando && estilos.entradaCadastrando].filter(Boolean).join(' ')}>
         {erro && <Alerta>{erro}</Alerta>}
         {erroLogin && <Alerta>{erroLogin}</Alerta>}
 
         {carregando ? (
           <SpinnerCentral />
         ) : (
-          <div className={estilos.lista}>
+          <div
+            className={[estilos.lista, (usuarios?.length ?? 0) > 9 && estilos.listaCompacta]
+              .filter(Boolean)
+              .join(' ')}
+          >
             <span className={estilos.rotuloLista}>Entrar como</span>
             {usuarios?.map((usuario) => (
               <CartaoUsuario
@@ -84,7 +89,7 @@ export function LoginView() {
         )}
 
         {cadastrando ? (
-          <Card>
+          <Card className={estilos.cadastro}>
             <form className={estilos.formulario} onSubmit={submeterCadastro}>
               <span className={estilos.rotuloLista}>Criar conta</span>
 
@@ -141,7 +146,12 @@ export function LoginView() {
             </form>
           </Card>
         ) : (
-          <Botao variante="secundaria" bloco onClick={() => setCadastrando(true)}>
+          <Botao
+            variante="secundaria"
+            bloco
+            className={estilos.criarConta}
+            onClick={() => setCadastrando(true)}
+          >
             Criar conta de teste
           </Botao>
         )}
@@ -150,6 +160,7 @@ export function LoginView() {
           Login de desenvolvimento. O acesso por Google entra quando <code>Auth:Provider</code>{' '}
           virar <code>Google</code>.
         </p>
+        </div>
       </div>
     </div>
   )

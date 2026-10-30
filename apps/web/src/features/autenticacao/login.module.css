@@ -13,6 +13,11 @@
   gap: 22px;
 }
 
+.entrada {
+  display: grid;
+  gap: 22px;
+}
+
 .marca {
   display: grid;
   gap: 8px;
@@ -108,4 +113,167 @@
   text-align: center;
   font-size: 14px;
   color: var(--texto-fraco);
+}
+
+/* ---------- Desktop (>= 1100px): marca à esquerda, usuários numa grade 3x3 à direita ---------- */
+@media (min-width: 1100px) {
+  .tela {
+    padding: 48px 80px;
+  }
+
+  .painel {
+    max-width: 1280px;
+    grid-template-columns: minmax(360px, 480px) minmax(0, 1fr);
+    align-items: center;
+    gap: 64px;
+  }
+
+  .marca {
+    justify-items: start;
+    gap: 24px;
+    text-align: left;
+  }
+
+  .logo {
+    width: 96px;
+    height: 96px;
+    border-radius: 28px;
+    font-size: 60px;
+  }
+
+  .titulo {
+    font-size: 60px;
+    line-height: 66px;
+  }
+
+  .subtitulo {
+    max-width: none;
+    font-size: 26px;
+    line-height: 36px;
+  }
+
+  .entrada {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 18px 16px;
+    padding: 32px;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio);
+    background: linear-gradient(180deg, var(--superficie-alta), var(--superficie));
+    box-shadow: var(--sombra);
+  }
+
+  .entrada > [role='alert'],
+  .entrada > .lista,
+  .entrada > .cadastro {
+    grid-column: 1 / -1;
+  }
+
+  .lista {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .rotuloLista {
+    grid-column: 1 / -1;
+    font-size: 15px;
+  }
+
+  .usuario {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 18px 20px;
+  }
+
+  .usuarioTextos {
+    flex: none;
+  }
+
+  .usuarioApelido {
+    font-size: 20px;
+  }
+
+  .usuarioNome {
+    font-size: 16px;
+  }
+
+  /* Com mais de 9 usuários a grade vertical não cabe: os cartões passam a ser horizontais. */
+  .listaCompacta .usuario {
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 16px;
+  }
+
+  .listaCompacta .usuarioTextos {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .entradaCadastrando > .lista {
+    display: none;
+  }
+
+  .formulario {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 20px;
+  }
+
+  .formulario > .rotuloLista,
+  .formulario > [role='alert'],
+  .formulario > .formularioBotoes {
+    grid-column: 1 / -1;
+  }
+
+  .rodape {
+    order: 1;
+    grid-column: 1;
+    text-align: left;
+    font-size: 16px;
+  }
+
+  .criarConta {
+    order: 2;
+    width: auto;
+  }
+
+  .cadastro {
+    order: 0;
+  }
+}
+
+@media (min-width: 1100px) and (max-height: 820px) {
+  .tela {
+    padding: 24px 80px;
+  }
+
+  .painel {
+    gap: 48px;
+  }
+
+  .entrada {
+    padding: 24px;
+    gap: 14px 16px;
+  }
+
+  .usuario {
+    gap: 6px;
+    padding: 12px 18px;
+  }
+
+  .lista {
+    gap: 12px;
+  }
+
+  .logo {
+    width: 80px;
+    height: 80px;
+    font-size: 48px;
+  }
+
+  .titulo {
+    font-size: 52px;
+    line-height: 58px;
+  }
 }
