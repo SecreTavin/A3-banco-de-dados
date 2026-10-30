@@ -31,7 +31,7 @@ cada arquivo.
 
 ## Registros
 
-35 registros, em ordem cronológica.
+36 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -70,6 +70,7 @@ cada arquivo.
 | 2026-10-30 | [Registro dos testes de aceitação do protótipo](registro-ia/2026-10-30-registro-testes-de-aceitacao.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [E2E de tela dos fluxos principais](registro-ia/2026-10-30-e2e-de-tela.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [Documenta que o upload direto de evidência não foi implementado](registro-ia/2026-10-30-upload-de-evidencia-nao-implementado.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
+| 2026-10-30 | [E2E de criar desafio com a IA simulada](registro-ia/2026-10-30-e2e-ia-simulada.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 
 ## Consolidação final
 
