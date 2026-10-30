@@ -75,7 +75,7 @@
 }
 
 .pequeno {
-  padding: 7px 12px;
+  padding: 10px 14px;
   font-size: 14.5px;
 }
 
@@ -286,7 +286,8 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
+  padding: 11px 0;
   font-size: 14.5px;
   color: var(--texto-suave);
 }

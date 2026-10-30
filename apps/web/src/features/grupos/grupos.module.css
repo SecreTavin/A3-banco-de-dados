@@ -62,13 +62,16 @@
 
 .membros {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
 }
 
 .membro {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 11px;
+  gap: 8px 11px;
+  min-width: 0;
   padding: 11px 13px;
   border: 1px solid var(--borda);
   border-radius: var(--raio-pequeno);
@@ -76,7 +79,9 @@
 }
 
 .membroApelido {
-  flex: 1;
+  flex: 1 1 5rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-weight: 600;
   font-size: 15.5px;
 }

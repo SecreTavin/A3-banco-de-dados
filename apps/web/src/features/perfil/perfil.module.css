@@ -58,6 +58,7 @@
 }
 
 .saldo {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -71,6 +72,13 @@
   flex: 1;
   font-weight: 600;
   font-size: 15.5px;
+}
+
+/* A linha inteira é a área de toque; só o nome é um <a>. */
+.saldoGrupo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
 }
 
 .saldoGrupo:hover {
