@@ -100,6 +100,7 @@
     * [2026-10-29 - Verificação do GitBook e do sistema funcionando](docs/05-qualidade/registro-ia/2026-10-29-verificacao-gitbook-e-sistema.md)
     * [2026-10-30 - Correções de responsividade, legibilidade e toque no front](docs/05-qualidade/registro-ia/2026-10-30-correcoes-ux-responsividade.md)
     * [2026-10-30 - Redesign desktop: sem rolagem de página, textos maiores, menos margem lateral](docs/05-qualidade/registro-ia/2026-10-30-redesign-desktop.md)
+    * [2026-10-30 - Troca da imagem do MinIO e subida do compose do zero](docs/05-qualidade/registro-ia/2026-10-30-troca-imagem-minio.md)
 
 ## Produto
 

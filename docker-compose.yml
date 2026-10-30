@@ -8,7 +8,8 @@ services:
       POSTGRES_USER: euduvido
       POSTGRES_PASSWORD: euduvido
     ports:
-      - "5432:5432"
+      # DB_PORT permite subir ao lado de outro Postgres local que ja use a 5432.
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
       # schema.sql e gerado pelas migrations e ja inclui procedures, triggers
@@ -21,9 +22,11 @@ services:
       timeout: 5s
       retries: 10
 
+  # As imagens oficiais minio/minio e minio/mc deixaram de ser puxaveis no
+  # Docker Hub (pull access denied). A imagem Bitnami e o mesmo MinIO, com a
+  # versao fixada, e ja traz o cliente mc.
   storage:
-    image: minio/minio:latest
-    command: server /data --console-address ":9001"
+    image: bitnamilegacy/minio:2025.7.23
     environment:
       MINIO_ROOT_USER: euduvido
       MINIO_ROOT_PASSWORD: euduvido123
@@ -31,22 +34,26 @@ services:
       - "9000:9000"
       - "9001:9001"
     volumes:
-      - storage-data:/data
+      - storage-data:/bitnami/minio/data
     healthcheck:
-      test: ["CMD-SHELL", "mc ready local || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9000/minio/health/live || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 10
 
-  # Cria o bucket de evidencias e sai. O MinIO nao faz isso sozinho.
+  # Cria o bucket de evidencias e sai. O MinIO nao faz isso sozinho. O laco de
+  # tentativas existe porque a imagem Bitnami sobe o MinIO, derruba e sobe de
+  # novo: o healthcheck pode passar na primeira subida.
   storage-init:
-    image: minio/mc:latest
+    image: bitnamilegacy/minio:2025.7.23
     depends_on:
       storage:
         condition: service_healthy
     entrypoint: >
       /bin/sh -c "
-      mc alias set local http://storage:9000 euduvido euduvido123 &&
+      until mc alias set local http://storage:9000 euduvido euduvido123; do
+        echo 'aguardando o MinIO...'; sleep 2;
+      done &&
       mc mb --ignore-existing local/evidencias &&
       mc anonymous set download local/evidencias
       "

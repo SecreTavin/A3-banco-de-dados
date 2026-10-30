@@ -11,21 +11,38 @@ docker compose up
 
 | Serviço | Imagem | Porta | Papel |
 | --- | --- | --- | --- |
-| `db` | `postgres:16-alpine` | 5432 | Banco, já povoado na primeira subida |
-| `storage` | `minio/minio` | 9000 / 9001 | Armazenamento S3-compatível |
-| `storage-init` | `minio/mc` | — | Cria o bucket `evidencias` e sai |
+| `db` | `postgres:16-alpine` | 5432 (`DB_PORT`) | Banco, já povoado na primeira subida |
+| `storage` | `bitnamilegacy/minio:2025.7.23` | 9000 / 9001 | Armazenamento S3-compatível |
+| `storage-init` | `bitnamilegacy/minio:2025.7.23` | — | Cria o bucket `evidencias` e sai |
 | `api` | build de `apps/api` | 5080 | API .NET, aplica migrations na subida |
 | `web` | build de `apps/web` | 8080 | Frontend servido por nginx |
 
 `storage-init` existe porque o MinIO não cria bucket sozinho. Ele roda uma vez,
-cria o bucket e encerra — é normal aparecer como `Exited (0)`.
+cria o bucket e encerra — é normal aparecer como `Exited (0)`. Ele tenta de novo
+até o MinIO responder, porque a imagem Bitnami sobe o servidor, derruba e sobe
+outra vez, e o healthcheck pode passar na primeira subida.
+
+**Porta do banco ocupada.** Se já houver outro Postgres na 5432, suba com
+`DB_PORT=5433 docker compose up -d`. A API fala com o banco pela rede do
+compose, então a porta do host só importa para quem se conecta de fora.
+
+**Imagem do MinIO.** As imagens oficiais `minio/minio` e `minio/mc` deixaram de
+ser puxáveis no Docker Hub (`pull access denied`, verificado em 30/10/2026). A
+imagem Bitnami é o mesmo MinIO, com versão fixa, e traz o cliente `mc`. O
+console web na porta 9001 não respondeu nessa versão; a API e o bucket não
+dependem dele.
 
 ## MinIO no lugar do R2
 
 O [ADR 0009](adr/0009-armazenamento-de-midia-r2.md) escolheu Cloudflare R2. Em
 desenvolvimento usamos **MinIO**, que fala o mesmo protocolo S3: o código de
-geração de URL assinada é idêntico, muda apenas o endpoint na configuração.
+geração de URL assinada será idêntico, mudando apenas o endpoint na configuração.
 Assim ninguém precisa de credencial de nuvem para rodar o projeto.
+
+> **Estado atual.** O bucket existe, mas a API ainda não grava nele: o endpoint
+> de evidência recebe só a URL do comprovante (`UrlComprovante`), e a seção
+> `Storage` do `appsettings.json` não é lida por nenhum código. O envio de
+> arquivo com URL assinada é a evolução prevista no ADR 0009, não algo pronto.
 
 ## Autenticação em desenvolvimento
 
