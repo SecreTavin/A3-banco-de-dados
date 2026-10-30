@@ -166,3 +166,31 @@ hospedados não têm Docker utilizável para contêineres Linux):
 * **web** — build do frontend.
 
 O nível 4 continua especificado e não implementado.
+
+## Validação de aceitação pelos testadores
+
+Além dos testes automatizados e do roteiro de ponta a ponta, dois integrantes
+testaram o protótipo na semana de 26/10 e passaram o feedback ao Rafael Alves,
+que o consolidou e conduziu as correções. O feedback foi dado diretamente a ele e
+não ficou registrado em issue ou PR; este documento é o registro.
+
+| Testador | Plataforma | Papel |
+| --- | --- | --- |
+| Mario Lana Veloso Junior | Desktop | Testou o protótipo no computador e relatou o que atrapalhava o uso |
+| Luís Phillipe Pedra Souza | Mobile | Testou o protótipo no celular e relatou o que atrapalhava o uso |
+
+O que o feedback pediu, e onde foi tratado:
+
+| Ponto levantado | Correção | Onde |
+| --- | --- | --- |
+| Conteúdo que não dava para alcançar, principalmente no celular | A área de conteúdo passou a rolar por dentro, com topo e navegação fixos | [PR #34](https://github.com/SecreTavin/A3-banco-de-dados/pull/34) |
+| Legibilidade: contraste e alvos de toque pequenos | Contraste AA e alvos de pelo menos 40px; avatar com fallback | [PR #34](https://github.com/SecreTavin/A3-banco-de-dados/pull/34) |
+| Desktop: rolagem vertical, textos pequenos e muito espaço em branco nas laterais | Redesign: telas sem rolagem vertical, texto maior, largura útil de 1360px | [PR #35](https://github.com/SecreTavin/A3-banco-de-dados/pull/35) |
+| Mobile: experiência de uso e legibilidade | Redesign mobile desenhado e aprovado no Figma; implementação a seguir | Figma, página "Redesign (mobile 390x844)" |
+
+As correções foram revalidadas por medição (conteúdo inalcançável, overflow,
+contraste e alvos de toque, antes e depois), registrada nos registros de IA
+[2026-10-30-correcoes-ux-responsividade](registro-ia/2026-10-30-correcoes-ux-responsividade.md)
+e [2026-10-30-redesign-desktop](registro-ia/2026-10-30-redesign-desktop.md).
+Uma nova rodada de testes do sistema está prevista para a semana de 06/11, como
+no [plano de trabalho](../00-introducao/07-plano-de-trabalho.md).

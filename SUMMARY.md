@@ -102,6 +102,7 @@
     * [2026-10-30 - Redesign desktop: sem rolagem de página, textos maiores, menos margem lateral](docs/05-qualidade/registro-ia/2026-10-30-redesign-desktop.md)
     * [2026-10-30 - Troca da imagem do MinIO e subida do compose do zero](docs/05-qualidade/registro-ia/2026-10-30-troca-imagem-minio.md)
     * [2026-10-30 - Atualiza o plano de trabalho para o fechamento da Entrega 3](docs/05-qualidade/registro-ia/2026-10-30-atualiza-plano-entrega-3.md)
+    * [2026-10-30 - Registro dos testes de aceitação do protótipo](docs/05-qualidade/registro-ia/2026-10-30-registro-testes-de-aceitacao.md)
 
 ## Produto
 
