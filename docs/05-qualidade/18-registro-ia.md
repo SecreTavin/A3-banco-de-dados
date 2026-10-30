@@ -31,7 +31,7 @@ cada arquivo.
 
 ## Registros
 
-30 registros, em ordem cronológica.
+31 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -65,6 +65,7 @@ cada arquivo.
 | 2026-10-29 | [Verificação do GitBook e do sistema funcionando](registro-ia/2026-10-29-verificacao-gitbook-e-sistema.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-30 | [Correções de responsividade, legibilidade e toque no front](registro-ia/2026-10-30-correcoes-ux-responsividade.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [Redesign desktop: sem rolagem de página, textos maiores, menos margem lateral](registro-ia/2026-10-30-redesign-desktop.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
+| 2026-10-30 | [Troca da imagem do MinIO e subida do compose do zero](registro-ia/2026-10-30-troca-imagem-minio.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 
 ## Consolidação final
 
