@@ -19,6 +19,7 @@ export function CardEvidenciaVotavel({ evidencia, votando, aoVotar }: Props) {
 
   return (
     <article className={estilos.evidencia}>
+      <div className={estilos.colunaEvidencia}>
       <header className={estilos.cabecalho}>
         <Link to={`/desafios/${evidencia.idDesafio}`} className={estilos.desafio}>
           {evidencia.desafio}
@@ -61,7 +62,12 @@ export function CardEvidenciaVotavel({ evidencia, votando, aoVotar }: Props) {
       )}
 
       {evidencia.comentario && <p className={estilos.relato}>{evidencia.comentario}</p>}
+      </div>
 
+      <div className={estilos.colunaDecisao}>
+      <h2 className={estilos.tituloDecisao}>Sua decisão</h2>
+
+      <div className={estilos.quorum}>
       <div className={estilos.placar}>
         <span className={estilos.favoravel}>{evidencia.votosFavoraveis} válido</span>
         <span className={estilos.contra}>{evidencia.votosContra} inválido</span>
@@ -82,6 +88,7 @@ export function CardEvidenciaVotavel({ evidencia, votando, aoVotar }: Props) {
           {prazo.texto}
         </span>
       </p>
+      </div>
 
       {!evidencia.jaVotei && (
         <div className={estilos.formulario}>
@@ -112,6 +119,7 @@ export function CardEvidenciaVotavel({ evidencia, votando, aoVotar }: Props) {
           </div>
         </div>
       )}
+      </div>
     </article>
   )
 }

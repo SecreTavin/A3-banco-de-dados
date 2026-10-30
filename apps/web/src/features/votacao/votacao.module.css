@@ -3,6 +3,17 @@
   gap: 12px;
 }
 
+/* No celular as colunas são só agrupadores; o card segue empilhado como sempre. */
+.colunaEvidencia,
+.colunaDecisao,
+.quorum {
+  display: contents;
+}
+
+.tituloDecisao {
+  display: none;
+}
+
 .evidencia {
   display: grid;
   gap: 10px;
@@ -148,4 +159,138 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+}
+
+/* ---------- Desktop (>= 1100px): evidência à esquerda, decisão à direita ---------- */
+@media (min-width: 1100px) {
+  .lista {
+    flex: 1 1 0;
+    min-height: 0;
+    grid-auto-rows: minmax(min-content, 1fr);
+    gap: 20px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .evidencia {
+    grid-template-columns: minmax(0, 1.7fr) minmax(360px, 1fr);
+    gap: 32px;
+    padding: 28px;
+  }
+
+  .colunaEvidencia,
+  .colunaDecisao {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 0;
+  }
+
+  .desafio {
+    font-size: 30px;
+    letter-spacing: -0.02em;
+  }
+
+  /* Sem foto carregada, a área de mídia vira um painel que ocupa o espaço da coluna. */
+  .midia {
+    flex: 1 1 0;
+    min-height: 120px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    border: 1px dashed var(--borda-forte);
+    border-radius: var(--raio-pequeno);
+    background: var(--superficie);
+  }
+
+  .colunaEvidencia:has(img:not([hidden])) > .midia {
+    flex: none;
+    min-height: 0;
+    flex-direction: row;
+    justify-content: flex-start;
+    border: none;
+    background: none;
+  }
+
+  .link {
+    font-size: 18px;
+  }
+
+  .foto {
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: none;
+    object-fit: contain;
+  }
+
+  .relato {
+    padding: 14px 18px;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-pequeno);
+    background: var(--superficie);
+    font-size: 18px;
+  }
+
+  .tituloDecisao {
+    display: block;
+    font-size: 30px;
+  }
+
+  .quorum {
+    display: grid;
+    gap: 10px;
+    padding: 16px 18px;
+    border: 1px solid var(--borda);
+    border-radius: var(--raio-pequeno);
+    background: var(--superficie);
+  }
+
+  .placar {
+    font-size: 18px;
+  }
+
+  .aoVivo {
+    font-size: 15px;
+  }
+
+  .barra {
+    height: 10px;
+  }
+
+  .legenda {
+    font-size: 16px;
+  }
+
+  .formulario {
+    flex: 1;
+    align-content: end;
+    gap: 14px;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .acoes {
+    gap: 12px;
+  }
+
+  .acoes > button {
+    min-height: 52px;
+  }
+}
+
+@media (min-width: 1100px) and (max-height: 820px) {
+  .evidencia {
+    gap: 24px;
+    padding: 18px 22px;
+  }
+
+  .colunaEvidencia,
+  .colunaDecisao {
+    gap: 10px;
+  }
+
+  .desafio,
+  .tituloDecisao {
+    font-size: 26px;
+  }
 }
