@@ -31,7 +31,7 @@ cada arquivo.
 
 ## Registros
 
-33 registros, em ordem cronológica.
+34 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -68,6 +68,7 @@ cada arquivo.
 | 2026-10-30 | [Troca da imagem do MinIO e subida do compose do zero](registro-ia/2026-10-30-troca-imagem-minio.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [Atualiza o plano de trabalho para o fechamento da Entrega 3](registro-ia/2026-10-30-atualiza-plano-entrega-3.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [Registro dos testes de aceitação do protótipo](registro-ia/2026-10-30-registro-testes-de-aceitacao.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
+| 2026-10-30 | [E2E de tela dos fluxos principais](registro-ia/2026-10-30-e2e-de-tela.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 
 ## Consolidação final
 
