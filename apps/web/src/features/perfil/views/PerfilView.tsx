@@ -3,6 +3,7 @@ import {
   Alerta,
   Avatar,
   Botao,
+  CabecalhoPagina,
   Card,
   EstadoVazio,
   SaldoCp,
@@ -27,6 +28,12 @@ export function PerfilView() {
 
   return (
     <>
+      <div className={estilos.tituloPagina}>
+        <CabecalhoPagina titulo="Perfil" />
+      </div>
+
+      <div className={estilos.corpoPerfil}>
+      <div className={estilos.colunaResumo}>
       <Card className={estilos.identidade}>
         <Avatar apelido={usuario.apelido} url={usuario.avatarUrl} grande />
         <div className={estilos.identidadeTextos}>
@@ -77,7 +84,9 @@ export function PerfilView() {
         )}
       </Secao>
 
-      <Secao titulo="Extrato de CP" contagem={extrato.length}>
+      </div>
+
+      <Secao titulo="Extrato de CP" contagem={extrato.length} className={estilos.areaExtrato}>
         {extrato.length === 0 ? (
           <EstadoVazio
             titulo="Sem movimentações"
@@ -91,6 +100,7 @@ export function PerfilView() {
           </ul>
         )}
       </Secao>
+      </div>
     </>
   )
 }
