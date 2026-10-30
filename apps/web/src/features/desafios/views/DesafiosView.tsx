@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   Alerta,
   Botao,
   CabecalhoPagina,
   EstadoVazio,
+  Icone,
   Secao,
   SpinnerCentral,
 } from '../../../shared/ui'
@@ -30,6 +31,9 @@ export function DesafiosView() {
   const criei = desafios?.filter((desafio) => desafio.souCriador) ?? []
   const participo = desafios?.filter((desafio) => !desafio.souCriador) ?? []
   const vazio = criei.length === 0 && participo.length === 0
+  // No desktop os cards ficam numa grade de 3 colunas; o cartão tracejado de "Novo desafio"
+  // só entra quando cabe na última linha, para nunca criar uma linha a mais.
+  const resto = (criei.length + participo.length) % 3
 
   return (
     <>
@@ -54,6 +58,13 @@ export function DesafiosView() {
             {opcao.rotulo}
           </button>
         ))}
+
+        {!vazio && (
+          <div className={estilos.contagens}>
+            <span className={estilos.contagem}>Criei · {criei.length}</span>
+            <span className={estilos.contagem}>Participo · {participo.length}</span>
+          </div>
+        )}
       </div>
 
       {erro && <Alerta>{erro}</Alerta>}
@@ -69,7 +80,7 @@ export function DesafiosView() {
           />
         )
       ) : (
-        <>
+        <div className={estilos.listas}>
           {criei.length > 0 && (
             <Secao titulo="Criei" contagem={criei.length}>
               <div className={estilos.lista}>
@@ -89,7 +100,19 @@ export function DesafiosView() {
               </div>
             </Secao>
           )}
-        </>
+
+          {resto !== 0 && (
+            <Link
+              to="/desafios/nova"
+              className={[estilos.novoCartao, resto === 1 && estilos.novoCartaoLargo]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              <Icone nome="mais" tamanho={32} />
+              Novo desafio
+            </Link>
+          )}
+        </div>
       )}
     </>
   )
