@@ -98,6 +98,7 @@
     * [2026-10-06 - Integra o modelo v3 à main com os nomes de "desafio" (issue #30)](docs/05-qualidade/registro-ia/2026-10-06-integra-modelo-v3-desafio.md)
     * [2026-10-29 - Fechamento da Entrega 3: seed, consultas, documentos e CI](docs/05-qualidade/registro-ia/2026-10-29-fechamento-entrega-3.md)
     * [2026-10-29 - Verificação do GitBook e do sistema funcionando](docs/05-qualidade/registro-ia/2026-10-29-verificacao-gitbook-e-sistema.md)
+    * [2026-10-30 - Correções de responsividade, legibilidade e toque no front](docs/05-qualidade/registro-ia/2026-10-30-correcoes-ux-responsividade.md)
 
 ## Produto
 

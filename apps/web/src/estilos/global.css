@@ -11,9 +11,9 @@
 
   --texto: #e9ecf5;
   --texto-suave: #99a1b7;
-  --texto-fraco: #6b7389;
+  --texto-fraco: #8189a0;
 
-  --primaria: #7c5cff;
+  --primaria: #7552f5;
   --primaria-forte: #8f74ff;
   --primaria-fraca: rgba(124, 92, 255, 0.16);
 
@@ -22,10 +22,10 @@
 
   --aberta: #3b82f6;
   --em-andamento: #f59e0b;
-  --em-votacao: #a855f7;
+  --em-votacao: #b66dff;
   --cumpriu: #22c55e;
   --perdeu: #ef4444;
-  --cancelada: #6b7280;
+  --cancelada: #8b93a1;
 
   --topo-fundo: rgba(16, 18, 27, 0.9);
   --nav-fundo: rgba(16, 18, 27, 0.96);
@@ -67,7 +67,7 @@
   --em-andamento: #b45309;
   --em-votacao: #7e22ce;
   --cumpriu: #15803d;
-  --perdeu: #dc2626;
+  --perdeu: #cc1f1f;
   --cancelada: #4b5563;
 
   --topo-fundo: rgba(255, 255, 255, 0.92);

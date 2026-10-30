@@ -22,6 +22,7 @@
   display: flex;
   align-items: center;
   gap: 9px;
+  white-space: nowrap;
   font-size: 17px;
   font-weight: 800;
   letter-spacing: -0.03em;
@@ -56,8 +57,8 @@
 .sair {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--borda);
   border-radius: 9px;
   background: transparent;
@@ -70,14 +71,27 @@
   border-color: var(--borda-forte);
 }
 
+/* Com os botões de 44px o topo não comporta o apelido em tela de 360px; o avatar basta. */
+@media (max-width: 399px) {
+  .apelido {
+    display: none;
+  }
+}
+
 .conteudo {
   width: 100%;
   max-width: var(--largura-maxima);
   margin: 0 auto;
-  padding: 18px 16px calc(var(--altura-nav) + 26px);
+  padding: 18px 16px calc(var(--altura-nav) + 26px + env(safe-area-inset-bottom));
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  /* A página inteira continua travada em 100dvh; só esta área rola, então o
+     topo e a navegação ficam sempre à vista. */
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--borda-forte) transparent;
 }
 
 .nav {
