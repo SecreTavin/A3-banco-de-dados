@@ -42,10 +42,10 @@ exige".
 
 | Semana | Atividade | Responsável | Status |
 | --- | --- | --- | --- |
-| 09/10 | Revisão de constraints, índices e consultas analíticas | Arthur Araujo Marzano, Rafael Alves *(proposto)* | ⚪ Planejado |
+| 09/10 | Revisão de constraints, índices e consultas analíticas | Arthur Araujo Marzano (modelo v3 e IA de moderação, 05–06/10), Octávio Arruda (seed, consultas e documentos, 29/10) | ✅ Concluído — PRs #3 e #32 na `main` em 29/10, 147 testes passando |
 | 16/10 | Recesso do professor | — | — |
-| 23/10 | **Semana Prova A1** — presencial em sala (15 pontos, individual) | Todos, individualmente | ⚪ Planejado |
-| 30/10 | **Revisão de Projeto em sala** — fechamento da Entrega 3 | Rafael Alves *(proposto)* | ⚪ Planejado (conteúdo já existe, adiantado desde 03/09) |
+| 23/10 | **Semana Prova A1** — presencial em sala (15 pontos, individual) | Todos, individualmente | ➖ Individual, em sala — sem rastro no repositório |
+| 30/10 | **Revisão de Projeto em sala** — fechamento da Entrega 3 | Rafael Alves (PRs #34 a #36: redesign do front e MinIO), Octávio Arruda (PR #33: GitBook e registros de IA) | 🔵 Em andamento hoje — 8/8 itens do checklist; tag `entrega-3` após a revisão |
 
 ## E4 — Sistema Funcional e Banca ExpoUna (1ª janela)
 
@@ -97,7 +97,7 @@ gantt
 
     section Arthur Marzano
     API, frontend e povoamento (adiantado)  :done, ar1, 2026-09-03, 1d
-    Constraints, índices e consultas        :ar2, 2026-10-09, 7d
+    Modelo v3 e IA de moderação             :done, ar2, 2026-10-05, 2d
     Prova A1                                :ar3, 2026-10-23, 7d
     Banca ExpoUna 1ª janela                 :ar4, 2026-11-27, 7d
     Prova A2                                :ar5, 2026-12-11, 7d
@@ -117,6 +117,7 @@ gantt
     section Octávio Arruda
     Arquivos iniciais do projeto            :done, oc1, 2026-08-27, 2d
     ADR 0015 idade mínima e moderação       :done, oc2, 2026-09-12, 1d
+    Fechamento da Entrega 3 (seed e docs)   :done, oc2b, 2026-10-29, 1d
     Prova A1                                :oc3, 2026-10-23, 7d
     Roteiro de demonstração                 :oc4, 2026-11-13, 7d
     Banca ExpoUna 1ª janela                 :oc5, 2026-11-27, 7d
@@ -126,9 +127,9 @@ gantt
     Refinamento de telas                    :done, ra1, 2026-08-27, 2d
     Fechamento da Entrega 1                 :done, ra2, 2026-09-09, 3d
     Modelagem e fechamento da Entrega 2     :done, ra3, 2026-09-25, 8d
-    Constraints, índices e consultas        :ra4, 2026-10-09, 7d
+    Redesign do front e MinIO (30/10)       :done, ra4, 2026-10-30, 1d
     Prova A1                                :ra5, 2026-10-23, 7d
-    Fechamento da Entrega 3                 :ra6, 2026-10-30, 7d
+    Fechamento da Entrega 3                 :active, ra6, 2026-10-30, 1d
     Registro de IA e material               :ra7, 2026-11-06, 14d
     Banca ExpoUna 1ª janela                 :ra8, 2026-11-27, 7d
     Prova A2                                :ra9, 2026-12-11, 7d
