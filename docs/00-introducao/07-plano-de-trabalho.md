@@ -45,6 +45,7 @@ exige".
 | 09/10 | Revisão de constraints, índices e consultas analíticas | Arthur Araujo Marzano (modelo v3 e IA de moderação, 05–06/10), Octávio Arruda (seed, consultas e documentos, 29/10) | ✅ Concluído — PRs #3 e #32 na `main` em 29/10, 147 testes passando |
 | 16/10 | Recesso do professor | — | — |
 | 23/10 | **Semana Prova A1** — presencial em sala (15 pontos, individual) | Todos, individualmente | ➖ Individual, em sala — sem rastro no repositório |
+| 26–30/10 | Testes de aceitação do protótipo: desktop e mobile; feedback consolidado e corrigido | Mario Lana Veloso Junior (desktop) e Luís Phillipe Pedra Souza (mobile), testes; Rafael Alves, correções | ✅ Concluído — correções nos PRs #34 e #35 (ver [17 - Testes](../05-qualidade/17-testes.md)) |
 | 30/10 | **Revisão de Projeto em sala** — fechamento da Entrega 3 | Rafael Alves (PRs #34 a #36: redesign do front e MinIO), Octávio Arruda (PR #33: GitBook e registros de IA) | 🔵 Em andamento hoje — 8/8 itens do checklist; tag `entrega-3` após a revisão |
 
 ## E4 — Sistema Funcional e Banca ExpoUna (1ª janela)
@@ -103,12 +104,14 @@ gantt
     Prova A2                                :ar5, 2026-12-11, 7d
 
     section Luís Souza
+    Testes de aceitação do mobile           :done, lu0, 2026-10-26, 5d
     Prova A1                                :lu1, 2026-10-23, 7d
     Testes do sistema                       :lu2, 2026-11-06, 7d
     Banca ExpoUna 1ª janela                 :lu3, 2026-11-27, 7d
     Prova A2                                :lu4, 2026-12-11, 7d
 
     section Mario Veloso
+    Testes de aceitação do desktop          :done, ma0, 2026-10-26, 5d
     Prova A1                                :ma1, 2026-10-23, 7d
     Testes do sistema                       :ma2, 2026-11-06, 7d
     Banca ExpoUna 1ª janela                 :ma3, 2026-11-27, 7d
