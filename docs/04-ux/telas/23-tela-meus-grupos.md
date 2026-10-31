@@ -10,6 +10,24 @@ Gestão de grupos privados de amigos (RF02).
 - **Detalhe do grupo:** lista de membros (com papel `ADMIN`/`MEMBRO` e saldo de CP), desafios do grupo
 - **Nível de filtro:** `LEVE`/`MODERADO`/`PESADO`, alterável só pelo `ADMIN` (RN27)
 
+
+## Como ficou implementada
+
+![Lista de grupos](img/23-meus-grupos.png)
+
+![Detalhe do grupo visto pelo ADMIN](img/23-detalhe-grupo.png)
+
+| Especificado | Implementado |
+| --- | --- |
+| Lista de grupos com saldo | Sim |
+| Criar grupo | Sim |
+| Adicionar membro (só `ADMIN`) | Sim, por e-mail de usuário já cadastrado; entra com 100 CP (RN06) |
+| Detalhe: membros com papel e saldo | Sim, com **Remover** para o `ADMIN` e **Sair do grupo** (RN25, `SAIDA_GRUPO`) |
+| Detalhe: desafios do grupo | **Não.** Os desafios aparecem em *Meus desafios*, com o nome do grupo no cartão |
+| Nível de filtro (só `ADMIN`) | Sim, em *Moderação de IA* (RN27) |
+
+*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+
 ## Dados (origem: `grupo_amigos`, `membro_grupo`)
 `nome`, `descricao`, `id_criador`, `nivel_filtro`, `data_criacao` / `papel`, `saldo_cp`, `data_entrada`
 

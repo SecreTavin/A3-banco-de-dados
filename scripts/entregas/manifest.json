@@ -211,20 +211,40 @@
           "caminho": "docs/04-ux/telas"
         },
         {
+          "label": "Capturas das telas reais",
+          "caminho": "docs/04-ux/telas/img",
+          "minArquivos": 8
+        },
+        {
           "label": "Desenvolvimento do sistema",
           "caminho": "docs/02-arquitetura/14-desenvolvimento-sistema.md"
         },
         {
           "label": "Integração Sistema × Banco de Dados",
-          "caminho": "docs/02-arquitetura/15-integracao-sistema-bd.md"
+          "caminho": "docs/02-arquitetura/15-integracao-sistema-bd.md",
+          "naoPodeConter": [
+            "economia.transacao_cp",
+            "validacao.evidencia"
+          ]
         },
         {
           "label": "Execução local e ambiente",
-          "caminho": "docs/02-arquitetura/16-execucao-local.md"
+          "caminho": "docs/02-arquitetura/16-execucao-local.md",
+          "requerConteudo": [
+            "IA_API_KEY",
+            "docker compose down -v"
+          ]
         },
         {
           "label": "Casos de teste e validação",
-          "caminho": "docs/05-qualidade/17-testes.md"
+          "caminho": "docs/05-qualidade/17-testes.md",
+          "requerConteudo": [
+            "Nível 5 — Sistema funcionando",
+            "Executado em 31/10/2026 com a chave"
+          ],
+          "naoPodeConter": [
+            "Esse modo não foi executado"
+          ]
         },
         {
           "label": "Registro de Programação Assistida por IA",

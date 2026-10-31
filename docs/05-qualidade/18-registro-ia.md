@@ -25,13 +25,19 @@ avalia o uso da ferramenta, avalia o discernimento de quem a usou — "usamos IA
 validamos assim" é substancialmente diferente de "usamos IA".
 
 Cada registro identifica a ferramenta, o objetivo (o que foi pedido), o
-resultado, o que precisou ser corrigido e como a saída foi validada — os campos
-que a seção 13 do edital pede. A tabela abaixo é o índice; o detalhe está em
+**prompt utilizado**, o resultado, o que precisou ser corrigido e como a saída
+foi validada — os campos que as seções 6 e 13 do edital pedem.
+
+> **Pendência (31/10/2026).** O campo *Prompt utilizado* entrou no
+> [modelo](registro-ia/0000-modelo.md) nesta data. Os registros anteriores
+> descrevem o pedido em "O que foi pedido", mas a maioria não traz o prompt
+> literal. Cada autor completa os seus com o comando que de fato usou — não
+> se reconstrói prompt de memória. A tabela abaixo é o índice; o detalhe está em
 cada arquivo.
 
 ## Registros
 
-37 registros, em ordem cronológica.
+38 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -72,6 +78,7 @@ cada arquivo.
 | 2026-10-30 | [Documenta que o upload direto de evidência não foi implementado](registro-ia/2026-10-30-upload-de-evidencia-nao-implementado.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [E2E de criar desafio com a IA simulada](registro-ia/2026-10-30-e2e-ia-simulada.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [Regenera o status da Entrega 3](registro-ia/2026-10-30-gera-status-entrega-3.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
+| 2026-10-31 | [Preparação da Entrega 4: telas reais, IA com chave real e lacunas do edital](registro-ia/2026-10-31-preparacao-entrega-4.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 
 ## Consolidação final
 

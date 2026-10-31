@@ -7,7 +7,7 @@
 | **Pergunta que a entrega precisa responder** | O sistema funciona e utiliza efetivamente o Banco de Dados desenvolvido? |
 
 <!-- entregas:status:start -->
-🔵 **Pronta para entrega** — 9/9 itens prontos · revisão em sala: 2026-11-20
+🔵 **Pronta para entrega** — 10/10 itens prontos · revisão em sala: 2026-11-20
 <!-- entregas:status:end -->
 
 ## Checklist
@@ -22,6 +22,7 @@ a tabela a mão — edite os documentos linkados e rode o script de novo.
 | API em funcionamento | ✅ | [`apps/api`](../../apps/api) |
 | Frontend em funcionamento | ✅ | [`apps/web`](../../apps/web) |
 | Principais telas documentadas | ✅ | [`docs/04-ux/telas`](../04-ux/telas) |
+| Capturas das telas reais | ✅ | [`docs/04-ux/telas/img`](../04-ux/telas/img) |
 | Desenvolvimento do sistema | ✅ | [`docs/02-arquitetura/14-desenvolvimento-sistema.md`](../02-arquitetura/14-desenvolvimento-sistema.md) |
 | Integração Sistema × Banco de Dados | ✅ | [`docs/02-arquitetura/15-integracao-sistema-bd.md`](../02-arquitetura/15-integracao-sistema-bd.md) |
 | Execução local e ambiente | ✅ | [`docs/02-arquitetura/16-execucao-local.md`](../02-arquitetura/16-execucao-local.md) |
