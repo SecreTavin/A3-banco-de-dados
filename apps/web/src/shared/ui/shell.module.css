@@ -53,6 +53,38 @@
   display: flex;
   align-items: center;
   gap: 9px;
+  padding: 3px 10px 3px 3px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+}
+
+.usuario:hover,
+.usuarioAtivo {
+  border-color: var(--borda-forte);
+  background: var(--primaria-fraca);
+}
+
+.abaIcone {
+  position: relative;
+  display: inline-grid;
+}
+
+.bolha {
+  position: absolute;
+  top: -7px;
+  right: -11px;
+  display: grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 2px solid var(--fundo-topo);
+  border-radius: 9px;
+  background: #ec4899;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .apelido {

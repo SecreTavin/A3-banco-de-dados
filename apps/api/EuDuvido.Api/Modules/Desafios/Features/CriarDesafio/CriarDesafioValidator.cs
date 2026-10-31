@@ -10,14 +10,14 @@ public class CriarDesafioValidator : AbstractValidator<CriarDesafioCommand>
     {
         RuleFor(x => x.IdGrupo).GreaterThan(0);
         RuleFor(x => x.IdCategoria).GreaterThan(0);
-        RuleFor(x => x.Titulo).NotEmpty().WithMessage("Titulo e obrigatorio.")
+        RuleFor(x => x.Titulo).NotEmpty().WithMessage("Título é obrigatório.")
             .MaximumLength(120);
-        RuleFor(x => x.Descricao).NotEmpty().WithMessage("Descricao e obrigatoria.")
+        RuleFor(x => x.Descricao).NotEmpty().WithMessage("Descrição é obrigatória.")
             .MaximumLength(2000);
         RuleFor(x => x.ValorCp).GreaterThan(0)
             .WithMessage("O desafio precisa custar ao menos 1 CP.");
         RuleFor(x => x.TipoRecompensa).Must(t => TipoRecompensa.Todos.Contains(t))
-            .WithMessage("Tipo de recompensa invalido.");
+            .WithMessage("Tipo de recompensa inválido.");
         RuleFor(x => x.DescricaoRecompensa).MaximumLength(255);
         RuleFor(x => x.DataLimite).GreaterThan(_ => DateTimeOffset.UtcNow)
             .WithMessage("O prazo precisa estar no futuro.");

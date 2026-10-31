@@ -11,6 +11,21 @@ Visão completa de um desafio específica: participantes, evidências e resultad
 - **Cancelamento**, quando cabível, com motivo obrigatório
 - **Resultado final** quando o desafio é encerrado
 
+
+## Como ficou implementada
+
+![Detalhe do desafio da demonstração, em votação](img/26-detalhe-desafio.png)
+
+| Especificado | Implementado |
+| --- | --- |
+| Cabeçalho com status, custo, pote, recompensa e prazo | Sim, com a linha do tempo das etapas |
+| Participantes com papel e escolha | Sim, em confronto: quem diz que cumpre contra quem diz que não, e quanto cada um ganha. Quem ainda não participa de desafio `ABERTA` escolhe o papel e clica em **Entrar como…** |
+| Evidências com status e votos | Sim, com quórum, prazo e os jurados (quem já votou, sem mostrar o voto) |
+| Envio de evidência | Sim, pelo `DESAFIADO`, como **URL** do comprovante. Upload direto de arquivo não foi implementado ([19 - Limitações](../../06-encerramento/19-limitacoes-e-melhorias.md)) |
+| Cancelamento com motivo | Sim, no menu "⋯" com diálogo de confirmação, só para quem criou e enquanto não encerrado |
+
+*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+
 ## Dados (origem: `desafio`, `participante_desafio`, `evidencia`)
 `status`, `valor_cp`, `data_limite`, `motivo_cancelamento`, `data_encerramento` / `papel_desafio`, `escolha` / `ordem`, `tipo_midia`, `url_comprovante`, `comentario`, `status`, `data_envio`, `data_limite_votacao`, `data_apuracao`
 

@@ -9,6 +9,23 @@ Dashboard principal do usuário com os desafios em que está envolvido (RF04, RF
 - **Separação:** desafios que criei vs. que participo
 - **CTA direto** para a Central de Votação em desafios `EM_VOTACAO` (ex: "Cumpra agora!")
 
+
+## Como ficou implementada
+
+![Meus desafios](img/24-meus-desafios.png)
+
+| Especificado | Implementado |
+| --- | --- |
+| Filtro pelos seis status | Em duas abas, **Ativos** e **Encerrados**, com filtro por grupo; o status aparece em cada linha |
+| Cartão com título, grupo, categoria, custo, recompensa e prazo | Sim, numa linha com a etapa do desafio (aberto, em andamento, no júri, resultado) |
+| Separar "criei" de "participo" | Sim; cada linha diz o meu papel no desafio |
+| Atalho para votação em `EM_VOTACAO` | Sim, no bloco **Sua vez** do topo, com o botão **Votar** |
+
+O redesign de UI/UX ([proposta 01](../propostas/README.md)) pôs no topo o que
+pede ação agora: prova esperando voto, prova a enviar e desafio aberto.
+
+*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+
 ## Dados (origem: `desafio`, `participante_desafio`)
 `titulo`, `status`, `valor_cp`, `tipo_recompensa`, `descricao_recompensa`, `data_limite` / `papel_desafio`, `escolha`
 

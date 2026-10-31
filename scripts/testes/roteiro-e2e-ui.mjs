@@ -93,17 +93,29 @@ async function cenario(id, descricao, fn) {
 const campo = (rotulo) =>
   pagina.locator('label').filter({ has: pagina.getByText(rotulo, { exact: true }) })
 
+// Toda carga de pagina passa pela abertura (tela inicial animada); qualquer
+// tecla segue para a tela pedida.
+async function irPara(url) {
+  await pagina.goto(url)
+  await passarAbertura()
+}
+
+async function passarAbertura() {
+  await pagina.locator('main[aria-label^="Eu Duvido!"]').waitFor()
+  await pagina.keyboard.press('Enter')
+}
+
 async function esperarRede() {
   await pagina.waitForLoadState('networkidle')
 }
 
 async function entrar(apelido) {
-  await pagina.goto(`${WEB}/login`)
+  await irPara(`${WEB}/login`)
   await pagina.evaluate(() => {
     localStorage.removeItem('euduvido.token')
     localStorage.removeItem('euduvido.usuario')
   })
-  await pagina.goto(`${WEB}/login`)
+  await irPara(`${WEB}/login`)
   await esperarRede()
   await pagina.getByText(apelido, { exact: true }).first().click()
   await pagina.waitForURL('**/desafios', { timeout: 15000 })
@@ -111,16 +123,11 @@ async function entrar(apelido) {
 }
 
 async function abrir(rota) {
-  await pagina.goto(`${WEB}${rota}`)
+  await irPara(`${WEB}${rota}`)
   await esperarRede()
 }
 
 const idUsuario = (apelido) => num(`SELECT id_usuario FROM usuario WHERE apelido='${esc(apelido)}'`)
-
-function formatarDatetimeLocal(data) {
-  const p = (n) => String(n).padStart(2, '0')
-  return `${data.getFullYear()}-${p(data.getMonth() + 1)}-${p(data.getDate())}T${p(data.getHours())}:${p(data.getMinutes())}`
-}
 
 async function medirRolagem() {
   return pagina.evaluate(() => {
@@ -148,9 +155,16 @@ async function rodar() {
 
   await cenario('U01', 'Login como Tavin e lista de desafios em /desafios', async () => {
     await entrar('Tavin')
-    const cartoes = await pagina
-      .locator('a[href^="/desafios/"]:not([href="/desafios/nova"])')
-      .count()
+    // A lista fica em duas abas (Ativos / Encerrados, redesign #44); "Sua vez" repete
+    // alguns desafios e por isso fica de fora da contagem.
+    const linhas = pagina.locator('[class*=lista] a[href^="/desafios/"]')
+    await linhas.first().waitFor()
+    const ativos = await linhas.count()
+    const abaEncerrados = pagina.getByRole('tab', { name: /Encerrados/ })
+    await abaEncerrados.click()
+    await pagina.locator('[role=tab][aria-selected=true]', { hasText: 'Encerrados' }).waitFor()
+    await linhas.first().waitFor()
+    const cartoes = ativos + (await linhas.count())
     const tavin = idUsuario('Tavin')
     // A lista mostra os desafios de todos os grupos do usuario (fronteira de
     // visibilidade = grupo), nao so aqueles em que ele participa.
@@ -164,7 +178,7 @@ async function rodar() {
 
   await cenario('U02', 'Abrir o detalhe de um desafio', async () => {
     await abrir('/desafios')
-    const link = pagina.locator('a[href^="/desafios/"]:not([href="/desafios/nova"])').first()
+    const link = pagina.locator('[class*=lista] a[href^="/desafios/"]').first()
     const href = await link.getAttribute('href')
     await link.click()
     await pagina.waitForURL(`**${href}`)
@@ -207,8 +221,8 @@ async function rodar() {
     confere(alvo, 'nao ha usuario fora do grupo para adicionar')
     const [apelido, email] = alvo.split('|')
     await abrir(`/grupos/${S.grupoNovo}`)
-    await campo('Adicionar por e-mail').locator('input').fill(email)
-    await pagina.getByRole('button', { name: 'Adicionar', exact: true }).click()
+    await pagina.getByLabel('E-mail do novo membro').fill(email)
+    await pagina.getByRole('button', { name: /^Adicionar/ }).click()
     const linha = pagina.locator('li', { hasText: apelido })
     await linha.first().waitFor()
     const alvoId = idUsuario(apelido)
@@ -217,8 +231,10 @@ async function rodar() {
     )
     confere(entrada === '100', `saldo ao entrar: "${entrada}"`)
 
-    pagina.once('dialog', (dialogo) => dialogo.accept())
-    await linha.first().getByRole('button', { name: 'Remover' }).click()
+    // Remover fica atras do menu "..." e pede confirmacao num dialogo (redesign #48).
+    await pagina.getByRole('button', { name: `Ações para ${apelido}` }).click()
+    await pagina.getByRole('menuitem', { name: /Remover do grupo/ }).click()
+    await pagina.getByRole('dialog').getByRole('button', { name: 'Remover do grupo', exact: true }).click()
     await linha.first().waitFor({ state: 'detached' })
     const restou = num(
       `SELECT count(*) FROM membro_grupo WHERE id_grupo=${S.grupoNovo} AND id_usuario=${alvoId}`,
@@ -237,15 +253,17 @@ async function rodar() {
   await cenario('U05', 'Criar desafio sem IA: a tela explica o bloqueio e nada e gravado', async () => {
     const antes = [num('SELECT count(*) FROM desafio'), num('SELECT count(*) FROM moderacao_desafio')]
     await abrir('/desafios/nova')
-    await campo('Grupo').locator('select').selectOption({ index: 1 })
-    await campo('Categoria').locator('select').selectOption({ index: 1 })
-    await campo('Título').locator('input').fill(`Desafio ${ETIQUETA}`)
-    await campo('Descrição').locator('textarea').fill('Teste do bloqueio sem chave da IA.')
-    await campo('Custo em CP').locator('input').fill('5')
-    const prazo = new Date(Date.now() + 7 * 86_400_000)
-    await campo('Prazo').locator('input').fill(formatarDatetimeLocal(prazo))
-    await campo('O que foi combinado').locator('input').fill('R$ 5,00 no Pix')
-    await pagina.getByRole('button', { name: 'Criar desafio', exact: true }).click()
+    // Criacao do redesign (#47): o primeiro grupo ja vem escolhido; categoria, custo
+    // e prazo sao atalhos; o combinado fora do app fica recolhido.
+    const categoria = sql('SELECT nome FROM categoria_desafio ORDER BY nome LIMIT 1')
+    await pagina.getByRole('button', { name: categoria, exact: true }).click()
+    await pagina.locator('input[maxlength="120"]').fill(`Desafio ${ETIQUETA}`)
+    await pagina.locator('textarea').fill('Teste do bloqueio sem chave da IA.')
+    await pagina.getByRole('button', { name: '5 CP', exact: true }).click()
+    await pagina.getByRole('button', { name: '1 semana', exact: true }).click()
+    await pagina.getByRole('button', { name: /Combinaram algo fora do app/ }).click()
+    await pagina.getByLabel('O que foi combinado').fill('R$ 5,00 no Pix')
+    await pagina.getByRole('button', { name: 'Enviar para a moderação', exact: true }).click()
     const alerta = pagina.getByRole('alert').first()
     await alerta.waitFor({ timeout: 30000 })
     const texto = (await alerta.innerText()).replace(/\s+/g, ' ').trim()
@@ -282,9 +300,9 @@ async function rodar() {
       const antes = saldoDe(apelido)
       await entrar(apelido)
       await abrir(`/desafios/${idDesafio}`)
-      await campo('Entro como').locator('select').selectOption({ label: papel })
-      await campo('Meu desafio').locator('select').selectOption({ label: escolha })
-      await pagina.getByRole('button', { name: /Aceitar por/ }).click()
+      await pagina.getByRole('radio', { name: papel, exact: true }).click()
+      await pagina.getByRole('radio', { name: escolha, exact: true }).click()
+      await pagina.getByRole('button', { name: /^Entrar como/ }).click()
       await pagina.locator('li', { hasText: apelido }).first().waitFor()
       const depois = saldoDe(apelido)
       const escrow = num(
@@ -323,10 +341,10 @@ async function rodar() {
     )
     await entrar(desafiado)
     await abrir(`/desafios/${S.idDesafio}`)
-    await campo('Tipo de mídia').locator('select').selectOption({ label: 'Link' })
+    await pagina.getByRole('radio', { name: 'Link', exact: true }).click()
     await campo('Link do comprovante').locator('input').fill(`https://exemplo.com/${ETIQUETA}`)
     await campo('Comentário').locator('input').fill(ETIQUETA)
-    await pagina.getByRole('button', { name: 'Enviar evidência' }).click()
+    await pagina.getByRole('button', { name: 'Mandar para o júri' }).click()
     await pagina.getByText(ETIQUETA).first().waitFor()
 
     const ev = sql(`SELECT id_evidencia||'|'||status FROM evidencia WHERE id_desafio=${S.idDesafio} AND comentario='${esc(ETIQUETA)}'`)
@@ -357,8 +375,10 @@ async function rodar() {
       await abrir('/votacao')
       const cartao = pagina.locator('article', { hasText: ETIQUETA })
       await cartao.first().waitFor()
-      await cartao.first().getByRole('button', { name: 'Válido', exact: true }).click()
-      await pagina.waitForTimeout(1200)
+      // Votar abre a confirmacao (o voto e unico) e, depois, a tela de resultado (#46).
+      await cartao.first().getByRole('button', { name: 'Vale', exact: true }).click()
+      await pagina.getByRole('button', { name: 'Confirmar voto', exact: true }).click()
+      await pagina.getByText(/Voto registrado|Júri fechou/).first().waitFor({ timeout: 15000 })
       const voto = sql(
         `SELECT voto FROM jurado_evidencia WHERE id_evidencia=${S.idEvidencia} AND id_usuario=${idUsuario(jurado)}`,
       )
@@ -370,7 +390,7 @@ async function rodar() {
           jurado,
           botoes: await pagina
             .locator('article', { hasText: ETIQUETA })
-            .getByRole('button', { name: 'Válido', exact: true })
+            .getByRole('button', { name: 'Vale', exact: true })
             .count(),
         }
       }
@@ -398,13 +418,13 @@ async function rodar() {
     precisa(S.aposPrimeiroVoto, 'depende de U08')
     confere(
       S.aposPrimeiroVoto.botoes === 0,
-      `${S.aposPrimeiroVoto.jurado} ainda via ${S.aposPrimeiroVoto.botoes} botao(oes) Valido na evidencia que ja votou`,
+      `${S.aposPrimeiroVoto.jurado} ainda via ${S.aposPrimeiroVoto.botoes} botao(oes) Vale na evidencia que ja votou`,
     )
     const votos = num(
       `SELECT count(*) FROM jurado_evidencia WHERE id_evidencia=${S.idEvidencia} AND id_usuario=${idUsuario(S.aposPrimeiroVoto.jurado)} AND voto IS NOT NULL`,
     )
     confere(votos === 1, `votos do jurado no banco: ${votos}`)
-    return `depois do 1o voto de ${S.aposPrimeiroVoto.jurado} a tela nao oferece Valido/Invalido; 1 voto no banco. O 409 da API fica coberto por E05`
+    return `depois do 1o voto de ${S.aposPrimeiroVoto.jurado} a tela nao oferece Vale/Nao vale; 1 voto no banco. O 409 da API fica coberto por E05`
   })
 
   await cenario('U10', 'Perfil e Ranking batem com o banco', async () => {
@@ -429,7 +449,7 @@ async function rodar() {
     const grupo = sql(`SELECT g.id_grupo||'|'||g.nome FROM membro_grupo m JOIN grupo_amigos g USING (id_grupo) WHERE m.id_usuario=${tavin} ORDER BY g.id_grupo LIMIT 1`)
     const [idGrupo, nomeGrupo] = [Number(grupo.split('|')[0]), grupo.split('|').slice(1).join('|')]
     await abrir('/ranking')
-    await pagina.getByRole('button', { name: nomeGrupo, exact: true }).click()
+    await pagina.getByRole('tab', { name: nomeGrupo, exact: true }).click()
     await esperarRede()
     const membros = sql(`SELECT u.apelido||'='||m.saldo_cp FROM membro_grupo m JOIN usuario u USING (id_usuario) WHERE m.id_grupo=${idGrupo}`).split('\n').filter(Boolean)
     for (const m of membros) {
@@ -449,6 +469,7 @@ async function rodar() {
     const trocado = await tema()
     confere(trocado && trocado !== inicial, `tema nao mudou (${inicial} -> ${trocado})`)
     await pagina.reload()
+    await passarAbertura()
     await esperarRede()
     confere((await tema()) === trocado, 'tema nao persistiu apos recarregar')
     await pagina.locator('button[aria-label^="Mudar para o tema"]').click()
@@ -495,6 +516,47 @@ async function rodar() {
       await movel.close()
       pagina = desktop
     }
+  })
+
+  await cenario('U13', 'Abertura: anima, segue com tecla ou toque, logado ou nao', async () => {
+    const abertura = pagina.locator('main[aria-label^="Eu Duvido!"]')
+    const cena = pagina.locator('main svg > g')
+
+    await pagina.goto(`${WEB}/`)
+    await pagina.evaluate(() => {
+      localStorage.removeItem('euduvido.token')
+      localStorage.removeItem('euduvido.usuario')
+    })
+    await pagina.goto(`${WEB}/`)
+    await abertura.waitFor()
+    const antes = await cena.innerHTML()
+    await pagina.waitForTimeout(400)
+    confere(antes.length > 0 && (await cena.innerHTML()) !== antes, 'a cena nao mudou em 400 ms: a animacao nao esta rodando')
+    await pagina.keyboard.press('x')
+    await pagina.waitForURL('**/login')
+    await pagina.getByText('Entrar como').waitFor()
+
+    // Logado, a abertura aparece do mesmo jeito; o toque leva direto ao app.
+    await entrar('Tavin')
+    await pagina.goto(`${WEB}/`)
+    await abertura.waitFor()
+    await pagina.mouse.click(200, 200)
+    await pagina.waitForURL('**/desafios')
+
+    // Quem pede menos movimento ve o quadro final parado.
+    const calmo = await navegador.newContext({ reducedMotion: 'reduce', viewport: { width: 1280, height: 800 } })
+    const paginaCalma = await calmo.newPage()
+    try {
+      await paginaCalma.goto(`${WEB}/`)
+      const cenaCalma = paginaCalma.locator('main svg > g')
+      await cenaCalma.locator('text').first().waitFor({ state: 'attached' })
+      const parado = await cenaCalma.innerHTML()
+      await paginaCalma.waitForTimeout(400)
+      confere((await cenaCalma.innerHTML()) === parado, 'com reducedMotion a cena deveria ficar parada')
+    } finally {
+      await calmo.close()
+    }
+    return 'anima; tecla leva a /login (sem sessao); clique leva a /desafios (logado); parada com reducedMotion'
   })
 
   await navegador.close()

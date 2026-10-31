@@ -44,6 +44,10 @@ export interface MembroGrupo {
   papel: PapelGrupo
   saldoCp: number
   avatarUrl: string | null
+  /** Desafios ABERTA/EM_ANDAMENTO/EM_VOTACAO deste grupo em que o membro participa. */
+  desafiosEmCurso: number
+  /** Integra o júri de alguma evidência em votação neste grupo. */
+  noJuri: boolean
 }
 
 export interface GrupoDetalhe {
@@ -52,6 +56,8 @@ export interface GrupoDetalhe {
   descricao: string | null
   nivelFiltro: NivelFiltro
   meuPapel: PapelGrupo
+  desafiosAtivos: number
+  cpEmJogo: number
   membros: MembroGrupo[]
 }
 
@@ -86,6 +92,17 @@ export interface DesafioResumo {
   souCriador: boolean
 }
 
+/** Item da lista: o resumo mais a minha posição e o placar da prova no júri, se houver. */
+export interface DesafioListado extends DesafioResumo {
+  meuPapel: PapelDesafio | null
+  minhaEscolha: Escolha | null
+  totalParticipantes: number
+  votosFavoraveis: number | null
+  votosContra: number | null
+  quorum: number | null
+  dataLimiteVotacao: string | null
+}
+
 export interface ParticipanteDesafio {
   idUsuario: number
   apelido: string
@@ -107,9 +124,18 @@ export interface Evidencia {
   votosContra: number
   quorum: number
   totalValidadores: number
+  jurados: Jurado[]
+}
+
+/** Quem está no júri e se já votou — o voto de cada um não é exposto. */
+export interface Jurado {
+  apelido: string
+  avatarUrl: string | null
+  votou: boolean
 }
 
 export interface DesafioDetalhe extends DesafioResumo {
+  criador: string
   descricao: string | null
   dataEncerramento: string | null
   motivoCancelamento: string | null
@@ -139,6 +165,8 @@ export interface EvidenciaPendente {
   votosContra: number
   votosFaltantes: number
   jaVotei: boolean
+  descricaoDesafio: string | null
+  desafiado: string
 }
 
 export interface PosicaoRanking {
@@ -163,6 +191,7 @@ export interface LancamentoCp {
   valor: number
   descricao: string
   desafio: string | null
+  grupo: string
   saldoApos: number
 }
 

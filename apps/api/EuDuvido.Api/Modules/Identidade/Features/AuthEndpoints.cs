@@ -66,12 +66,12 @@ public static class AuthEndpoints
 
             var erros = new Dictionary<string, string[]>();
             if (string.IsNullOrWhiteSpace(requisicao.Nome) || requisicao.Nome.Trim().Length > 100)
-                erros["nome"] = ["Informe o nome (ate 100 caracteres)."];
+                erros["nome"] = ["Informe o nome (até 100 caracteres)."];
             if (string.IsNullOrWhiteSpace(requisicao.Email) || requisicao.Email.Trim().Length > 120 ||
                 !requisicao.Email.Contains('@'))
-                erros["email"] = ["Informe um e-mail valido."];
+                erros["email"] = ["Informe um e-mail válido."];
             if (string.IsNullOrWhiteSpace(requisicao.Apelido) || requisicao.Apelido.Trim().Length > 50)
-                erros["apelido"] = ["Informe o apelido (ate 50 caracteres)."];
+                erros["apelido"] = ["Informe o apelido (até 50 caracteres)."];
             if (requisicao.DataNascimento < new DateOnly(1900, 1, 1))
                 erros["dataNascimento"] = ["Informe a data de nascimento."];
             if (erros.Count > 0)

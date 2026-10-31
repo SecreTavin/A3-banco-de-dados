@@ -10,6 +10,10 @@ modelagem sem pagar o custo de implementação.
 | --- | --- | --- |
 | Upload de avatar próprio | `usuario.avatar_url` existe | Usa a foto do Google; upload exigiria fluxo de mídia próprio |
 | Upload direto de foto e vídeo da evidência (RF06, RN22) | `evidencia.url_comprovante`, `tipo_midia` (`FOTO`, `VIDEO`, `LINK`, `TEXTO`), bucket `evidencias` no MinIO e o desenho de URL assinada do [ADR 0009](../02-arquitetura/adr/0009-armazenamento-de-midia-r2.md) | A prioridade foi o núcleo transacional (júri congelado, quórum, liquidação de CP e ledger). Hoje o desafiado informa a URL do comprovante, e a mídia fica hospedada fora do sistema. O bucket sobe no `docker compose`, mas a API não grava nele |
+| Edição de nome e apelido no perfil ([tela 29](../04-ux/telas/29-tela-perfil.md)) | `usuario.nome`, `usuario.apelido` (com `UNIQUE`) | A tela mostra os dados, mas não há endpoint de alteração |
+| Maiores desafios e % de aprovação no ranking ([tela 28](../04-ux/telas/28-tela-ranking.md)) | Consultas Q2 e Q3 do [16 - Consultas SQL](../03-banco-de-dados/implementacao/16-consultas-sql.md) | A tela ficou na classificação por jogador; o resto existe em SQL |
+| Desafios no detalhe do grupo ([tela 23](../04-ux/telas/23-tela-meus-grupos.md)) | `desafio.id_grupo` | Os desafios aparecem em *Meus desafios*, com o grupo no cartão |
+| Escolher participantes ao criar o desafio ([tela 25](../04-ux/telas/25-tela-criar-desafio.md)) | `participante_desafio` | Cada membro entra pelo detalhe do desafio, com débito em escrow no aceite |
 
 ## Fora do escopo por decisão
 
@@ -42,6 +46,13 @@ andamento ou integra júri aberto não pode sair do grupo
 ([ADR 0018](../02-arquitetura/adr/0018-saida-de-membro-e-invariante-do-ledger.md)).
 O custo é que alguém pode ficar preso ao grupo até o fim de um desafio — no
 máximo o prazo do desafio mais uma semana de votação.
+
+**O veredito da IA é do modelo, não do código.** O prompt de cada nível de
+filtro descreve a régua, mas quem decide é o modelo. Em 31/10/2026, *comer 3
+pimentas malaguetas* passou no nível `PESADO`, apesar de o prompt mandar recusar
+qualquer risco físico ([17 - Testes](../05-qualidade/17-testes.md)). O sistema
+garante o que está ao seu alcance — nada vira desafio sem avaliação, toda
+avaliação fica gravada —, mas não o acerto de cada julgamento.
 
 **Limites do plano gratuito.** Aiven free oferece 1 CPU, 1 GB de RAM, 1 GB de
 disco e 20 conexões sem pooling. Suficiente para a demonstração, insuficiente

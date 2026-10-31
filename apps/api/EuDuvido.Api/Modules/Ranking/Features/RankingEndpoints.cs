@@ -90,12 +90,13 @@ public static class RankingEndpoints
             var extrato = await conexao.QueryAsync(
                 """
                 SELECT t.data_lancamento AS data, t.tipo, t.valor, t.descricao,
-                       a.titulo AS desafio,
+                       a.titulo AS desafio, g.nome AS grupo,
                        SUM(t.valor) OVER (PARTITION BY t.id_grupo
                                           ORDER BY t.data_lancamento, t.id_transacao)
                            AS "saldoApos"
                   FROM transacao_cp t
                   LEFT JOIN desafio a ON a.id_desafio = t.id_desafio
+                  JOIN grupo_amigos g ON g.id_grupo = t.id_grupo
                  WHERE t.id_usuario = @id
                  ORDER BY t.data_lancamento DESC, t.id_transacao DESC LIMIT 50
                 """, new { id = usuario.Id });

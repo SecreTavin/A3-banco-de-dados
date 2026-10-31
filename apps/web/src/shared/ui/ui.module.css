@@ -86,23 +86,26 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .badge::before {
   content: '';
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: currentColor;
+}
+
+/* Sem ponto, a marca vira uma etiqueta discreta (papel, tipo de mídia). */
+.badgeSemPonto {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--superficie-alta);
+  font-size: 13px;
 }
 
 .badgeSemPonto::before {
@@ -219,13 +222,10 @@
   display: inline-flex;
   align-items: baseline;
   gap: 4px;
-  padding: 3px 10px;
-  border: 1px solid rgba(246, 196, 83, 0.35);
-  border-radius: 999px;
-  background: var(--cp-fraca);
   color: var(--cp);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .cpUnidade {
@@ -235,8 +235,7 @@
 }
 
 .cpGrande {
-  padding: 6px 14px;
-  font-size: 22px;
+  font-size: 24px;
 }
 
 .cabecalho {
@@ -320,8 +319,12 @@
   }
 
   .badge {
-    padding: 4px 12px;
-    font-size: 15px;
+    font-size: 16px;
+  }
+
+  .badgeSemPonto {
+    padding: 3px 10px;
+    font-size: 14px;
   }
 
   .avatar {
@@ -361,8 +364,7 @@
   }
 
   .cp {
-    padding: 3px 14px;
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .cpUnidade {
@@ -370,7 +372,6 @@
   }
 
   .cpGrande {
-    padding: 6px 18px;
     font-size: 30px;
   }
 
@@ -429,7 +430,7 @@
   }
 
   .cp {
-    font-size: 22px;
+    font-size: 20px;
   }
 
   .secao {

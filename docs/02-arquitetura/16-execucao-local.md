@@ -57,7 +57,49 @@ Os dois caminhos produzem o **mesmo JWT** e passam pela mesma validação — o
 bypass troca só a origem da identidade, não o resto do fluxo. Trocar de modo é
 mudar uma variável de ambiente.
 
-Usuários disponíveis: **Tavin**, **Biel**, **Theus**, **Lari**, **Lipe**.
+Usuários disponíveis: **Tavin**, **Biel**, **Theus**, **Lari**, **Lipe**,
+**Aninha**, **Brunão**, **Mila** e **Dieguinho** (os nove do
+[seed](../03-banco-de-dados/implementacao/13-povoamento-dml.md)).
+
+## Moderação por IA: a chave da Groq
+
+Criar desafio passa pela moderação de IA (RN28,
+[ADR 0015](adr/0015-idade-minima-e-moderacao-ia.md)). A chave **não** fica no
+repositório: copie o modelo e preencha `IA_API_KEY` com a chave fornecida pelo
+PO.
+
+```bash
+cp .env.example .env
+```
+
+O `.env` está no `.gitignore` e o `docker compose` o lê sozinho. Depois de
+editar, recrie a API com `docker compose up -d`. Para conferir sem expor a
+chave:
+
+```bash
+docker exec euduvido-api-1 sh -c 'test -n "$Ia__ApiKey" && echo com chave || echo sem chave'
+```
+
+| Situação | O que acontece ao criar desafio |
+| --- | --- |
+| Sem chave, chave inválida ou Groq fora do ar | HTTP 503, alerta "Nada foi criado" — nada é aprovado sem avaliação |
+| Proposta aprovada | HTTP 201, desafio `ABERTA`, moderação gravada e ligada a ele |
+| Proposta recusada | HTTP 422 com o motivo da IA; a avaliação fica gravada sem desafio |
+
+Os padrões apontam para a Groq com o modelo `openai/gpt-oss-120b`;
+`IA_BASE_URL` e `IA_MODELO` trocam o provedor sem mexer em código.
+
+## Recomeçar a demonstração
+
+O seed só roda quando o volume do banco está vazio. Depois de ensaiar — votar,
+criar desafios —, volte ao estado original apagando o volume:
+
+```bash
+docker compose down -v && docker compose up -d
+```
+
+O voto pendente da Lari no desafio 1, que fecha o quórum na banca, volta a
+estar disponível.
 
 ## Ordem de subida
 
