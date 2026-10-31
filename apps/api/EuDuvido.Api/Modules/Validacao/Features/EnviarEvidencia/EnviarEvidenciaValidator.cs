@@ -9,7 +9,7 @@ public class EnviarEvidenciaValidator : AbstractValidator<EnviarEvidenciaCommand
     {
         RuleFor(x => x.IdDesafio).GreaterThan(0);
         RuleFor(x => x.TipoMidia).Must(t => TipoMidia.Todos.Contains(t))
-            .WithMessage("Tipo de midia deve ser FOTO, VIDEO, LINK ou TEXTO.");
+            .WithMessage("Tipo de mídia deve ser FOTO, VIDEO, LINK ou TEXTO.");
         RuleFor(x => x.UrlComprovante).NotEmpty()
             .WithMessage("Informe o link do comprovante ou o relato.")
             .MaximumLength(500);

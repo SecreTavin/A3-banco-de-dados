@@ -51,8 +51,8 @@ public static class UsuarioErrors
 {
     public static Error IdadeMinima =>
         Error.Custom(TipoErro.Recusado, "Usuario.IdadeMinima",
-            $"E preciso ter ao menos {Usuario.IdadeMinima} anos para usar o Eu Duvido!.");
+            $"É preciso ter ao menos {Usuario.IdadeMinima} anos para usar o Eu Duvido!.");
 
     public static Error EmailEmUso =>
-        Error.Conflict("Usuario.EmailEmUso", "Ja existe uma conta com este e-mail.");
+        Error.Conflict("Usuario.EmailEmUso", "Já existe uma conta com este e-mail.");
 }

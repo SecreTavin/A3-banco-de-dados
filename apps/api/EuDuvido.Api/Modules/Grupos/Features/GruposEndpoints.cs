@@ -52,17 +52,40 @@ public static class GruposEndpoints
             var membros = await conexao.QueryAsync(
                 """
                 SELECT u.id_usuario AS "idUsuario", u.apelido, u.avatar_url AS "avatarUrl",
-                       m.papel, m.saldo_cp AS "saldoCp"
+                       m.papel, m.saldo_cp AS "saldoCp",
+                       -- As mesmas condicoes com que remover_membro recusa a saida (RN25):
+                       -- a tela avisa antes, o banco continua decidindo.
+                       (SELECT count(*) FROM participante_desafio p
+                          JOIN desafio a ON a.id_desafio = p.id_desafio
+                         WHERE a.id_grupo = m.id_grupo AND p.id_usuario = m.id_usuario
+                           AND a.status IN ('ABERTA', 'EM_ANDAMENTO', 'EM_VOTACAO'))::int
+                           AS "desafiosEmCurso",
+                       EXISTS (SELECT 1 FROM jurado_evidencia j
+                          JOIN evidencia e ON e.id_evidencia = j.id_evidencia
+                          JOIN desafio a ON a.id_desafio = e.id_desafio
+                         WHERE a.id_grupo = m.id_grupo AND j.id_usuario = m.id_usuario
+                           AND e.status = 'EM_VOTACAO') AS "noJuri"
                   FROM membro_grupo m
                   JOIN usuario u ON u.id_usuario = m.id_usuario
                  WHERE m.id_grupo = @id
                  ORDER BY m.saldo_cp DESC
                 """, new { id });
 
+            var numeros = await conexao.QuerySingleAsync(
+                """
+                SELECT (SELECT count(*) FROM desafio
+                         WHERE id_grupo = @id
+                           AND status IN ('ABERTA', 'EM_ANDAMENTO', 'EM_VOTACAO'))::int
+                           AS "desafiosAtivos",
+                       COALESCE((SELECT sum(cp_em_escrow) FROM vw_cp_em_escrow
+                                  WHERE id_grupo = @id), 0)::int AS "cpEmJogo"
+                """, new { id });
+
             return Results.Ok(new
             {
                 cabecalho.idGrupo, cabecalho.nome, cabecalho.descricao,
-                cabecalho.nivelFiltro, cabecalho.meuPapel, membros
+                cabecalho.nivelFiltro, cabecalho.meuPapel, numeros.desafiosAtivos,
+                numeros.cpEmJogo, membros
             });
         });
 
@@ -72,9 +95,9 @@ public static class GruposEndpoints
             var nivel = requisicao.NivelFiltro ?? NiveisFiltro.Padrao;
             var erros = new Dictionary<string, string[]>();
             if (string.IsNullOrWhiteSpace(requisicao.Nome))
-                erros["nome"] = ["Nome do grupo e obrigatorio."];
+                erros["nome"] = ["Nome do grupo é obrigatório."];
             if (!NiveisFiltro.Todos.Contains(nivel))
-                erros["nivelFiltro"] = ["Nivel de filtro deve ser LEVE, MODERADO ou PESADO."];
+                erros["nivelFiltro"] = ["Nível de filtro deve ser LEVE, MODERADO ou PESADO."];
             if (erros.Count > 0)
                 return Results.ValidationProblem(erros);
 
@@ -92,7 +115,7 @@ public static class GruposEndpoints
         {
             if (!NiveisFiltro.Todos.Contains(requisicao.NivelFiltro))
                 return Results.ValidationProblem(new Dictionary<string, string[]>
-                    { ["nivelFiltro"] = ["Nivel de filtro deve ser LEVE, MODERADO ou PESADO."] });
+                    { ["nivelFiltro"] = ["Nível de filtro deve ser LEVE, MODERADO ou PESADO."] });
 
             var alvo = await CarregarComMembros(db, id, usuario.Id, ct);
             if (alvo is null) return Results.NotFound();
