@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Alerta, Botao, CabecalhoPagina, EstadoVazio, SpinnerCentral } from '../../../shared/ui'
 import { useGruposQuery } from '../../grupos/hooks/useGruposQuery'
 import { LinhaRanking } from '../components/LinhaRanking'
@@ -8,7 +8,9 @@ import estilos from '../ranking.module.css'
 
 export function RankingView() {
   const { dados: grupos, carregando: carregandoGrupos, erro: erroGrupos } = useGruposQuery()
-  const [escolhido, setEscolhido] = useState<number | null>(null)
+  // `?grupo=` chega da aba Ranking do detalhe do grupo.
+  const [busca] = useSearchParams()
+  const [escolhido, setEscolhido] = useState<number | null>(Number(busca.get('grupo')) || null)
   const navegar = useNavigate()
 
   // Cada grupo tem seu próprio histórico; o primeiro da lista serve de padrão.

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Alerta, Badge, Botao, Icone, LinkVoltar, SaldoCp, SpinnerCentral } from '../../../shared/ui'
 import { formatarDataHora } from '../../../shared/ui/formato'
 import { exemploRecompensa, rotuloNivelFiltro, rotuloRecompensa } from '../../../shared/ui/status'
@@ -50,8 +50,10 @@ export function CriarDesafioView() {
   const { dados: categorias, carregando: carregandoCategorias } = useCategoriasQuery()
   const criar = useCriarDesafioCommand()
   const navegar = useNavigate()
+  // Vindo de "Desafiar alguém" no grupo, ele já chega escolhido.
+  const { state } = useLocation() as { state: { idGrupo?: number } | null }
 
-  const [idGrupo, setIdGrupo] = useState<number | null>(null)
+  const [idGrupo, setIdGrupo] = useState<number | null>(state?.idGrupo ?? null)
   const [idCategoria, setIdCategoria] = useState<number | null>(null)
   const [titulo, setTitulo] = useState('')
   const [descricao, setDescricao] = useState('')
