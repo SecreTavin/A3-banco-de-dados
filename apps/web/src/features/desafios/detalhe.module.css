@@ -1,0 +1,580 @@
+/* Detalhe do desafio: linha do tempo, confronto entre os lados e a prova na tela. */
+
+/* No desktop a página é uma coluna de altura fixa que rola por dentro: os blocos não
+   podem encolher para caber, senão a linha do tempo perde os rótulos. */
+.cabecalho,
+.trilha,
+.grade {
+  flex-shrink: 0;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 10px 0 14px;
+}
+
+.cabecalhoTextos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.titulo {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.meta {
+  font-size: 15px;
+  color: var(--texto-suave);
+}
+
+.trilha {
+  margin-bottom: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+  overflow-x: auto;
+}
+
+.trilha > ol {
+  min-width: 460px;
+}
+
+.grade {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* ---------- confronto ---------- */
+
+.confronto {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.lado {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid;
+  border-radius: 12px;
+}
+
+.ladoSim {
+  border-color: color-mix(in srgb, var(--cumpriu) 35%, transparent);
+  background: color-mix(in srgb, var(--cumpriu) 8%, transparent);
+}
+
+.ladoNao {
+  border-color: color-mix(in srgb, var(--perdeu) 35%, transparent);
+  background: color-mix(in srgb, var(--perdeu) 8%, transparent);
+}
+
+.ladoVenceu {
+  box-shadow: 0 0 0 2px var(--cumpriu);
+}
+
+.ladoNao.ladoVenceu {
+  box-shadow: 0 0 0 2px var(--perdeu);
+}
+
+.ladoPerdeu {
+  opacity: 0.6;
+}
+
+.ladoTitulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ladoSim .ladoTitulo {
+  color: var(--cumpriu);
+}
+
+.ladoNao .ladoTitulo {
+  color: var(--perdeu);
+}
+
+.ladoSelo {
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: var(--fundo);
+  font-size: 11px;
+}
+
+.ladoSim .ladoSelo {
+  background: var(--cumpriu);
+}
+
+.ladoNao .ladoSelo {
+  background: var(--perdeu);
+}
+
+.ladoVazio {
+  font-size: 14px;
+  color: var(--texto-fraco);
+}
+
+.pessoas {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pessoa {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.pessoa small {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--texto-fraco);
+}
+
+.ganho {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed var(--borda-forte);
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.pote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.poteRotulo {
+  font-size: 12.5px;
+  color: var(--texto-fraco);
+  text-align: center;
+}
+
+/* ---------- sobre ---------- */
+
+.sobre {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.descricao {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.fatos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  margin: 0;
+}
+
+.fatos dt {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-fraco);
+}
+
+.fatos dd {
+  margin: 2px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ---------- entrar / enviar prova ---------- */
+
+.entrar,
+.enviar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid var(--primaria-forte);
+  border-radius: var(--raio);
+  background: var(--primaria-fraca);
+}
+
+.entrarTitulo {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.opcoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.opcao {
+  flex: 1;
+  min-width: 110px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 10px;
+  background: var(--fundo);
+  color: var(--texto-suave);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.opcaoAtiva {
+  border-color: var(--primaria-forte);
+  background: var(--primaria-fraca);
+  color: var(--texto);
+}
+
+.opcaoSim {
+  border-color: var(--cumpriu);
+  background: color-mix(in srgb, var(--cumpriu) 14%, transparent);
+  color: var(--texto);
+}
+
+.opcaoNao {
+  border-color: var(--perdeu);
+  background: color-mix(in srgb, var(--perdeu) 14%, transparent);
+  color: var(--texto);
+}
+
+/* ---------- prova ---------- */
+
+.prova {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.provaTopo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.provaTopo h2 {
+  font-size: 17px;
+}
+
+.foto {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  background: var(--fundo);
+}
+
+.foto img {
+  display: block;
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+}
+
+.ampliar {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+}
+
+.linkProva {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px;
+  border: 1px dashed var(--borda-forte);
+  border-radius: 10px;
+  color: var(--destaque-texto);
+  font-weight: 600;
+}
+
+.relato,
+.comentario {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--texto-suave);
+}
+
+.relato {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--superficie-alta);
+  color: var(--texto);
+}
+
+.placar {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14.5px;
+  color: var(--texto-fraco);
+}
+
+.vale {
+  color: var(--cumpriu);
+}
+
+.naoVale {
+  color: var(--erro-texto);
+}
+
+.barraVotos {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--texto) 8%, transparent);
+  overflow: hidden;
+}
+
+.barraVale,
+.barraNaoVale {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 4px;
+}
+
+.barraVale {
+  left: 0;
+  background: var(--cumpriu);
+}
+
+.barraNaoVale {
+  right: 0;
+  background: var(--perdeu);
+}
+
+.juri {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.jurado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14.5px;
+}
+
+.juradoAvatar {
+  position: relative;
+  display: inline-grid;
+}
+
+.votou,
+.falta {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border: 2px solid var(--superficie);
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.votou {
+  background: var(--cumpriu);
+  color: #052e16;
+}
+
+.falta {
+  background: var(--borda-forte);
+  color: var(--texto);
+}
+
+.dicaVoto {
+  padding: 9px 12px;
+  border-radius: 9px;
+  background: var(--cp-fraca);
+  color: var(--cp);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.rodapeProva {
+  font-size: 13.5px;
+  color: var(--texto-fraco);
+}
+
+.provasAntigas {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.provaAntiga {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  font-size: 14.5px;
+}
+
+.provaAntigaVotos {
+  margin-left: auto;
+  color: var(--texto-fraco);
+}
+
+.semProva {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 22px;
+  border: 1px dashed var(--borda-forte);
+  border-radius: var(--raio);
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 15px;
+}
+
+.semProva strong {
+  color: var(--texto);
+}
+
+.formDialogo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.textoDialogo {
+  font-size: 15px;
+  color: var(--texto-suave);
+}
+
+@media (min-width: 720px) {
+  .confronto {
+    grid-template-columns: 1fr 120px 1fr;
+    align-items: stretch;
+  }
+}
+
+@media (min-width: 1100px) {
+  .cabecalho {
+    margin: 0;
+  }
+
+  .titulo {
+    font-size: 34px;
+  }
+
+  .meta {
+    font-size: 17px;
+  }
+
+  .trilha {
+    margin-bottom: 0;
+    padding: 12px 18px;
+  }
+
+  .sobre,
+  .entrar,
+  .enviar {
+    padding: 12px 18px;
+  }
+
+  .grade,
+  .coluna {
+    gap: 12px;
+  }
+
+  .trilha > ol {
+    min-width: 0;
+  }
+
+  .grade {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
+    align-items: start;
+    margin-top: 0;
+  }
+
+  .pessoa,
+  .descricao,
+  .fatos dd {
+    font-size: 17px;
+  }
+
+  .ganho,
+  .placar,
+  .jurado {
+    font-size: 16px;
+  }
+
+  .provaTopo h2,
+  .entrarTitulo {
+    font-size: 19px;
+  }
+
+  .foto img {
+    max-height: 220px;
+  }
+}

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   Alerta,
   Avatar,
@@ -6,12 +6,12 @@ import {
   CabecalhoPagina,
   Card,
   EstadoVazio,
-  SaldoCp,
   Secao,
   SpinnerCentral,
 } from '../../../shared/ui'
 import { formatarDataCompleta } from '../../../shared/ui/formato'
 import { LinhaExtrato } from '../components/LinhaExtrato'
+import { SaldoNoGrupo } from '../components/SaldoNoGrupo'
 import { usePerfilQuery } from '../hooks/usePerfilQuery'
 import estilos from '../perfil.module.css'
 
@@ -24,7 +24,6 @@ export function PerfilView() {
   if (!perfil) return <EstadoVazio titulo="Perfil indisponível" />
 
   const { usuario, saldos, extrato, historico } = perfil
-  const totalCp = saldos.reduce((soma, saldo) => soma + saldo.saldoCp, 0)
 
   return (
     <>
@@ -44,7 +43,6 @@ export function PerfilView() {
             No app desde {formatarDataCompleta(usuario.dataCadastro)}
           </span>
         </div>
-        <SaldoCp valor={totalCp} grande />
       </Card>
 
       <Secao titulo="Histórico">
@@ -64,7 +62,7 @@ export function PerfilView() {
         </div>
       </Secao>
 
-      <Secao titulo="Saldo por grupo" contagem={saldos.length}>
+      <Secao titulo="Seu CP em cada grupo" contagem={saldos.length}>
         {saldos.length === 0 ? (
           <EstadoVazio
             titulo="Nenhum grupo ainda"
@@ -73,12 +71,7 @@ export function PerfilView() {
         ) : (
           <ul className={estilos.saldos}>
             {saldos.map((saldo) => (
-              <li key={saldo.idGrupo} className={estilos.saldo}>
-                <Link to={`/grupos/${saldo.idGrupo}`} className={estilos.saldoGrupo}>
-                  {saldo.grupo}
-                </Link>
-                <SaldoCp valor={saldo.saldoCp} />
-              </li>
+              <SaldoNoGrupo key={saldo.idGrupo} saldo={saldo} apelido={usuario.apelido} />
             ))}
           </ul>
         )}

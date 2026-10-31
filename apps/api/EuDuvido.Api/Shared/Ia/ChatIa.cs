@@ -57,11 +57,11 @@ public class ChatIa(HttpClient http, IaOptions opcoes, ILogger<ChatIa> log) : IC
         }
         catch (HttpRequestException e)
         {
-            throw new IaIndisponivelException("Nao foi possivel falar com o provedor de IA.", e);
+            throw new IaIndisponivelException("Não foi possível falar com o provedor de IA.", e);
         }
         catch (TaskCanceledException e) when (!ct.IsCancellationRequested)
         {
-            throw new IaIndisponivelException("O provedor de IA nao respondeu a tempo.", e);
+            throw new IaIndisponivelException("O provedor de IA não respondeu a tempo.", e);
         }
         catch (JsonException e)
         {

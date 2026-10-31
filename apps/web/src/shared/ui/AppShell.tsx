@@ -10,6 +10,8 @@ export interface AbaNavegacao {
   rota: string
   rotulo: string
   icone: NomeIcone
+  /** Pendências da aba (provas esperando o voto); 0 esconde a bolha. */
+  contagem?: number
 }
 
 interface Props {
@@ -30,10 +32,16 @@ export function AppShell({ usuario, abas, aoSair }: Props) {
         <span className={estilos.espaco} />
 
         <span className={estilos.acoes}>
-          <span className={estilos.usuario}>
+          <NavLink
+            to="/perfil"
+            className={({ isActive }) =>
+              [estilos.usuario, isActive && estilos.usuarioAtivo].filter(Boolean).join(' ')
+            }
+            title="Meu perfil"
+          >
             <Avatar apelido={usuario.apelido} url={usuario.avatarUrl} />
             <span className={estilos.apelido}>{usuario.apelido}</span>
-          </span>
+          </NavLink>
 
           <BotaoTema />
 
@@ -52,7 +60,14 @@ export function AppShell({ usuario, abas, aoSair }: Props) {
               [estilos.aba, isActive && estilos.abaAtiva].filter(Boolean).join(' ')
             }
           >
-            <Icone nome={aba.icone} tamanho={19} />
+            <span className={estilos.abaIcone}>
+              <Icone nome={aba.icone} tamanho={19} />
+              {Boolean(aba.contagem) && (
+                <span className={estilos.bolha} aria-label={`${aba.contagem} pendente(s)`}>
+                  {aba.contagem}
+                </span>
+              )}
+            </span>
             {aba.rotulo}
           </NavLink>
         ))}

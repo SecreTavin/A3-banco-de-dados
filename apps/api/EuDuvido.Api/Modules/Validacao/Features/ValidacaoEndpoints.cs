@@ -47,9 +47,13 @@ public static class ValidacaoEndpoints
                        v.total_validadores AS "totalValidadores", v.quorum,
                        v.total_votos AS "totalVotos", v.votos_favoraveis AS "votosFavoraveis",
                        v.votos_contra AS "votosContra", v.votos_faltantes AS "votosFaltantes",
-                       (j.voto IS NOT NULL) AS "jaVotei"
+                       (j.voto IS NOT NULL) AS "jaVotei",
+                       -- A regra do desafio e quem diz ter cumprido: o juri le antes da prova.
+                       d.descricao AS "descricaoDesafio", ud.apelido AS desafiado
                   FROM vw_status_votacao v
                   JOIN evidencia e ON e.id_evidencia = v.id_evidencia
+                  JOIN desafio d ON d.id_desafio = v.id_desafio
+                  JOIN usuario ud ON ud.id_usuario = e.id_usuario
                   -- So aparece para quem esta no juri congelado desta evidencia.
                   JOIN jurado_evidencia j
                     ON j.id_evidencia = v.id_evidencia AND j.id_usuario = @id

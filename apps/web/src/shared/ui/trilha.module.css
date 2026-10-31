@@ -1,0 +1,106 @@
+.trilha {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.etapa {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* O traço liga um ponto ao próximo; o da última etapa não existe. */
+.etapa::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 14px;
+  right: 0;
+  height: 2px;
+  background: var(--borda-forte);
+}
+
+.etapa:last-child::after {
+  display: none;
+}
+
+.feita::after {
+  background: var(--texto-fraco);
+}
+
+.ponto {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--borda-forte);
+}
+
+.feita .ponto {
+  background: var(--texto-fraco);
+}
+
+.atual .ponto {
+  background: var(--cor-atual);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--cor-atual) 25%, transparent);
+}
+
+.textos {
+  display: flex;
+  flex-direction: column;
+  padding-right: 8px;
+}
+
+.rotulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+
+.feita .rotulo {
+  color: var(--texto);
+}
+
+.atual .rotulo {
+  color: var(--cor-atual);
+}
+
+.detalhe {
+  font-size: 13px;
+  color: var(--texto-fraco);
+}
+
+.compacta {
+  width: 132px;
+}
+
+.compacta .ponto {
+  width: 10px;
+  height: 10px;
+}
+
+.compacta .etapa::after {
+  top: 4px;
+  left: 10px;
+}
+
+.compacta .atual .ponto {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--cor-atual) 25%, transparent);
+}
+
+@media (min-width: 1100px) {
+  .rotulo {
+    font-size: 16px;
+  }
+
+  .detalhe {
+    font-size: 14px;
+  }
+}
