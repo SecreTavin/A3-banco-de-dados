@@ -13,6 +13,10 @@ Na véspera da revisão da Entrega 3 (30/10), conferir a PR #3 contra a
 especificação, corrigir o que faltava para a entrega e fechar as issues
 pendentes (#14, #15, #27, #28, #29, #31).
 
+## Prompt utilizado
+
+> Vamos corrigir o que precisa para a entrega de amanhã, após isso vamos consertar esse PR e fechar todas as issues para que a entrega de amanhã seja feita. Sobre o modelo da IA vamos prosseguir com o que o dev implementou.
+
 ## O que a IA produziu
 
 * **Conferência da PR #3** executando de verdade: build, 147 testes, `schema.sql`
