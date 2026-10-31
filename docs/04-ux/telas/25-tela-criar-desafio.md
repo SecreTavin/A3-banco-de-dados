@@ -17,14 +17,14 @@ Criação de um novo desafio (RF03, RF04, RF05).
 ![Formulário de novo desafio](img/25-criar-desafio.png)
 
 Proposta recusada pela IA real (Groq, nível `MODERADO`): o motivo aparece no
-quadro *Moderação de IA* e nada é criado (RN28).
+quadro *Moderação do grupo* e nada é criado (RN28).
 
 ![Proposta recusada pela moderação de IA](img/25-criar-desafio-recusado.png)
 
 | Especificado | Implementado |
 | --- | --- |
-| Título, descrição, grupo, categoria, custo, prazo, recompensa | Sim |
-| Moderação de IA antes de criar | Sim; o quadro mostra o nível do grupo |
+| Título, descrição, grupo, categoria, custo, prazo, recompensa | Sim; grupo e categoria em cartões, custo e prazo com atalhos, prévia ao vivo ao lado |
+| Moderação de IA antes de criar | Sim, como etapa: cada grupo mostra o seu filtro e o quadro explica recusa e indisponibilidade |
 | Selecionar participantes na criação | **Não.** O desafio nasce `ABERTA` sem participantes; cada membro entra pela tela de detalhe, escolhendo papel e escolha (RN09, débito por `debitar_escrow`) |
 
 *Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*

@@ -100,6 +100,15 @@ implementação antes de qualquer publicação.
 * Depois dos testes, o banco foi recriado do seed, com a chave da IA, para a
   demonstração.
 
+## Atualização no merge
+
+Ao mesclar com a `main`, que trouxe a Entrega 4 (#43) e o redesign (#50),
+`scripts/telas/capturar-telas.mjs` passou a dispensar a abertura e a usar o
+formulário novo de criação. As capturas das telas 22–29 foram refeitas com a
+interface atual, inclusive a recusa da IA real. Os textos de "Como ficou
+implementada" foram revisados contra o código: rótulos, abas, menus e
+diálogos.
+
 ## Decisão final
 
 Entram a abertura, a passagem obrigatória por ela e os roteiros ajustados. Nada

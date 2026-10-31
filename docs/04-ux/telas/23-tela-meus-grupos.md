@@ -22,9 +22,9 @@ Gestão de grupos privados de amigos (RF02).
 | Lista de grupos com saldo | Sim |
 | Criar grupo | Sim |
 | Adicionar membro (só `ADMIN`) | Sim, por e-mail de usuário já cadastrado; entra com 100 CP (RN06) |
-| Detalhe: membros com papel e saldo | Sim, com **Remover** para o `ADMIN` e **Sair do grupo** (RN25, `SAIDA_GRUPO`) |
-| Detalhe: desafios do grupo | **Não.** Os desafios aparecem em *Meus desafios*, com o nome do grupo no cartão |
-| Nível de filtro (só `ADMIN`) | Sim, em *Moderação de IA* (RN27) |
+| Detalhe: membros com papel e saldo | Sim. **Remover do grupo…** fica no menu "⋯" do membro, só para o `ADMIN`, e **Sair do grupo…** no fim da página; os dois pedem confirmação e avisam quem tem desafio ou júri em aberto (RN25, `SAIDA_GRUPO`) |
+| Detalhe: desafios do grupo | Sim, na aba **Desafios**; a aba **Ranking** leva ao ranking do grupo |
+| Nível de filtro (só `ADMIN`) | Sim, em *Filtro da IA para novos desafios*, com um exemplo aprovado e um recusado por nível (RN27) |
 
 *Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 

@@ -16,15 +16,13 @@ Dashboard principal do usuário com os desafios em que está envolvido (RF04, RF
 
 | Especificado | Implementado |
 | --- | --- |
-| Filtro pelos seis status | Sim |
-| Cartão com título, grupo, categoria, custo, recompensa e prazo | Sim |
-| Separar "criei" de "participo" | Sim, nos filtros à direita |
-| Atalho para votação em `EM_VOTACAO` | Sim, selo **Vote agora** |
+| Filtro pelos seis status | Em duas abas, **Ativos** e **Encerrados**, com filtro por grupo; o status aparece em cada linha |
+| Cartão com título, grupo, categoria, custo, recompensa e prazo | Sim, numa linha com a etapa do desafio (aberto, em andamento, no júri, resultado) |
+| Separar "criei" de "participo" | Sim; cada linha diz o meu papel no desafio |
+| Atalho para votação em `EM_VOTACAO` | Sim, no bloco **Sua vez** do topo, com o botão **Votar** |
 
-Na captura acima, quando o cartão tinha selo de prazo e de votação ao mesmo
-tempo, os selos se sobrepunham. O redesign de UI/UX
-([proposta 01](../propostas/README.md)) trocou os selos por texto com ponto e
-resolveu o defeito.
+O redesign de UI/UX ([proposta 01](../propostas/README.md)) pôs no topo o que
+pede ação agora: prova esperando voto, prova a enviar e desafio aberto.
 
 *Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 
