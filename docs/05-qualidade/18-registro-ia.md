@@ -37,7 +37,7 @@ cada arquivo.
 
 ## Registros
 
-39 registros, em ordem cronológica.
+40 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
