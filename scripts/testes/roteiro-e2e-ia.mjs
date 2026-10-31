@@ -241,17 +241,25 @@ function soNoSimulado() {
 
 // --- Ajudas de tela -----------------------------------------------------------
 
+// Toda carga de pagina passa pela abertura (tela inicial animada); qualquer
+// tecla segue para a tela pedida.
+async function irPara(url) {
+  await pagina.goto(url)
+  await pagina.locator('main[aria-label^="Eu Duvido!"]').waitFor()
+  await pagina.keyboard.press('Enter')
+}
+
 async function esperarRede() {
   await pagina.waitForLoadState('networkidle')
 }
 
 async function entrar(apelido) {
-  await pagina.goto(`${WEB}/login`)
+  await irPara(`${WEB}/login`)
   await pagina.evaluate(() => {
     localStorage.removeItem('euduvido.token')
     localStorage.removeItem('euduvido.usuario')
   })
-  await pagina.goto(`${WEB}/login`)
+  await irPara(`${WEB}/login`)
   await esperarRede()
   await pagina.getByText(apelido, { exact: true }).first().click()
   await pagina.waitForURL('**/desafios', { timeout: 15000 })
@@ -261,7 +269,7 @@ async function entrar(apelido) {
 // Tela de criacao do redesign (#47): grupo e categoria em cartoes, custo e prazo
 // em atalhos, combinado fora do app recolhido.
 async function preencherEEnviar(idGrupo, tituloProposta, descricao) {
-  await pagina.goto(`${WEB}/desafios/nova`)
+  await irPara(`${WEB}/desafios/nova`)
   await esperarRede()
   const nomeGrupo = sql(`SELECT nome FROM grupo_amigos WHERE id_grupo=${idGrupo}`)
   await pagina.getByRole('button', { name: new RegExp(`^${nomeGrupo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`) }).click()
@@ -520,7 +528,7 @@ async function cenariosDeTela() {
     confere(chamadasAoProvedor() === antes + 1, 'o provedor deveria ter sido chamado uma vez')
     const titulosNaTela = await pagina.locator('h1').allInnerTexts()
     confere(titulosNaTela.some((x) => x.trim() === t), `titulo "${t}" nao esta no detalhe`)
-    await pagina.goto(`${WEB}/desafios`)
+    await irPara(`${WEB}/desafios`)
     await esperarRede()
     // Conta so a lista: o mesmo desafio tambem pode aparecer no bloco "Sua vez".
     const cartao = await pagina.locator(`[class*=lista] a[href="/desafios/${id}"]`).count()
