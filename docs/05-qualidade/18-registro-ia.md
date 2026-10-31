@@ -37,7 +37,7 @@ cada arquivo.
 
 ## Registros
 
-40 registros, em ordem cronológica.
+41 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -81,6 +81,7 @@ cada arquivo.
 | 2026-10-31 | [Preparação da Entrega 4: telas reais, IA com chave real e lacunas do edital](registro-ia/2026-10-31-preparacao-entrega-4.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-31 | [Redesign de UI/UX: seis propostas, da prancha ao código](registro-ia/2026-10-31-redesign-ux.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-31 | [Tela inicial: abertura animada com o monge e o nerd](registro-ia/2026-10-31-tela-inicial-abertura.md) | Claude Code (Opus 5.5) | Octávio Arruda |
+| 2026-10-31 | [Jogos online no Brasil em números](registro-ia/2026-10-31-jogos-online-em-numeros.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 
 ## Consolidação final
 

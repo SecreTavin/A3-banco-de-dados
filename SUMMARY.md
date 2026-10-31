@@ -18,6 +18,7 @@
   * [01 - Identificação](docs/00-introducao/01-identificacao.md)
   * [02 - Introdução Geral](docs/00-introducao/02-introducao.md)
   * [03 - Problema e Contexto](docs/00-introducao/03-problema-e-contexto.md)
+    * [Jogos online no Brasil em números](docs/00-introducao/jogos-online-em-numeros.md)
   * [04 - Justificativa](docs/00-introducao/04-justificativa.md)
   * [05 - Objetivos](docs/00-introducao/05-objetivos.md)
   * [06 - Público-Alvo](docs/00-introducao/06-publico-alvo.md)
@@ -110,6 +111,7 @@
     * [2026-10-31 - Preparação da Entrega 4: telas reais, IA com chave real e lacunas do edital](docs/05-qualidade/registro-ia/2026-10-31-preparacao-entrega-4.md)
     * [2026-10-31 - Redesign de UI/UX: seis propostas, da prancha ao código](docs/05-qualidade/registro-ia/2026-10-31-redesign-ux.md)
     * [2026-10-31 - Tela inicial: abertura animada com o monge e o nerd](docs/05-qualidade/registro-ia/2026-10-31-tela-inicial-abertura.md)
+    * [2026-10-31 - Jogos online no Brasil em números](docs/05-qualidade/registro-ia/2026-10-31-jogos-online-em-numeros.md)
 
 ## Produto
 
