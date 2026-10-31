@@ -31,7 +31,7 @@ cada arquivo.
 
 ## Registros
 
-38 registros, em ordem cronológica.
+39 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -73,6 +73,7 @@ cada arquivo.
 | 2026-10-30 | [E2E de criar desafio com a IA simulada](registro-ia/2026-10-30-e2e-ia-simulada.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [Regenera o status da Entrega 3](registro-ia/2026-10-30-gera-status-entrega-3.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-31 | [Redesign de UI/UX: seis propostas, da prancha ao código](registro-ia/2026-10-31-redesign-ux.md) | Claude Code (Opus 5.5) | Octávio Arruda |
+| 2026-10-31 | [Tela inicial: abertura animada com o monge e o nerd](registro-ia/2026-10-31-tela-inicial-abertura.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 
 ## Consolidação final
 
