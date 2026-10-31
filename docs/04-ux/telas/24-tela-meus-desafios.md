@@ -9,6 +9,24 @@ Dashboard principal do usuário com os desafios em que está envolvido (RF04, RF
 - **Separação:** desafios que criei vs. que participo
 - **CTA direto** para a Central de Votação em desafios `EM_VOTACAO` (ex: "Cumpra agora!")
 
+
+## Como ficou implementada
+
+![Meus desafios](img/24-meus-desafios.png)
+
+| Especificado | Implementado |
+| --- | --- |
+| Filtro pelos seis status | Sim |
+| Cartão com título, grupo, categoria, custo, recompensa e prazo | Sim |
+| Separar "criei" de "participo" | Sim, nos filtros à direita |
+| Atalho para votação em `EM_VOTACAO` | Sim, selo **Vote agora** |
+
+**Defeito visual conhecido:** quando o cartão tem selo de prazo e de votação ao
+mesmo tempo, os selos se sobrepõem (visível nos dois primeiros cartões acima).
+Registrado em [19 - Limitações](../../06-encerramento/19-limitacoes-e-melhorias.md).
+
+*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+
 ## Dados (origem: `desafio`, `participante_desafio`)
 `titulo`, `status`, `valor_cp`, `tipo_recompensa`, `descricao_recompensa`, `data_limite` / `papel_desafio`, `escolha`
 
