@@ -18,7 +18,7 @@ Dados do usuário e histórico pessoal. Confirmado no escopo do MVP.
 | --- | --- |
 | Dados do usuário | Sim (nome, apelido, e-mail, data de cadastro) |
 | Edição de nome e apelido | **Não implementada** |
-| Saldo por grupo e extrato | Sim; o extrato lê o ledger `transacao_cp` com saldo acumulado |
+| Saldo por grupo e extrato | Sim; saldo e posição no ranking de cada grupo, e o extrato lê o ledger `transacao_cp` com saldo acumulado e o grupo de cada lançamento |
 | Histórico: criados, participações, evidências | Sim |
 
 *Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*

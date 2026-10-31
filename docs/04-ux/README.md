@@ -6,7 +6,7 @@ Os TODOs levantados no refinamento **foram resolvidos** pelas decisões de arqui
 
 Cada tela tem também a seção **"Como ficou implementada"**, com a captura do sistema rodando e o que ficou diferente do especificado. As capturas são geradas por [`scripts/telas/capturar-telas.mjs`](../../scripts/telas/capturar-telas.mjs) a partir do seed da demonstração, então podem ser refeitas a qualquer momento.
 
-O redesign de 31/10/2026 — seis propostas aprovadas pelo PO, implementadas e testadas — está em [Redesign de UI/UX](propostas/README.md).
+O redesign de 31/10/2026 — seis propostas aprovadas pelo PO, implementadas e testadas — está em [Redesign de UI/UX](propostas/README.md). A abertura animada, pedida depois da apresentação, está em [Tela inicial](propostas/tela-inicial/README.md).
 
 ## Telas
 
@@ -18,3 +18,4 @@ O redesign de 31/10/2026 — seis propostas aprovadas pelo PO, implementadas e t
 * [27 - Central de Votação](telas/27-tela-central-votacao.md)
 * [28 - Ranking](telas/28-tela-ranking.md)
 * [29 - Perfil](telas/29-tela-perfil.md)
+* [30 - Abertura](telas/30-tela-abertura.md)

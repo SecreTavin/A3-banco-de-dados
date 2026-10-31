@@ -109,6 +109,7 @@
     * [2026-10-30 - Regenera o status da Entrega 3](docs/05-qualidade/registro-ia/2026-10-30-gera-status-entrega-3.md)
     * [2026-10-31 - Preparação da Entrega 4: telas reais, IA com chave real e lacunas do edital](docs/05-qualidade/registro-ia/2026-10-31-preparacao-entrega-4.md)
     * [2026-10-31 - Redesign de UI/UX: seis propostas, da prancha ao código](docs/05-qualidade/registro-ia/2026-10-31-redesign-ux.md)
+    * [2026-10-31 - Tela inicial: abertura animada com o monge e o nerd](docs/05-qualidade/registro-ia/2026-10-31-tela-inicial-abertura.md)
 
 ## Produto
 
@@ -121,7 +122,9 @@
   * [27 - Tela: Central de Votação](docs/04-ux/telas/27-tela-central-votacao.md)
   * [28 - Tela: Ranking](docs/04-ux/telas/28-tela-ranking.md)
   * [29 - Tela: Perfil](docs/04-ux/telas/29-tela-perfil.md)
+  * [30 - Tela: Abertura](docs/04-ux/telas/30-tela-abertura.md)
   * [Redesign de UI/UX (31/10/2026)](docs/04-ux/propostas/README.md)
+    * [Tela inicial: abertura animada](docs/04-ux/propostas/tela-inicial/README.md)
 
 ## Encerramento
 

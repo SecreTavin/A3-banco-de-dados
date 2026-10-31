@@ -77,3 +77,8 @@ tabela, nem procedure:
 * Roteiros de ponta a ponta reexecutados com os seletores novos —
   [17 - Testes](../../05-qualidade/17-testes.md): tela 12/12, IA simulada 14/14,
   API 18/18 — e 147 testes da API.
+
+## Depois da apresentação
+
+A abertura animada, com o monge e o nerd, tem página própria:
+[Tela inicial: abertura animada](tela-inicial/README.md).

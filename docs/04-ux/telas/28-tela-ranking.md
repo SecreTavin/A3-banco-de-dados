@@ -15,7 +15,7 @@ Ranking de maiores desafios e apuração de resultados (RF08).
 
 | Especificado | Implementado |
 | --- | --- |
-| Ranking por grupo, com histórico completo | Sim: desafios, acertos, erros, CP em prêmios e saldo |
+| Ranking por grupo, com histórico completo | Sim: pódio dos três primeiros e tabela com acerto ("acertou X de Y"), CP em prêmios e saldo |
 | Maiores desafios por pote | **Não na tela.** Existe como consulta Q3 em [16 - Consultas SQL](../../03-banco-de-dados/implementacao/16-consultas-sql.md) |
 | % de aprovação, cumpridas × perdidas | **Não na tela.** Acertos e erros aparecem por jogador |
 
