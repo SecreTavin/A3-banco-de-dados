@@ -107,6 +107,7 @@
     * [2026-10-30 - Documenta que o upload direto de evidência não foi implementado](docs/05-qualidade/registro-ia/2026-10-30-upload-de-evidencia-nao-implementado.md)
     * [2026-10-30 - E2E de criar desafio com a IA simulada](docs/05-qualidade/registro-ia/2026-10-30-e2e-ia-simulada.md)
     * [2026-10-30 - Regenera o status da Entrega 3](docs/05-qualidade/registro-ia/2026-10-30-gera-status-entrega-3.md)
+    * [2026-10-31 - Redesign de UI/UX: seis propostas, da prancha ao código](docs/05-qualidade/registro-ia/2026-10-31-redesign-ux.md)
 
 ## Produto
 
@@ -119,6 +120,7 @@
   * [27 - Tela: Central de Votação](docs/04-ux/telas/27-tela-central-votacao.md)
   * [28 - Tela: Ranking](docs/04-ux/telas/28-tela-ranking.md)
   * [29 - Tela: Perfil](docs/04-ux/telas/29-tela-perfil.md)
+  * [Redesign de UI/UX (31/10/2026)](docs/04-ux/propostas/README.md)
 
 ## Encerramento
 
