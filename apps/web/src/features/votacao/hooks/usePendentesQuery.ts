@@ -1,6 +1,7 @@
 import { useConsulta } from '../../../shared/api/useConsulta'
 import type { EvidenciaPendente } from '../../../shared/api/tipos'
 
-export function usePendentesQuery() {
-  return useConsulta<EvidenciaPendente[]>('/api/validacao/pendentes')
+/** `ativo = false` suspende a busca — fora da área logada não há token para mandar. */
+export function usePendentesQuery(ativo = true) {
+  return useConsulta<EvidenciaPendente[]>(ativo ? '/api/validacao/pendentes' : null)
 }

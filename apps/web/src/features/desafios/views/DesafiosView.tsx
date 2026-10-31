@@ -1,69 +1,101 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import {
-  Alerta,
-  Botao,
-  CabecalhoPagina,
-  EstadoVazio,
-  Icone,
-  Secao,
-  SpinnerCentral,
-} from '../../../shared/ui'
-import { ORDEM_STATUS, aparenciaStatusDesafio } from '../../../shared/ui/status'
-import { CardDesafio } from '../components/CardDesafio'
+import { useNavigate } from 'react-router-dom'
+import { Alerta, Botao, EstadoVazio, Icone, SpinnerCentral } from '../../../shared/ui'
+import { useAuth } from '../../../shared/auth/AuthContext'
+import { useGruposQuery } from '../../grupos/hooks/useGruposQuery'
+import { usePendentesQuery } from '../../votacao/hooks/usePendentesQuery'
+import { ATIVOS } from '../apresentacao'
+import { LinhaDesafio } from '../components/LinhaDesafio'
+import { SuaVez } from '../components/SuaVez'
 import { useDesafiosQuery } from '../hooks/useDesafiosQuery'
-import type { FiltroStatus } from '../hooks/useDesafiosQuery'
-import estilos from '../desafios.module.css'
+import estilos from '../inicio.module.css'
 
-const FILTROS: { valor: FiltroStatus; rotulo: string }[] = [
-  { valor: 'TODAS', rotulo: 'Todas' },
-  ...ORDEM_STATUS.map((status) => ({
-    valor: status as FiltroStatus,
-    rotulo: aparenciaStatusDesafio[status].rotulo,
-  })),
-]
+type Aba = 'ativos' | 'encerrados'
 
 export function DesafiosView() {
-  const [filtro, setFiltro] = useState<FiltroStatus>('TODAS')
-  const { dados: desafios, carregando, erro } = useDesafiosQuery(filtro)
+  const { usuario } = useAuth()
   const navegar = useNavigate()
+  const { dados: desafios, carregando, erro } = useDesafiosQuery('TODAS')
+  const { dados: pendentes } = usePendentesQuery()
+  const { dados: grupos } = useGruposQuery()
 
-  const criei = desafios?.filter((desafio) => desafio.souCriador) ?? []
-  const participo = desafios?.filter((desafio) => !desafio.souCriador) ?? []
-  const vazio = criei.length === 0 && participo.length === 0
-  // No desktop os cards ficam numa grade de 3 colunas; o cartão tracejado de "Novo desafio"
-  // só entra quando cabe na última linha, para nunca criar uma linha a mais.
-  const resto = (criei.length + participo.length) % 3
+  const [aba, setAba] = useState<Aba>('ativos')
+  const [idGrupo, setIdGrupo] = useState<number | null>(null)
+
+  const todos = desafios ?? []
+  const doGrupo = idGrupo === null ? todos : todos.filter((d) => d.idGrupo === idGrupo)
+  const ativos = doGrupo.filter((d) => ATIVOS.includes(d.status))
+  const encerrados = doGrupo
+    .filter((d) => !ATIVOS.includes(d.status))
+    // Encerrado mais recente primeiro; a lista ativa segue o prazo mais próximo.
+    .sort((a, b) => b.dataLimite.localeCompare(a.dataLimite))
+  const visiveis = aba === 'ativos' ? ativos : encerrados
+
+  const meus = todos.filter((d) => ATIVOS.includes(d.status) && d.meuPapel)
+  const emJogo = meus.reduce((soma, d) => soma + d.valorCp, 0)
 
   return (
     <>
-      <CabecalhoPagina
-        titulo="Meus desafios"
-        descricao="Ordenadas pelo prazo mais próximo."
-        acao={
-          <Botao onClick={() => navegar('/desafios/nova')}>Novo desafio</Botao>
-        }
-      />
+      <header className={estilos.ola}>
+        <div>
+          <h1 className={estilos.olaTitulo}>Oi, {usuario?.apelido}</h1>
+          <p className={estilos.olaResumo}>
+            {meus.length > 0 ? (
+              <>
+                Você tem <strong>{emJogo} CP em jogo</strong> em {meus.length}{' '}
+                {meus.length === 1 ? 'desafio' : 'desafios'}.
+              </>
+            ) : (
+              'Você não está em nenhum desafio agora.'
+            )}
+          </p>
+        </div>
+        <Botao onClick={() => navegar('/desafios/nova')} aria-label="Novo desafio">
+          <Icone nome="mais" tamanho={18} />
+          <span className={estilos.textoNovo}>Novo desafio</span>
+        </Botao>
+      </header>
 
-      <div className={estilos.filtros}>
-        {FILTROS.map((opcao) => (
-          <button
-            key={opcao.valor}
-            type="button"
-            className={[estilos.chip, filtro === opcao.valor && estilos.chipAtivo]
-              .filter(Boolean)
-              .join(' ')}
-            onClick={() => setFiltro(opcao.valor)}
-          >
-            {opcao.rotulo}
-          </button>
-        ))}
+      {!carregando && !erro && (
+        <SuaVez desafios={todos} pendentes={pendentes ?? []} grupos={grupos ?? []} />
+      )}
 
-        {!vazio && (
-          <div className={estilos.contagens}>
-            <span className={estilos.contagem}>Criei · {criei.length}</span>
-            <span className={estilos.contagem}>Participo · {participo.length}</span>
-          </div>
+      <div className={estilos.abas} role="tablist">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={aba === 'ativos'}
+          className={[estilos.aba, aba === 'ativos' && estilos.abaAtiva].filter(Boolean).join(' ')}
+          onClick={() => setAba('ativos')}
+        >
+          Ativos <span className={estilos.abaContagem}>{ativos.length}</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={aba === 'encerrados'}
+          className={[estilos.aba, aba === 'encerrados' && estilos.abaAtiva].filter(Boolean).join(' ')}
+          onClick={() => setAba('encerrados')}
+        >
+          Encerrados <span className={estilos.abaContagem}>{encerrados.length}</span>
+        </button>
+
+        {grupos && grupos.length > 1 && (
+          <label className={estilos.filtroGrupo}>
+            <Icone nome="filtro" tamanho={16} />
+            <select
+              value={idGrupo ?? ''}
+              onChange={(e) => setIdGrupo(e.target.value ? Number(e.target.value) : null)}
+              aria-label="Filtrar por grupo"
+            >
+              <option value="">Todos os grupos</option>
+              {grupos.map((grupo) => (
+                <option key={grupo.idGrupo} value={grupo.idGrupo}>
+                  {grupo.nome}
+                </option>
+              ))}
+            </select>
+          </label>
         )}
       </div>
 
@@ -71,47 +103,23 @@ export function DesafiosView() {
 
       {carregando ? (
         <SpinnerCentral />
-      ) : vazio ? (
+      ) : visiveis.length === 0 ? (
         !erro && (
           <EstadoVazio
-            titulo="Nada por aqui"
-            descricao="Nenhum desafio neste filtro. Que tal duvidar de alguém?"
-            acao={<Botao onClick={() => navegar('/desafios/nova')}>Criar desafio</Botao>}
+            titulo={aba === 'ativos' ? 'Nenhum desafio rolando' : 'Nada encerrado ainda'}
+            descricao={aba === 'ativos' ? 'Que tal duvidar de alguém?' : undefined}
+            acao={
+              aba === 'ativos' ? (
+                <Botao onClick={() => navegar('/desafios/nova')}>Criar desafio</Botao>
+              ) : undefined
+            }
           />
         )
       ) : (
-        <div className={estilos.listas}>
-          {criei.length > 0 && (
-            <Secao titulo="Criei" contagem={criei.length}>
-              <div className={estilos.lista}>
-                {criei.map((desafio) => (
-                  <CardDesafio key={desafio.idDesafio} desafio={desafio} />
-                ))}
-              </div>
-            </Secao>
-          )}
-
-          {participo.length > 0 && (
-            <Secao titulo="Participo" contagem={participo.length}>
-              <div className={estilos.lista}>
-                {participo.map((desafio) => (
-                  <CardDesafio key={desafio.idDesafio} desafio={desafio} />
-                ))}
-              </div>
-            </Secao>
-          )}
-
-          {resto !== 0 && (
-            <Link
-              to="/desafios/nova"
-              className={[estilos.novoCartao, resto === 1 && estilos.novoCartaoLargo]
-                .filter(Boolean)
-                .join(' ')}
-            >
-              <Icone nome="mais" tamanho={32} />
-              Novo desafio
-            </Link>
-          )}
+        <div className={estilos.lista}>
+          {visiveis.map((desafio) => (
+            <LinhaDesafio key={desafio.idDesafio} desafio={desafio} />
+          ))}
         </div>
       )}
     </>

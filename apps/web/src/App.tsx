@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { AppShell } from './shared/ui'
 import type { AbaNavegacao } from './shared/ui'
@@ -11,22 +12,42 @@ import { DetalheGrupoView } from './features/grupos/views/DetalheGrupoView'
 import { VotacaoView } from './features/votacao/views/VotacaoView'
 import { RankingView } from './features/ranking/views/RankingView'
 import { PerfilView } from './features/perfil/views/PerfilView'
+import { usePendentesQuery } from './features/votacao/hooks/usePendentesQuery'
 
 const ABAS: AbaNavegacao[] = [
   { rota: '/desafios', rotulo: 'Desafios', icone: 'desafios' },
   { rota: '/votacao', rotulo: 'Votação', icone: 'votacao' },
   { rota: '/grupos', rotulo: 'Grupos', icone: 'grupos' },
   { rota: '/ranking', rotulo: 'Ranking', icone: 'ranking' },
-  { rota: '/perfil', rotulo: 'Perfil', icone: 'perfil' },
 ]
+
+/** Provas esperando o meu voto, para a bolha da aba Votação. Relê a cada troca de tela. */
+function usePendenciasDeVoto(ativo: boolean) {
+  const local = useLocation()
+  const { dados, recarregar } = usePendentesQuery(ativo)
+  const primeiraTela = useRef(true)
+
+  useEffect(() => {
+    // A primeira leitura já sai do próprio useConsulta; daqui em diante, uma por troca de tela.
+    if (primeiraTela.current) {
+      primeiraTela.current = false
+      return
+    }
+    if (ativo) recarregar()
+  }, [ativo, local.pathname, recarregar])
+
+  return dados?.filter((evidencia) => !evidencia.jaVotei).length ?? 0
+}
 
 function AreaAutenticada() {
   const { usuario, sair } = useAuth()
   const local = useLocation()
+  const pendencias = usePendenciasDeVoto(Boolean(usuario))
 
   if (!usuario) return <Navigate to="/login" replace state={{ de: local.pathname }} />
 
-  return <AppShell usuario={usuario} abas={ABAS} aoSair={sair} />
+  const abas = ABAS.map((aba) => (aba.rota === '/votacao' ? { ...aba, contagem: pendencias } : aba))
+  return <AppShell usuario={usuario} abas={abas} aoSair={sair} />
 }
 
 function AreaPublica() {
