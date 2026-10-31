@@ -173,6 +173,7 @@ rodada. Para repetir, volte ao seed (`docker compose down -v` e `up`, ou
 | U10 | Perfil e Ranking | Saldos iguais aos do banco, por grupo e por membro | Aprovado |
 | U11 | Alternar o tema, recarregar e percorrer 8 telas em 1440x900 | Tema persiste; nenhuma tela rola na vertical | Aprovado |
 | U12 | Celular 390x844: login, desafios e detalhe do grupo | Nenhum overflow horizontal | Aprovado |
+| U13 | Abrir `/` sem sessão, apertar uma tecla; entrar, abrir `/` e clicar; abrir com "reduzir movimento" | A abertura anima; a tecla leva a `/login`; logado, o clique leva a `/desafios`; com menos movimento a cena fica parada | Aprovado |
 
 Executado em 30/10/2026 num banco recém-semeado: **12 de 12 aprovados**, uma vez
 com o navegador visível e outra sem janela.
@@ -183,6 +184,17 @@ do roteiro adaptados às telas novas: **12 de 12 aprovados**, num banco
 recém-semeado e com a API sem chave da IA — o U05 testa justamente o bloqueio
 sem chave; com a chave configurada, a IA real aprova a proposta e o cenário não
 se aplica.
+
+Reexecutado em 31/10/2026 com a abertura animada
+([tela inicial](../04-ux/propostas/tela-inicial/README.md)): **13 de 13
+aprovados**, num banco recém-semeado e com a API sem chave da IA. Toda carga de
+página agora passa pela abertura, então os roteiros de tela e de IA a dispensam
+com uma tecla depois de cada `goto` e de cada recarga.
+
+Numa rodada anterior, feita sem recriar o banco, o U11 acusou 45 px de rolagem
+interna em `/desafios/nova`. Cada rodada cria um grupo novo para o Tavin, e a
+lista de grupos dessa tela cresce até passar da altura. A falha vem dos dados
+acumulados, não da abertura; com o banco recém-semeado, o U11 passa.
 
 O que a tela **não** cobre, e onde cada coisa é testada:
 
@@ -255,6 +267,9 @@ Reexecutado em 31/10/2026 depois do redesign: **14 de 14 aprovados**. Antes, o
 I04 reprovou porque procurava "nao respondeu a tempo" e a mensagem da API passou
 a ter acento; a verificação foi ajustada. Na mesma rodada, o roteiro imprimiu a
 chave real da Groq ao restaurar a API; agora ela sai mascarada.
+
+Reexecutado em 31/10/2026 com a abertura animada no caminho de cada carga de
+página: **14 de 14 aprovados**.
 
 **Com a chave real da Groq.** `EUDUVIDO_IA_REAL=1` não sobe o simulado nem mexe
 na API, que deve ter sido iniciada com `IA_API_KEY` válida (`.env` do

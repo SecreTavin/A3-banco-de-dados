@@ -42,6 +42,12 @@
   percentual de aprovação e desafios cumpridos versus perdidos.
 
 
+### Abertura
+
+* **RF17:** Tela de abertura animada antes da tela de contas, em toda carga da
+  página, que segue com qualquer toque, clique ou tecla
+  ([30 - Abertura](../04-ux/telas/30-tela-abertura.md)).
+
 ## 7.2 Requisitos Não Funcionais (RNF)
 
 * **RNF01:** Interface responsiva mobile-first, utilizável no navegador do
