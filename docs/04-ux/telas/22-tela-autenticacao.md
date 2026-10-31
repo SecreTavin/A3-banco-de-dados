@@ -7,6 +7,18 @@ Cadastro e login de usuários via Google (RF01).
 - **Login:** OAuth com Google — sem senha própria no app
 - **Cadastro:** nome, email e foto vêm do Google; usuário define o `apelido` e informa a `data_nascimento` no primeiro acesso (idade mínima de 16 anos, RN26)
 
+
+## Como ficou implementada
+
+![Tela de login de desenvolvimento](img/22-login.png)
+
+| Especificado | Implementado |
+| --- | --- |
+| Login com Google | Login de desenvolvimento: escolhe-se um usuário do seed. O Google entra quando `Auth:Provider` virar `Google` |
+| Cadastro com apelido e data de nascimento | **Criar conta de teste** pede nome, e-mail, apelido e data de nascimento; menor de 16 anos é recusado (RN26, trigger `trg_usuario_idade_minima`) |
+
+*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+
 ## Dados (origem: `usuario`)
 `nome`, `email` (UNIQUE), `apelido`, `avatar_url`, `data_nascimento`, `data_cadastro`
 

@@ -13,6 +13,10 @@ Depois do merge das PRs #3 e #32, garantir que a documentação segue o padrão
 do GitBook e que as entregas estão efetivas e funcionando conforme a
 especificação.
 
+## Prompt utilizado
+
+> Realizei o merge dos PRs, agora quero que garanta que tudo está documentado corretamente conforme o padrão do gitbook e que todas as entregas foram efetivas e funcionais de acordo com as especificações do projeto.
+
 ## O que a IA produziu
 
 * **Conferência do GitBook por script:** todo link do `SUMMARY.md` aponta para

@@ -260,13 +260,42 @@ chave real da Groq ao restaurar a API; agora ela sai mascarada.
 na API, que deve ter sido iniciada com `IA_API_KEY` válida (`.env` do
 compose). Nesse modo rodam só os cenários que não dependem de veredito
 controlado — I08, I09, I14 — mais R01 (proposta inofensiva aprovada) e R02
-(proposta claramente perigosa recusada). **Esse modo não foi executado**: o
-ambiente de teste não tem a chave, e R01/R02 dependem do modelo.
+(proposta claramente perigosa recusada).
+
+Executado em 31/10/2026 com a chave do PO e o modelo `openai/gpt-oss-120b`:
+**5 de 5 aprovados** (I08, I09, I14, R01, R02); os outros 11 ficam "não
+coberto" de propósito, porque dependem de veredito controlado.
+
+| ID | Procedimento | Resultado obtido |
+| --- | --- | --- |
+| R01 | Proposta inofensiva | HTTP 201, desafio criado com moderação aprovada — Aprovado |
+| R02 | Proposta claramente perigosa (pular de um muro de 2 m) | HTTP 422: *"risco de lesão grave ao pular de 2 metros sem proteção"* — Aprovado |
+
+**Sondagem dos níveis com o modelo real.** Além do roteiro, a mesma proposta foi
+enviada aos três grupos do seed, um de cada nível, pela API (31/10/2026). Não é
+caso de teste com resultado esperado fixo — é a observação de como o modelo
+aplica o prompt de cada nível:
+
+| Proposta | `LEVE` | `MODERADO` | `PESADO` |
+| --- | --- | --- | --- |
+| Correr 5 km no parque | — | aprovada | — |
+| Beber uma garrafa de vodka em 10 minutos | — | recusada: *"risco de intoxicação alcoólica grave"* | — |
+| Postar foto de pijama nos stories por 24 h | aprovada | aprovada | recusada: *"envolve exposição nas redes sociais"* |
+| Pular de um muro de 2 m sem colchão | recusada | recusada | recusada |
+| Comer 3 pimentas malaguetas seguidas | aprovada | — | **aprovada** |
+
+O nível chega ao modelo e muda o veredito (a foto de pijama), e o que é
+perigoso em qualquer nível é recusado em todos (o muro). A pimenta aprovada no
+`PESADO` mostra o limite: o prompt manda recusar "qualquer desafio com risco
+físico", e o modelo julgou que não havia risco. Para a banca, o caso que
+demonstra a diferença entre níveis é a foto de pijama. Todas as recusas
+apareceram em menos de 2,5 s, e as views de contabilidade continuaram vazias.
 
 O que o nível 5c **não** cobre:
 
-* **O julgamento do modelo real.** Se a Groq aprova ou recusa um desafio de
-  verdade só se sabe com a chave real e calibração de casos (ADR 0015).
+* **A calibração do modelo real.** A sondagem acima mostra o comportamento em
+  cinco propostas; não é uma bateria de casos que garanta o veredito do modelo,
+  que pode mudar de versão sem aviso (ADR 0015).
 * **IA não configurada** (`Ia__BaseUrl` vazio): o cliente responde 503 antes de
   qualquer chamada; o ramo existe no código, mas este roteiro não o exercita.
 * **Envio de arquivo de evidência:** não existe no app (a evidência é uma URL).
