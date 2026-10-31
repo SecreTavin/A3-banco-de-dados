@@ -1,5 +1,14 @@
 /* Tela inicial (Meus desafios): saudação, "Sua vez", abas e a lista em linhas. */
 
+/* No desktop a página é uma coluna de altura fixa que rola por dentro: os blocos não
+   podem encolher para caber, senão a linha do tempo perde os rótulos. */
+.ola,
+.vez,
+.abas,
+.lista {
+  flex-shrink: 0;
+}
+
 .ola {
   display: flex;
   align-items: center;
