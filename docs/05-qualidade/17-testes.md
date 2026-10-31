@@ -135,7 +135,8 @@ python3 scripts/testes/roteiro-e2e.py
 | E18 | Conferir a contabilidade depois de tudo | `vw_reconciliacao_saldo` e `vw_escrow_orfao` vazias | Aprovado |
 
 Executado em 29/10/2026: **18 de 18 aprovados**, duas vezes, cada uma num banco
-recém-criado. Na mesma data, as telas de login, desafios, criação de desafio e
+recém-criado. Reexecutado em 31/10/2026, depois das leituras novas da API do
+redesign: **18 de 18**. Na mesma data, as telas de login, desafios, criação de desafio e
 detalhe do grupo foram conferidas no navegador. Sem a chave da Groq, a tela de
 criação mostra o motivo do bloqueio e não cria nada.
 
@@ -163,18 +164,25 @@ rodada. Para repetir, volte ao seed (`docker compose down -v` e `up`, ou
 | U01 | Entrar como Tavin | `/desafios` lista os desafios dos grupos dele (7 = 7 no banco) | Aprovado |
 | U02 | Abrir o detalhe de um desafio | Título da tela igual ao do banco | Aprovado |
 | U03 | Criar um grupo pelo formulário | Grupo na lista; criador `ADMIN` com 100 CP e `CREDITO_INICIAL` | Aprovado |
-| U04 | Adicionar um membro por e-mail e removê-lo (caixa de confirmação) | Entra com 100 CP; sai com `SAIDA_GRUPO` e ledger do membro em zero | Aprovado |
+| U04 | Adicionar um membro por e-mail e removê-lo (menu "⋯" e diálogo de confirmação) | Entra com 100 CP; sai com `SAIDA_GRUPO` e ledger do membro em zero | Aprovado |
 | U05 | Criar desafio sem a IA | A tela explica o bloqueio; `desafio` e `moderacao_desafio` inalteradas (RN28) | Aprovado |
 | U06 | Dois membros aceitam um desafio aberto, como Desafiado e Desafiante | Cada um debitado do valor e retido em escrow; desafio `EM_ANDAMENTO` (RN18, RN21) | Aprovado |
 | U07 | O Desafiado envia a evidência | `EM_VOTACAO`; júri congelado sem Desafiante nem Desafiado (RN14) | Aprovado |
-| U08 | Os jurados votam `VÁLIDO` na Central de Votação até o quórum | Evidência `ACEITA`, desafio `FINALIZADA_CUMPRIU`, pote pago, 2 CP por voto, views de contabilidade vazias | Aprovado |
-| U09 | Quem já votou volta à Central | A tela não oferece mais Válido/Inválido; 1 voto no banco | Aprovado |
+| U08 | Os jurados votam "Vale" na Votação, confirmando cada voto, até o quórum | Evidência `ACEITA`, desafio `FINALIZADA_CUMPRIU`, pote pago, 2 CP por voto, views de contabilidade vazias | Aprovado |
+| U09 | Quem já votou volta à Votação | A tela não oferece mais Vale/Não vale; 1 voto no banco | Aprovado |
 | U10 | Perfil e Ranking | Saldos iguais aos do banco, por grupo e por membro | Aprovado |
 | U11 | Alternar o tema, recarregar e percorrer 8 telas em 1440x900 | Tema persiste; nenhuma tela rola na vertical | Aprovado |
 | U12 | Celular 390x844: login, desafios e detalhe do grupo | Nenhum overflow horizontal | Aprovado |
 
 Executado em 30/10/2026 num banco recém-semeado: **12 de 12 aprovados**, uma vez
 com o navegador visível e outra sem janela.
+
+Reexecutado em 31/10/2026, depois do redesign de UI/UX
+([propostas](../04-ux/propostas/README.md), issues #44 a #49), com os seletores
+do roteiro adaptados às telas novas: **12 de 12 aprovados**, num banco
+recém-semeado e com a API sem chave da IA — o U05 testa justamente o bloqueio
+sem chave; com a chave configurada, a IA real aprova a proposta e o cenário não
+se aplica.
 
 O que a tela **não** cobre, e onde cada coisa é testada:
 
@@ -242,6 +250,11 @@ Executado em 30/10/2026: **14 de 14 aprovados**, uma vez com o navegador visíve
 e outra sem janela (a primeira rodada visível teve 4 reprovações, todas erro do
 próprio roteiro — comparação de booleano do `psql` —, corrigido; ver o
 [registro de IA](registro-ia/2026-10-30-e2e-ia-simulada.md)).
+
+Reexecutado em 31/10/2026 depois do redesign: **14 de 14 aprovados**. Antes, o
+I04 reprovou porque procurava "nao respondeu a tempo" e a mensagem da API passou
+a ter acento; a verificação foi ajustada. Na mesma rodada, o roteiro imprimiu a
+chave real da Groq ao restaurar a API; agora ela sai mascarada.
 
 **Com a chave real da Groq.** `EUDUVIDO_IA_REAL=1` não sobe o simulado nem mexe
 na API, que deve ter sido iniciada com `IA_API_KEY` válida (`.env` do

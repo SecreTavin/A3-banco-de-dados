@@ -21,9 +21,10 @@ Dashboard principal do usuário com os desafios em que está envolvido (RF04, RF
 | Separar "criei" de "participo" | Sim, nos filtros à direita |
 | Atalho para votação em `EM_VOTACAO` | Sim, selo **Vote agora** |
 
-**Defeito visual conhecido:** quando o cartão tem selo de prazo e de votação ao
-mesmo tempo, os selos se sobrepõem (visível nos dois primeiros cartões acima).
-Registrado em [19 - Limitações](../../06-encerramento/19-limitacoes-e-melhorias.md).
+Na captura acima, quando o cartão tinha selo de prazo e de votação ao mesmo
+tempo, os selos se sobrepunham. O redesign de UI/UX
+([proposta 01](../propostas/README.md)) trocou os selos por texto com ponto e
+resolveu o defeito.
 
 *Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 

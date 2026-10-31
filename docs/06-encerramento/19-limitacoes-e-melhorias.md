@@ -54,11 +54,6 @@ qualquer risco físico ([17 - Testes](../05-qualidade/17-testes.md)). O sistema
 garante o que está ao seu alcance — nada vira desafio sem avaliação, toda
 avaliação fica gravada —, mas não o acerto de cada julgamento.
 
-**Acabamento visual.** Na lista de desafios, os selos de prazo e de votação se
-sobrepõem quando aparecem juntos ([tela 24](../04-ux/telas/24-tela-meus-desafios.md)),
-e as mensagens de erro da API são escritas sem acento ("moderacao", "nao").
-Nenhum dos dois afeta dado ou regra.
-
 **Limites do plano gratuito.** Aiven free oferece 1 CPU, 1 GB de RAM, 1 GB de
 disco e 20 conexões sem pooling. Suficiente para a demonstração, insuficiente
 para uso real.

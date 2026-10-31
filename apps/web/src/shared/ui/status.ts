@@ -15,12 +15,12 @@ interface Aparencia {
 }
 
 export const aparenciaStatusDesafio: Record<StatusDesafio, Aparencia> = {
-  ABERTA: { rotulo: 'Aberta', cor: 'var(--aberta)' },
+  ABERTA: { rotulo: 'Aberto', cor: 'var(--aberta)' },
   EM_ANDAMENTO: { rotulo: 'Em andamento', cor: 'var(--em-andamento)' },
   EM_VOTACAO: { rotulo: 'Em votação', cor: 'var(--em-votacao)' },
   FINALIZADA_CUMPRIU: { rotulo: 'Cumpriu', cor: 'var(--cumpriu)' },
   FINALIZADA_PERDEU: { rotulo: 'Perdeu', cor: 'var(--perdeu)' },
-  CANCELADA: { rotulo: 'Cancelada', cor: 'var(--cancelada)' },
+  CANCELADA: { rotulo: 'Cancelado', cor: 'var(--cancelada)' },
 }
 
 export const aparenciaStatusEvidencia: Record<StatusEvidencia, Aparencia> = {

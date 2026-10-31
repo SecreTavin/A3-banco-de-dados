@@ -95,28 +95,28 @@ public static class NiveisFiltro
 public static class GrupoErrors
 {
     public static Error NaoEncontrado =>
-        Error.NotFound("Grupo.NaoEncontrado", "Grupo nao encontrado.");
+        Error.NotFound("Grupo.NaoEncontrado", "Grupo não encontrado.");
 
     public static Error SomenteAdmin =>
         Error.Forbidden("Grupo.SomenteAdmin",
             "Apenas administradores do grupo podem fazer isso.");
 
     public static Error JaMembro =>
-        Error.Conflict("Grupo.JaMembro", "Este usuario ja participa do grupo.");
+        Error.Conflict("Grupo.JaMembro", "Este usuário já participa do grupo.");
 
     public static Error NaoMembro =>
-        Error.NotFound("Grupo.NaoMembro", "Este usuario nao participa do grupo.");
+        Error.NotFound("Grupo.NaoMembro", "Este usuário não participa do grupo.");
 
     public static Error UltimoAdmin =>
         Error.Conflict("Grupo.UltimoAdmin",
-            "Voce e o unico administrador: o grupo precisa de outro ADMIN antes de voce sair.");
+            "Você é o único administrador: o grupo precisa de outro admin antes de você sair.");
 
     public static Error UsuarioNaoEncontrado =>
         Error.NotFound("Grupo.UsuarioNaoEncontrado",
-            "Nenhum usuario cadastrado com este e-mail.");
+            "Nenhum usuário cadastrado com este e-mail.");
 
     public static Error MembroComPendencias =>
         Error.Conflict("Grupo.MembroComPendencias",
-            "O membro participa de desafio em curso ou de um juri aberto. " +
-            "Ele so pode sair depois que eles forem encerrados.");
+            "O membro participa de desafio em curso ou de um júri aberto. " +
+            "Ele só pode sair depois que eles forem encerrados.");
 }
