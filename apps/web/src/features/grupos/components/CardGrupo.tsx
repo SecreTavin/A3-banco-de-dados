@@ -19,7 +19,7 @@ export function CardGrupo({ grupo }: { grupo: GrupoResumo }) {
           {grupo.totalMembros} {grupo.totalMembros === 1 ? 'membro' : 'membros'}
         </span>
         <span>
-          <span className={estilos.ponto}>· </span>moderação{' '}
+          <span className={estilos.ponto}>· </span>filtro{' '}
           {rotuloNivelFiltro[grupo.nivelFiltro].toLowerCase()}
         </span>
       </div>

@@ -8,6 +8,19 @@ Ranking de maiores desafios e apuração de resultados (RF08).
 - **Maiores desafios** (por pote em CP)
 - **% de aprovação** e cumpridas vs. perdidas
 
+
+## Como ficou implementada
+
+![Ranking por grupo](img/28-ranking.png)
+
+| Especificado | Implementado |
+| --- | --- |
+| Ranking por grupo, com histórico completo | Sim: pódio dos três primeiros e tabela com acerto ("acertou X de Y"), CP em prêmios e saldo |
+| Maiores desafios por pote | **Não na tela.** Existe como consulta Q3 em [16 - Consultas SQL](../../03-banco-de-dados/implementacao/16-consultas-sql.md) |
+| % de aprovação, cumpridas × perdidas | **Não na tela.** Acertos e erros aparecem por jogador |
+
+*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+
 ## Dados (origem: queries analíticas sobre `desafio`, `participante_desafio`, `jurado_evidencia`, `transacao_cp`, `membro_grupo`)
 Baseado em [analytical_queries.sql](../../../database/scripts/queries/analytical_queries.sql) — `valor_cp`, `saldo_cp`, `percentual_aprovacao`, contagem de votos favoráveis/contra.
 

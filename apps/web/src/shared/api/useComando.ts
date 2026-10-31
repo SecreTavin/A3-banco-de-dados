@@ -1,7 +1,8 @@
 import { useCallback, useState } from 'react'
-import { mensagemDeErro } from './client'
+import { ApiError, mensagemDeErro } from './client'
 
-export type Resultado<S> = { ok: true; dados: S } | { ok: false; erro: string }
+/** `status` vem da API quando ela respondeu (422, 503...); falha de rede não tem. */
+export type Resultado<S> = { ok: true; dados: S } | { ok: false; erro: string; status?: number }
 
 export interface Comando<E, S> {
   executar: (entrada: E) => Promise<Resultado<S>>
@@ -28,7 +29,7 @@ export function useComando<E, S>(acao: (entrada: E) => Promise<S>): Comando<E, S
       } catch (falha) {
         const mensagem = mensagemDeErro(falha)
         setErro(mensagem)
-        return { ok: false, erro: mensagem }
+        return { ok: false, erro: mensagem, status: falha instanceof ApiError ? falha.status : undefined }
       } finally {
         setEnviando(false)
       }

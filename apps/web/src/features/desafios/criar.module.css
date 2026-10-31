@@ -1,0 +1,373 @@
+/* Criar desafio: escolhas em atalhos, prévia ao vivo e a moderação como etapa. */
+
+.cabecalho,
+.grade {
+  flex-shrink: 0;
+}
+
+.cabecalho {
+  margin: 10px 0 14px;
+}
+
+.cabecalho h1 {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.cabecalho p {
+  font-size: 15px;
+  color: var(--texto-suave);
+}
+
+.grade {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formulario,
+.lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.formulario {
+  padding: 18px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.campo legend,
+.rotulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.rotulo {
+  margin-bottom: 0;
+}
+
+.rotulo small {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--texto-fraco);
+}
+
+.campo textarea {
+  min-height: 72px;
+}
+
+.grupos {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.grupo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 12px;
+  background: var(--fundo);
+  text-align: left;
+  cursor: pointer;
+}
+
+.grupo strong {
+  display: block;
+  font-size: 15px;
+}
+
+.grupo small {
+  font-size: 13px;
+  color: var(--texto-fraco);
+}
+
+.nivel {
+  flex: none;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nivelLEVE {
+  background: color-mix(in srgb, var(--cumpriu) 15%, transparent);
+  color: var(--ok-texto);
+}
+
+.nivelMODERADO {
+  background: color-mix(in srgb, var(--em-andamento) 15%, transparent);
+  color: var(--em-andamento);
+}
+
+.nivelPESADO {
+  background: color-mix(in srgb, var(--perdeu) 15%, transparent);
+  color: var(--erro-texto);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--borda-forte);
+  border-radius: 10px;
+  background: var(--fundo);
+  color: var(--texto-suave);
+  font-size: 14.5px;
+  cursor: pointer;
+}
+
+.ativo {
+  border-color: var(--primaria-forte);
+  background: var(--primaria-fraca);
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.custoLivre {
+  width: 96px;
+  min-height: 40px;
+  padding: 0 12px;
+}
+
+.dupla {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.nota,
+.notaErro {
+  font-size: 13px;
+  color: var(--texto-fraco);
+}
+
+.notaErro {
+  color: var(--erro-texto);
+}
+
+.combinado {
+  padding-top: 12px;
+  border-top: 1px dashed var(--borda-forte);
+}
+
+.abrirCombinado {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0 0;
+  border: none;
+  border-top: 1px dashed var(--borda-forte);
+  background: transparent;
+  color: var(--texto-suave);
+  font-size: 14.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.abrirCombinado:hover {
+  color: var(--texto);
+}
+
+/* ---------- lateral ---------- */
+
+.rotuloLateral {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--texto-fraco);
+}
+
+.previa {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.previa strong {
+  font-size: 17px;
+}
+
+.vazio {
+  color: var(--texto-fraco);
+}
+
+.previaMeta {
+  font-size: 13.5px;
+  color: var(--texto-fraco);
+}
+
+.previaRodape {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: 13.5px;
+  color: var(--texto-suave);
+}
+
+.moderacao {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+  border: 1px solid var(--borda);
+  border-radius: var(--raio);
+  background: var(--superficie);
+}
+
+.moderacao h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+}
+
+.fluxo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fluxo li {
+  padding-top: 6px;
+  border-top: 3px solid var(--borda-forte);
+  font-size: 12.5px;
+  color: var(--texto-fraco);
+}
+
+.fluxo .fluxoFeito {
+  border-color: var(--primaria-forte);
+  color: var(--texto-suave);
+}
+
+.fluxo .fluxoFalhou {
+  border-color: var(--perdeu);
+  color: var(--erro-texto);
+}
+
+.avaliando {
+  font-size: 14px;
+  color: var(--destaque-texto);
+}
+
+.recusa,
+.indisponivel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.recusa {
+  border-color: color-mix(in srgb, var(--perdeu) 40%, transparent);
+  background: color-mix(in srgb, var(--perdeu) 9%, transparent);
+}
+
+.indisponivel {
+  border-color: color-mix(in srgb, var(--em-andamento) 40%, transparent);
+  background: color-mix(in srgb, var(--em-andamento) 9%, transparent);
+}
+
+.recusa strong,
+.indisponivel strong {
+  font-size: 15px;
+}
+
+.recusa p,
+.indisponivel p {
+  color: var(--texto-suave);
+}
+
+@media (min-width: 720px) {
+  .grupos {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  }
+
+  .dupla {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1100px) {
+  .cabecalho {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin: 0;
+  }
+
+  .cabecalho h1 {
+    font-size: 34px;
+  }
+
+  .cabecalho p {
+    font-size: 17px;
+  }
+
+  .grade {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 400px;
+    align-items: start;
+  }
+
+  .formulario {
+    gap: 14px;
+    padding: 20px 22px;
+  }
+
+  .campo legend,
+  .rotulo {
+    font-size: 16px;
+  }
+
+  .chip {
+    font-size: 15.5px;
+  }
+
+  .previa strong {
+    font-size: 19px;
+  }
+}

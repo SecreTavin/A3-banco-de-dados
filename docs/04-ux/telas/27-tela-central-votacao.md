@@ -8,6 +8,22 @@ Validação por evidência pelos membros do grupo (RF07).
 - **Card de evidência:** mídia, comprovante, contagem de votos válidos/inválidos, quórum necessário e prazo restante
 - **Ação de votar:** `VALIDO`/`INVALIDO` + justificativa
 
+
+## Como ficou implementada
+
+![Central de votação com o voto pendente da demonstração](img/27-central-votacao.png)
+
+É a tela do roteiro da banca: o voto da Lari fecha o quórum e dispara
+`apurar_votacao` no banco.
+
+| Especificado | Implementado |
+| --- | --- |
+| Evidências pendentes, inclusive as já votadas | Sim; as já votadas dizem **Você já votou.** |
+| Contagem de votos, quórum e prazo | Sim, e avisa quando o meu voto fecha o júri |
+| Votar `VALIDO`/`INVALIDO` com justificativa | Sim: **Vale** ou **Não vale**, confirmação com motivos prontos e justificativa opcional; depois do voto que fecha o júri, a tela mostra o resultado e o pagamento |
+
+*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+
 ## Dados (origem: `evidencia`, `jurado_evidencia`)
 `tipo_midia`, `url_comprovante`, `status`, `data_limite_votacao` / jurados congelados / `voto`, `justificativa`, `data_voto` — voto único por usuário/evidência (RN04). A tela é alimentada pela view `vw_status_votacao`, que já entrega votos, quórum e situação por evidência.
 

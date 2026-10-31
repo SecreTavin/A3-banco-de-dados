@@ -17,6 +17,20 @@ IA com 3 níveis configuráveis por grupo (Leve/Moderado/Pesado) — e pedi para
 a IA registrar a decisão em ADR, atualizar as regras de negócio e planejar a
 divisão do trabalho em PRs menores para o time.
 
+## Prompt utilizado
+
+> Certo, então agora atuando como Product Owner, vamos definir quais alterações e criações devem ser feitas no projeto para que o grupo faça suas responsabilidades. De acordo com o que o professor disse, tive a seguinte ideia:
+> Como o projeto leva mais um tom de "zoeira, algo para divertir. Mas com uma lógica e sistema sem esse tom" decidi atuar da seguinte forma.
+>
+> * Idade mínima de uso: Ao usuário ter acessar o app, juntamente a (Identidade) o user deve registrar a sua data de nascimento "idade".
+> * IA para filtragem de desafios: Incluir uma IA "Gratuita tipo o grok" para filtragem dos desafios, o user(admin) tem a opção de controlar esse filtro durante a criação do seu "grupo".
+> * Nível de filtragem de IA: O admin tem 3 níveis de filtragem: Leve/Moderado/pesado.
+> * especificações dos níveis:
+>
+> Leve: O filtro de IA deixa passar desafios mais pesados, mas nada absurdo como "Tirar a própria vida".
+> Moderado: O filtro tem o meio termo dos dois níveis, atuando como algo médio.
+> Pesado: Filtro mais destinado a adolescentes e jovens, um controle mais rigoroso dos desafios propostos pelos usuários, não deixando passar nada que possa ferir a imagem/reputação de nenhum usuário do grupo.
+
 ## O que a IA produziu
 
 Rascunho completo do ADR 0015 (contexto, decisão, tabela de alternativas

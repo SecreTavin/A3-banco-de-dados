@@ -72,8 +72,19 @@
   background: var(--superficie);
 }
 
-.saldoGrupo {
+.saldoTextos {
+  display: flex;
   flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.saldoPosicao {
+  font-size: 13px;
+  color: var(--texto-fraco);
+}
+
+.saldoGrupo {
   font-weight: 600;
   font-size: 15.5px;
 }

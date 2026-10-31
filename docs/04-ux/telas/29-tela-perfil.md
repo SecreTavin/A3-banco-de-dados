@@ -9,6 +9,20 @@ Dados do usuário e histórico pessoal. Confirmado no escopo do MVP.
 - **Saldo de CP por grupo** e extrato de movimentações
 - **Histórico:** desafios criados, participações, evidências enviadas
 
+
+## Como ficou implementada
+
+![Perfil com extrato de CP](img/29-perfil.png)
+
+| Especificado | Implementado |
+| --- | --- |
+| Dados do usuário | Sim (nome, apelido, e-mail, data de cadastro) |
+| Edição de nome e apelido | **Não implementada** |
+| Saldo por grupo e extrato | Sim; saldo e posição no ranking de cada grupo, e o extrato lê o ledger `transacao_cp` com saldo acumulado e o grupo de cada lançamento |
+| Histórico: criados, participações, evidências | Sim |
+
+*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+
 ## Dados (origem: `usuario`, `desafio`, `participante_desafio`, `evidencia`, `membro_grupo`, `transacao_cp`)
 `nome`, `apelido`, `email`, `avatar_url`, `data_cadastro` / `saldo_cp` / `tipo`, `valor`, `descricao`, `data_lancamento`
 

@@ -9,8 +9,16 @@
 
 ## O que foi pedido
 
-Descrição do objetivo em uma ou duas frases. Se o prompt foi relevante, cite-o
-ou resuma o que foi solicitado.
+Descrição do objetivo em uma ou duas frases.
+
+## Prompt utilizado
+
+O comando dado à IA, **copiado como foi escrito** — o edital pede o
+prompt/comando de cada uso relevante (seções 6 e 13). Se foram vários, cite os
+que mudaram o rumo do trabalho. Não resuma aqui: resumo vai em "O que foi
+pedido".
+
+> Cole o prompt aqui.
 
 ## O que a IA produziu
 

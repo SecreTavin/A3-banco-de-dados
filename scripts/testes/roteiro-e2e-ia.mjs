@@ -124,6 +124,13 @@ const envDaApi = () =>
     encoding: 'utf8',
   }).trim()
 
+// Para log: a chave real nunca aparece inteira na saida (ela vai para prints, CI e
+// registros de sessao). So o comeco e o tamanho, o bastante para saber qual e.
+const mascararChave = (env) =>
+  env.replace(/^(Ia__ApiKey=)(.*)$/m, (_, nome, chave) =>
+    chave ? `${nome}${chave.slice(0, 4)}… (${chave.length} caracteres)` : `${nome}(vazia)`,
+  )
+
 async function apontarApiParaOSimulado() {
   compose(['-f', 'docker-compose.yml', '-f', OVERRIDE, 'up', '-d', '--no-deps', 'api'])
   await esperarApi()
@@ -234,42 +241,47 @@ function soNoSimulado() {
 
 // --- Ajudas de tela -----------------------------------------------------------
 
-const campo = (rotulo) =>
-  pagina.locator('label').filter({ has: pagina.getByText(rotulo, { exact: true }) })
+// Toda carga de pagina passa pela abertura (tela inicial animada); qualquer
+// tecla segue para a tela pedida.
+async function irPara(url) {
+  await pagina.goto(url)
+  await pagina.locator('main[aria-label^="Eu Duvido!"]').waitFor()
+  await pagina.keyboard.press('Enter')
+}
 
 async function esperarRede() {
   await pagina.waitForLoadState('networkidle')
 }
 
 async function entrar(apelido) {
-  await pagina.goto(`${WEB}/login`)
+  await irPara(`${WEB}/login`)
   await pagina.evaluate(() => {
     localStorage.removeItem('euduvido.token')
     localStorage.removeItem('euduvido.usuario')
   })
-  await pagina.goto(`${WEB}/login`)
+  await irPara(`${WEB}/login`)
   await esperarRede()
   await pagina.getByText(apelido, { exact: true }).first().click()
   await pagina.waitForURL('**/desafios', { timeout: 15000 })
   await esperarRede()
 }
 
-function formatarDatetimeLocal(data) {
-  const p = (n) => String(n).padStart(2, '0')
-  return `${data.getFullYear()}-${p(data.getMonth() + 1)}-${p(data.getDate())}T${p(data.getHours())}:${p(data.getMinutes())}`
-}
-
+// Tela de criacao do redesign (#47): grupo e categoria em cartoes, custo e prazo
+// em atalhos, combinado fora do app recolhido.
 async function preencherEEnviar(idGrupo, tituloProposta, descricao) {
-  await pagina.goto(`${WEB}/desafios/nova`)
+  await irPara(`${WEB}/desafios/nova`)
   await esperarRede()
-  await campo('Grupo').locator('select').selectOption({ value: String(idGrupo) })
-  await campo('Categoria').locator('select').selectOption({ index: 1 })
-  await campo('Título').locator('input').fill(tituloProposta)
-  await campo('Descrição').locator('textarea').fill(descricao)
-  await campo('Custo em CP').locator('input').fill('5')
-  await campo('Prazo').locator('input').fill(formatarDatetimeLocal(new Date(Date.now() + 7 * 86_400_000)))
-  await campo('O que foi combinado').locator('input').fill('R$ 5,00 no Pix')
-  await pagina.getByRole('button', { name: 'Criar desafio', exact: true }).click()
+  const nomeGrupo = sql(`SELECT nome FROM grupo_amigos WHERE id_grupo=${idGrupo}`)
+  await pagina.getByRole('button', { name: new RegExp(`^${nomeGrupo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`) }).click()
+  const categoria = sql('SELECT nome FROM categoria_desafio ORDER BY nome LIMIT 1')
+  await pagina.getByRole('button', { name: categoria, exact: true }).click()
+  await pagina.locator('input[maxlength="120"]').fill(tituloProposta)
+  await pagina.locator('textarea').fill(descricao)
+  await pagina.getByRole('button', { name: '5 CP', exact: true }).click()
+  await pagina.getByRole('button', { name: '1 semana', exact: true }).click()
+  await pagina.getByRole('button', { name: /Combinaram algo fora do app/ }).click()
+  await pagina.getByLabel('O que foi combinado').fill('R$ 5,00 no Pix')
+  await pagina.getByRole('button', { name: 'Enviar para a moderação', exact: true }).click()
 }
 
 async function textoDoAlerta() {
@@ -362,7 +374,7 @@ async function cenariosDeApi() {
 
   await cenario('I04', `IA lenta (> ${TIMEOUT_API_S}s): 503 por timeout, e nada e gravado mesmo depois da resposta tardia`, async () => {
     soNoSimulado()
-    const { ms } = await semGravar('[LENTO]', 'nao respondeu a tempo')
+    const { ms } = await semGravar('[LENTO]', 'não respondeu a tempo')
     confere(ms >= (TIMEOUT_API_S - 0.5) * 1000 && ms < ia.estado.atrasoLentoMs, `demorou ${ms}ms`)
     const antes = contagens()
     await dormir(ia.estado.atrasoLentoMs - ms + 1500) // a resposta tardia do provedor ja chegou ao vazio
@@ -516,9 +528,10 @@ async function cenariosDeTela() {
     confere(chamadasAoProvedor() === antes + 1, 'o provedor deveria ter sido chamado uma vez')
     const titulosNaTela = await pagina.locator('h1').allInnerTexts()
     confere(titulosNaTela.some((x) => x.trim() === t), `titulo "${t}" nao esta no detalhe`)
-    await pagina.goto(`${WEB}/desafios`)
+    await irPara(`${WEB}/desafios`)
     await esperarRede()
-    const cartao = await pagina.locator(`a[href="/desafios/${id}"]`).count()
+    // Conta so a lista: o mesmo desafio tambem pode aparecer no bloco "Sua vez".
+    const cartao = await pagina.locator(`[class*=lista] a[href="/desafios/${id}"]`).count()
     confere(cartao === 1, `o desafio ${id} aparece ${cartao}x na lista`)
     return `a tela foi para /desafios/${id} (ABERTA, moderacao aprovada ligada) e o desafio aparece na lista do criador`
   })
@@ -592,7 +605,7 @@ try {
     console.log(`Provedor de IA simulado em 0.0.0.0:${PORTA_IA}; apontando a API para ele (so o conteiner da API e recriado)...`)
     apiMexida = true
     await apontarApiParaOSimulado()
-    console.log(`API pronta. ${envDaApi().replaceAll('\n', ' ')}\n`)
+    console.log(`API pronta. ${mascararChave(envDaApi()).replaceAll('\n', ' ')}\n`)
   } else {
     console.log('Modo com chave real: a API nao e alterada.\n')
   }
@@ -611,7 +624,7 @@ try {
     console.log('\nRestaurando a API (sem override, sem chave)...')
     try {
       await restaurarApi()
-      console.log(`API restaurada. ${envDaApi().replaceAll('\n', ' ')}`)
+      console.log(`API restaurada. ${mascararChave(envDaApi()).replaceAll('\n', ' ')}`)
     } catch (erro) {
       console.error(`NAO consegui restaurar a API: ${erro.message}\nRode: docker compose up -d --no-deps api`)
       process.exitCode = 1
