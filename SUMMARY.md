@@ -58,6 +58,7 @@
     * [0016 - Schema único e modelo de dados enxuto](docs/02-arquitetura/adr/0016-schema-unico-e-modelo-enxuto.md)
     * [0017 - "Desafio" no lugar de "aposta"](docs/02-arquitetura/adr/0017-desafio-no-lugar-de-aposta.md)
     * [0018 - Saída de membro e invariante do ledger](docs/02-arquitetura/adr/0018-saida-de-membro-e-invariante-do-ledger.md)
+    * [0019 - Demonstração pública pela Cloudflare](docs/02-arquitetura/adr/0019-demonstracao-publica-cloudflare-tunel.md)
 * [03 - Banco de Dados](docs/03-banco-de-dados/README.md)
   * [Modelagem](docs/03-banco-de-dados/modelagem/README.md)
     * [09 - Evolução da Modelagem](docs/03-banco-de-dados/modelagem/09-evolucao-modelagem.md)
@@ -112,6 +113,7 @@
     * [2026-10-31 - Redesign de UI/UX: seis propostas, da prancha ao código](docs/05-qualidade/registro-ia/2026-10-31-redesign-ux.md)
     * [2026-10-31 - Tela inicial: abertura animada com o monge e o nerd](docs/05-qualidade/registro-ia/2026-10-31-tela-inicial-abertura.md)
     * [2026-10-31 - Jogos online no Brasil em números](docs/05-qualidade/registro-ia/2026-10-31-jogos-online-em-numeros.md)
+    * [2026-10-31 - Publicação na Cloudflare com a API por túnel](docs/05-qualidade/registro-ia/2026-10-31-publicacao-cloudflare.md)
 
 ## Produto
 

@@ -132,6 +132,33 @@ cd apps/web && npm install && npm run dev
 A API sobe em `http://localhost:5080` (Swagger em `/swagger`) e o Vite em
 `http://localhost:5173`. Ambas as portas já estão na lista de CORS.
 
+## Publicar na Cloudflare
+
+O endereço público é **https://euduvido.secretavin.workers.dev**
+([ADR 0019](adr/0019-demonstracao-publica-cloudflare-tunel.md)). O site serve o
+frontend, e a API é este mesmo Docker, exposto por um túnel. Por isso o site só
+funciona enquanto o Mac está ligado, com o Docker e o túnel rodando.
+
+Pré-requisitos, uma vez só: `brew install cloudflared` e `npx wrangler login`
+com a conta da Cloudflare do PO.
+
+```bash
+docker compose up -d
+scripts/cloudflare/publicar.sh
+```
+
+O script gera o build com a API na mesma origem, sobe o túnel e publica o Worker
+com o endereço do túnel. Rode de novo sempre que o túnel cair, o Mac reiniciar
+ou o frontend mudar. Para tirar a API do ar:
+
+```bash
+scripts/cloudflare/publicar.sh parar
+```
+
+Com o túnel parado, o site abre, mas as chamadas respondem "A API está fora do
+ar". Para publicar o frontend de uma branch ainda não mesclada, aponte
+`WEB_DIR` para o `apps/web` de uma worktree dessa branch.
+
 ## Limites conhecidos do ambiente
 
 | Limite | Efeito |
