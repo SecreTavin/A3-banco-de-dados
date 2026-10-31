@@ -2,7 +2,9 @@
 
 Levantamento das telas do app "Eu Duvido!", derivado dos requisitos ([07](../01-negocio/07-requisitos.md)), regras de negócio ([08](../01-negocio/08-regras-de-negocio.md)) e do schema ([12](../03-banco-de-dados/implementacao/12-ddl-schema.md)). Cada arquivo em [telas/](telas/) descreve uma tela: objetivo, seções principais, dados de origem, decisões já validadas com o time, o que foi resolvido na arquitetura e os TODOs que ainda seguem em aberto.
 
-Os TODOs levantados no refinamento **foram resolvidos** pelas decisões de arquitetura e pela modelagem definitiva do banco: cada tela agora tem uma seção "Resolvido na arquitetura" dizendo **como** a questão foi fechada e apontando o [ADR](../02-arquitetura/adr/) ou a regra de negócio correspondente. As telas ficaram alinhadas ao schema por módulo do PostgreSQL ([ADR 0005](../02-arquitetura/adr/0005-schema-por-modulo-postgres.md)) e à adoção do CP como moeda única ([ADR 0006](../02-arquitetura/adr/0006-cp-como-moeda.md)) — por isso os nomes de tabela aparecem qualificados por schema (`identidade.usuario`, `desafios.desafio`, `validacao.evidencia`, ...).
+Os TODOs levantados no refinamento **foram resolvidos** pelas decisões de arquitetura e pela modelagem definitiva do banco: cada tela tem uma seção "Resolvido na arquitetura" dizendo **como** a questão foi fechada e apontando o [ADR](../02-arquitetura/adr/) ou a regra de negócio correspondente. Os nomes de tabela aparecem sem prefixo de schema: todo o banco vive no schema `public` ([ADR 0016](../02-arquitetura/adr/0016-schema-unico-e-modelo-enxuto.md)), e o CP é a moeda única ([ADR 0006](../02-arquitetura/adr/0006-cp-como-moeda.md)).
+
+Cada tela tem também a seção **"Como ficou implementada"**, com a captura do sistema rodando e o que ficou diferente do especificado. As capturas são geradas por [`scripts/telas/capturar-telas.mjs`](../../scripts/telas/capturar-telas.mjs) a partir do seed da demonstração, então podem ser refeitas a qualquer momento.
 
 ## Telas
 

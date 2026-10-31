@@ -11,6 +11,24 @@ Criação de um novo desafio (RF03, RF04, RF05).
 - **Participantes:** seleção de membros do grupo, papel (`DESAFIANTE`/`DESAFIADO`/`APOSTADOR`) e escolha inicial (`VAI_CUMPRIR`/`NAO_VAI_CUMPRIR`)
 - **Moderação:** antes de criar, a IA avalia título e descrição no nível de filtro do grupo; proposta reprovada não vira desafio e mostra o motivo (RN28)
 
+
+## Como ficou implementada
+
+![Formulário de novo desafio](img/25-criar-desafio.png)
+
+Proposta recusada pela IA real (Groq, nível `MODERADO`): o motivo aparece no
+quadro *Moderação de IA* e nada é criado (RN28).
+
+![Proposta recusada pela moderação de IA](img/25-criar-desafio-recusado.png)
+
+| Especificado | Implementado |
+| --- | --- |
+| Título, descrição, grupo, categoria, custo, prazo, recompensa | Sim |
+| Moderação de IA antes de criar | Sim; o quadro mostra o nível do grupo |
+| Selecionar participantes na criação | **Não.** O desafio nasce `ABERTA` sem participantes; cada membro entra pela tela de detalhe, escolhendo papel e escolha (RN09, débito por `debitar_escrow`) |
+
+*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+
 ## Dados (origem: `desafio`, `participante_desafio`, `categoria_desafio`, `membro_grupo`)
 `titulo`, `descricao`, `valor_cp`, `tipo_recompensa`, `descricao_recompensa`, `data_limite` / `papel_desafio`, `escolha` / `nome` (categoria) / `saldo_cp` (para checar se o usuário tem CP suficiente)
 
