@@ -1,0 +1,76 @@
+/* A abertura tem cenário próprio, igual nos temas claro e escuro: é a marca. */
+.tela {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  background:
+    repeating-linear-gradient(
+      -18deg,
+      transparent 0 46px,
+      rgba(255, 255, 255, 0.035) 46px 50px
+    ),
+    radial-gradient(120% 80% at 50% 38%, #5a3fe0 0%, #3a2a9a 40%, #1d1550 75%, #0a0b11 100%);
+}
+
+.palco {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.convite {
+  position: absolute;
+  left: 50%;
+  bottom: max(28px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  padding: 12px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  animation: pulsar 1.6s ease-in-out infinite;
+}
+
+/* Em tela de toque não há teclado: o convite muda de texto. */
+.conviteTecla {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .conviteToque {
+    display: none;
+  }
+
+  .conviteTecla {
+    display: inline;
+  }
+}
+
+@keyframes pulsar {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: translateX(-50%) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .convite {
+    animation: none;
+    opacity: 1;
+  }
+}

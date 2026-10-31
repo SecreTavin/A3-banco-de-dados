@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { AppShell } from './shared/ui'
 import type { AbaNavegacao } from './shared/ui'
 import { useAuth } from './shared/auth/AuthContext'
+import { AberturaView } from './features/abertura/views/AberturaView'
 import { LoginView } from './features/autenticacao/views/LoginView'
 import { DesafiosView } from './features/desafios/views/DesafiosView'
 import { CriarDesafioView } from './features/desafios/views/CriarDesafioView'
@@ -56,8 +57,16 @@ function AreaPublica() {
 }
 
 export function App() {
+  // Toda carga da página passa pela abertura, logado ou não; a navegação
+  // dentro do app não volta a ela.
+  const [abriu, setAbriu] = useState(false)
+  const continuar = useCallback(() => setAbriu(true), [])
+  if (!abriu) return <AberturaView aoContinuar={continuar} />
+
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/login" replace />} />
+
       <Route element={<AreaPublica />}>
         <Route path="/login" element={<LoginView />} />
       </Route>
