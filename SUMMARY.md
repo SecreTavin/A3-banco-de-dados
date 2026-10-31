@@ -18,6 +18,7 @@
   * [01 - Identificação](docs/00-introducao/01-identificacao.md)
   * [02 - Introdução Geral](docs/00-introducao/02-introducao.md)
   * [03 - Problema e Contexto](docs/00-introducao/03-problema-e-contexto.md)
+    * [Jogos online no Brasil em números](docs/00-introducao/jogos-online-em-numeros.md)
   * [04 - Justificativa](docs/00-introducao/04-justificativa.md)
   * [05 - Objetivos](docs/00-introducao/05-objetivos.md)
   * [06 - Público-Alvo](docs/00-introducao/06-publico-alvo.md)
