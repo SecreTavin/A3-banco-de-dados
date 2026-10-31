@@ -108,6 +108,7 @@
     * [2026-10-30 - Documenta que o upload direto de evidência não foi implementado](docs/05-qualidade/registro-ia/2026-10-30-upload-de-evidencia-nao-implementado.md)
     * [2026-10-30 - E2E de criar desafio com a IA simulada](docs/05-qualidade/registro-ia/2026-10-30-e2e-ia-simulada.md)
     * [2026-10-30 - Regenera o status da Entrega 3](docs/05-qualidade/registro-ia/2026-10-30-gera-status-entrega-3.md)
+    * [2026-10-31 - Publicação na Cloudflare com a API por túnel](docs/05-qualidade/registro-ia/2026-10-31-publicacao-cloudflare.md)
 
 ## Produto
 
