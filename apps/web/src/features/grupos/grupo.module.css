@@ -349,6 +349,10 @@
     align-items: start;
   }
 
+  .membro {
+    padding: 7px 4px;
+  }
+
   .membroTextos strong {
     font-size: 17px;
   }
@@ -357,8 +361,25 @@
     font-size: 14.5px;
   }
 
+  .filtro {
+    gap: 8px;
+    padding: 14px 16px;
+  }
+
   .filtro h2 {
     font-size: 18px;
+  }
+
+  .niveis {
+    gap: 6px;
+  }
+
+  .nivel {
+    padding: 8px 12px;
+  }
+
+  .exemplos {
+    margin-top: 2px;
   }
 
   .nivelTextos {

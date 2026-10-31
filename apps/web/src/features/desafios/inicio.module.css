@@ -404,6 +404,18 @@
     grid-template-columns: minmax(0, 1fr) 260px 160px;
   }
 
+  /* A página não rola no desktop (redesign da PR #35): topo, "Sua vez" e abas ficam
+     fixos e só a lista rola, por mais desafios que o grupo tenha. */
+  .lista {
+    flex: 1 1 auto;
+    min-height: 140px;
+    margin-right: -10px;
+    padding-right: 10px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--borda-forte) transparent;
+  }
+
   .linhaTitulo {
     font-size: 19px;
   }

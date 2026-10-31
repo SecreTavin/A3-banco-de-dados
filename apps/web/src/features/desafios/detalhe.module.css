@@ -532,6 +532,18 @@
 
   .trilha {
     margin-bottom: 0;
+    padding: 12px 18px;
+  }
+
+  .sobre,
+  .entrar,
+  .enviar {
+    padding: 12px 18px;
+  }
+
+  .grade,
+  .coluna {
+    gap: 12px;
   }
 
   .trilha > ol {
