@@ -39,64 +39,66 @@ async function capturar(arquivo) {
   console.log('ok', arquivo)
 }
 
+// Toda carga de pagina passa pela abertura (tela 30); qualquer tecla segue.
+async function irPara(url) {
+  await pagina.goto(url)
+  await pagina.locator('main[aria-label^="Eu Duvido!"]').waitFor()
+  await pagina.keyboard.press('Enter')
+}
+
 async function entrar(apelido) {
-  await pagina.goto(`${WEB}/login`)
+  await irPara(`${WEB}/login`)
   await pagina.evaluate(() => {
     localStorage.removeItem('euduvido.token')
     localStorage.removeItem('euduvido.usuario')
   })
-  await pagina.goto(`${WEB}/login`)
+  await irPara(`${WEB}/login`)
   await esperar()
   await pagina.getByText(apelido, { exact: true }).first().click()
   await pagina.waitForURL('**/desafios', { timeout: 15000 })
 }
 
-const campo = (rotulo) =>
-  pagina.locator('label').filter({ has: pagina.getByText(rotulo, { exact: true }) })
-
 // 22 - Autenticacao
-await pagina.goto(`${WEB}/login`)
+await irPara(`${WEB}/login`)
 await capturar('22-login.png')
 
 // Tavin: ADMIN do grupo 1, criador do desafio da demonstracao
 await entrar('Tavin')
 await capturar('24-meus-desafios.png')
 
-await pagina.goto(`${WEB}/grupos`)
+await irPara(`${WEB}/grupos`)
 await capturar('23-meus-grupos.png')
-await pagina.goto(`${WEB}/grupos/1`)
+await irPara(`${WEB}/grupos/1`)
 await capturar('23-detalhe-grupo.png')
 
-await pagina.goto(`${WEB}/desafios/nova`)
+await irPara(`${WEB}/desafios/nova`)
 await capturar('25-criar-desafio.png')
 
 if (CAPTURAR_RECUSA) {
-  await campo('Grupo').locator('select').selectOption({ value: '1' })
-  await campo('Categoria').locator('select').selectOption({ index: 1 })
-  await campo('Título').locator('input').fill('Beber uma garrafa de vodka em 10 minutos')
-  await campo('Descrição').locator('textarea').fill('Tomar a garrafa inteira na festa de sábado, sem parar.')
-  await campo('Custo em CP').locator('input').fill('10')
-  const prazo = new Date(Date.now() + 7 * 86_400_000)
-  const p = (n) => String(n).padStart(2, '0')
-  await campo('Prazo').locator('input').fill(
-    `${prazo.getFullYear()}-${p(prazo.getMonth() + 1)}-${p(prazo.getDate())}T20:00`)
-  await pagina.getByRole('button', { name: 'Criar desafio' }).click()
-  await pagina.getByText('recusou a proposta').waitFor({ timeout: 30000 })
+  // Formulario do redesign: grupo e categoria em cartoes, custo e prazo em atalhos.
+  await pagina.getByRole('button', { name: /^Os Inimigos do Fim/ }).click()
+  await pagina.getByRole('button', { name: 'Prendas & Zoeira', exact: true }).click()
+  await pagina.locator('input[maxlength="120"]').fill('Beber uma garrafa de vodka em 10 minutos')
+  await pagina.locator('textarea').fill('Tomar a garrafa inteira na festa de sábado, sem parar.')
+  await pagina.getByRole('button', { name: '10 CP', exact: true }).click()
+  await pagina.getByRole('button', { name: '1 semana', exact: true }).click()
+  await pagina.getByRole('button', { name: 'Enviar para a moderação', exact: true }).click()
+  await pagina.getByText('Não passou no filtro').waitFor({ timeout: 30000 })
   await capturar('25-criar-desafio-recusado.png')
 }
 
-await pagina.goto(`${WEB}/desafios/1`)
+await irPara(`${WEB}/desafios/1`)
 await capturar('26-detalhe-desafio.png')
 
-await pagina.goto(`${WEB}/ranking`)
+await irPara(`${WEB}/ranking`)
 await capturar('28-ranking.png')
 
-await pagina.goto(`${WEB}/perfil`)
+await irPara(`${WEB}/perfil`)
 await capturar('29-perfil.png')
 
 // Lari: jurada com o voto pendente que fecha o quorum na demonstracao
 await entrar('Lari')
-await pagina.goto(`${WEB}/votacao`)
+await irPara(`${WEB}/votacao`)
 await capturar('27-central-votacao.png')
 
 await navegador.close()
