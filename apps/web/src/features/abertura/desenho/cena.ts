@@ -1,7 +1,10 @@
 // Peças de cena da abertura, como strings SVG: título dourado com o "!" de
-// joia, túnel de velocidade, impacto, torta, creme e o pé em primeiro plano.
-// Os gradientes citados aqui (ouro, joiaA, joiaB, brilho, flash) ficam no
-// <defs> do AberturaView.
+// joia, túnel de velocidade, impacto, torta, creme, o pé em primeiro plano, o
+// corredor da universidade e a legenda. Os gradientes citados aqui (ouro,
+// joiaA, joiaB, brilho, flash) ficam no <defs> do AberturaView.
+
+import { caixa, fazCamera, juntar, pontos, tom } from './motor3d'
+import type { Camera, Face, P2, V3 } from './motor3d'
 
 const n = (v: number) => v.toFixed(1)
 
@@ -50,17 +53,21 @@ export function posicaoJoia(cx: number, base: number, fs: number) {
 /**
  * Título "Eu Duvido!": letras brancas com borda dourada e o "!" de joia.
  * A palavra termina em xFim (text-anchor end) e a joia vem logo depois, então
- * o "!" não encosta no "o" qualquer que seja a fonte carregada.
+ * o "!" não encosta no "o" qualquer que seja a fonte carregada. `achata` (de 0
+ * a ~0,3) amassa o "!" para baixo, como mola, quando o nerd bate nele.
  */
-export function titulo(cx: number, base: number, fs: number, brilho: number) {
+export function titulo(cx: number, base: number, fs: number, brilho: number, achata = 0) {
   const { x: xJoia } = posicaoJoia(cx, base, fs)
   const xFim = cx + fs * 2.25 - (fs * 0.42) / 2
   const texto = (extra: string) =>
     `<text x="${n(xFim)}" y="${n(base)}" text-anchor="end" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="900" font-size="${n(fs)}" letter-spacing="${n(-fs * 0.03)}" ${extra}>Eu Duvido</text>`
+  const joia = exclamacao(xJoia, base, fs, brilho)
   return texto(`fill="none" stroke="#2a1f6b" stroke-width="${n(fs * 0.24)}" stroke-linejoin="round"`) +
     texto(`fill="none" stroke="url(#ab-ouro)" stroke-width="${n(fs * 0.12)}" stroke-linejoin="round"`) +
     texto('fill="#fff"') +
-    exclamacao(xJoia, base, fs, brilho)
+    (Math.abs(achata) > 0.001
+      ? `<g transform="translate(${n(xJoia)} ${n(base)}) scale(${(1 + achata * 0.7).toFixed(3)} ${(1 - achata).toFixed(3)}) translate(${n(-xJoia)} ${n(-base)})">${joia}</g>`
+      : joia)
 }
 
 /** Linhas de velocidade convergindo para (cx, cy): o túnel dos planos fechados. */
@@ -96,11 +103,24 @@ export function impacto(x: number, y: number, r: number, cor = '#fff', opacidade
   return s + '</g>'
 }
 
-export function torta(x: number, y: number, escala: number, giro = 0) {
-  return `<g transform="translate(${n(x)} ${n(y)}) rotate(${n(giro)}) scale(${n(escala)})">` +
-    '<ellipse cx="0" cy="7" rx="25" ry="8" fill="#fff"/><ellipse cx="0" cy="6" rx="22" ry="7" fill="#c9852f"/>' +
-    '<ellipse cx="0" cy="0" rx="21" ry="9" fill="#fff6e8"/><ellipse cx="-6" cy="-2" rx="9" ry="3" fill="#fff" opacity=".8"/>' +
-    '<circle cx="0" cy="-6" r="5" fill="#ff5d73"/><circle cx="-1.5" cy="-7.5" r="1.6" fill="#fff" opacity=".8"/></g>'
+/** Torta como prisma de 14 lados: prato, lateral com luz por face, creme e cereja. */
+export function torta(x: number, y: number, escala: number, giro = 0, opacidade = 1, achata: [number, number] = [1, 1]) {
+  const g = (giro * Math.PI) / 180, cg = Math.cos(g), sg = Math.sin(g), inclina = 0.42
+  const tela = ([u, v]: P2): P2 => { const a = u * escala * achata[0], b = v * escala * achata[1]; return [x + a * cg - b * sg, y + a * sg + b * cg] }
+  const anel = (r: number, h: number, du = 0): P2[] => Array.from({ length: 14 }, (_, i) => {
+    const a = (i / 14) * Math.PI * 2
+    return [du + Math.cos(a) * r, h + Math.sin(a) * r * inclina]
+  })
+  const op = opacidade < 1 ? ` opacity="${n(opacidade)}"` : ''
+  const poli = (pts: P2[], cor: string, extra = op) => `<polygon points="${pontos(pts.map(tela))}" fill="${cor}"${extra}/>`
+  let s = poli(anel(26, 9), '#e8e4dc')
+  const topo = anel(21, 0), fundo = anel(22, 7)
+  for (let i = 0; i < 14; i++) {
+    const j = (i + 1) % 14, a = ((i + 0.5) / 14) * Math.PI * 2
+    if (Math.sin(a) > 0) s += poli([topo[i], topo[j], fundo[j], fundo[i]], tom('#c9852f', 0.55 + 0.45 * Math.max(0, Math.cos(a - 2.2))))
+  }
+  s += poli(topo, '#fff6e8') + poli(anel(8, -2, -6), '#ffffff', ` opacity="${n(0.6 * opacidade)}"`)
+  return s + poli(Array.from({ length: 8 }, (_, i): P2 => [Math.cos((i / 8) * Math.PI * 2) * 5, -7 + Math.sin((i / 8) * Math.PI * 2) * 5]), '#ff5d73')
 }
 
 /** Mancha de creme: miolo e respingos, que se afastam conforme `abertura` cresce. */
@@ -123,15 +143,17 @@ export function creme(x: number, y: number, escala: number, semente: number, abe
 /** Ponta do pé em coordenadas locais do peGrande (antes de girar e escalar). */
 export const PONTA_DO_PE = 54
 
-/** Pé do monge em primeiro plano: a câmera do chute vem atrás dele. */
-export function peGrande(x: number, y: number, escala: number, giro: number) {
-  return `<g transform="translate(${n(x)} ${n(y)}) rotate(${n(giro)}) scale(${n(escala)})">` +
-    '<rect x="-260" y="-22" width="250" height="44" rx="14" fill="#fff"/>' +
-    '<rect x="-256" y="-18" width="246" height="36" rx="12" fill="#b8521b"/><rect x="-256" y="4" width="246" height="14" rx="7" fill="#933f12"/>' +
-    '<rect x="-20" y="-20" width="20" height="40" rx="6" fill="#f4efe6" stroke="#fff" stroke-width="4"/>' +
-    '<rect x="-4" y="-26" width="58" height="52" rx="18" fill="#1d1a22" stroke="#fff" stroke-width="5"/>' +
-    '<rect x="40" y="-24" width="12" height="48" rx="6" fill="#f4efe6"/>' +
-    '<path d="M 6 -14 Q 22 -20 34 -12" stroke="#3a3542" stroke-width="4" fill="none" stroke-linecap="round"/></g>'
+/** Pé do monge em primeiro plano, em caixas: canela, meia, sapato e biqueira. */
+export function peGrande(x: number, y: number, escala: number, giro: number, opacidade = 1, base = 720) {
+  const g = (giro * Math.PI) / 180, cg = Math.cos(g), sg = Math.sin(g), faces: Face[] = []
+  const cam = fazCamera({ yaw: 28, pitch: -12, f: base * 2.2, px: x, py: y, grade: 4 })
+  const L = (u: number, v: number, z: number): V3 => [escala * (u * cg - v * sg), escala * (u * sg + v * cg), escala * z]
+  const bloco = (cu: number, hu: number, hv: number, hz: number, cor: string) => {
+    const c = L(cu, 0, 0)
+    caixa(faces, [x + c[0], y + c[1], 0], L(hu, 0, 0), L(0, hv, 0), L(0, 0, hz), cor, opacidade, cam)
+  }
+  bloco(-135, 125, 20, 20, '#b8521b'); bloco(-10, 10, 19, 19, '#f4efe6'); bloco(25, 29, 26, 24, '#1d1a22'); bloco(48, 6, 24, 22, '#f4efe6')
+  return juntar(faces)
 }
 
 /** Rastro de movimento: traços paralelos atrás de quem se move. */
@@ -152,20 +174,101 @@ export function oculosVoando(x: number, y: number, escala: number, giro: number)
     '<path d="M 5 -6 L 9 -1 L 6 3 L 11 7" stroke="#fff" stroke-width="1.6" fill="none"/></g>'
 }
 
-export function balao(x: number, y: number, texto: string, escala: number, lado: 1 | -1, k: number) {
-  if (k <= 0) return ''
-  return `<g transform="translate(${n(x)} ${n(y)}) scale(${n(escala * k)})">` +
-    '<rect x="-46" y="-21" width="92" height="36" rx="13" fill="#fff"/>' +
-    `<path d="M ${-6 * lado} 13 L ${-18 * lado} 28 L ${8 * lado} 14 Z" fill="#fff"/>` +
-    `<text x="0" y="4" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="900" font-size="17" fill="#1d1a22" text-anchor="middle">${texto}</text></g>`
+/** Legenda da provocação, embaixo e no centro, como nos jogos de PS1, logo acima do convite para continuar. */
+export function legenda(texto: string, opacidade: number, w: number, h: number) {
+  if (!texto || opacidade <= 0) return ''
+  const fs = Math.max(22, Math.min(w, h) * 0.06)
+  return `<text x="${n(w / 2)}" y="${n(h - 110 - fs * 0.4)}" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="900" font-size="${n(fs)}" letter-spacing="${n(fs * 0.08)}" fill="#ffe14a" stroke="#1a0d00" stroke-width="${n(fs * 0.24)}" stroke-linejoin="round" paint-order="stroke" opacity="${n(opacidade)}">${texto}</text>`
 }
 
-/** Estrelinhas girando em volta da cabeça de quem ficou tonto. */
+/** Estrelinhas girando em volta da cabeça de quem ficou tonto; as de trás ficam menores e apagadas. */
 export function estrelasTontura(x: number, y: number, raio: number, tempo: number) {
   let s = ''
   for (let i = 0; i < 3; i++) {
-    const a = tempo / 380 + (i * Math.PI * 2) / 3
-    s += estrela(x + Math.cos(a) * raio, y + Math.sin(a) * raio * 0.35, raio * 0.28, 0.9)
+    const a = tempo / 380 + (i * Math.PI * 2) / 3, z = Math.sin(a)
+    s += estrela(x + Math.cos(a) * raio, y + z * raio * 0.35, raio * 0.28 * (0.75 + 0.3 * z), 0.55 + 0.2 * (z + 1))
   }
+  return s
+}
+
+/** Poeira que levanta quando alguém pousa: seis bolinhas que se abrem e somem. */
+export function poeira(x: number, chao: number, desde: number, escala: number) {
+  if (desde < 0 || desde > 520) return ''
+  const k = desde / 520, sk = 1 - (1 - k) ** 3
+  let s = ''
+  for (let i = 0; i < 6; i++) {
+    const lado = i % 2 ? 1 : -1, fila = Math.floor(i / 2)
+    s += `<circle cx="${n(x + lado * (10 + fila * 14) * escala * (0.4 + 0.6 * sk))}" cy="${n(chao - (3 + 8 * sk * (1 + fila * 0.3)) * escala)}" r="${n((4 + 9 * sk) * escala)}" fill="#d9d2f5" opacity="${n(0.45 * (1 - k))}"/>`
+  }
+  return s
+}
+
+export interface Corredor {
+  w: number
+  h: number
+  cx: number
+  chao: number
+  /** unidade do mundo: 1 no palco de 1120x720 */
+  u: number
+  cam: Camera
+  /** altura do topo do título: cartazes e relógio ficam acima dela */
+  tituloTopo: number
+}
+
+const corredores = new Map<string, string>()
+
+/**
+ * Corredor da universidade: parede creme com faixa bordô, rodapé, piso em
+ * xadrez, armários escolares, cartazes e relógio. Fixo: calculado uma vez por
+ * tamanho de palco.
+ */
+export function corredor({ w, h, cx, chao, u, cam, tituloTopo }: Corredor) {
+  const chave = `${w}x${h}`
+  const pronto = corredores.get(chave)
+  if (pronto) return pronto
+  const zp = -260 * u, zf = zp + 48.5 * u, largo = Math.max(w, h) * 1.8
+  const poli = (pts: V3[], cor: string, op = 1) => `<polygon points="${pontos(pts.map(cam.lisa))}" fill="${cor}"${op < 1 ? ` opacity="${op}"` : ''}/>`
+  const ret = (x0: number, y0: number, x1: number, y1: number, z: number, cor: string, op = 1) => poli([[x0, y0, z], [x1, y0, z], [x1, y1, z], [x0, y1, z]], cor, op)
+
+  let s = ret(cx - largo, -h, cx + largo, chao, zp, '#cdbf9f')
+  s += ret(cx - largo, chao - 430 * u, cx + largo, chao - 384 * u, zp, '#7a2a3a')
+  s += ret(cx - largo, chao - 384 * u, cx + largo, chao - 378 * u, zp, '#c9a24a')
+  s += ret(cx - largo, chao - 26 * u, cx + largo, chao, zp, '#5a4334')
+  // O piso para antes de chegar perto demais da câmera, onde a perspectiva estoura.
+  const zMax = Math.min(800 * u, cam.f * 0.55), lt = 120 * u, pt = 110 * u
+  for (let zi = 0, z = zp; z < zMax; z += pt, zi++) {
+    for (let xi = 0, x = cx - largo; x < cx + largo; x += lt, xi++) {
+      s += poli([[x, chao, z], [x + lt, chao, z], [x + lt, chao, Math.min(z + pt, zMax)], [x, chao, Math.min(z + pt, zMax)]], (xi + zi) % 2 ? '#cfc6b2' : '#9a917e')
+    }
+  }
+
+  // Cartazes e relógio acima dos armários, entre o topo da tela e o título;
+  // quando não cabem inteiros nessa faixa, ficam de fora.
+  const topoCartaz = Math.min(chao - 560 * u, tituloTopo - 150 * u)
+  if (cam.lisa([cx, topoCartaz, zp])[1] > 8) {
+    for (const [dx, cor] of [[-680, '#d94f3d'], [-380, '#3e8f6a'], [130, '#e0a53a']] as [number, string][]) {
+      const x0 = cx + dx * u
+      s += ret(x0, topoCartaz, x0 + 110 * u, topoCartaz + 105 * u, zp + 1, cor)
+      for (let l = 0; l < 3; l++) s += ret(x0 + 14 * u, topoCartaz + (25 + l * 22) * u, x0 + (96 - l * 18) * u, topoCartaz + (33 + l * 22) * u, zp + 2, '#f4efe6', 0.85)
+    }
+    const rx = cx + 470 * u, ry = topoCartaz + 55 * u
+    const roda = (r: number, z: number) => Array.from({ length: 16 }, (_, i): V3 => [rx + Math.cos((i / 16) * Math.PI * 2) * r, ry + Math.sin((i / 16) * Math.PI * 2) * r, z])
+    s += poli(roda(46 * u, zp + 1), '#7a2a3a') + poli(roda(37 * u, zp + 2), '#f4efe6')
+    const [a, b, c] = [cam.lisa([rx, ry - 28 * u, zp + 3]), cam.lisa([rx, ry, zp + 3]), cam.lisa([rx + 20 * u, ry + 6 * u, zp + 3])]
+    s += `<path d="M ${n(a[0])} ${n(a[1])} L ${n(b[0])} ${n(b[1])} L ${n(c[0])} ${n(c[1])}" stroke="#1d1a22" stroke-width="${n(5 * u)}" fill="none" stroke-linecap="round"/>`
+  }
+
+  // Armários: caixas na parede, com venezianas, plaquinha e puxador.
+  const caixas: Face[] = []
+  let detalhes = ''
+  for (let i = 0, x = cx - largo; x < cx + largo; x += 70 * u, i++) {
+    const topo = chao - 326 * u
+    caixa(caixas, [x + 32 * u, topo + 150 * u, zp + 24 * u], [32 * u, 0, 0], [0, 150 * u, 0], [0, 0, 24 * u], i % 2 ? '#3e6db0' : '#3866a6', 1, cam)
+    for (const y0 of [18, 31, 44, 250, 263, 276]) detalhes += ret(x + 14 * u, topo + y0 * u, x + 50 * u, topo + (y0 + 6) * u, zf, '#1c2a44')
+    detalhes += ret(x + 22 * u, topo + 66 * u, x + 42 * u, topo + 78 * u, zf, '#d9dde3')
+    detalhes += ret(x + 50 * u, topo + 130 * u, x + 56 * u, topo + 170 * u, zf, '#c9ced6')
+  }
+  s += juntar(caixas) + detalhes
+  corredores.set(chave, s)
   return s
 }
