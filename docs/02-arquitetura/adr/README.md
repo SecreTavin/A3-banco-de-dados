@@ -22,7 +22,7 @@ Registro das decisões de arquitetura do Eu Duvido!. Uma decisão por arquivo, e
 | [0007](0007-ledger-append-only.md) | Ledger append-only com saldo materializado | Aceita | 2026-09-03 |
 | [0008](0008-quorum-congelado.md) | Conjunto de validadores congelado por evidência | Aceita | 2026-09-03 |
 | [0009](0009-armazenamento-de-midia-r2.md) | Mídia em Cloudflare R2 com upload por URL assinada | Aceita | 2026-09-03 |
-| [0010](0010-hospedagem-e-deploy.md) | Hospedagem gerenciada e deploy contínuo | Aceita | 2026-09-03 |
+| [0010](0010-hospedagem-e-deploy.md) | Hospedagem gerenciada e deploy contínuo | Substituída por 0019 | 2026-09-03 |
 | [0011](0011-notificacoes-web-push.md) | Notificações persistidas com Web Push e tempo real via SignalR | Substituída por 0016 | 2026-09-03 |
 | [0012](0012-contrato-openapi.md) | Contrato entre API e frontend gerado a partir do OpenAPI | Aceita | 2026-09-03 |
 | [0013](0013-observabilidade.md) | Observabilidade focada em domínio e banco | Aceita | 2026-09-03 |

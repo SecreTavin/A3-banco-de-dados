@@ -54,9 +54,12 @@ qualquer risco físico ([17 - Testes](../05-qualidade/17-testes.md)). O sistema
 garante o que está ao seu alcance — nada vira desafio sem avaliação, toda
 avaliação fica gravada —, mas não o acerto de cada julgamento.
 
-**Limites do plano gratuito.** Aiven free oferece 1 CPU, 1 GB de RAM, 1 GB de
-disco e 20 conexões sem pooling. Suficiente para a demonstração, insuficiente
-para uso real.
+**Hospedagem de demonstração.** A hospedagem gerenciada prevista (Vercel,
+Render e Aiven) não foi implementada ([ADR 0010](../02-arquitetura/adr/0010-hospedagem-e-deploy.md)).
+O site público depende do Mac do PO ligado, com o Docker e o túnel no ar, e o
+banco não tem backup: ele se refaz a partir do seed
+([ADR 0019](../02-arquitetura/adr/0019-demonstracao-publica-cloudflare-tunel.md)).
+Suficiente para a demonstração, insuficiente para uso real.
 
 ## Melhorias futuras
 
