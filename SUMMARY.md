@@ -114,6 +114,7 @@
     * [2026-10-31 - Tela inicial: abertura animada com o monge e o nerd](docs/05-qualidade/registro-ia/2026-10-31-tela-inicial-abertura.md)
     * [2026-10-31 - Jogos online no Brasil em números](docs/05-qualidade/registro-ia/2026-10-31-jogos-online-em-numeros.md)
     * [2026-10-31 - Publicação na Cloudflare com a API por túnel](docs/05-qualidade/registro-ia/2026-10-31-publicacao-cloudflare.md)
+    * [2026-11-07 - Conclusão e referências da Banca Final](docs/05-qualidade/registro-ia/2026-11-07-conclusao-e-referencias.md)
 
 ## Produto
 
