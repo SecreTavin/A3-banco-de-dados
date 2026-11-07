@@ -77,3 +77,7 @@ de novo é um comando.
 **Impacto na documentação:** [16 - Execução Local](../16-execucao-local.md)
 ganha a seção "Publicar na Cloudflare". O ADR 0010 continua como a hospedagem
 prevista para produção.
+
+**Atualização (07/11/2026):** a hospedagem gerenciada do 0010 não foi
+implementada até a banca, e o 0010 passou a `Substituída` por este ADR, com o
+quadro do que existe de fato.

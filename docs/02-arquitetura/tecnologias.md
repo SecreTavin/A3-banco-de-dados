@@ -13,7 +13,7 @@ estrutural tem um ADR correspondente em [adr/](adr/README.md).
 | Leitura | Dapper com SQL à mão (Queries) | Em uso | [0003](adr/0003-cqrs-dapper-ef.md) |
 | Migrations | EF Core code-first, `schema.sql` gerado | Em uso | [0004](adr/0004-schema-sql-gerado-por-migration.md) |
 | Lógica no banco | Procedures e triggers para apuração e invariantes | Em uso | [0008](adr/0008-quorum-congelado.md) |
-| Hospedagem | Aiven (PostgreSQL gerenciado) | Em uso | [0010](adr/0010-hospedagem-e-deploy.md) |
+| Hospedagem | PostgreSQL em Docker, recriado do seed; Aiven previsto e não implementado | Em uso | [0019](adr/0019-demonstracao-publica-cloudflare-tunel.md) (substitui o [0010](adr/0010-hospedagem-e-deploy.md)) |
 
 O SGBD não era realmente uma decisão em aberto: o `schema.sql` original já usava
 `SERIAL` e `TIMESTAMP`, sintaxe PostgreSQL que SQL Server e Oracle rejeitam. A
@@ -52,10 +52,10 @@ lado da operação visível no ponto de uso.
 | Item | Escolha | Status | ADR |
 | --- | --- | --- | --- |
 | Armazenamento de mídia | Cloudflare R2, upload por URL assinada | Em uso | [0009](adr/0009-armazenamento-de-midia-r2.md) |
-| Hospedagem do frontend | Vercel | Em uso | [0010](adr/0010-hospedagem-e-deploy.md) |
-| Hospedagem da API | Render | Em uso | [0010](adr/0010-hospedagem-e-deploy.md) |
+| Hospedagem do frontend | Cloudflare Worker (`euduvido.secretavin.workers.dev`), publicado por script; Vercel prevista e não implementada | Em uso | [0019](adr/0019-demonstracao-publica-cloudflare-tunel.md) (substitui o [0010](adr/0010-hospedagem-e-deploy.md)) |
+| Hospedagem da API | Docker no Mac do PO, exposta por túnel `cloudflared`; Render prevista e não implementada | Em uso | [0019](adr/0019-demonstracao-publica-cloudflare-tunel.md) (substitui o [0010](adr/0010-hospedagem-e-deploy.md)) |
 | Contêineres | Docker | Em uso | [0010](adr/0010-hospedagem-e-deploy.md) |
-| CI/CD | GitHub Actions | Em uso | [0010](adr/0010-hospedagem-e-deploy.md) |
+| CI | GitHub Actions: schema, seed, consultas, testes e build a cada PR; sem deploy automático | Em uso | [0010](adr/0010-hospedagem-e-deploy.md) |
 | Observabilidade | Grafana Cloud (free) | Em uso | [0013](adr/0013-observabilidade.md) |
 | Autenticação | Google OAuth / OIDC | Em uso | [0001](adr/0001-stack-tecnologica.md) |
 
