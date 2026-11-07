@@ -196,6 +196,12 @@ interna em `/desafios/nova`. Cada rodada cria um grupo novo para o Tavin, e a
 lista de grupos dessa tela cresce até passar da altura. A falha vem dos dados
 acumulados, não da abertura; com o banco recém-semeado, o U11 passa.
 
+Reexecutado em 07/11/2026 com a abertura em 3D
+([rodada 4](../04-ux/propostas/tela-inicial/README.md#rodada-4-abertura-em-3d-estilo-ps1)),
+sem recriar o banco e com a API sem chave da IA: **12 de 13**. O U13 passou; o
+único reprovado foi o U11, pelos mesmos 45 px de `/desafios/nova` causados pelos
+dados acumulados. O roteiro de IA simulada passou **14 de 14**.
+
 O que a tela **não** cobre, e onde cada coisa é testada:
 
 * **Segundo voto na mesma evidência (HTTP 409):** a tela esconde os botões de
