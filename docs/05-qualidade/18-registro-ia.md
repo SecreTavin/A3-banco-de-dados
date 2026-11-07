@@ -37,7 +37,7 @@ cada arquivo.
 
 ## Registros
 
-42 registros, em ordem cronológica.
+43 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -83,6 +83,7 @@ cada arquivo.
 | 2026-10-31 | [Tela inicial: abertura animada com o monge e o nerd](registro-ia/2026-10-31-tela-inicial-abertura.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-31 | [Jogos online no Brasil em números](registro-ia/2026-10-31-jogos-online-em-numeros.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-31 | [Publicação na Cloudflare com a API por túnel](registro-ia/2026-10-31-publicacao-cloudflare.md) | Claude Code (Opus 5.5) | Octávio Arruda |
+| 2026-11-07 | [Conclusão e referências da Banca Final](registro-ia/2026-11-07-conclusao-e-referencias.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 
 ## Consolidação final
 
