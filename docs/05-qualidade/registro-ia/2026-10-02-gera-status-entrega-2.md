@@ -12,6 +12,14 @@
 Rodar `scripts/entregas/gerar-entregas.mjs` depois do merge do PR #18, para
 fechar a Entrega 2.
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 18:41**
+
+> fiz o merge, ja gera a entrega uai
+
 ## O que a IA produziu
 
 Execução do script e commit da saída (status da Entrega 2 de "Pronta" para

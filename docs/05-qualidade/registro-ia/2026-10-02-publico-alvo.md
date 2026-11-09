@@ -11,6 +11,22 @@
 
 Explicar na introdução geral para quem o projeto é direcionado.
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 21:08**
+
+> na introdução geral, temos que adicionar sobre o publico, para quem é direcionado, isso está em outra parte?
+
+**02/10, 21:11**
+
+> faz também as edições do público-alvo
+
+**02/10, 21:15**
+
+> no publico alvo falar mais sobre, que sao estudantes, amigos, nesse sentido, entede?
+
 ## O que a IA produziu
 
 * `06-publico-alvo.md` expandido: seção "Para quem é" (grupos de amigos a

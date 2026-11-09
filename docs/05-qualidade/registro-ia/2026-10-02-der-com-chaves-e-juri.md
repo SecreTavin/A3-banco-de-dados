@@ -13,6 +13,18 @@ Um diagrama com o relacionamento entre as entidades, mostrando chaves primárias
 e estrangeiras, para facilitar a apresentação à banca, e deixar explícito que o
 júri valida o desafio.
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 21:19**
+
+> vamos trocar aposta por desafio, no der e etc, falta tambem no der talvez uma saida do jurado avaliar o desafio, certo?
+
+**02/10, 21:27**
+
+> vamos precisar criar um diagrama com o relacionamento entre as entidades(chaves pk, fk, etc...) okay, para facilitar a apresentação final à banca
+
 ## O que a IA produziu
 
 Segundo diagrama Mermaid (`erDiagram`) com atributos e chaves das dez entidades,

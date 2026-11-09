@@ -14,6 +14,18 @@ imagens `minio/minio` e `minio/mc` não eram puxadas do Docker Hub. Pedido:
 explicar o problema, trocar a imagem com o menor impacto possível e provar que o
 sistema completo sobe.
 
+## Prompt utilizado
+
+Fonte: transcrição da sessão do Claude Code, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**30/10, 20:04**
+
+> Vamos decidir o minIo, primeiro me explique resumidamente o que ele é, o que esta acontecendo e como podemos resolver sem grandes impactos
+
+**30/10, 20:07**
+
+> antes, espere finalizar esse ajuste visual, finalizando, aí sim comece a correção do MinIO
+
 ## O que a IA produziu
 
 * Troca das duas imagens por `bitnamilegacy/minio:2025.7.23` (mesmo MinIO, versão

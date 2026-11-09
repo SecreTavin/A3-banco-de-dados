@@ -13,6 +13,10 @@ O usuário enviou o guia RT01 (documento distribuído pelo professor na noite
 da revisão) e perguntou se as respostas para os 8 pontos pedidos já
 estavam nos `.md`s do projeto.
 
+## Prompt utilizado
+
+Prompt não recuperável. O histórico local do Claude Code (`~/.claude/history.jsonl` e as transcrições do projeto) não tem nenhuma entrada deste projeto entre 09 e 11/09/2026; a primeira é de 25/09. O prompt não foi reconstruído de memória.
+
 ## O que a IA produziu
 
 Conferência ponto a ponto do RT01 contra os documentos existentes — não só

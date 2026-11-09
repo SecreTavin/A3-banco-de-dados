@@ -12,6 +12,14 @@
 Trocar a menção solta ao nome "Eu Duvido!" no objetivo geral por uma descrição
 do que o sistema é.
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 21:13**
+
+> no objetivo geral ao invés de dizer Eu Duvido!, temos que dizer exatamente o que é, por exemplo, uma plataforma para desafios online, ou outra coisa melhor
+
 ## O que a IA produziu
 
 Objetivo geral reescrito: "plataforma web de desafios sociais entre amigos",

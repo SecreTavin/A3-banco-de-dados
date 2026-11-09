@@ -13,6 +13,30 @@ Simplificar a modelagem mantendo os conceitos, em schema único, com o históric
 contando só a primeira versão e o modelo atual; limpar dos documentos o que
 ficou fora.
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 18:50**
+
+> acha que consegue fazer tudo ficar mais simples? Deixar o app mais simples possivel, por enquanto é so uma documentação/modelagem, sem pensar no app que estaria pronto, pois ele nao conta hoje e pode sofrer mudanças, assim fica muitoa mais facil de explicar, talvez um mvpzão, acha que dá? Em 10 minutos?
+
+**02/10, 18:54**
+
+> nao, pode refazer tudo para algo mais simples, mantendo todo o conceito
+
+**02/10, 18:56**
+
+> quero um schema só
+
+**02/10, 18:57**
+
+> esquece que a v2 existiu, vai ficar so no historico de commit, é um projeto de faculdade, não é pra ser algo tão complexo
+
+**02/10, 18:59**
+
+> o que for ficar de fora pode limpar
+
 ## O que a IA produziu
 
 Modelo de 10 tabelas em `public`. `jurado_evidencia` funde júri congelado e

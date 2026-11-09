@@ -12,6 +12,14 @@
 Gerar a Entrega 3: criar a tag `entrega-3` e deixar o painel de entregas
 consistente com ela.
 
+## Prompt utilizado
+
+Fonte: transcrição da sessão do Claude Code, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**30/10, 20:53**
+
+> pode mergear, criar a tag e restaurar o seed
+
 ## O que a IA produziu
 
 A saída de `node scripts/entregas/gerar-entregas.mjs` com a tag presente: a
