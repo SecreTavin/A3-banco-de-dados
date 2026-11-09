@@ -13,6 +13,14 @@ Cobrir o ponto que os roteiros de API e de tela deixaram de fora: criar desafio
 com a moderação por IA respondendo. O ambiente de teste não tem a chave da Groq,
 então a IA só aparecia falhando.
 
+## Prompt utilizado
+
+Fonte: transcrição da sessão do Claude Code, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**30/10, 20:40**
+
+> pode, mas crie os testes para os pontos nao cobertos, é possivel?
+
 ## O que a IA produziu
 
 * Um provedor de IA **simulado** (`ia-falsa.mjs`, Node sem dependências) que

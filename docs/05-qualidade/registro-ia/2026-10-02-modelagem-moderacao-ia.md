@@ -12,6 +12,22 @@
 Refletir na modelagem as mudanças do ADR 0015 (idade mínima e moderação de
 desafios por IA) antes da revisão em sala da Entrega 2.
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 14:13**
+
+> temos a sugestão do professor com a segurança do app feita por ia, foi até um dos ultimos prs aprovados, consegue ver?
+
+**02/10, 14:14**
+
+> PR 9 mesmo, acredito que talvez nossas tabelas devem mudar, certo?
+
+**02/10, 14:14**
+
+> eu sou responsavel pela documentação, então siga
+
 ## O que a IA produziu
 
 Coluna `usuario.data_nascimento`, coluna `grupo_amigos.nivel_filtro`, tabela

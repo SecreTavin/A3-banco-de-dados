@@ -13,6 +13,10 @@ O professor confere o plano de trabalho no GitHub na revisão de hoje. As
 semanas de 09/10 e 30/10 ainda apareciam como "Planejado". Pedido: refletir o
 estado real do repositório.
 
+## Prompt utilizado
+
+Prompt não identificado com segurança. A sessão está no histórico local, mas nenhuma entrada corresponde de forma inequívoca a este pedido. O prompt não foi reconstruído de memória.
+
 ## O que a IA produziu
 
 * Status e responsáveis das semanas de 09/10, 23/10 e 30/10 a partir do

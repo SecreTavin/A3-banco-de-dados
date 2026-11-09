@@ -14,6 +14,18 @@ antes da apresentação: conteúdo inalcançável por causa do `overflow: hidden
 estouro horizontal no detalhe do grupo no celular, avatares quebrados,
 contraste abaixo de 4,5:1 (WCAG AA) e alvos de toque pequenos.
 
+## Prompt utilizado
+
+Fonte: transcrição da sessão do Claude Code, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**30/10, 19:14**
+
+> sim, faz a auditoria de responsividade e legibilidade, depois a gente vai subir na cloudflare o tunnel hosteando aqui nesse mac e expondo no euduvido.falveshub.com, nós iremos validar tudo, até essa imagem do minIo que vc apontou e se podemos trocar por outra para conseguirmos apresentar esse prototipo hoje com tranquilidade e certeza que está tudo certo
+
+**30/10, 19:20**
+
+> okay, dispare um agente para as correções visuais, depois rode local com os testes end2end visiveis para mim, após minha validação, pois eu irei usar para testar tb a gente valida e sobe para prod na cloudflare
+
 ## O que a IA produziu
 
 * **Rolagem na área de conteúdo.** `.conteudo` passou de `overflow: hidden` para

@@ -12,6 +12,10 @@
 Criar e enviar a tag `entrega-1` pra fechar a primeira entrega, seguindo o
 passo 4 do ["Como fechar uma entrega"](../../../README.md#como-fechar-uma-entrega).
 
+## Prompt utilizado
+
+Prompt não recuperável. O histórico local do Claude Code (`~/.claude/history.jsonl` e as transcrições do projeto) não tem nenhuma entrada deste projeto entre 09 e 11/09/2026; a primeira é de 25/09. O prompt não foi reconstruído de memória.
+
 ## O que a IA produziu
 
 Executou exatamente o passo documentado: `git tag entrega-1 && git push

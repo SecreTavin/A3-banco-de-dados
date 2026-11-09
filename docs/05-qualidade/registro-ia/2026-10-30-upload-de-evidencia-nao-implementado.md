@@ -13,6 +13,18 @@ Alinhar a documentação ao que o sistema faz. Ao preparar os testes do MinIO, a
 IA percebeu que a API só recebe a URL do comprovante, enquanto o RF06, a RN22,
 o ADR 0009 e dois diagramas descrevem upload direto por URL assinada.
 
+## Prompt utilizado
+
+Fonte: transcrição da sessão do Claude Code, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**30/10, 20:44**
+
+> como assim a funcionalidade diferencial e principal do projeto nao foi implementada?
+
+**30/10, 20:46**
+
+> vamos com a opção A e finalize tudo logo
+
 ## O que a IA produziu
 
 Notas de "estado atual" nos sete documentos e uma linha na tabela "Modelado,
