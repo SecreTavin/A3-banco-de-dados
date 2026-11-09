@@ -21,6 +21,8 @@ Nenhum código foi escrito: o PO não quer mais código da IA neste projeto.
 
 > vamos abrir a issue e tudo necessário para que o dev consiga implementar o nosso login, vamos partir com a opção A, mas ele tem que garantir que tudo está perfeitamente funcional antes de subir pra main para não atrapalhar nosso seed atual. Dentro das issues e PR aberto para o dev, vamos escrever tudo necessário para um bom desenvolvimento do dev. Vamos deixar bem explicado toda a issue e PR de como deve ser.
 
+> O que define o user é o ID e não o nome, então pode sim haver 2 tavin no ranking.
+
 ## O que a IA produziu
 
 * **Diagnóstico**, conferido no código:
@@ -53,6 +55,14 @@ Nenhum código foi escrito: o PO não quer mais código da IA neste projeto.
   repositório só ficou evidente ao detalhar os testes, que assinam o próprio
   JWT. Com o Google, essa chave pública permitiria forjar sessões no site. A
   issue passou a exigir a chave no `.env` e a trava no `publicar.sh`.
+
+* **A IA tratou o apelido como único sem conferir o modelo.** A primeira versão
+  da issue recusava apelido repetido com 409, para "não haver dois Tavin no
+  ranking". O PO corrigiu: quem identifica o usuário é o `id_usuario`. O modelo
+  lógico (documento 11) já dizia "deliberadamente **não** único". Ao corrigir,
+  a IA achou cinco pontos do front e duas Queries que usam o apelido como
+  identidade e quebrariam com apelidos repetidos. Eles entraram na issue (seção
+  4b), junto com o cenário U15.
 
 ## Como o time validou
 
