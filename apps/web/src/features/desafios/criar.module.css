@@ -1,21 +1,18 @@
 /* Criar desafio: escolhas em atalhos, prévia ao vivo e a moderação como etapa. */
 
-.cabecalho,
-.grade {
-  flex-shrink: 0;
-}
-
 .cabecalho {
-  margin: 10px 0 14px;
+  margin: 8px 0 16px;
 }
 
 .cabecalho h1 {
-  font-size: 26px;
+  font-size: 27px;
   font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 .cabecalho p {
-  font-size: 15px;
+  margin-top: 4px;
+  font-size: 14.5px;
   color: var(--texto-suave);
 }
 
@@ -29,12 +26,12 @@
 .lateral {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   min-width: 0;
 }
 
 .formulario {
-  padding: 18px;
+  padding: 18px 16px;
   border: 1px solid var(--borda);
   border-radius: var(--raio);
   background: var(--superficie);
@@ -54,25 +51,31 @@
 .rotulo {
   display: flex;
   justify-content: space-between;
+  align-items: baseline;
   gap: 8px;
   margin-bottom: 8px;
   padding: 0;
-  font-size: 15px;
-  font-weight: 600;
+  font-family: var(--fonte-titulo);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .rotulo {
   margin-bottom: 0;
 }
 
-.rotulo small {
+.rotulo small,
+.campo legend small {
+  font-family: var(--fonte-texto);
   font-size: 13px;
   font-weight: 500;
+  letter-spacing: 0;
   color: var(--texto-fraco);
 }
 
 .campo textarea {
-  min-height: 72px;
+  min-height: 84px;
 }
 
 .grupos {
@@ -86,12 +89,18 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  min-height: 56px;
   padding: 10px 14px;
   border: 1px solid var(--borda-forte);
-  border-radius: 12px;
-  background: var(--fundo);
+  border-radius: var(--raio-pequeno);
+  background: var(--superficie);
   text-align: left;
   cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.grupo:hover {
+  border-color: var(--texto-fraco);
 }
 
 .grupo strong {
@@ -104,6 +113,12 @@
   color: var(--texto-fraco);
 }
 
+.grupo.ativo {
+  border-color: var(--primaria);
+  background: var(--primaria-fraca);
+  box-shadow: inset 0 0 0 1px var(--primaria);
+}
+
 .nivel {
   flex: none;
   padding: 3px 8px;
@@ -113,17 +128,17 @@
 }
 
 .nivelLEVE {
-  background: color-mix(in srgb, var(--cumpriu) 15%, transparent);
+  background: color-mix(in srgb, var(--cumpriu) 14%, transparent);
   color: var(--ok-texto);
 }
 
 .nivelMODERADO {
-  background: color-mix(in srgb, var(--em-andamento) 15%, transparent);
+  background: color-mix(in srgb, var(--em-andamento) 14%, transparent);
   color: var(--em-andamento);
 }
 
 .nivelPESADO {
-  background: color-mix(in srgb, var(--perdeu) 15%, transparent);
+  background: color-mix(in srgb, var(--perdeu) 14%, transparent);
   color: var(--erro-texto);
 }
 
@@ -134,38 +149,45 @@
 }
 
 .chip {
-  min-height: 40px;
-  padding: 0 14px;
+  min-height: 42px;
+  padding: 0 16px;
   border: 1px solid var(--borda-forte);
-  border-radius: 10px;
-  background: var(--fundo);
+  border-radius: var(--raio-chip);
+  background: var(--superficie);
   color: var(--texto-suave);
   font-size: 14.5px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 
-.ativo {
-  border-color: var(--primaria-forte);
-  background: var(--primaria-fraca);
+.chip:hover {
+  border-color: var(--texto-fraco);
   color: var(--texto);
-  font-weight: 600;
+}
+
+.chip.ativo {
+  border-color: var(--texto);
+  background: var(--texto);
+  color: var(--fundo);
 }
 
 .custoLivre {
-  width: 96px;
-  min-height: 40px;
+  width: 100px;
+  min-height: 42px;
   padding: 0 12px;
+  border-radius: var(--raio-chip);
 }
 
 .dupla {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 20px;
 }
 
 .nota,
 .notaErro {
-  font-size: 13px;
+  font-size: 13.5px;
   color: var(--texto-fraco);
 }
 
@@ -174,7 +196,7 @@
 }
 
 .combinado {
-  padding-top: 12px;
+  padding-top: 16px;
   border-top: 1px dashed var(--borda-forte);
 }
 
@@ -182,12 +204,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 48px;
   padding: 12px 0 0;
   border: none;
   border-top: 1px dashed var(--borda-forte);
   background: transparent;
-  color: var(--texto-suave);
+  color: var(--destaque-texto);
   font-size: 14.5px;
+  font-weight: 600;
   text-align: left;
   cursor: pointer;
 }
@@ -201,25 +225,31 @@
 .rotuloLateral {
   display: block;
   margin-bottom: 8px;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--texto-fraco);
 }
 
+/* A prévia é o bilhete que o grupo vai ver. */
 .previa {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 14px 16px;
+  gap: 5px;
+  padding: 16px 18px;
   border: 1px solid var(--borda);
-  border-radius: var(--raio);
+  border-radius: 18px;
   background: var(--superficie);
+  box-shadow: var(--sombra-suave);
 }
 
 .previa strong {
-  font-size: 17px;
+  font-family: var(--fonte-titulo);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
 }
 
 .vazio {
@@ -233,10 +263,12 @@
 
 .previaRodape {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-top: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 2px dashed var(--borda-forte);
   font-size: 13.5px;
   color: var(--texto-suave);
 }
@@ -244,7 +276,7 @@
 .moderacao {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   padding: 16px 18px;
   border: 1px solid var(--borda);
   border-radius: var(--raio);
@@ -268,14 +300,15 @@
 }
 
 .fluxo li {
-  padding-top: 6px;
-  border-top: 3px solid var(--borda-forte);
+  padding-top: 8px;
+  border-top: 3px solid var(--borda);
   font-size: 12.5px;
+  font-weight: 500;
   color: var(--texto-fraco);
 }
 
 .fluxo .fluxoFeito {
-  border-color: var(--primaria-forte);
+  border-color: var(--primaria);
   color: var(--texto-suave);
 }
 
@@ -286,6 +319,7 @@
 
 .avaliando {
   font-size: 14px;
+  font-weight: 500;
   color: var(--destaque-texto);
 }
 
@@ -303,12 +337,12 @@
 
 .recusa {
   border-color: color-mix(in srgb, var(--perdeu) 40%, transparent);
-  background: color-mix(in srgb, var(--perdeu) 9%, transparent);
+  background: color-mix(in srgb, var(--perdeu) 8%, transparent);
 }
 
 .indisponivel {
   border-color: color-mix(in srgb, var(--em-andamento) 40%, transparent);
-  background: color-mix(in srgb, var(--em-andamento) 9%, transparent);
+  background: color-mix(in srgb, var(--em-andamento) 8%, transparent);
 }
 
 .recusa strong,
@@ -329,14 +363,18 @@
   .dupla {
     grid-template-columns: 1fr 1fr;
   }
+
+  .formulario {
+    padding: 22px;
+  }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1024px) {
   .cabecalho {
     display: flex;
     align-items: baseline;
     gap: 16px;
-    margin: 0;
+    margin: 0 0 20px;
   }
 
   .cabecalho h1 {
@@ -344,30 +382,24 @@
   }
 
   .cabecalho p {
-    font-size: 17px;
+    margin: 0;
+    font-size: 16px;
   }
 
   .grade {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 400px;
+    grid-template-columns: minmax(0, 1fr) 380px;
     align-items: start;
+    gap: 20px;
+  }
+
+  .lateral {
+    position: sticky;
+    top: 0;
   }
 
   .formulario {
-    gap: 14px;
-    padding: 20px 22px;
-  }
-
-  .campo legend,
-  .rotulo {
-    font-size: 16px;
-  }
-
-  .chip {
-    font-size: 15.5px;
-  }
-
-  .previa strong {
-    font-size: 19px;
+    gap: 22px;
+    padding: 24px;
   }
 }

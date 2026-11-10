@@ -1,83 +1,125 @@
+/* ==========================================================================
+   Eu Duvido! — tokens e base.
+
+   Identidade: papel claro, tinta índigo e dourado só para o CP. O tema claro
+   é o primário; o escuro redefine os mesmos tokens (nunca estilos de
+   componente). Tipografia: Bricolage Grotesque para títulos e números de
+   destaque, Figtree para o texto corrido.
+   ========================================================================== */
+
 :root,
-:root[data-tema='escuro'] {
-  color-scheme: dark;
-
-  --fundo: #0a0b11;
-  --fundo-topo: #10121b;
-  --superficie: #151824;
-  --superficie-alta: #1c2030;
-  --borda: #262b3b;
-  --borda-forte: #343b50;
-
-  --texto: #e9ecf5;
-  --texto-suave: #99a1b7;
-  --texto-fraco: #8189a0;
-
-  --primaria: #7552f5;
-  --primaria-forte: #8f74ff;
-  --primaria-fraca: rgba(124, 92, 255, 0.16);
-
-  --cp: #f6c453;
-  --cp-fraca: rgba(246, 196, 83, 0.14);
-
-  --aberta: #3b82f6;
-  --em-andamento: #f59e0b;
-  --em-votacao: #b66dff;
-  --cumpriu: #22c55e;
-  --perdeu: #ef4444;
-  --cancelada: #8b93a1;
-
-  --topo-fundo: rgba(16, 18, 27, 0.9);
-  --nav-fundo: rgba(16, 18, 27, 0.96);
-  --erro-texto: #fca5a5;
-  --ok-texto: #86efac;
-  --destaque-texto: #c4b5fd;
-
-  --raio: 14px;
-  --raio-pequeno: 9px;
-  --sombra: 0 10px 30px rgba(0, 0, 0, 0.45);
-  --largura-maxima: 940px;
-  --altura-nav: 62px;
-}
-
-/* Tema claro. O atributo data-tema vem do script em index.html (preferencia
-   salva ou, na falta dela, a do sistema) e do botao de tema no topo. */
 :root[data-tema='claro'] {
   color-scheme: light;
 
-  --fundo: #f4f5fa;
-  --fundo-topo: #ffffff;
+  --fonte-texto: 'Figtree Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fonte-titulo: 'Bricolage Grotesque Variable', var(--fonte-texto);
+
+  /* superfícies */
+  --fundo: #f5f2ea;
+  --fundo-topo: rgba(245, 242, 234, 0.88);
+  --nav-fundo: rgba(255, 255, 255, 0.94);
+  --topo-fundo: var(--fundo-topo);
   --superficie: #ffffff;
-  --superficie-alta: #eceef6;
-  --borda: #d6d9e8;
-  --borda-forte: #bcc2da;
+  --superficie-alta: #efebe1;
+  --borda: #e3ded2;
+  --borda-forte: #c7c0b0;
 
-  --texto: #11131e;
-  --texto-suave: #444b63;
-  --texto-fraco: #646b84;
+  /* texto */
+  --texto: #171336;
+  --texto-suave: #4b4769;
+  --texto-fraco: #7a7694;
 
-  --primaria: #5b3fd6;
-  --primaria-forte: #4a2fc4;
-  --primaria-fraca: rgba(91, 63, 214, 0.12);
+  /* marca */
+  --primaria: #4433cc;
+  --primaria-forte: #3324a8;
+  --primaria-fraca: rgba(68, 51, 204, 0.1);
+  --destaque-texto: #3b2db8;
+  --sobre-primaria: #ffffff;
 
+  /* CP: o dourado é a única cor quente da marca */
   --cp: #8a5a00;
-  --cp-fraca: rgba(214, 150, 0, 0.16);
+  --cp-fundo: #f6c453;
+  --cp-fraca: rgba(246, 196, 83, 0.26);
+  --sobre-cp: #2a1b00;
 
-  --aberta: #1d4ed8;
-  --em-andamento: #b45309;
-  --em-votacao: #7e22ce;
-  --cumpriu: #15803d;
-  --perdeu: #cc1f1f;
-  --cancelada: #4b5563;
+  /* status do desafio */
+  --aberta: #2a55d4;
+  --em-andamento: #b35a00;
+  --em-votacao: #7a2bb5;
+  --cumpriu: #1f7a3e;
+  --perdeu: #c2301e;
+  --cancelada: #6d6a84;
 
-  --topo-fundo: rgba(255, 255, 255, 0.92);
-  --nav-fundo: rgba(255, 255, 255, 0.97);
-  --erro-texto: #b91c1c;
-  --ok-texto: #15803d;
-  --destaque-texto: #4a2fc4;
+  --erro-texto: #b3261e;
+  --ok-texto: #1f7a3e;
 
-  --sombra: 0 10px 30px rgba(30, 36, 70, 0.12);
+  /* forma */
+  --raio-grande: 22px;
+  --raio: 16px;
+  --raio-pequeno: 12px;
+  --raio-chip: 999px;
+  --sombra: 0 16px 40px rgba(23, 19, 54, 0.14), 0 2px 6px rgba(23, 19, 54, 0.06);
+  --sombra-suave: 0 1px 2px rgba(23, 19, 54, 0.04), 0 6px 18px rgba(23, 19, 54, 0.05);
+  --anel-foco: 0 0 0 3px var(--primaria-fraca);
+
+  /* medidas do shell */
+  --largura-maxima: 1180px;
+  --altura-topo: 60px;
+  --altura-nav: 64px;
+  --largura-lateral: 264px;
+  --gap-pagina: 16px;
+  --grao: 0.035;
+
+  /* camadas */
+  --z-topo: 20;
+  --z-menu: 30;
+  --z-dialogo: 50;
 }
+
+:root[data-tema='escuro'] {
+  color-scheme: dark;
+
+  --fundo: #0d0b1c;
+  --fundo-topo: rgba(13, 11, 28, 0.86);
+  --nav-fundo: rgba(22, 19, 49, 0.94);
+  --superficie: #161331;
+  --superficie-alta: #1e1a3e;
+  --borda: #272350;
+  --borda-forte: #3a356b;
+
+  --texto: #f3efe6;
+  --texto-suave: #b5b1cb;
+  --texto-fraco: #8784a6;
+
+  --primaria: #6f5cf2;
+  --primaria-forte: #8878ff;
+  --primaria-fraca: rgba(136, 120, 255, 0.16);
+  --destaque-texto: #bdb2ff;
+  --sobre-primaria: #ffffff;
+
+  --cp: #f6c453;
+  --cp-fundo: #f6c453;
+  --cp-fraca: rgba(246, 196, 83, 0.14);
+  --sobre-cp: #2a1b00;
+
+  --aberta: #6d8cff;
+  --em-andamento: #f0a040;
+  --em-votacao: #c184ff;
+  --cumpriu: #4ad07a;
+  --perdeu: #ff6b5b;
+  --cancelada: #9a97b5;
+
+  --erro-texto: #ff9b91;
+  --ok-texto: #7fe0a3;
+
+  --sombra: 0 20px 50px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
+  --sombra-suave: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+  --grao: 0.06;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
 
 *,
 *::before,
@@ -85,28 +127,44 @@
   box-sizing: border-box;
 }
 
-/* Prototipo de apresentacao: a pagina nao rola na vertical. O layout ocupa
-   exatamente a janela (100dvh) e o conteudo se ajusta a ela. */
 html,
 body,
 #root {
   height: 100%;
-  overflow: hidden;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
+  overflow: hidden;
   overscroll-behavior: none;
-  background:
-    radial-gradient(900px 480px at 12% -8%, rgba(124, 92, 255, 0.16), transparent 60%),
-    radial-gradient(700px 420px at 100% 0%, rgba(34, 197, 94, 0.08), transparent 55%),
-    var(--fundo);
-  background-attachment: fixed;
+  background: var(--fundo);
   color: var(--texto);
-  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  font-size: 17px;
+  font-family: var(--fonte-texto);
+  font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Grão de papel: quebra o chapado sem virar textura. Fica fora do fluxo e
+   não recebe toque. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--grao);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+#root {
+  position: relative;
+  z-index: 1;
 }
 
 h1,
@@ -114,12 +172,16 @@ h2,
 h3,
 h4 {
   margin: 0;
-  line-height: 1.25;
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  line-height: 1.15;
   letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 p {
   margin: 0;
+  text-wrap: pretty;
 }
 
 a {
@@ -127,13 +189,30 @@ a {
   text-decoration: none;
 }
 
-ul {
+ul,
+ol {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-button,
+strong {
+  font-weight: 650;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 input,
 select,
 textarea {
@@ -141,37 +220,59 @@ textarea {
   color: inherit;
 }
 
+/* Campos: 16px evita o zoom automático do iOS; 48px é alvo de toque confortável. */
 input,
 select,
 textarea {
   width: 100%;
-  padding: 11px 13px;
-  border: 1px solid var(--borda);
+  min-height: 48px;
+  padding: 11px 14px;
+  border: 1px solid var(--borda-forte);
   border-radius: var(--raio-pequeno);
-  background: var(--fundo);
+  background: var(--superficie);
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+  border-color: var(--texto-fraco);
 }
 
 input:focus,
 select:focus,
 textarea:focus {
   border-color: var(--primaria);
-  box-shadow: 0 0 0 3px var(--primaria-fraca);
+  box-shadow: var(--anel-foco);
 }
 
 textarea {
-  min-height: 84px;
+  min-height: 96px;
   resize: vertical;
+}
+
+select {
+  padding-right: 38px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237a7694' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
 }
 
 ::placeholder {
   color: var(--texto-fraco);
+  opacity: 1;
 }
 
 :focus-visible {
-  outline: 2px solid var(--primaria-forte);
+  outline: 2px solid var(--primaria);
   outline-offset: 2px;
+}
+
+::selection {
+  background: var(--cp-fundo);
+  color: var(--sobre-cp);
 }
 
 ::-webkit-scrollbar {
@@ -186,56 +287,46 @@ textarea {
   background-clip: content-box;
 }
 
-/* Desktop (>= 1100px): textos maiores, conteúdo mais largo e sem rolagem vertical na
-   página. Abaixo disso valem os tamanhos de celular e tablet. */
-@media (min-width: 1100px) {
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Escala por tamanho de tela. O celular é a base; as mudanças abaixo só
+   ampliam medidas em telas maiores.
+   -------------------------------------------------------------------------- */
+
+@media (min-width: 720px) {
   :root,
   :root[data-tema] {
-    --largura-maxima: 1360px;
-    --altura-topo: 76px;
     --gap-pagina: 20px;
-    --raio-pequeno: 10px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root,
+  :root[data-tema] {
+    --gap-pagina: 24px;
   }
 
   body {
-    font-size: 18px;
-    line-height: 1.45;
-  }
-
-  input,
-  select,
-  textarea {
-    padding: 12px 16px;
-    font-size: 18px;
-  }
-
-  textarea {
-    min-height: 110px;
+    font-size: 16.5px;
   }
 }
 
-@media (min-width: 1600px) {
+@media (min-width: 1440px) {
   :root,
   :root[data-tema] {
-    --largura-maxima: 1600px;
-  }
-}
-
-/* Telas baixas (notebook 1366x768): mesmos tamanhos de texto, menos respiro. */
-@media (min-width: 1100px) and (max-height: 820px) {
-  :root,
-  :root[data-tema] {
-    --altura-topo: 68px;
-    --gap-pagina: 14px;
+    --largura-maxima: 1280px;
   }
 
-  input,
-  select,
-  textarea {
-    padding: 10px 14px;
-  }
-
-  textarea {
-    min-height: 84px;
+  body {
+    font-size: 17px;
   }
 }

@@ -8,6 +8,8 @@ Cada tela tem também a seção **"Como ficou implementada"**, com a captura do 
 
 O redesign de 31/10/2026 — seis propostas aprovadas pelo PO, implementadas e testadas — está em [Redesign de UI/UX](propostas/README.md). A abertura animada, pedida depois da apresentação, está em [Tela inicial](propostas/tela-inicial/README.md).
 
+A segunda rodada, de 10/11/2026 — celular primeiro, tema claro como padrão e a identidade de bilhete e carimbo —, está em [Redesign mobile-first](propostas/redesign-mobile/README.md).
+
 ## Telas
 
 * [22 - Autenticação](telas/22-tela-autenticacao.md)

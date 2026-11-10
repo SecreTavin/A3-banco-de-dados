@@ -1,3 +1,7 @@
+/* Moldura do app. Celular primeiro: topo fino, conteúdo rolando por dentro e
+   barra de navegação fixa embaixo com o "Novo desafio" no centro. A partir de
+   1024px a MESMA barra vira a coluna lateral. */
+
 .app {
   display: flex;
   flex-direction: column;
@@ -5,316 +9,481 @@
   overflow: hidden;
 }
 
-.topo {
+.pular {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 10px 14px;
+  border-radius: var(--raio-pequeno);
+  background: var(--texto);
+  color: var(--fundo);
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.pular:focus-visible {
+  transform: none;
+}
+
+/* ---------- topo (celular) ---------- */
+
+.barra {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: var(--z-topo);
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
+  height: var(--altura-topo);
+  padding: 0 12px 0 16px;
   border-bottom: 1px solid var(--borda);
-  background: var(--topo-fundo);
-  backdrop-filter: blur(12px);
+  background: var(--fundo);
 }
 
 .marca {
   display: flex;
   align-items: center;
-  gap: 9px;
-  white-space: nowrap;
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  gap: 10px;
+  min-width: 0;
+  border-radius: var(--raio-pequeno);
 }
 
 .marcaIcone {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 9px;
-  background: linear-gradient(140deg, var(--primaria-forte), #4c2fd6);
-  color: #fff;
-  font-size: 16.5px;
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding-top: 5px;
+  border-radius: 11px;
+  background: var(--primaria);
+  color: var(--sobre-primaria);
+  font-family: var(--fonte-titulo);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.12em;
 }
 
-.espaco {
-  flex: 1;
+.marcaIcone em {
+  font-style: normal;
+  color: var(--cp-fundo);
+}
+
+.marcaNome {
+  overflow: hidden;
+  font-family: var(--fonte-titulo);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .acoes {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
+  margin-left: auto;
 }
 
-.usuario {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 3px 10px 3px 3px;
-  border: 1px solid transparent;
-  border-radius: 999px;
-}
-
-.usuario:hover,
-.usuarioAtivo {
-  border-color: var(--borda-forte);
-  background: var(--primaria-fraca);
-}
-
-.abaIcone {
-  position: relative;
-  display: inline-grid;
-}
-
-.bolha {
-  position: absolute;
-  top: -7px;
-  right: -11px;
-  display: grid;
-  place-items: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border: 2px solid var(--fundo-topo);
-  border-radius: 9px;
-  background: #ec4899;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.apelido {
-  font-size: 15px;
-  font-weight: 600;
-}
-
+.tema,
 .sair {
   display: grid;
   place-items: center;
   width: 44px;
   height: 44px;
-  border: 1px solid var(--borda);
-  border-radius: 9px;
+  border: none;
+  border-radius: var(--raio-pequeno);
   background: transparent;
   color: var(--texto-suave);
   cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 
+.tema:hover,
 .sair:hover {
+  background: var(--superficie-alta);
   color: var(--texto);
-  border-color: var(--borda-forte);
 }
 
-/* Com os botões de 44px o topo não comporta o apelido em tela de 360px; o avatar basta. */
-@media (max-width: 399px) {
-  .apelido {
-    display: none;
-  }
+/* No celular sair fica no perfil: o topo guarda só o essencial. */
+.sair {
+  display: none;
 }
+
+.usuario {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px;
+  border-radius: var(--raio-chip);
+  transition: background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.usuario:hover,
+.usuarioAtivo {
+  box-shadow: 0 0 0 2px var(--primaria);
+}
+
+.usuarioTextos {
+  display: none;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.2;
+}
+
+.apelido {
+  overflow: hidden;
+  font-weight: 650;
+  font-size: 15px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.verPerfil {
+  font-size: 12.5px;
+  color: var(--texto-fraco);
+}
+
+/* ---------- conteúdo ---------- */
 
 .conteudo {
+  flex: 1;
   width: 100%;
+  min-height: 0;
   max-width: var(--largura-maxima);
   margin: 0 auto;
-  padding: 18px 16px calc(var(--altura-nav) + 26px + env(safe-area-inset-bottom));
-  flex: 1;
-  min-height: 0;
-  /* A página inteira continua travada em 100dvh; só esta área rola, então o
-     topo e a navegação ficam sempre à vista. */
+  padding: 16px 16px calc(var(--altura-nav) + 36px + env(safe-area-inset-bottom));
+  /* A janela não rola; só esta área. Topo e navegação ficam sempre à vista. */
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--borda-forte) transparent;
+  outline: none;
 }
+
+/* ---------- navegação inferior (celular) ---------- */
 
 .nav {
   position: fixed;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 20;
+  z-index: var(--z-topo);
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 1fr;
+  align-items: end;
+  height: calc(var(--altura-nav) + env(safe-area-inset-bottom));
+  padding: 0 6px env(safe-area-inset-bottom);
   border-top: 1px solid var(--borda);
   background: var(--nav-fundo);
-  backdrop-filter: blur(12px);
-  padding-bottom: env(safe-area-inset-bottom);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .aba {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  padding: 9px 4px;
-  height: var(--altura-nav);
   justify-content: center;
+  gap: 3px;
+  height: var(--altura-nav);
+  padding: 6px 2px 8px;
   color: var(--texto-fraco);
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 600;
-  transition: color 0.15s ease;
+  letter-spacing: 0.01em;
+  transition: color 0.18s ease;
 }
 
 .aba:hover {
   color: var(--texto-suave);
 }
 
-.abaAtiva {
-  color: var(--primaria-forte);
+.abaIcone {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 30px;
+  border-radius: var(--raio-chip);
+  transition: background 0.2s ease, transform 0.2s ease;
 }
+
+.aba:active .abaIcone {
+  transform: scale(0.94);
+}
+
+.abaAtiva {
+  color: var(--destaque-texto);
+}
+
+.abaAtiva .abaIcone {
+  background: var(--primaria-fraca);
+}
+
+.abaRotulo {
+  white-space: nowrap;
+}
+
+.bolha {
+  position: absolute;
+  top: -4px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border: 2px solid var(--nav-fundo);
+  border-radius: 9px;
+  background: var(--perdeu);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* O botão central: a única ação que cria algo, sempre ao alcance do polegar. */
+.novo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: var(--altura-nav);
+  padding-top: 0;
+}
+
+.novoIcone {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin-top: -18px;
+  border: 4px solid var(--fundo);
+  border-radius: 50%;
+  background: var(--primaria);
+  color: var(--sobre-primaria);
+  box-shadow: 0 8px 20px rgba(68, 51, 204, 0.32);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.novo:hover .novoIcone {
+  background: var(--primaria-forte);
+}
+
+.novo:active .novoIcone {
+  transform: scale(0.94);
+}
+
+.novoRotulo {
+  margin-top: 4px;
+  font-size: 11.5px;
+  font-weight: 650;
+  color: var(--destaque-texto);
+}
+
+/* ---------- tablet: só mais respiro ---------- */
 
 @media (min-width: 720px) {
+  .barra {
+    padding: 0 20px 0 24px;
+  }
+
   .conteudo {
-    padding: 26px 20px 40px;
+    padding: 24px 24px calc(var(--altura-nav) + 40px + env(safe-area-inset-bottom));
   }
 
-  .nav {
-    position: sticky;
-    top: 59px;
+  .usuarioTextos {
     display: flex;
-    justify-content: center;
-    gap: 4px;
-    border-top: none;
-    border-bottom: 1px solid var(--borda);
-    padding: 6px 12px;
   }
 
-  .aba {
-    flex-direction: row;
-    height: auto;
-    padding: 8px 14px;
-    border-radius: 999px;
-    font-size: 14.5px;
-  }
-
-  .abaAtiva {
-    background: var(--primaria-fraca);
+  .usuario {
+    padding: 3px 12px 3px 3px;
   }
 }
 
-/* Desktop: topo e navegação numa linha só (marca | abas | usuário) e o conteúdo ocupa
-   o resto da janela sem rolar. O header vira `display: contents` para que a marca, as
-   abas e as ações dividam a mesma grade; a faixa de fundo é o ::before. */
-@media (min-width: 1100px) {
+/* ---------- desktop: a barra vira coluna lateral ---------- */
+
+@media (min-width: 1024px) {
   .app {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    grid-template-rows: var(--altura-topo) minmax(0, 1fr);
+    grid-template-columns: var(--largura-lateral) minmax(0, 1fr);
   }
 
-  .app::before {
-    content: '';
-    grid-column: 1 / -1;
-    grid-row: 1;
-    border-bottom: 1px solid var(--borda);
-    background: var(--topo-fundo);
-    backdrop-filter: blur(12px);
-  }
-
-  .topo {
-    display: contents;
-  }
-
-  .marca,
-  .nav,
-  .acoes {
-    grid-row: 1;
-    align-self: center;
-    z-index: 20;
+  .barra {
+    position: static;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    height: 100dvh;
+    padding: 20px 16px 16px;
+    border-bottom: none;
+    border-right: 1px solid var(--borda);
+    background: var(--superficie);
   }
 
   .marca {
-    grid-column: 1;
-    justify-self: start;
-    margin-left: max(40px, calc((100vw - var(--largura-maxima)) / 2));
     gap: 12px;
-    font-size: 26px;
+    padding: 6px 8px;
+    margin-bottom: 20px;
   }
 
   .marcaIcone {
     width: 40px;
     height: 40px;
-    border-radius: 12px;
-    font-size: 24px;
+    padding-top: 6px;
+    border-radius: 13px;
+    font-size: 23px;
   }
 
-  .espaco {
-    display: none;
-  }
-
-  .acoes {
-    grid-column: 3;
-    justify-self: end;
-    margin-right: max(40px, calc((100vw - var(--largura-maxima)) / 2));
-    gap: 14px;
-  }
-
-  .usuario {
-    gap: 14px;
-  }
-
-  .apelido {
-    font-size: 18px;
-  }
-
-  .sair {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+  .marcaNome {
+    font-size: 22px;
   }
 
   .nav {
     position: static;
-    grid-column: 2;
     display: flex;
-    gap: 6px;
+    flex-direction: column;
+    gap: 4px;
+    height: auto;
     padding: 0;
     border: none;
     background: transparent;
     backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 
   .aba {
-    gap: 10px;
-    padding: 10px 18px;
-    font-size: 18px;
+    flex-direction: row;
+    gap: 12px;
+    height: 48px;
+    padding: 0 12px;
+    border-radius: var(--raio-pequeno);
     color: var(--texto-suave);
+    font-size: 15.5px;
+    transition: background 0.18s ease, color 0.18s ease;
   }
 
-  .conteudo {
-    grid-column: 1 / -1;
-    grid-row: 2;
+  .aba:hover {
+    background: var(--superficie-alta);
+    color: var(--texto);
+  }
+
+  .abaIcone {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+
+  .abaAtiva {
+    background: var(--primaria-fraca);
+    color: var(--destaque-texto);
+    font-weight: 650;
+  }
+
+  .abaAtiva .abaIcone {
+    background: transparent;
+  }
+
+  .bolha {
+    top: -6px;
+    right: -8px;
+    border-color: var(--superficie);
+  }
+
+  .novo {
+    order: -1;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    height: 48px;
+    margin: 0 0 14px;
+    border-radius: var(--raio-pequeno);
+    background: var(--primaria);
+    color: var(--sobre-primaria);
+    font-weight: 650;
+    font-size: 15.5px;
+    box-shadow: 0 8px 20px rgba(68, 51, 204, 0.22);
+    transition: background 0.18s ease, transform 0.18s ease;
+  }
+
+  .novo:hover {
+    background: var(--primaria-forte);
+  }
+
+  .novo:active {
+    transform: translateY(1px);
+  }
+
+  .novoIcone {
+    width: auto;
+    height: auto;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .novoRotulo {
+    margin: 0;
+    color: inherit;
+    font-size: inherit;
+  }
+
+  .acoes {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin: auto 0 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--borda);
+  }
+
+  .usuario {
+    flex: 1 1 100%;
+    order: -1;
+    gap: 10px;
+    padding: 6px;
+    margin-bottom: 8px;
+    border-radius: var(--raio-pequeno);
+  }
+
+  .usuario:hover,
+  .usuarioAtivo {
+    background: var(--superficie-alta);
+    box-shadow: none;
+  }
+
+  .usuarioTextos {
     display: flex;
-    flex-direction: column;
-    gap: var(--gap-pagina);
-    max-width: calc(var(--largura-maxima) + 80px);
-    padding: 24px 40px 28px;
-  }
-}
-
-@media (min-width: 1100px) and (max-height: 820px) {
-  .marcaIcone {
-    width: 36px;
-    height: 36px;
   }
 
   .sair {
-    width: 44px;
-    height: 44px;
+    display: grid;
   }
 
-  .aba {
-    padding: 8px 16px;
+  .tema,
+  .sair {
+    width: 40px;
+    height: 40px;
   }
 
   .conteudo {
-    padding-top: 18px;
-    padding-bottom: 20px;
+    padding: 32px 40px 48px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .conteudo {
+    padding: 40px 56px 56px;
   }
 }

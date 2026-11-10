@@ -1,46 +1,45 @@
+/* Componentes comuns. Tudo em tokens: nenhum valor de cor direto aqui. */
+
+/* ---------- cartão ---------- */
+
 .card {
   padding: 16px;
   border: 1px solid var(--borda);
   border-radius: var(--raio);
-  background: linear-gradient(180deg, var(--superficie-alta), var(--superficie));
-  box-shadow: var(--sombra);
+  background: var(--superficie);
+  box-shadow: var(--sombra-suave);
 }
 
-.cardClicavel {
-  display: block;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-  transition: transform 0.15s ease, border-color 0.15s ease;
-}
-
-.cardClicavel:hover {
-  transform: translateY(-2px);
-  border-color: var(--borda-forte);
-}
+/* ---------- botão ---------- */
 
 .botao {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 11px 18px;
+  min-height: 48px;
+  padding: 0 20px;
   border: 1px solid transparent;
   border-radius: var(--raio-pequeno);
   background: var(--primaria);
-  color: #fff;
-  font-weight: 600;
+  color: var(--sobre-primaria);
+  font-weight: 650;
   font-size: 15.5px;
+  letter-spacing: 0.005em;
   cursor: pointer;
-  transition: filter 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
 }
 
 .botao:hover:not(:disabled) {
-  filter: brightness(1.12);
+  background: var(--primaria-forte);
+}
+
+.botao:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
 .botao:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -50,45 +49,71 @@
   color: var(--texto);
 }
 
+.secundaria:hover:not(:disabled) {
+  background: var(--superficie-alta);
+  border-color: var(--texto-fraco);
+}
+
 .fantasma {
   background: transparent;
-  border-color: var(--borda);
   color: var(--texto-suave);
+}
+
+.fantasma:hover:not(:disabled) {
+  background: var(--superficie-alta);
+  color: var(--texto);
 }
 
 .perigo {
   background: transparent;
-  border-color: rgba(239, 68, 68, 0.45);
+  border-color: color-mix(in srgb, var(--perdeu) 55%, transparent);
   color: var(--erro-texto);
+}
+
+.perigo:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--perdeu) 10%, transparent);
+  border-color: var(--perdeu);
 }
 
 .sucesso {
-  background: rgba(34, 197, 94, 0.16);
-  border-color: rgba(34, 197, 94, 0.4);
+  background: color-mix(in srgb, var(--cumpriu) 14%, transparent);
+  border-color: color-mix(in srgb, var(--cumpriu) 45%, transparent);
   color: var(--ok-texto);
 }
 
+.sucesso:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--cumpriu) 22%, transparent);
+}
+
 .recusa {
-  background: rgba(239, 68, 68, 0.14);
-  border-color: rgba(239, 68, 68, 0.4);
+  background: color-mix(in srgb, var(--perdeu) 12%, transparent);
+  border-color: color-mix(in srgb, var(--perdeu) 45%, transparent);
   color: var(--erro-texto);
 }
 
+.recusa:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--perdeu) 20%, transparent);
+}
+
 .pequeno {
-  padding: 10px 14px;
-  font-size: 14.5px;
+  min-height: 40px;
+  padding: 0 14px;
+  font-size: 14px;
 }
 
 .blocao {
   width: 100%;
 }
 
+/* ---------- selo de status ---------- */
+
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13.5px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 
@@ -98,19 +123,22 @@
   height: 8px;
   border-radius: 50%;
   background: currentColor;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent);
 }
 
 /* Sem ponto, a marca vira uma etiqueta discreta (papel, tipo de mídia). */
 .badgeSemPonto {
-  padding: 2px 8px;
-  border-radius: 6px;
+  padding: 3px 9px;
+  border-radius: 7px;
   background: var(--superficie-alta);
-  font-size: 13px;
+  font-size: 12.5px;
 }
 
 .badgeSemPonto::before {
   display: none;
 }
+
+/* ---------- carregando ---------- */
 
 .spinner {
   width: 22px;
@@ -124,7 +152,7 @@
 .spinnerCentral {
   display: grid;
   place-items: center;
-  padding: 40px 0;
+  padding: 48px 0;
 }
 
 @keyframes girar {
@@ -133,31 +161,38 @@
   }
 }
 
+/* ---------- avatar: quadrado arredondado, não círculo ---------- */
+
 .avatar {
   display: grid;
   place-items: center;
   flex: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--borda-forte);
+  width: 38px;
+  height: 38px;
+  border-radius: 32%;
   background: var(--primaria-fraca);
-  color: var(--primaria-forte);
-  font-weight: 700;
-  font-size: 14.5px;
+  color: var(--destaque-texto);
+  font-family: var(--fonte-titulo);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: -0.02em;
   object-fit: cover;
   overflow: hidden;
 }
 
 .avatarGrande {
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
+  font-size: 22px;
+}
+
+.avatarEnorme {
+  width: 56px;
+  height: 56px;
   font-size: 20px;
 }
 
-/* Só ganha tamanho próprio no desktop (ver o bloco no fim do arquivo). */
-.avatarEnorme {
-}
+/* ---------- campo de formulário ---------- */
 
 .campo {
   display: flex;
@@ -166,99 +201,150 @@
 }
 
 .rotulo {
-  font-size: 14.5px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 650;
   color: var(--texto-suave);
 }
 
 .dica {
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--texto-fraco);
 }
 
 .erroCampo {
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--erro-texto);
 }
 
+/* ---------- alerta ---------- */
+
 .alerta {
-  padding: 11px 14px;
+  padding: 12px 14px;
   border-radius: var(--raio-pequeno);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid color-mix(in srgb, var(--perdeu) 40%, transparent);
+  background: color-mix(in srgb, var(--perdeu) 9%, transparent);
   color: var(--erro-texto);
-  font-size: 15px;
+  font-size: 14.5px;
+  line-height: 1.45;
 }
 
 .alertaInfo {
-  border-color: rgba(124, 92, 255, 0.4);
+  border-color: color-mix(in srgb, var(--primaria) 40%, transparent);
   background: var(--primaria-fraca);
   color: var(--destaque-texto);
 }
 
 .alertaOk {
-  border-color: rgba(34, 197, 94, 0.4);
-  background: rgba(34, 197, 94, 0.12);
+  border-color: color-mix(in srgb, var(--cumpriu) 40%, transparent);
+  background: color-mix(in srgb, var(--cumpriu) 10%, transparent);
   color: var(--ok-texto);
 }
 
+/* ---------- vazio: a dúvida como assinatura ---------- */
+
 .vazio {
+  position: relative;
   display: grid;
   gap: 6px;
   justify-items: center;
-  padding: 42px 18px;
-  border: 1px dashed var(--borda-forte);
+  padding: 44px 20px 36px;
+  border: 1.5px dashed var(--borda-forte);
   border-radius: var(--raio);
   text-align: center;
   color: var(--texto-suave);
+  overflow: hidden;
+}
+
+.vazio::before {
+  content: '?';
+  position: absolute;
+  right: -4px;
+  bottom: -52px;
+  font-family: var(--fonte-titulo);
+  font-size: 130px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--texto);
+  opacity: 0.05;
+  pointer-events: none;
 }
 
 .vazioTitulo {
-  font-weight: 600;
+  font-family: var(--fonte-titulo);
+  font-size: 18px;
+  font-weight: 700;
   color: var(--texto);
 }
+
+.vazio > button {
+  margin-top: 10px;
+}
+
+/* ---------- CP: a moeda, sempre dourada ---------- */
 
 .cp {
   display: inline-flex;
   align-items: baseline;
-  gap: 4px;
+  gap: 3px;
+  padding: 2px 9px;
+  border: 1px solid transparent;
+  border-radius: var(--raio-chip);
+  background: var(--cp-fraca);
   color: var(--cp);
-  font-weight: 700;
+  font-family: var(--fonte-titulo);
+  font-weight: 800;
+  font-size: 15px;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
   white-space: nowrap;
 }
 
 .cpUnidade {
-  font-size: 13px;
+  font-family: var(--fonte-texto);
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: 0.08em;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 .cpGrande {
-  font-size: 24px;
+  padding: 4px 14px;
+  font-size: 28px;
 }
+
+.cpGrande .cpUnidade {
+  font-size: 13px;
+}
+
+/* ---------- cabeçalho de página ---------- */
 
 .cabecalho {
   display: flex;
   align-items: flex-end;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .cabecalhoTextos {
   flex: 1;
   display: grid;
-  gap: 3px;
+  gap: 4px;
+  min-width: 0;
 }
 
 .cabecalhoTitulo {
-  font-size: 23px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 .cabecalhoDescricao {
   font-size: 15px;
   color: var(--texto-suave);
+  max-width: 56ch;
 }
+
+/* ---------- seção ---------- */
 
 .secao {
   display: grid;
@@ -270,170 +356,93 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--texto-fraco);
+  letter-spacing: -0.01em;
+  color: var(--texto);
 }
 
 .secaoContagem {
-  padding: 1px 7px;
-  border-radius: 999px;
+  padding: 1px 8px;
+  border-radius: var(--raio-chip);
   background: var(--superficie-alta);
   color: var(--texto-suave);
-  letter-spacing: 0;
+  font-family: var(--fonte-texto);
+  font-size: 13px;
+  font-weight: 650;
 }
+
+/* ---------- voltar ---------- */
 
 .voltar {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
-  padding: 11px 0;
+  gap: 4px;
+  min-height: 44px;
+  margin: -8px 0 0 -6px;
+  padding: 0 8px 0 4px;
+  border-radius: var(--raio-pequeno);
   font-size: 14.5px;
+  font-weight: 600;
   color: var(--texto-suave);
+  transition: color 0.18s ease, background 0.18s ease;
 }
 
 .voltar:hover {
+  background: var(--superficie-alta);
   color: var(--texto);
 }
 
-/* Desktop (>= 1100px): escala do redesign — corpo 18px, rótulos 15px, títulos 38px. */
-@media (min-width: 1100px) {
+/* ---------- desktop ---------- */
+
+@media (min-width: 1024px) {
   .card {
-    padding: 24px;
+    padding: 22px;
   }
 
   .botao {
-    min-height: 48px;
-    padding: 12px 24px;
-    gap: 10px;
-    font-size: 18px;
-  }
-
-  .pequeno {
-    min-height: 44px;
-    padding: 8px 16px;
-    font-size: 16px;
-  }
-
-  .badge {
-    font-size: 16px;
-  }
-
-  .badgeSemPonto {
-    padding: 3px 10px;
-    font-size: 14px;
+    font-size: 15.5px;
   }
 
   .avatar {
-    width: 44px;
-    height: 44px;
-    font-size: 16px;
+    width: 40px;
+    height: 40px;
   }
 
-  .avatarGrande,
+  .avatarGrande {
+    width: 72px;
+    height: 72px;
+    font-size: 24px;
+  }
+
   .avatarEnorme {
     width: 64px;
     height: 64px;
     font-size: 22px;
   }
 
-  .rotulo {
-    font-size: 16px;
-  }
-
-  .dica,
-  .erroCampo {
-    font-size: 15px;
-  }
-
-  .alerta {
-    padding: 12px 18px;
-    font-size: 17px;
-  }
-
-  .vazio {
-    padding: 56px 24px;
-    font-size: 18px;
-  }
-
-  .vazioTitulo {
-    font-size: 22px;
-  }
-
-  .cp {
-    font-size: 22px;
-  }
-
-  .cpUnidade {
-    font-size: 15px;
-  }
-
-  .cpGrande {
-    font-size: 30px;
-  }
-
   .cabecalho {
-    margin-bottom: 0;
-  }
-
-  .cabecalhoTitulo {
-    font-size: 38px;
-    line-height: 46px;
-  }
-
-  .cabecalhoDescricao {
-    font-size: 20px;
-  }
-
-  .secao {
-    gap: 12px;
-    margin-bottom: 0;
-  }
-
-  .secaoTitulo {
-    font-size: 15px;
-  }
-
-  .secaoContagem {
-    padding: 2px 10px;
-  }
-
-  .voltar {
-    gap: 6px;
-    margin: -7px 0;
-    padding: 7px 0;
-    font-size: 18px;
-  }
-}
-
-@media (min-width: 1100px) and (max-height: 820px) {
-  .card {
-    padding: 18px;
-  }
-
-  .botao {
-    min-height: 44px;
-    padding: 9px 20px;
+    margin-bottom: 24px;
   }
 
   .cabecalhoTitulo {
     font-size: 36px;
-    line-height: 42px;
   }
 
   .cabecalhoDescricao {
-    font-size: 19px;
-    line-height: 26px;
-  }
-
-  .cp {
-    font-size: 20px;
+    font-size: 16.5px;
   }
 
   .secao {
-    gap: 8px;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .secaoTitulo {
+    font-size: 18px;
+  }
+
+  .cpGrande {
+    font-size: 32px;
   }
 }

@@ -1,3 +1,5 @@
+/* Linha do tempo do desafio: quatro pontos, o atual aceso na cor do status. */
+
 .trilha {
   display: grid;
   grid-auto-flow: column;
@@ -11,7 +13,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -21,9 +23,10 @@
   position: absolute;
   top: 6px;
   left: 14px;
-  right: 0;
+  right: 2px;
   height: 2px;
-  background: var(--borda-forte);
+  border-radius: 1px;
+  background: var(--borda);
 }
 
 .etapa:last-child::after {
@@ -40,32 +43,38 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--borda-forte);
+  border: 2px solid var(--borda-forte);
+  background: var(--superficie);
 }
 
 .feita .ponto {
+  border-color: var(--texto-fraco);
   background: var(--texto-fraco);
 }
 
 .atual .ponto {
+  border-color: var(--cor-atual);
   background: var(--cor-atual);
-  box-shadow: 0 0 0 5px color-mix(in srgb, var(--cor-atual) 25%, transparent);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--cor-atual) 22%, transparent);
 }
 
 .textos {
   display: flex;
   flex-direction: column;
-  padding-right: 8px;
+  gap: 1px;
+  padding-right: 6px;
 }
 
 .rotulo {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--texto-suave);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.2;
+  color: var(--texto-fraco);
+  overflow-wrap: anywhere;
 }
 
 .feita .rotulo {
-  color: var(--texto);
+  color: var(--texto-suave);
 }
 
 .atual .rotulo {
@@ -73,17 +82,24 @@
 }
 
 .detalhe {
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 1.3;
   color: var(--texto-fraco);
+  overflow-wrap: anywhere;
 }
 
 .compacta {
-  width: 132px;
+  width: 120px;
+}
+
+.compacta .etapa {
+  gap: 0;
 }
 
 .compacta .ponto {
   width: 10px;
   height: 10px;
+  border-width: 2px;
 }
 
 .compacta .etapa::after {
@@ -92,15 +108,15 @@
 }
 
 .compacta .atual .ponto {
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--cor-atual) 25%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--cor-atual) 22%, transparent);
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1024px) {
   .rotulo {
-    font-size: 16px;
+    font-size: 14.5px;
   }
 
   .detalhe {
-    font-size: 14px;
+    font-size: 13.5px;
   }
 }

@@ -114,6 +114,7 @@
     * [2026-10-31 - Tela inicial: abertura animada com o monge e o nerd](docs/05-qualidade/registro-ia/2026-10-31-tela-inicial-abertura.md)
     * [2026-10-31 - Jogos online no Brasil em números](docs/05-qualidade/registro-ia/2026-10-31-jogos-online-em-numeros.md)
     * [2026-10-31 - Publicação na Cloudflare com a API por túnel](docs/05-qualidade/registro-ia/2026-10-31-publicacao-cloudflare.md)
+    * [2026-11-10 - Redesign mobile-first com tema claro padrão](docs/05-qualidade/registro-ia/2026-11-10-redesign-mobile-first.md)
 
 ## Produto
 
@@ -129,6 +130,7 @@
   * [30 - Tela: Abertura](docs/04-ux/telas/30-tela-abertura.md)
   * [Redesign de UI/UX (31/10/2026)](docs/04-ux/propostas/README.md)
     * [Tela inicial: abertura animada](docs/04-ux/propostas/tela-inicial/README.md)
+  * [Redesign mobile-first (10/11/2026)](docs/04-ux/propostas/redesign-mobile/README.md)
 
 ## Encerramento
 

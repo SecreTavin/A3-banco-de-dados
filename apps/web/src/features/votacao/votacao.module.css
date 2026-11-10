@@ -3,7 +3,6 @@
 .lista {
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
   gap: 16px;
 }
 
@@ -38,30 +37,35 @@
 }
 
 .titulo {
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.25;
+  font-family: var(--fonte-titulo);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
 }
 
 .titulo:hover {
   text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
 }
 
 .regra {
-  padding: 10px 12px;
-  border-radius: 10px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--primaria);
+  border-radius: 0 12px 12px 0;
   background: var(--superficie-alta);
   font-size: 15px;
-  line-height: 1.45;
+  line-height: 1.5;
   color: var(--texto-suave);
 }
 
 .regraRotulo {
   display: block;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--texto);
 }
@@ -88,12 +92,12 @@
 }
 
 .fechaDestaque {
-  border-color: color-mix(in srgb, var(--em-votacao) 55%, transparent);
-  background: color-mix(in srgb, var(--em-votacao) 12%, transparent);
+  border-color: color-mix(in srgb, var(--em-votacao) 50%, transparent);
+  background: color-mix(in srgb, var(--em-votacao) 9%, transparent);
 }
 
 .fechaDestaque strong {
-  color: var(--destaque-texto);
+  color: var(--em-votacao);
 }
 
 .segmentos {
@@ -103,7 +107,7 @@
 
 .segmentos span {
   flex: 1;
-  height: 7px;
+  height: 8px;
   border-radius: 4px;
   background: color-mix(in srgb, var(--texto) 10%, transparent);
 }
@@ -116,7 +120,7 @@
   background: repeating-linear-gradient(
     45deg,
     var(--em-votacao) 0 6px,
-    color-mix(in srgb, var(--em-votacao) 40%, transparent) 6px 12px
+    color-mix(in srgb, var(--em-votacao) 35%, transparent) 6px 12px
   );
 }
 
@@ -130,10 +134,12 @@
 
 .ganha {
   font-size: 13.5px;
+  font-weight: 600;
   color: var(--cp);
   text-align: center;
 }
 
+/* Os dois botões do júri: grandes, lado a lado, um por polegar. */
 .botoes {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -142,7 +148,31 @@
 
 .botoes button {
   min-height: 58px;
+  border-radius: 14px;
+  font-family: var(--fonte-titulo);
   font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.botoes > button:first-child {
+  background: transparent;
+  border: 2px solid var(--perdeu);
+  color: var(--perdeu);
+}
+
+.botoes > button:first-child:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--perdeu) 10%, transparent);
+}
+
+.botoes > button:last-child {
+  background: var(--cumpriu);
+  border-color: var(--cumpriu);
+  color: #fff;
+}
+
+.botoes > button:last-child:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--cumpriu) 85%, #000);
 }
 
 /* ---------- confirmação ---------- */
@@ -157,14 +187,14 @@
 .iconeNaoVale {
   display: grid;
   place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
 }
 
 .iconeVale {
   background: var(--cumpriu);
-  color: #052e16;
+  color: #fff;
 }
 
 .iconeNaoVale {
@@ -179,25 +209,30 @@
 }
 
 .motivo {
-  padding: 8px 13px;
+  min-height: 40px;
+  padding: 0 14px;
   border: 1px solid var(--borda-forte);
-  border-radius: 999px;
+  border-radius: var(--raio-chip);
   background: transparent;
   color: var(--texto-suave);
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
 
 .motivoVale {
   border-color: var(--cumpriu);
   background: color-mix(in srgb, var(--cumpriu) 12%, transparent);
   color: var(--ok-texto);
+  font-weight: 600;
 }
 
 .motivoNaoVale {
   border-color: var(--perdeu);
   background: color-mix(in srgb, var(--perdeu) 12%, transparent);
   color: var(--erro-texto);
+  font-weight: 600;
 }
 
 .aviso {
@@ -216,21 +251,22 @@
   font-size: 24px;
 }
 
+/* O carimbo do júri. */
 .selo {
   display: grid;
   place-items: center;
   align-self: center;
-  width: 92px;
-  height: 92px;
-  border: 2px solid;
+  width: 96px;
+  height: 96px;
+  border: 3px solid;
   border-radius: 50%;
-  animation: brotar 0.4s ease;
+  transform: rotate(-6deg);
+  animation: carimbar 0.45s cubic-bezier(0.2, 0.9, 0.2, 1.2);
 }
 
 .seloVale {
   border-color: var(--cumpriu);
-  background: radial-gradient(circle, color-mix(in srgb, var(--cumpriu) 35%, transparent), color-mix(in srgb, var(--cumpriu) 8%, transparent));
-  box-shadow: 0 0 60px color-mix(in srgb, var(--cumpriu) 35%, transparent);
+  background: color-mix(in srgb, var(--cumpriu) 12%, transparent);
   color: var(--cumpriu);
 }
 
@@ -261,6 +297,7 @@
   padding: 10px 0;
   border-bottom: 1px solid var(--borda);
   font-size: 15.5px;
+  font-weight: 500;
 }
 
 .pagamentos li:last-child {
@@ -270,7 +307,9 @@
 .mais,
 .perdeu {
   margin-left: auto;
-  font-weight: 700;
+  font-family: var(--fonte-titulo);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }
 
 .mais {
@@ -286,10 +325,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 14px;
-  border: 1px solid color-mix(in srgb, var(--cp) 35%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--cp) 50%, transparent);
   border-radius: 12px;
   background: var(--cp-fraca);
   font-size: 15.5px;
+  font-weight: 500;
 }
 
 .banco {
@@ -301,9 +341,9 @@
   color: var(--texto-fraco);
 }
 
-@keyframes brotar {
+@keyframes carimbar {
   from {
-    transform: scale(0.6);
+    transform: scale(1.5) rotate(-14deg);
     opacity: 0;
   }
 }
@@ -317,11 +357,11 @@
   }
 
   .colunaDecisao {
-    justify-content: flex-end;
+    justify-content: center;
   }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1024px) {
   .titulo {
     font-size: 26px;
   }
@@ -330,10 +370,6 @@
   .comentario,
   .quem,
   .fecha {
-    font-size: 17px;
-  }
-
-  .ganha {
-    font-size: 15px;
+    font-size: 15.5px;
   }
 }

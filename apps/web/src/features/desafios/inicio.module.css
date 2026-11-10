@@ -1,34 +1,23 @@
-/* Tela inicial (Meus desafios): saudação, "Sua vez", abas e a lista em linhas. */
+/* Tela inicial (Meus desafios): saudação, "Sua vez", abas e a lista em bilhetes. */
 
-/* No desktop a página é uma coluna de altura fixa que rola por dentro: os blocos não
-   podem encolher para caber, senão a linha do tempo perde os rótulos. */
-.ola,
-.vez,
-.abas,
-.lista {
-  flex-shrink: 0;
-}
+/* ---------- saudação ---------- */
 
 .ola {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .olaTitulo {
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 800;
-}
-
-.ola > :last-child {
-  flex: none;
-  white-space: nowrap;
+  letter-spacing: -0.035em;
 }
 
 .olaResumo {
-  margin-top: 2px;
+  margin-top: 4px;
   font-size: 15px;
   color: var(--texto-suave);
 }
@@ -37,19 +26,34 @@
   color: var(--texto);
 }
 
+/* No celular o "Novo desafio" já está na barra de baixo. */
+.ola > button {
+  display: none;
+  flex: none;
+  white-space: nowrap;
+}
+
+.textoNovo {
+  display: inline;
+}
+
 /* ---------- Sua vez ---------- */
 
 .vez {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(250px, 82%);
+  grid-auto-columns: min(82%, 320px);
   gap: 12px;
-  margin: 0 -16px 18px;
-  padding: 2px 16px 6px;
+  margin: 0 -16px 20px;
+  padding: 2px 16px 8px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: 16px;
   scrollbar-width: none;
+}
+
+.vez::-webkit-scrollbar {
+  display: none;
 }
 
 .vez > * {
@@ -62,50 +66,53 @@
   flex-direction: column;
   gap: 8px;
   min-width: 0;
+  min-height: 136px;
   padding: 16px 18px;
   border: 1px solid var(--borda);
-  border-radius: 16px;
+  border-radius: var(--raio);
   background: var(--superficie);
 }
 
 .acao {
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .acao:hover {
   transform: translateY(-2px);
+  box-shadow: var(--sombra-suave);
 }
 
 .votacao {
-  border-color: color-mix(in srgb, var(--em-votacao) 55%, transparent);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--em-votacao) 22%, transparent), color-mix(in srgb, var(--em-votacao) 6%, transparent));
+  border-color: color-mix(in srgb, var(--em-votacao) 40%, transparent);
+  background: color-mix(in srgb, var(--em-votacao) 9%, var(--superficie));
 }
 
 .andamento {
-  border-color: color-mix(in srgb, var(--em-andamento) 55%, transparent);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--em-andamento) 20%, transparent), color-mix(in srgb, var(--em-andamento) 5%, transparent));
+  border-color: color-mix(in srgb, var(--em-andamento) 40%, transparent);
+  background: color-mix(in srgb, var(--em-andamento) 9%, var(--superficie));
 }
 
 .aberta {
-  border-color: color-mix(in srgb, var(--aberta) 50%, transparent);
-  background: linear-gradient(135deg, color-mix(in srgb, var(--aberta) 20%, transparent), color-mix(in srgb, var(--aberta) 5%, transparent));
+  border-color: color-mix(in srgb, var(--aberta) 40%, transparent);
+  background: color-mix(in srgb, var(--aberta) 8%, var(--superficie));
 }
 
 .acaoNeutra {
   border-style: dashed;
+  border-color: var(--borda-forte);
   background: transparent;
 }
 
 .acaoRotulo {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--texto-suave);
+  color: var(--texto-fraco);
 }
 
 .votacao .acaoRotulo {
-  color: var(--destaque-texto);
+  color: var(--em-votacao);
 }
 
 .andamento .acaoRotulo {
@@ -117,14 +124,17 @@
 }
 
 .acaoTitulo {
-  font-size: 17px;
+  font-family: var(--fonte-titulo);
+  font-size: 18px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
 }
 
 .acaoLink {
+  margin-top: auto;
   color: var(--destaque-texto);
-  font-weight: 600;
+  font-weight: 650;
   font-size: 15px;
 }
 
@@ -140,6 +150,7 @@
   height: 100%;
   border-radius: 3px;
   background: var(--em-votacao);
+  transition: width 0.4s ease;
 }
 
 .acaoRodape {
@@ -148,25 +159,27 @@
   justify-content: space-between;
   gap: 10px;
   margin-top: auto;
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--texto-suave);
 }
 
 .acaoChamada {
   margin-left: auto;
-  padding: 7px 14px;
-  border-radius: 10px;
-  background: var(--primaria);
-  color: #fff;
-  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--raio-chip);
+  background: var(--texto);
+  color: var(--fundo);
+  font-weight: 650;
+  font-size: 14px;
 }
 
 .carteiraLinha {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
   font-size: 15px;
+  font-weight: 500;
   color: var(--texto-suave);
 }
 
@@ -174,123 +187,145 @@
   color: var(--texto);
 }
 
-
-/* ---------- abas ---------- */
+/* ---------- abas em pílula ---------- */
 
 .abas {
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid var(--borda);
+  gap: 8px;
+  margin-bottom: 14px;
 }
 
 .aba {
-  margin-bottom: -1px;
-  padding: 10px 12px;
-  border: none;
-  border-bottom: 2px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio-chip);
   background: transparent;
   color: var(--texto-suave);
-  font-size: 15px;
+  font-size: 14.5px;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 
-.abaAtiva {
-  border-bottom-color: var(--primaria-forte);
+.aba:hover {
+  border-color: var(--texto-fraco);
   color: var(--texto);
 }
 
+.abaAtiva,
+.abaAtiva:hover {
+  border-color: var(--texto);
+  background: var(--texto);
+  color: var(--fundo);
+}
+
 .abaContagem {
-  margin-left: 4px;
-  color: var(--texto-fraco);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
 }
 
 .filtroGrupo {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  min-width: 0;
   margin-left: auto;
   color: var(--texto-suave);
 }
 
 .filtroGrupo select {
   width: auto;
-  max-width: 130px;
-  text-overflow: ellipsis;
-  padding: 6px 8px;
+  max-width: 150px;
+  min-height: 40px;
+  padding: 0 28px 0 8px;
   border: none;
-  background: transparent;
+  background-color: transparent;
+  background-position: right 6px center;
   color: var(--texto-suave);
   font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
   cursor: pointer;
 }
 
-/* ---------- lista ---------- */
+/* ---------- lista: cada desafio é um bilhete ---------- */
 
 .lista {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .linha {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   grid-template-areas:
     'principal principal'
     'etapa pote';
-  gap: 12px 16px;
-  align-items: end;
-  padding: 16px;
+  gap: 0;
   border: 1px solid var(--borda);
-  border-radius: var(--raio);
+  border-radius: 18px;
   background: var(--superficie);
-  transition: border-color 0.15s ease, background 0.15s ease;
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 }
 
 .linha:hover {
   border-color: var(--borda-forte);
-  background: var(--superficie-alta);
+  box-shadow: var(--sombra-suave);
+  transform: translateY(-1px);
 }
 
 .linhaPrincipal {
   grid-area: principal;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
   min-width: 0;
+  padding: 14px 16px 12px;
 }
 
 .linhaTopo {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
+  margin-bottom: 4px;
 }
 
 .prazo {
-  font-size: 13px;
+  font-size: 12.5px;
+  font-weight: 500;
   color: var(--texto-fraco);
+  white-space: nowrap;
 }
 
 .linhaTitulo {
   overflow: hidden;
-  font-size: 17px;
+  font-family: var(--fonte-titulo);
+  font-size: 18px;
   font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .linhaMeta {
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--texto-fraco);
 }
 
 .papel {
-  margin-top: 3px;
-  font-size: 14px;
+  margin-top: 2px;
+  font-size: 13.5px;
   color: var(--texto-suave);
 }
 
@@ -302,16 +337,45 @@
   color: var(--perdeu);
 }
 
+/* O picote: linha tracejada com dois furos nas bordas. */
+.linhaEtapa,
+.linhaPote {
+  position: relative;
+  border-top: 2px dashed var(--borda-forte);
+}
+
+.linhaEtapa::before,
+.linhaPote::after {
+  content: '';
+  position: absolute;
+  top: -9px;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--borda);
+  border-radius: 50%;
+  background: var(--fundo);
+}
+
+.linhaEtapa::before {
+  left: -9px;
+}
+
+.linhaPote::after {
+  right: -9px;
+}
+
 .linhaEtapa {
   grid-area: etapa;
   display: flex;
   flex-direction: column;
   gap: 8px;
   min-width: 0;
+  padding: 12px 16px 14px;
 }
 
 .passo {
-  font-size: 13.5px;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--texto-suave);
 }
 
@@ -320,113 +384,139 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 2px;
+  justify-content: center;
+  gap: 3px;
+  padding: 12px 16px 14px 14px;
+  background: var(--cp-fraca);
 }
 
 .poteLegenda {
-  font-size: 12.5px;
-  color: var(--texto-fraco);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--cp);
   white-space: nowrap;
 }
 
-/* No celular o botão do topo fica só com o "+" para não quebrar a linha. */
-.textoNovo {
-  display: none;
-}
-
-@media (min-width: 480px) {
-  .textoNovo {
-    display: inline;
-  }
-}
+/* ---------- tablet ---------- */
 
 @media (min-width: 720px) {
+  .ola > button {
+    display: inline-flex;
+  }
+
   .filtroGrupo select {
-    max-width: 200px;
+    max-width: 220px;
   }
 
   .vez {
     grid-auto-flow: row;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     grid-auto-columns: auto;
-    margin: 0 0 20px;
+    margin: 0 0 22px;
     padding: 0;
     overflow: visible;
   }
 
   .linha {
-    grid-template-columns: minmax(0, 1fr) 220px 140px;
+    grid-template-columns: minmax(0, 1fr) 196px 148px;
     grid-template-areas: 'principal etapa pote';
     align-items: center;
-    padding: 14px 22px;
   }
 
-  .lista {
-    gap: 8px;
+  .linhaPrincipal {
+    padding: 16px 20px;
+  }
+
+  .linhaEtapa {
+    align-self: stretch;
+    justify-content: center;
+    padding: 14px 18px;
+    border-top: none;
+    border-left: 1px solid var(--borda);
+  }
+
+  .linhaEtapa::before {
+    display: none;
+  }
+
+  .linhaPote {
+    align-self: stretch;
+    padding: 14px 18px;
+    border-top: none;
+    border-left: 2px dashed var(--borda-forte);
+  }
+
+  .linhaPote::before,
+  .linhaPote::after {
+    content: '';
+    position: absolute;
+    left: -9px;
+    right: auto;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--borda);
+    border-radius: 50%;
+    background: var(--fundo);
+  }
+
+  .linhaPote::before {
+    top: -9px;
+  }
+
+  .linhaPote::after {
+    top: auto;
+    bottom: -9px;
   }
 }
 
-@media (min-width: 1100px) {
+/* ---------- desktop ---------- */
+
+@media (min-width: 1024px) {
   .ola {
-    margin-bottom: 0;
+    margin-bottom: 24px;
+  }
+
+  /* No desktop a coluna lateral já tem o "Novo desafio". */
+  .ola > button {
+    display: none;
   }
 
   .olaTitulo {
-    font-size: 34px;
+    font-size: 36px;
   }
 
   .olaResumo {
-    font-size: 18px;
+    font-size: 16.5px;
   }
 
   .vez {
-    margin: 0;
+    gap: 16px;
+    margin-bottom: 28px;
   }
 
   .acaoTitulo {
     font-size: 19px;
   }
 
-  .acaoRodape,
-  .carteiraLinha {
-    font-size: 16px;
-  }
-
   .abas {
-    margin-bottom: 0;
-  }
-
-  .aba {
-    font-size: 17px;
+    margin-bottom: 16px;
   }
 
   .linha {
-    grid-template-columns: minmax(0, 1fr) 260px 160px;
-  }
-
-  /* A página não rola no desktop (redesign da PR #35): topo, "Sua vez" e abas ficam
-     fixos e só a lista rola, por mais desafios que o grupo tenha. */
-  .lista {
-    flex: 1 1 auto;
-    min-height: 140px;
-    margin-right: -10px;
-    padding-right: 10px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--borda-forte) transparent;
+    grid-template-columns: minmax(0, 1fr) 230px 170px;
   }
 
   .linhaTitulo {
     font-size: 19px;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 
   .linhaMeta,
-  .papel {
-    font-size: 15.5px;
-  }
-
-  .passo,
-  .prazo {
-    font-size: 15px;
+  .papel,
+  .passo {
+    font-size: 14px;
   }
 }
