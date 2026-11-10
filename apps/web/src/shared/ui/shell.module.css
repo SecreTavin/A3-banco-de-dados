@@ -287,6 +287,26 @@
   font-size: 11.5px;
   font-weight: 650;
   color: var(--destaque-texto);
+  white-space: nowrap;
+}
+
+/* Celulares estreitos (360px): cinco colunas de 70px. Os rótulos encolhem
+   para "Novo desafio" caber numa linha. */
+@media (max-width: 379px) {
+  .nav {
+    padding-right: 2px;
+    padding-left: 2px;
+  }
+
+  .aba {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .aba,
+  .novoRotulo {
+    font-size: 10.5px;
+  }
 }
 
 /* ---------- tablet: só mais respiro ---------- */
@@ -351,6 +371,9 @@
     position: static;
     display: flex;
     flex-direction: column;
+    /* O celular alinha as abas embaixo (align-items: end); na coluna isso
+       viraria "encostado à direita". Aqui cada item ocupa a largura toda. */
+    align-items: stretch;
     gap: 4px;
     height: auto;
     padding: 0;
@@ -362,6 +385,7 @@
 
   .aba {
     flex-direction: row;
+    justify-content: flex-start;
     gap: 12px;
     height: 48px;
     padding: 0 12px;

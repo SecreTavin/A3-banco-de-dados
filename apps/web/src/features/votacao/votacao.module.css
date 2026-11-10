@@ -153,6 +153,18 @@
   font-size: 18px;
   font-weight: 800;
   letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+@media (max-width: 379px) {
+  .botoes {
+    gap: 8px;
+  }
+
+  .botoes button {
+    padding: 0 10px;
+    font-size: 16.5px;
+  }
 }
 
 .botoes > button:first-child {

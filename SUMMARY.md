@@ -115,6 +115,7 @@
     * [2026-10-31 - Jogos online no Brasil em números](docs/05-qualidade/registro-ia/2026-10-31-jogos-online-em-numeros.md)
     * [2026-10-31 - Publicação na Cloudflare com a API por túnel](docs/05-qualidade/registro-ia/2026-10-31-publicacao-cloudflare.md)
     * [2026-11-10 - Redesign mobile-first com tema claro padrão](docs/05-qualidade/registro-ia/2026-11-10-redesign-mobile-first.md)
+    * [2026-11-10 - Ajustes nas resoluções mais usadas e medição de rolagem](docs/05-qualidade/registro-ia/2026-11-10-ajustes-resolucoes.md)
 
 ## Produto
 

@@ -70,6 +70,7 @@
   font-weight: 650;
   line-height: 1.2;
   color: var(--texto-fraco);
+  hyphens: auto;
   overflow-wrap: anywhere;
 }
 
@@ -85,7 +86,24 @@
   font-size: 12px;
   line-height: 1.3;
   color: var(--texto-fraco);
+  hyphens: auto;
   overflow-wrap: anywhere;
+}
+
+/* Em 360px cada etapa tem ~70px: "andamento" só cabe inteiro com 12px. */
+@media (max-width: 399px) {
+  .rotulo {
+    font-size: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .detalhe {
+    font-size: 11.5px;
+  }
+
+  .textos {
+    padding-right: 4px;
+  }
 }
 
 .compacta {

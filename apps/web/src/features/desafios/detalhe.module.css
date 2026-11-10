@@ -566,10 +566,26 @@
 
   .grade {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(360px, 440px);
+    grid-template-columns: minmax(0, 1fr) minmax(320px, min(36%, 440px));
     align-items: start;
     gap: 20px;
     margin-top: 0;
+  }
+
+  /* Em 1280–1366px o confronto divide ~560px com o pote: tudo um passo menor. */
+  .confronto {
+    grid-template-columns: 1fr 132px 1fr;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .lado {
+    padding: 12px;
+  }
+
+  .pote {
+    width: 128px;
+    height: 128px;
   }
 
   .coluna {
@@ -585,5 +601,22 @@
   .provaTopo h2,
   .entrarTitulo {
     font-size: 19px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .confronto {
+    grid-template-columns: 1fr 160px 1fr;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .lado {
+    padding: 14px;
+  }
+
+  .pote {
+    width: 144px;
+    height: 144px;
   }
 }

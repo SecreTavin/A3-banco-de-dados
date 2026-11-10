@@ -105,14 +105,75 @@ Desktop (1440x900):
 ![Meus grupos](img/desk-claro-grupos.png)
 ![Ranking no escuro](img/desk-escuro-ranking.png)
 
+## Rolagem e resoluções mais usadas
+
+A janela nunca rola: `body` tem `overflow: hidden`, a moldura mede `100dvh` e
+só a área de conteúdo (`main`) rola por dentro, com o topo e a navegação sempre
+à vista. No login, quem rola é a própria tela; no diálogo de voto, a folha.
+
+Uma segunda rodada de capturas mediu isso em cada tela, nas oito resoluções
+mais usadas (StatCounter 2025/26). A altura útil desconta a interface do
+navegador: 111px no Chrome de desktop, 80px no Chrome Android e 180px no
+Safari do iPhone.
+
+| Aparelho | Resolução | Viewport medida |
+| --- | --- | --- |
+| Android comum | 360x800 | 360x720 |
+| iPhone SE | 375x667 | 375x553 |
+| iPhone 13–15 | 390x844 | 390x664 |
+| Pixel / Galaxy | 412x915 | 412x835 |
+| Notebook pequeno | 1280x720 | 1280x609 |
+| Notebook comum | 1366x768 | 1366x657 |
+| Notebook Full HD escalado | 1536x864 | 1536x753 |
+| Monitor Full HD | 1920x1080 | 1920x969 |
+
+Em todas as 175 capturas o documento ficou com a altura e a largura exatas da
+janela, `scrollY` zero e nenhum contêiner de rolagem além dos esperados. O que
+a leitura das imagens apontou e foi ajustado:
+
+* **360px:** "Novo desafio" quebrava em duas linhas na barra inferior; o filtro
+  "Todos os grupos" saía da tela; o título do bilhete era cortado com
+  reticências; "Em andamento" quebrava no meio da palavra na linha do tempo;
+  "Não vale" quebrava em duas linhas. Rótulos da barra encolhem abaixo de
+  380px, o filtro desce de linha, o título passa a duas linhas, a linha do tempo
+  hifeniza e encolhe abaixo de 400px, os botões de voto não quebram.
+* **1280 e 1366px:** o confronto (quem cumpre, pote, quem duvida) ficava
+  espremido ao lado da prova. A coluna da prova passou a 36% da largura e o
+  pote, os painéis e os espaçamentos encolhem um passo até 1439px.
+* **Login no desktop:** com dez contas de demonstração a lista rolava mesmo em
+  Full HD. Passou a duas colunas e cabe sem rolar a partir de 1366x768.
+* **Novo desafio:** a dica "o júri vai ler isso" quebrava palavra a palavra ao
+  lado do rótulo; agora desce de linha inteira, alinhada à direita.
+* **Perfil no desktop:** os três números do histórico voltaram a ser peças lado
+  a lado, como no celular.
+* **Menu lateral (desktop):** o `align-items: end` da barra inferior do celular
+  vazava para a coluna e encostava os itens à direita, cortando "Novo desafio".
+  Apareceu em todas as capturas de desktop e só foi notado no uso real. A coluna
+  agora estica os itens e alinha ícone e rótulo à esquerda.
+
+Todas as telas, nas oito resoluções e nos dois temas, estão em
+[`capturas/`](capturas/): uma folha por tela com os quatro tamanhos de celular
+(`cel-*.jpg`) ou de desktop (`desk-*.jpg`) lado a lado, as visões roladas até o
+fim (`*-fim.jpg`) e as folhas do tema escuro. O mesmo material, paginado para
+leitura, está em [`capturas/telas-redesign.pdf`](capturas/telas-redesign.pdf).
+
+![Início nas quatro resoluções de celular](capturas/cel-02-inicio.jpg)
+![Início nas quatro resoluções de desktop](capturas/desk-02-inicio.jpg)
+![Detalhe do desafio no celular](capturas/cel-03-detalhe.jpg)
+![Detalhe do desafio no desktop](capturas/desk-03-detalhe.jpg)
+![Login no desktop, lista em duas colunas](capturas/desk-01-login.jpg)
+![Votação no celular, botões de voto](capturas/cel-09-votacao-fim.jpg)
+
 ## Como foi verificado
 
-* `tsc -b && vite build` sem erro; CSS final de 73 kB (14 kB gzip), fontes de
+* `tsc -b && vite build` sem erro; CSS final de 74 kB (14 kB gzip), fontes de
   150 kB no total.
 * 71 capturas com Playwright e o Chrome do sistema: 390x844 e 1440x900, claro e
   escuro, todas as rotas autenticadas, mais o diálogo de confirmação do voto.
   Cada rodada foi lida tela a tela e as correções (barra inferior, colunas de
   grupos, rótulo do pote, linha do tempo) saíram dessa leitura.
+* Segunda rodada: 175 capturas nas oito resoluções acima, com medição de
+  rolagem por tela (`scripts/telas/medir-rolagem.mjs`).
 * Os seletores dos roteiros de tela (`scripts/testes/roteiro-e2e-ui.mjs`)
   foram preservados: `[class*=conteudo]`, `[class*=lista]`, `role=tab`, os
   rótulos dos botões e o `aria-label` do botão de tema, que continua único no
