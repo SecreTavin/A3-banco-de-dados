@@ -2,7 +2,8 @@
 // num corredor de universidade em 3D estilo PS1, com uma roda de alunos em volta.
 //
 // `quadro(tempo, palco)` é uma função pura do tempo: devolve o SVG do instante
-// pedido, com o corredor à parte, porque ele não muda e só acompanha a câmera. Não há estado de física guardado entre quadros; o "molenga" do
+// pedido, com o corredor à parte, porque ele não muda e só acompanha a câmera.
+// Não há estado de física guardado entre quadros; o "molenga" do
 // ragdoll é a resposta a um impulso, calculada a partir do momento do golpe, e
 // os impulsos se somam em vez de recomeçar. Assim a animação não acumula erro,
 // e o quadro final estático (para quem pede menos movimento) é só
@@ -11,8 +12,8 @@
 import { boneco, cabecaGrande, pontoDoCorpo, POSES, ALTURA_BONECO } from './boneco'
 import type { OpcoesBoneco, Personagem, Pose } from './boneco'
 import {
-  aleatorio, corredor, creme, estrelasTontura, faixas, impacto, legenda, oculosVoando,
-  peGrande, poeira, PONTA_DO_PE, posicaoJoia, rastro, titulo, torta, tunel,
+  aleatorio, corredor, creme, estrelasTontura, faiscas, faixas, ganho, impacto, legenda, oculosVoando,
+  onomatopeia, peGrande, poeira, PONTA_DO_PE, posicaoJoia, rastro, titulo, torta, tunel,
 } from './cena'
 import { afimDoPlano, fazCamera, juntar } from './motor3d'
 import type { Camera, Face } from './motor3d'
@@ -324,7 +325,7 @@ function nerdA(t: number, L: Layout): Estado {
   return r
 }
 
-function cenaA(tReal: number, L: Layout, joia: number): Plano {
+function cenaA(tReal: number, L: Layout, joia: number, queda: number): Plano {
   const E = L.escala, p = novoPlano(L)
 
   // Planos fechados: câmera atrás do pé e acerto congelado.
@@ -366,6 +367,8 @@ function cenaA(tReal: number, L: Layout, joia: number): Plano {
       const u = tau / 250
       p.frente += oculosVoando(hx + headPx * (0.45 + 1.1 * u), hy - headPx * (0.1 + 1.2 * u - 0.9 * u * u), L.base / 110, 30 + 300 * saida(u))
       p.frente += peGrande(pe[0], pe[1], sPe, giroPe, 1, L.base)
+      p.frente += faiscas(contato[0], contato[1], headPx * 0.9, tau, 5)
+      p.frente += onomatopeia('POW!', L.w * 0.27, L.h * 0.34, L.base * 0.17, tau / 250, -12)
       p.topo += flash(L, (1 - janela(tau, 0, 120)) ** 2 * 0.5)
       p.tremida = tremor(tau, 250, L.base * 0.03)
       p.soco = [contato, 1 + 0.06 * Math.exp(-tau / 60)]
@@ -380,8 +383,9 @@ function cenaA(tReal: number, L: Layout, joia: number): Plano {
     const tau = t - HIT, achata = tau >= 0 ? 0.32 * Math.exp(-tau / 130) * Math.cos(tau / 42) : 0
     const [tx, ty] = tremor(tReal - HIT, 320, L.fsTitulo * 0.08)
     const brilho = Math.max(joia, tReal >= HIT ? Math.max(0, 1 - (tReal - HIT) / 700) : 0)
-    p.cena += `<g transform="translate(${n(tx)} ${n(ty)})">${titulo(L.cx, L.baseTitulo, L.fsTitulo, brilho, achata)}</g>`
+    p.cena += `<g transform="translate(${n(tx)} ${n(ty - queda * L.h * 0.55)})">${titulo(L.cx, L.baseTitulo, L.fsTitulo, brilho, achata)}</g>`
     if (tReal >= HIT && tReal < HIT + 350) p.cena += impacto(joiaPos.x, joiaPos.topo + L.fsTitulo * 0.3, L.fsTitulo * 0.45, '#fff6cf', 1 - (tReal - HIT) / 350)
+    p.cena += faiscas(joiaPos.x, joiaPos.topo + L.fsTitulo * 0.3, L.fsTitulo * 0.9, tReal - HIT, 17, '#fff6cf')
 
     // Monge.
     const m = mongeA(t, L), sec = secundario(m, mongeA(t - 50, L), E, t)
@@ -408,6 +412,9 @@ function cenaA(tReal: number, L: Layout, joia: number): Plano {
 
     // Poeira nos pousos e os óculos caindo depois de voar no plano fechado.
     p.frente += poeira(L.xMonge + 40 * E, L.chao, t - 3050, E) + poeira(nd.x, L.chao, t - POUSO, E)
+    // Quem vence leva o "+CP".
+    const cabecaMonge = pontoDoCorpo(m.pose, 'cabeca', { x: m.x, y: L.chao, escala: E })
+    p.frente += ganho(cabecaMonge[0] - 78 * E, cabecaMonge[1] + 4 * E, 44 * E, t - 3520)
     if (t >= 2600) {
       const tq = Math.min(1, (t - 2600) / 640)
       p.frente += oculosVoando(L.xNerd + L.dx * 0.75 - 32 * E * tq, lerp(-30, L.chao - 5 * E, tq * tq), E * 0.9, 40 + 576 * tq)
@@ -486,6 +493,7 @@ function cenaB(t: number, L: Layout, joia: number): Plano {
         p.frente += impacto(cx, hy, headPx * (0.45 + 0.5 * kc), '#fff6e8', 0.75 - kc * 0.45)
         p.frente += creme(cx, hy, (headPx / 80) * (0.5 + 0.75 * kc), 8, 0.4 + 1.3 * kc)
         p.frente += creme(cx + headPx * 0.05, hy - headPx * 0.04, (headPx / 110) * (0.5 + 0.65 * kc), 2, 0.3 + 1.1 * kc)
+        p.frente += onomatopeia('PLAFT!', L.w * 0.74, L.h * 0.32, L.base * 0.15, (tau - 80) / 170, 10, '#fff6e8')
       }
       p.topo += flash(L, tau < 80 ? 0.2 : (1 - janela(tau, 80, 200)) ** 2 * 0.35, '#fff6e8')
       p.tremida = tremor(tau, 250, L.base * 0.03)
@@ -528,6 +536,8 @@ function cenaB(t: number, L: Layout, joia: number): Plano {
       p.frente += torta(x, y - 6 * E, E * 0.85 * mola(janela(t, 500, 750)), -kVoo * 40)
     }
     p.frente += poeira(xMongeB(2850, L), L.chao, t - 2850, E)
+    const cabecaNerd = pontoDoCorpo(nb.pose, 'cabeca', { x: L.xNerd, y: L.chao, escala: E, espelho: true })
+    p.frente += ganho(cabecaNerd[0] + 78 * E, cabecaNerd[1] + 4 * E, 44 * E, t - 2950)
 
     if (t >= 1000 && t < 1450) { p.zoom = 1 + 0.14 * suave(janela(t, 1000, 1400)); p.foco = [L.xNerd, L.chao - ALTURA_BONECO * E * 0.55] }
     if (t >= 2500 && t < 2850) { p.zoom = 1 + 0.07 * (1 - saida(janela(t, 2500, 2850))); p.foco = [L.xMonge, L.chao - ALTURA_BONECO * E * 0.6] }
@@ -545,7 +555,7 @@ const GOLPES = { A: [2350, HIT, POUSO], B: [SPLAT, 2850] }
 export interface Quadro {
   /** corredor: o mesmo texto enquanto o palco não muda de tamanho */
   fundo: string
-  /** câmera aplicada ao corredor (tremida, soco e zoom) */
+  /** câmera aplicada ao corredor (tremida, soco, zoom, balanço e paralaxe) */
   camera: string
   /** a mesma câmera em números: x' = escala * x + dx (idem y) */
   cameraNumeros: [number, number, number]
@@ -555,8 +565,16 @@ export interface Quadro {
   cena: string
 }
 
-/** O instante `tempo` (ms desde o início), já no tamanho do palco. */
-export function quadro(tempo: number, palco: Palco, { brilho = true } = {}): Quadro {
+/** Zoom fixo do plano aberto: a sobra nas bordas dá espaço para a câmera balançar. */
+const MARGEM = 1.02
+
+/**
+ * O instante `tempo` (ms desde o início), já no tamanho do palco. `olhar` é a
+ * posição do ponteiro (-1 a 1 em cada eixo): a câmera desliza um pouco para o
+ * lado oposto, e o fundo desliza menos que os bonecos, o que dá profundidade.
+ * Com `brilho: false` o quadro sai parado, sem balanço de câmera.
+ */
+export function quadro(tempo: number, palco: Palco, { brilho = true, olhar = [0, 0] as Par } = {}): Quadro {
   // Palco ainda sem medida (tela escondida): sem câmera possível, nada a desenhar.
   if (palco.w < 1 || palco.h < 1) return { fundo: '', camera: '', cameraNumeros: [1, 0, 0], aberto: false, cena: '' }
   const L = medir(palco)
@@ -564,30 +582,45 @@ export function quadro(tempo: number, palco: Palco, { brilho = true } = {}): Qua
   const naCenaA = tempoCiclo < DURACAO_CENA
   const t = naCenaA ? tempoCiclo : tempoCiclo - DURACAO_CENA
   const joia = brilho ? brilhoDaJoia(tempo) : 0
-  const p = naCenaA ? cenaA(t, L, joia) : cenaB(t, L, joia)
+  // Na primeira carga o título cai de cima e assenta com mola.
+  const queda = brilho && tempo < 1100 ? 1 - mola(janela(tempo, 260, 1000)) : 0
+  const p = naCenaA ? cenaA(t, L, joia, queda) : cenaB(t, L, joia)
 
   // A roda de alunos só aparece nos planos abertos.
   if (p.aberto) {
-    for (const a of plateia(t, naCenaA ? GOLPES.A : GOLPES.B, { cx: L.cx, dx: L.dx, chao: L.chao, escala: L.escala, u: L.u })) {
+    // Na cena A as cabeças sobem com o voo do nerd até o título e descem com a queda.
+    const olharAlto = naCenaA ? suave(janela(t, 2600, 2900)) * (1 - suave(janela(t, POUSO, POUSO + 350))) : 0
+    for (const a of plateia(t, naCenaA ? GOLPES.A : GOLPES.B, { cx: L.cx, dx: L.dx, chao: L.chao, escala: L.escala, u: L.u }, olharAlto)) {
       boneco(p.faces, 'aluno', a.pose, { ...a.opcoes, chao: L.chao }, L.cam)
     }
   }
 
-  let camera = `translate(${n(p.tremida[0])} ${n(p.tremida[1])})`
-  if (p.soco) camera += ` translate(${n(p.soco[0][0])} ${n(p.soco[0][1])}) scale(${p.soco[1].toFixed(3)}) translate(${n(-p.soco[0][0])} ${n(-p.soco[0][1])})`
-  if (p.zoom !== 1) camera += ` translate(${n(p.foco[0])} ${n(p.foco[1])}) scale(${p.zoom.toFixed(3)}) translate(${n(-p.foco[0])} ${n(-p.foco[1])})`
+  // Câmera em números (x' = S·x + D): zoom de margem, zoom da cena e soco, cada
+  // um em volta do seu ponto, e depois os deslocamentos.
+  const camera = (desvio: Par): [number, number, number] => {
+    let S = 1, D: Par = [0, 0]
+    const zoomEm = (z: number, c: Par) => { S *= z; D = [z * D[0] + c[0] * (1 - z), z * D[1] + c[1] * (1 - z)] }
+    if (p.aberto) zoomEm(MARGEM, [L.cx, L.h / 2])
+    if (p.zoom !== 1) zoomEm(p.zoom, p.foco)
+    if (p.soco) zoomEm(p.soco[1], p.soco[0])
+    return [S, D[0] + p.tremida[0] + desvio[0], D[1] + p.tremida[1] + desvio[1]]
+  }
+  const matriz = ([S, dx, dy]: [number, number, number]) => `matrix(${S.toFixed(4)} 0 0 ${S.toFixed(4)} ${dx.toFixed(2)} ${dy.toFixed(2)})`
+  // Câmera na mão: um balanço lento no plano aberto. A paralaxe segue o ponteiro.
+  const balanco: Par = p.aberto && brilho
+    ? [(Math.sin(tempo / 1900) + 0.6 * Math.sin(tempo / 1130)) * 2.2 * L.u, Math.cos(tempo / 2300) * 1.6 * L.u]
+    : [0, 0]
+  const desvio = (f: number): Par => [balanco[0] - olhar[0] * L.w * 0.008 * f, balanco[1] - olhar[1] * L.h * 0.006 * f]
+  const camCena = camera(desvio(p.aberto ? 1 : 0.6)), camFundo = camera(desvio(0.55))
   const plano = p.aberto ? ` transform="${L.plano}"` : ''
 
   // Escurece rápido na troca de cena.
   const troca = Math.max(1 - janela(t, 0, 260), janela(t, DURACAO_CENA - 260, DURACAO_CENA))
-  const cena = `<g transform="${camera}"><g${plano}>${p.cena}</g>${juntar(p.faces)}<g${plano}>${p.frente}</g></g>${p.topo}` +
+  const cena = `<g transform="${matriz(camCena)}"><g${plano}>${p.cena}</g>${juntar(p.faces)}<g${plano}>${p.frente}</g></g>${p.topo}` +
     legenda(p.legenda[0], p.legenda[1], L.w, L.h) +
     (troca > 0.01 ? `<rect width="${n(L.w)}" height="${n(L.h)}" fill="#120c33" opacity="${n(troca)}"/>` : '')
-  // Tremida, soco e zoom são escala uniforme mais deslocamento: x' = s·z·x + d.
-  const [s, ps] = p.soco ? [p.soco[1], p.soco[0]] : [1, [0, 0] as Par]
-  const z = p.zoom, d = (i: 0 | 1) => s * (p.foco[i] - z * p.foco[i] - ps[i]) + ps[i] + p.tremida[i]
   return {
     fundo: corredor({ w: L.w, h: L.h, cx: L.cx, chao: L.chao, u: L.u, cam: L.cam, tituloTopo: L.baseTitulo - L.fsTitulo }),
-    camera, cameraNumeros: [s * z, d(0), d(1)], aberto: p.aberto, cena,
+    camera: matriz(camFundo), cameraNumeros: camFundo, aberto: p.aberto, cena,
   }
 }

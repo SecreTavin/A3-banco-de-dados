@@ -272,3 +272,33 @@ export function corredor({ w, h, cx, chao, u, cam, tituloTopo }: Corredor) {
   corredores.set(chave, s)
   return s
 }
+
+/** Onomatopeia de quadrinho: salta com mola, treme um pouco e some. `k` vai de 0 a 1. */
+export function onomatopeia(texto: string, x: number, y: number, tamanho: number, k: number, giro = -10, cor = '#ffe14a') {
+  if (k <= 0 || k >= 1) return ''
+  const e = Math.min(1, k / 0.18), escala = 1 + 2.7 * (e - 1) ** 3 + 1.7 * (e - 1) ** 2
+  const opacidade = k < 0.7 ? 1 : 1 - (k - 0.7) / 0.3
+  return `<g transform="translate(${n(x)} ${n(y)}) rotate(${n(giro + Math.sin(k * 40) * 2)}) scale(${escala.toFixed(3)})" opacity="${opacidade.toFixed(2)}">` +
+    `<text x="0" y="0" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="900" font-size="${n(tamanho)}" fill="${cor}" stroke="#1a0d00" stroke-width="${n(tamanho * 0.22)}" stroke-linejoin="round" paint-order="stroke">${texto}</text></g>`
+}
+
+/** Faíscas de impacto: riscos que voam do ponto de contato, caem e somem. */
+export function faiscas(x: number, y: number, raio: number, desde: number, semente: number, cor = '#fff1a8', quantidade = 12) {
+  if (desde < 0 || desde > 420) return ''
+  const k = desde / 420, sk = 1 - (1 - k) ** 3, rnd = aleatorio(semente)
+  let s = ''
+  for (let i = 0; i < quantidade; i++) {
+    const a = rnd() * Math.PI * 2, v = 0.5 + rnd() * 0.9, d = raio * v * sk, cauda = raio * 0.24 * v * (1 - k)
+    const px = x + Math.cos(a) * d, py = y + Math.sin(a) * d + raio * 0.6 * k * k
+    s += `<path d="M ${n(px)} ${n(py)} L ${n(px - Math.cos(a) * cauda)} ${n(py - Math.sin(a) * cauda)}" fill="none" stroke="${cor}" stroke-width="${n(Math.max(1, raio * 0.05 * (1 - k)))}" stroke-linecap="round" opacity="${(1 - k).toFixed(2)}"/>`
+  }
+  return s
+}
+
+/** "+CP" que sobe sobre quem venceu: é o que um desafio vale no app. */
+export function ganho(x: number, y: number, tamanho: number, desde: number) {
+  if (desde < 0 || desde > 1100) return ''
+  const k = desde / 1100, sobe = (1 - (1 - k) ** 3) * tamanho * 0.9, entra = Math.min(1, desde / 160)
+  const fs = tamanho * (0.6 + 0.4 * entra), opacidade = k < 0.75 ? 1 : 1 - (k - 0.75) / 0.25
+  return `<text x="${n(x)}" y="${n(y - sobe)}" text-anchor="middle" font-family="Inter, system-ui, -apple-system, sans-serif" font-weight="900" font-size="${n(fs)}" fill="url(#ab-ouro)" stroke="#2a1f6b" stroke-width="${n(fs * 0.2)}" stroke-linejoin="round" paint-order="stroke" opacity="${opacidade.toFixed(2)}">+CP</text>`
+}

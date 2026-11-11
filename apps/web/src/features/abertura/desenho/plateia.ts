@@ -71,10 +71,12 @@ function mistura(a: Pose, b: Pose, k: number): Pose {
 }
 
 /** Pose de um aluno no instante t: torcida contínua e reação a cada golpe. */
-function poseAluno(a: Aluno, t: number, golpes: number[]): Pose {
+function poseAluno(a: Aluno, t: number, golpes: number[], olharAlto: number): Pose {
+  // A reação corre pela roda como onda: quem está mais longe do centro reage depois.
+  const tReacao = t - Math.abs(a.dx) * 45
   let ultimo = -1e9
-  for (const g of golpes) if (t >= g) ultimo = g
-  const desde = t - ultimo, tt = t + a.fase
+  for (const g of golpes) if (tReacao >= g) ultimo = g
+  const desde = tReacao - ultimo, tt = t + a.fase
   const base = POSES_ALUNO[a.tipo], r = Math.sin(tt / 420 + a.fase / 300), r2 = Math.sin(tt / 420 + a.fase / 300 - 0.8)
   let p: Pose = {
     ...base, t: base.t + r * 1.5, h: base.h - r2 * 2.5,
@@ -93,7 +95,8 @@ function poseAluno(a: Aluno, t: number, golpes: number[]): Pose {
     alto = Math.max(alto, Math.abs(Math.sin(desde / 120)) * (1 - k) * 24)
     rosto = desde < 300 || a.tipo === 'maos' ? 'susto' : 'feliz'
   }
-  return { ...p, alto, rosto }
+  // Todos acompanham a ação: quando ela sobe (o nerd voando até o título), as cabeças sobem junto.
+  return { ...p, h: p.h - 16 * olharAlto, alto, rosto }
 }
 
 export interface AlunoNaCena {
@@ -101,10 +104,10 @@ export interface AlunoNaCena {
   opcoes: OpcoesBoneco
 }
 
-/** A roda inteira no instante t da cena, em volta do centro (cx) da briga. */
-export function plateia(t: number, golpes: number[], { cx, dx, chao, escala, u }: { cx: number; dx: number; chao: number; escala: number; u: number }): AlunoNaCena[] {
+/** A roda inteira no instante t da cena, em volta do centro (cx) da briga; `olharAlto` (0 a 1) ergue as cabeças. */
+export function plateia(t: number, golpes: number[], { cx, dx, chao, escala, u }: { cx: number; dx: number; chao: number; escala: number; u: number }, olharAlto = 0): AlunoNaCena[] {
   return ALUNOS.map((a) => ({
-    pose: poseAluno(a, t, golpes),
+    pose: poseAluno(a, t, golpes, olharAlto),
     opcoes: {
       x: cx + a.dx * dx, y: chao, z: a.z * u, yaw: a.yaw, escala: escala * a.escala, espelho: a.espelho,
       visual: a.visual, piscando: ((t + a.fase * 3) % 3100) < 110,
