@@ -2,7 +2,7 @@
 
 * **Status:** Aceita
 * **Data:** 2026-11-16
-* **Decisores:** Rafael Alves
+* **Decisores:** Rafael Alves; Octávio Arruda (Product Owner), na revisão de 16/11/2026
 
 ## Contexto
 
@@ -23,7 +23,9 @@ Duvido.
 
 **O sistema inteiro roda com o `docker-compose.yml` do repositório na VM da
 Oracle, publicado em https://euduvido.falveshub.com pelo túnel nomeado que já
-existe nela.**
+existe nela.** O endereço antigo, `euduvido.secretavin.workers.dev`, passa a
+redirecionar para o novo, para que o link que o professor já tem continue
+funcionando.
 
 | Peça | Onde roda | Exposição |
 | --- | --- | --- |
@@ -37,12 +39,13 @@ existe nela.**
 * **Nenhuma porta aberta na VM.** Um `docker-compose.override.yml` que existe só
   na VM tira as portas publicadas de `db`, `storage` e `api` e liga o `web` só em
   `127.0.0.1`. Quem entra de fora passa pelo túnel.
-* **Banco clonado, não semeado.** O override desliga o `schema.sql` e o
-  `seed.sql` do *initdb*. O banco veio de um `pg_dump` do Docker de
-  desenvolvimento, com os dados de teste acumulados (10 usuários, 11 desafios,
-  78 lançamentos de CP), restaurado com `pg_restore`. As migrations do dump batem
-  com as do código, e `vw_reconciliacao_saldo` e `vw_escrow_orfao` voltaram
-  vazias depois da restauração.
+* **Banco semeado, como em qualquer ambiente.** O banco é criado pelo
+  `schema.sql` e pelo `seed.sql` no *initdb*, como no Docker local. Assim, o
+  roteiro da demonstração vale também no endereço público: o README, o slide da
+  demonstração e o documento 17 contam com a Lari fechando o quórum de "Correr
+  5km" com um voto. Recriar é `docker compose down -v && docker compose up -d`
+  na VM.
+* **Roda a `main`.** O site público só serve o que já foi revisado e mesclado.
 * **Endereço fixo.** O túnel é nomeado: o CNAME `euduvido.falveshub.com` aponta
   para ele, sem endereço que muda a cada subida.
 * **Reinício automático.** Os containers sobem com `restart: unless-stopped` e
@@ -59,8 +62,8 @@ existe nela.**
 ## Consequências
 
 **Positivas:** o site fica no ar sem depender do computador de ninguém, com
-endereço fixo. O banco é o mesmo dos testes, então o professor encontra grupos,
-desafios e saldos já movimentados.
+endereço fixo. O banco público é o do seed, então o roteiro da demonstração é o
+mesmo em qualquer ambiente.
 
 **Negativas:**
 
@@ -75,9 +78,25 @@ desafios e saldos já movimentados.
 * **Login de desenvolvimento aberto**, como no 0019: qualquer pessoa com o link
   entra com o apelido de qualquer usuário do banco. Aceitável com dados
   fictícios, não para uso real. A cota da chave da Groq também fica exposta.
-* **Sem backup do banco.** Os dados de teste estão num volume Docker da VM. Se o
-  volume se perder, a fonte é o Docker de desenvolvimento de novo.
+* **Sem backup do banco.** Os dados estão num volume Docker da VM. Se o volume
+  se perder, o banco se refaz pelo seed; perde-se só o que foi criado no site
+  depois da última recriação.
 
 **Impacto na documentação:** [16 - Execução Local](../16-execucao-local.md)
 troca a seção "Publicar na Cloudflare" por "Ambiente público". O ADR 0019 passa
-a `Substituída`. O ADR 0010 continua como a hospedagem prevista para produção.
+a `Substituída`. A hospedagem gerenciada do ADR 0010 nunca foi implementada.
+
+## Revisão do PO (16/11/2026)
+
+A primeira subida, em 16/11, diferia desta decisão em três pontos, que o PO
+decidiu assim na revisão:
+
+| Como subiu | Decisão do PO | Situação |
+| --- | --- | --- |
+| Banco copiado do Docker de desenvolvimento (10 usuários; "Correr 5km" com 0 de 2 votos) | Recriar a partir do seed | Pendente na VM (#65) |
+| Branch `feat/redesign-mobile-first` (#63), ainda não mesclada | A VM roda a `main`; a #63 entra depois de revisada | Pendente (#63, #65) |
+| Só `euduvido.falveshub.com` | Mantido como endereço principal; `secretavin.workers.dev` redireciona para ele | Pendente: mudança no Worker (#65) |
+
+Também ficaram para a #65: versionar o override do compose e a configuração do
+nginx da VM no repositório, sem segredos, e o backup diário com `pg_dump`.
+Quando a #65 fechar, esta tabela deixa de ter pendências.

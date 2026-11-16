@@ -37,7 +37,7 @@ cada arquivo.
 
 ## Registros
 
-43 registros, em ordem cronológica.
+46 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -85,6 +85,8 @@ cada arquivo.
 | 2026-10-31 | [Jogos online no Brasil em números](registro-ia/2026-10-31-jogos-online-em-numeros.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-31 | [Publicação na Cloudflare com a API por túnel](registro-ia/2026-10-31-publicacao-cloudflare.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-11-01 | [Abertura em 3D estilo PS1, com plateia de colégio](registro-ia/2026-11-01-abertura-3d-ps1.md) | Claude Code (Opus 5.5) | Octávio Arruda |
+| 2026-11-16 | [Demonstração pública na VM da Oracle](registro-ia/2026-11-16-demo-na-vm-oracle.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-16 | [Revisão do PO da publicação na VM da Oracle](registro-ia/2026-11-16-revisao-demo-na-vm.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 
 ## Consolidação final
 

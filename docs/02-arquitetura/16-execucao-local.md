@@ -138,17 +138,18 @@ O sistema está publicado em **https://euduvido.falveshub.com**
 ([ADR 0020](adr/0020-demonstracao-publica-na-vm-oracle.md)). Roda numa VM da
 Oracle Cloud, com o mesmo `docker-compose.yml` deste repositório, e chega à
 internet por um túnel nomeado da Cloudflare. Não depende de nenhum computador
-do time estar ligado.
+do time estar ligado. O endereço antigo, `euduvido.secretavin.workers.dev`,
+redireciona para este.
 
 Para entrar, digite o apelido de um usuário do banco (ex.: `Tavin`). O login é o
 de desenvolvimento, sem senha.
 
 | Peça | Como está na VM |
 | --- | --- |
-| Código | Checkout deste repositório; atualização manual, sem deploy automático |
+| Código | Checkout da `main` deste repositório; atualização manual, sem deploy automático |
 | Frontend | Build com `VITE_API_URL` vazio; o nginx repassa `/api/` e `/hubs/` para a API |
 | Portas | Nenhuma aberta; só o `web` escuta, em `127.0.0.1:5380`, atrás do túnel |
-| Banco | Cópia do banco de desenvolvimento (`pg_dump` + `pg_restore`), sem o `seed.sql` |
+| Banco | Criado pelo `schema.sql` e pelo `seed.sql`, como no Docker local. Para recriar: `docker compose down -v && docker compose up -d` na VM |
 
 O override do compose, a configuração do nginx e o `.env` com a chave da Groq
 existem só na VM. Para atualizar, quem tem acesso SSH roda no checkout dela:

@@ -117,6 +117,7 @@
     * [2026-10-31 - Publicação na Cloudflare com a API por túnel](docs/05-qualidade/registro-ia/2026-10-31-publicacao-cloudflare.md)
     * [2026-11-01 - Abertura em 3D estilo PS1, com plateia de colégio](docs/05-qualidade/registro-ia/2026-11-01-abertura-3d-ps1.md)
     * [2026-11-16 - Demonstração pública na VM da Oracle](docs/05-qualidade/registro-ia/2026-11-16-demo-na-vm-oracle.md)
+    * [2026-11-16 - Revisão do PO da publicação na VM da Oracle](docs/05-qualidade/registro-ia/2026-11-16-revisao-demo-na-vm.md)
 
 ## Produto
 
