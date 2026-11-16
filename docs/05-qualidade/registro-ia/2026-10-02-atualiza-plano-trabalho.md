@@ -12,6 +12,18 @@
 Marcar como concluídas as etapas da Entrega 2 que o plano ainda mostrava como
 planejadas.
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 19:12**
+
+> onde ta o plano de trabalho
+
+**02/10, 19:14**
+
+> sim, atualiza
+
 ## O que a IA produziu
 
 Três linhas da seção E2 passam a "Concluído", com nota do que de fato foi feito.

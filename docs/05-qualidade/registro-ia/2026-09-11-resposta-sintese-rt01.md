@@ -15,6 +15,10 @@ desenvolvido um sistema capaz de [...], oferecendo funcionalidades como
 [...]." Essa resposta não existia como parágrafo único em lugar nenhum —
 ficava implícita, espalhada entre os 8 documentos de introdução/negócio.
 
+## Prompt utilizado
+
+Prompt não recuperável. O histórico local do Claude Code (`~/.claude/history.jsonl` e as transcrições do projeto) não tem nenhuma entrada deste projeto entre 09 e 11/09/2026; a primeira é de 25/09. O prompt não foi reconstruído de memória.
+
 ## O que a IA produziu
 
 Um parágrafo síntese seguindo literalmente o template do RT01, montado a

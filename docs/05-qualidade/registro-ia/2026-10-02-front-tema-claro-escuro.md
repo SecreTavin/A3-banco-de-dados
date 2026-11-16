@@ -12,6 +12,14 @@
 Protótipo final da apresentação com fontes legíveis, sem rolagem vertical, e
 otimizado para tema claro e escuro e para celular.
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 21:31**
+
+> prototipo final da apresentação deve ter fontes legiveis, desabilitar scroll vertical e otirmizar para tema branco e escuro alem da visualizaçõa mobile
+
 ## O que a IA produziu
 
 * Tokens de cor para os dois temas, aplicados antes da primeira pintura por um

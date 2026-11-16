@@ -12,6 +12,14 @@
 Tirar a parte técnica dos objetivos específicos, deixá-la onde já estiver
 documentada e passar a falar de diversão e do que se pretende atingir.
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 21:14**
+
+> em objetivos especificos, vamos tirar a parte tecnica e deixar em outra parte que talvez ja tenha isso, e falar da parte de diversão, o que pretendemos atingir com isso
+
 ## O que a IA produziu
 
 * Seis objetivos específicos de uso (divertir, desestressar, decidir com

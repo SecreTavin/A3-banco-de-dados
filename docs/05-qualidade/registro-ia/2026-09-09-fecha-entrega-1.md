@@ -12,6 +12,10 @@
 Fechar as duas pendências que travavam a Entrega 1 no checklist automático
 (7/9): identificação do grupo e objetivos específicos.
 
+## Prompt utilizado
+
+Prompt não recuperável. O histórico local do Claude Code (`~/.claude/history.jsonl` e as transcrições do projeto) não tem nenhuma entrada deste projeto entre 09 e 11/09/2026; a primeira é de 25/09. O prompt não foi reconstruído de memória.
+
 ## O que a IA produziu
 
 * **Objetivos específicos** ([05-objetivos.md](../../00-introducao/05-objetivos.md)):

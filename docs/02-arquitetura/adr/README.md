@@ -31,7 +31,8 @@ Registro das decisões de arquitetura do Eu Duvido!. Uma decisão por arquivo, e
 | [0016](0016-schema-unico-e-modelo-enxuto.md) | Schema único e modelo de dados enxuto | Aceita | 2026-10-02 |
 | [0017](0017-desafio-no-lugar-de-aposta.md) | "Desafio" no lugar de "aposta" | Aceita | 2026-10-02 |
 | [0018](0018-saida-de-membro-e-invariante-do-ledger.md) | Saída de membro zera o saldo no ledger | Aceita | 2026-10-29 |
-| [0019](0019-demonstracao-publica-cloudflare-tunel.md) | Demonstração pública pela Cloudflare, com a API por túnel | Aceita | 2026-10-31 |
+| [0019](0019-demonstracao-publica-cloudflare-tunel.md) | Demonstração pública pela Cloudflare, com a API por túnel | Substituída por 0020 | 2026-10-31 |
+| [0020](0020-demonstracao-publica-na-vm-oracle.md) | Demonstração pública numa VM da Oracle Cloud | Aceita | 2026-11-16 |
 
 ## Status possíveis
 
