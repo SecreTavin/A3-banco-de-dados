@@ -22,6 +22,20 @@
   display: block;
 }
 
+/* O canvas é a cena em resolução baixa, ampliada sem suavizar: o pixel do PS1. */
+.pixels {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.oculto {
+  display: none;
+}
+
 .convite {
   position: absolute;
   left: 50%;

@@ -75,3 +75,11 @@ também não batem com o código:
 
 Também ficaram as menções ao Aiven como justificativa do pool nos documentos 13,
 15 e 16 e no ADR 0013.
+
+## Atualização em 16/11/2026
+
+A PR #66 publicou o sistema numa VM da Oracle (ADR 0020), e o ADR 0019 passou a
+`Substituída`. Por isso, o quadro do ADR 0010, as linhas de hospedagem do
+`tecnologias.md` e a limitação do documento 19 passaram a citar a VM. O status
+do 0010 continua "Substituída por 0019": foi o 0019 que o substituiu, e a
+cadeia segue até o 0020.

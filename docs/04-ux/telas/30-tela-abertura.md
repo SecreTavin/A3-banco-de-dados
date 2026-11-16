@@ -8,8 +8,9 @@ antes da tela de contas (RF17). Desenho, rodadas de aprovação e verificação 
 ## Seções principais
 - **Título:** "Eu Duvido!" em letras brancas com borda dourada; o "!" é uma joia
   que brilha a cada 3 s
-- **Cena:** dois personagens, o monge do kung fu (Desafiante) e o estudante nerd
-  (Desafiado). Duas cenas se alternam sem parar:
+- **Cena:** em 3D estilo PS1, num corredor de colégio com armários e uma roda
+  de dez alunos assistindo. Dois personagens, o monge do kung fu (Desafiante) e
+  o estudante nerd (Desafiado). Duas cenas se alternam sem parar:
   - **A:** o nerd duvida e o monge responde com uma voadora, com a câmera atrás do pé;
   - **B:** o monge duvida e o nerd acerta uma torta, com a câmera atrás da torta.
 - **Convite:** "Toque para continuar" no celular e "Clique ou aperte qualquer
@@ -29,8 +30,9 @@ A tela não lê nem grava nada no banco e não chama a API.
 - Quem ativou "reduzir movimento" no sistema vê o quadro final, parado.
 
 ## Resolvido na arquitetura
-- **Sem dependência nova:** SVG desenhado por código, a partir de uma função do
-  tempo, sem biblioteca de animação nem de física.
+- **Sem dependência nova:** a cena é calculada por código a partir de uma função
+  do tempo, sem biblioteca de animação, de física nem de 3D. Um motor 3D próprio
+  e simples monta a cena, e um canvas de resolução baixa dá o pixel do PS1.
 - **Fora das regras de CQRS:** a tela não tem Query nem Command; não fala com a API.
 
 ## TODOs para validação com o time

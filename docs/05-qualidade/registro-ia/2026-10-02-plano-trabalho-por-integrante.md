@@ -12,6 +12,18 @@
 Adicionar ao plano de trabalho a separação das atividades semanais por
 integrante e criar a visualização por semana (gráfico).
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 21:05**
+
+> temos a visualização de semanas com as atividades, separadas por quem fez no projeto?
+
+**02/10, 21:07**
+
+> adiciona isso, vamos ter que criar aquela visualização por semana, aquele grafico
+
 ## O que a IA produziu
 
 * Coluna **Responsável** em todas as tabelas semanais, preenchida nas semanas

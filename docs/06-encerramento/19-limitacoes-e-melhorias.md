@@ -56,9 +56,10 @@ avaliação fica gravada —, mas não o acerto de cada julgamento.
 
 **Hospedagem de demonstração.** A hospedagem gerenciada prevista (Vercel,
 Render e Aiven) não foi implementada ([ADR 0010](../02-arquitetura/adr/0010-hospedagem-e-deploy.md)).
-O site público depende do Mac do PO ligado, com o Docker e o túnel no ar, e o
-banco não tem backup: ele se refaz a partir do seed
-([ADR 0019](../02-arquitetura/adr/0019-demonstracao-publica-cloudflare-tunel.md)).
+O site público roda numa VM da Oracle de um integrante do time, atualizada à
+mão depois de cada merge, e o banco não tem backup gerenciado: ele se refaz a
+partir do seed
+([ADR 0020](../02-arquitetura/adr/0020-demonstracao-publica-na-vm-oracle.md)).
 Suficiente para a demonstração, insuficiente para uso real.
 
 ## Melhorias futuras

@@ -1,6 +1,6 @@
 # 0019 - Demonstração pública pela Cloudflare, com a API por túnel
 
-* **Status:** Aceita
+* **Status:** Substituída por [`0020-demonstracao-publica-na-vm-oracle.md`](0020-demonstracao-publica-na-vm-oracle.md)
 * **Data:** 2026-10-31
 * **Decisores:** Octávio Arruda (Product Owner)
 

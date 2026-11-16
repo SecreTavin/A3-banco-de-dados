@@ -11,6 +11,14 @@
 
 Apoiar a justificativa do projeto em lazer, desestresse e diversão.
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 21:10**
+
+> na seção de justificativa temos que justificar tendo em vista lazer, desestressem, diversão, precisamos se apoiar nisso.
+
 ## O que a IA produziu
 
 Um parágrafo de abertura sobre o desafio entre amigos como lazer e uma frase

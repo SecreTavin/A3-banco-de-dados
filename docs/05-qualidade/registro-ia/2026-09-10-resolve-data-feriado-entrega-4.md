@@ -14,6 +14,10 @@ Anexo 1). Não foi pedido explicitamente para resolver a pendência de data,
 mas o documento continha a evidência que faltava, então a IA cruzou os
 dados em vez de só usar o PDF pra extrair campos em branco.
 
+## Prompt utilizado
+
+Prompt não recuperável. O histórico local do Claude Code (`~/.claude/history.jsonl` e as transcrições do projeto) não tem nenhuma entrada deste projeto entre 09 e 11/09/2026; a primeira é de 25/09. O prompt não foi reconstruído de memória.
+
 ## O que a IA produziu
 
 Releu o Anexo 1 do PDF: a sequência de semanas da Etapa E4 é `06/11 → 13/11

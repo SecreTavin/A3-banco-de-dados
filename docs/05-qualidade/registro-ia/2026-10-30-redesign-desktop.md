@@ -15,6 +15,18 @@ página no desktop, texto de corpo a partir de 18px, títulos de 36–40px, larg
 de ~1360px em vez de 940px, mantendo a identidade visual. Celular e tablet não
 podem regredir.
 
+## Prompt utilizado
+
+Fonte: transcrição da sessão do Claude Code, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**30/10, 19:34**
+
+> okay, vamos fazer o seguinte para melhorar as telas, tire print de cada tela e suba no figma em um novo projeto, peça o agente designer para redesenhar elas, mantendo a id visual, mas removendo qualquer scroll vertical no descktop e aumentadno o tamanho dos textos, reduzindo espaços laterais em branco para melhorar legibilidade
+
+**30/10, 19:51**
+
+> aprovado o desenho, depois que implementar vc irá fazer o mesmo processo para visualização mobile, ok?
+
 ## O que a IA produziu
 
 * Camada desktop (`min-width: 1100px`) em cima do CSS existente, sem tocar nos
