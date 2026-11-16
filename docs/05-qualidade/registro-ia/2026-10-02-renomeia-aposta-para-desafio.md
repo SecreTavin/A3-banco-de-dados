@@ -14,6 +14,14 @@ em tudo ("aposta está com nome queimado"), resolver a colisão com a moderaçã
 ("proposta → desafio") e deixar explícito que o júri valida o desafio, sem criar
 as quatro entidades `desafio_postado/validado/executado/cumprido`.
 
+## Prompt utilizado
+
+Fonte: `~/.claude/history.jsonl`, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**02/10, 21:19**
+
+> vamos trocar aposta por desafio, no der e etc, falta tambem no der talvez uma saida do jurado avaliar o desafio, certo?
+
 ## O que a IA produziu
 
 * Script de substituição com regras de gênero ("a aposta" → "o desafio") aplicado

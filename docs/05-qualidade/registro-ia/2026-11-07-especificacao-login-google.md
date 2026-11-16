@@ -1,11 +1,11 @@
-# 2026-11-07 — Especificação do login com Google (issue #60 e ADR 0020)
+# 2026-11-07 — Especificação do login com Google (issue #60 e ADR 0021)
 
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-11-07 |
 | **Responsável** | Octávio Arruda (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
-| **Artefato afetado** | Issue #60, ADR 0020, índice dos ADRs, PR em rascunho da branch `feat/login-google` |
+| **Artefato afetado** | Issue #60, ADR 0021, índice dos ADRs, PR em rascunho da branch `feat/login-google` |
 
 ## O que foi pedido
 
@@ -42,7 +42,7 @@ Nenhum código foi escrito: o PO não quer mais código da IA neste projeto.
   * documentos a atualizar;
   * critérios de aceite como gate para a `main`;
   * passos do PO depois do merge e plano de volta.
-* **ADR 0020**, com a decisão e as alternativas.
+* **ADR 0021**, com a decisão e as alternativas.
 
 ## O que a IA errou
 
@@ -64,6 +64,10 @@ Nenhum código foi escrito: o PO não quer mais código da IA neste projeto.
   identidade e quebrariam com apelidos repetidos. Eles entraram na issue (seção
   4b), junto com o cenário U15.
 
+* **Numeração do ADR.** O ADR foi criado como 0020 sem prever que outra PR
+  poderia usar o mesmo número. A PR #66, da publicação na VM, entrou antes com o
+  0020, e este ADR passou a 0021 em 16/11.
+
 ## Como o time validou
 
 * **Endpoints, chaves de `localStorage` e roteiros afetados:** conferidos por
@@ -80,5 +84,5 @@ Nenhum código foi escrito: o PO não quer mais código da IA neste projeto.
 
 ## Decisão final
 
-Entram a issue #60, o ADR 0020 e a PR em rascunho. A implementação fica com o
+Entram a issue #60, o ADR 0021 e a PR em rascunho. A implementação fica com o
 dev, e o merge depende dos critérios de aceite e da validação do PO.

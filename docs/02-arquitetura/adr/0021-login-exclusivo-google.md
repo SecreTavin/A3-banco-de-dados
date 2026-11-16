@@ -1,4 +1,4 @@
-# 0020 - Login exclusivo com Google e fim do login de desenvolvimento
+# 0021 - Login exclusivo com Google e fim do login de desenvolvimento
 
 * **Status:** Aceita (implementação em andamento: issue #60)
 * **Data:** 2026-11-07

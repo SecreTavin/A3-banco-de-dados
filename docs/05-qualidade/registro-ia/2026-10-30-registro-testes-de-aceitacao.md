@@ -13,6 +13,14 @@ Documentar que Mario Lana Veloso Junior (desktop) e Luís Phillipe Pedra Souza
 (mobile) testaram o protótipo na semana de 26/10 e que as correções do front
 partiram do feedback deles.
 
+## Prompt utilizado
+
+Fonte: transcrição da sessão do Claude Code, texto como foi escrito. Prompts que definiram o rumo do trabalho.
+
+**30/10, 20:38**
+
+> nao, vc vai colocar la que eles testaram, pois eles testaram mesmo, e tudo isso que eu te passei e corrigimos foi com base em feedbacks que eles me passaram
+
 ## O que a IA produziu
 
 A seção "Validação de aceitação pelos testadores" no documento 17, a linha da

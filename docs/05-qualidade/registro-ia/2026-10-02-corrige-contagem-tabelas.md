@@ -12,6 +12,10 @@
 Revisar, na véspera da revisão em sala da Entrega 2, a coerência da contagem de
 tabelas entre os documentos de modelagem e o `schema.sql`.
 
+## Prompt utilizado
+
+Prompt não identificado com segurança. A sessão está no histórico local, mas nenhuma entrada corresponde de forma inequívoca a este pedido. O prompt não foi reconstruído de memória.
+
 ## O que a IA produziu
 
 Contagem dos `CREATE TABLE` em `schema.sql` (16, sendo uma a

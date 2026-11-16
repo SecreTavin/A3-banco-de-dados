@@ -59,7 +59,8 @@
     * [0017 - "Desafio" no lugar de "aposta"](docs/02-arquitetura/adr/0017-desafio-no-lugar-de-aposta.md)
     * [0018 - Saída de membro e invariante do ledger](docs/02-arquitetura/adr/0018-saida-de-membro-e-invariante-do-ledger.md)
     * [0019 - Demonstração pública pela Cloudflare](docs/02-arquitetura/adr/0019-demonstracao-publica-cloudflare-tunel.md)
-    * [0020 - Login exclusivo com Google](docs/02-arquitetura/adr/0020-login-exclusivo-google.md)
+    * [0020 - Demonstração pública na VM da Oracle](docs/02-arquitetura/adr/0020-demonstracao-publica-na-vm-oracle.md)
+    * [0021 - Login exclusivo com Google](docs/02-arquitetura/adr/0021-login-exclusivo-google.md)
 * [03 - Banco de Dados](docs/03-banco-de-dados/README.md)
   * [Modelagem](docs/03-banco-de-dados/modelagem/README.md)
     * [09 - Evolução da Modelagem](docs/03-banco-de-dados/modelagem/09-evolucao-modelagem.md)
@@ -115,7 +116,10 @@
     * [2026-10-31 - Tela inicial: abertura animada com o monge e o nerd](docs/05-qualidade/registro-ia/2026-10-31-tela-inicial-abertura.md)
     * [2026-10-31 - Jogos online no Brasil em números](docs/05-qualidade/registro-ia/2026-10-31-jogos-online-em-numeros.md)
     * [2026-10-31 - Publicação na Cloudflare com a API por túnel](docs/05-qualidade/registro-ia/2026-10-31-publicacao-cloudflare.md)
+    * [2026-11-01 - Abertura em 3D estilo PS1, com plateia de colégio](docs/05-qualidade/registro-ia/2026-11-01-abertura-3d-ps1.md)
     * [2026-11-07 - Especificação do login com Google](docs/05-qualidade/registro-ia/2026-11-07-especificacao-login-google.md)
+    * [2026-11-16 - Demonstração pública na VM da Oracle](docs/05-qualidade/registro-ia/2026-11-16-demo-na-vm-oracle.md)
+    * [2026-11-16 - Revisão do PO da publicação na VM da Oracle](docs/05-qualidade/registro-ia/2026-11-16-revisao-demo-na-vm.md)
 
 ## Produto
 
