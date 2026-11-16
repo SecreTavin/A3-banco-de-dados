@@ -37,7 +37,7 @@ cada arquivo.
 
 ## Registros
 
-43 registros, em ordem cronológica.
+47 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -78,12 +78,16 @@ cada arquivo.
 | 2026-10-30 | [Documenta que o upload direto de evidência não foi implementado](registro-ia/2026-10-30-upload-de-evidencia-nao-implementado.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [E2E de criar desafio com a IA simulada](registro-ia/2026-10-30-e2e-ia-simulada.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [Regenera o status da Entrega 3](registro-ia/2026-10-30-gera-status-entrega-3.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
+| 2026-11-09 | [Preenche o prompt utilizado nos registros de Rafael](registro-ia/2026-11-09-preenche-prompt-utilizado.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-31 | [Preparação da Entrega 4: telas reais, IA com chave real e lacunas do edital](registro-ia/2026-10-31-preparacao-entrega-4.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-31 | [Redesign de UI/UX: seis propostas, da prancha ao código](registro-ia/2026-10-31-redesign-ux.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-31 | [Tela inicial: abertura animada com o monge e o nerd](registro-ia/2026-10-31-tela-inicial-abertura.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-31 | [Jogos online no Brasil em números](registro-ia/2026-10-31-jogos-online-em-numeros.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-10-31 | [Publicação na Cloudflare com a API por túnel](registro-ia/2026-10-31-publicacao-cloudflare.md) | Claude Code (Opus 5.5) | Octávio Arruda |
+| 2026-11-01 | [Abertura em 3D estilo PS1, com plateia de colégio](registro-ia/2026-11-01-abertura-3d-ps1.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-11-07 | [Conclusão e referências da Banca Final](registro-ia/2026-11-07-conclusao-e-referencias.md) | Claude Code (Opus 5.5) | Octávio Arruda |
+| 2026-11-16 | [Demonstração pública na VM da Oracle](registro-ia/2026-11-16-demo-na-vm-oracle.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-16 | [Revisão do PO da publicação na VM da Oracle](registro-ia/2026-11-16-revisao-demo-na-vm.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 
 ## Consolidação final
 

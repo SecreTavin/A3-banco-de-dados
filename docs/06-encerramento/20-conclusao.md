@@ -3,8 +3,8 @@
 O Eu Duvido! saiu do papel como um protótipo funcional: grupos de amigos criam
 desafios, apostam CP, enviam a prova e decidem o resultado pelo voto do júri. O
 sistema roda de ponta a ponta no Docker e está publicado para demonstração em
-<https://euduvido.secretavin.workers.dev>
-([ADR 0019](../02-arquitetura/adr/0019-demonstracao-publica-cloudflare-tunel.md)).
+<https://euduvido.falveshub.com>
+([ADR 0020](../02-arquitetura/adr/0020-demonstracao-publica-na-vm-oracle.md)).
 
 ## Objetivos e resultado
 

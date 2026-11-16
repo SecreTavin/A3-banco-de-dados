@@ -13,6 +13,10 @@ O time já tem um espaço GitBook criado; faltava só ligar o sync com este
 repositório GitHub. Pedido: preparar o lado do repositório para essa
 integração.
 
+## Prompt utilizado
+
+Prompt não recuperável. O histórico local do Claude Code (`~/.claude/history.jsonl` e as transcrições do projeto) não tem nenhuma entrada deste projeto entre 09 e 11/09/2026; a primeira é de 25/09. O prompt não foi reconstruído de memória.
+
 ## O que a IA produziu
 
 * Validação programática dos 70 links internos do `SUMMARY.md` contra o

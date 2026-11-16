@@ -61,3 +61,10 @@ itens que faltavam para a Banca Final.
 Entram a conclusão e as referências. Falta, para o PO decidir, a referência ao
 próprio edital e ao plano de ensino da UC. O repositório cita o edital, mas não
 traz o título nem a data, e a IA não inventa esses dados.
+
+## Atualização em 16/11/2026
+
+Com a publicação na VM da Oracle (PR #66, ADR 0020), o endereço citado na
+conclusão passou de `euduvido.secretavin.workers.dev` para
+`euduvido.falveshub.com`. O endereço antigo vai redirecionar para o novo
+(issue #65).
