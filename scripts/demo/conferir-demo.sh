@@ -56,6 +56,22 @@ confere "Passo 7: saldo da Lari = 100" 100 "$(saldo Lari 1)"
 confere "Passo 9: vw_reconciliacao_saldo vazia" 0 "SELECT count(*) FROM vw_reconciliacao_saldo"
 confere "Passo 9: vw_escrow_orfao vazia" 0 "SELECT count(*) FROM vw_escrow_orfao"
 
+# Login so pelo Google: cada personagem do roteiro precisa de uma conta ligada.
+contas="${DEMO_CONTAS:-}"
+[[ -z "$contas" && -f .env ]] && contas="$(sed -n 's/^DEMO_CONTAS=//p' .env | tail -1 | sed -e 's/^"//' -e 's/"$//')"
+if [[ -n "$contas" ]]; then
+  IFS=';' read -ra pares <<< "$contas"
+  for par in "${pares[@]}"; do
+    [[ -z "${par// }" ]] && continue
+    apelido="$(echo "${par%%=*}" | xargs)"
+    email="$(echo "${par#*=}" | xargs | tr '[:upper:]' '[:lower:]')"
+    confere "Conta Google de $apelido vinculada" "$email" \
+      "SELECT email FROM usuario WHERE apelido = '${apelido//\'/}'"
+  done
+else
+  printf '  \033[33m!\033[0m Nenhuma conta Google vinculada (DEMO_CONTAS vazio): ninguém entra como os personagens do seed\n'
+fi
+
 echo
 if [[ $falhas -eq 0 ]]; then
   echo "Pronto para a demonstração."

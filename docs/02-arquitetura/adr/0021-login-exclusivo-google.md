@@ -1,6 +1,6 @@
 # 0021 - Login exclusivo com Google e fim do login de desenvolvimento
 
-* **Status:** Aceita (implementação em andamento: issue #60)
+* **Status:** Aceita (implementada em 20/11/2026)
 * **Data:** 2026-11-07
 * **Decisores:** Octávio Arruda (Product Owner)
 
@@ -81,3 +81,26 @@ Contrato da API, tarefas e critérios de aceite estão na issue #60.
 * tela 22, documento 16, `README.md`, documento 17 e `tecnologias.md`;
 * nota de atualização no [0019](0019-demonstracao-publica-cloudflare-tunel.md);
 * este ADR, quando a implementação for concluída.
+
+## Implementação (20/11/2026)
+
+O Rafael não conseguiu assumir a issue #60, e o PO autorizou a implementação por
+IA, com registro em [2026-11-20-login-com-google](../../05-qualidade/registro-ia/2026-11-20-login-com-google.md).
+
+**Decisão sobre a demonstração:** cada integrante entra no próprio celular,
+com a própria conta Google ligada a um personagem do seed (`DEMO_CONTAS`).
+Trocar de conta Google no projetor, com senha e verificação em duas etapas, foi
+descartado por ser lento e arriscado ao vivo.
+
+**Como ficou:**
+
+* **API:** `GET /api/auth/configuracao`, `POST /api/auth/google` e
+  `POST /api/auth/cadastro`, com a validação do ID token pela biblioteca
+  `Google.Apis.Auth`.
+* **Front:** botão oficial do Google e o passo "Complete seu cadastro".
+* **Configuração:** chave de sessão no `.env` (`AUTH_CHAVE`), e o
+  `publicar.sh` recusa a chave padrão.
+* **Demonstração:** `scripts/demo/vincular-contas.sh`.
+* **Usuário identificado por id** no ranking, no pódio, no perfil e no júri,
+  porque o apelido pode repetir.
+

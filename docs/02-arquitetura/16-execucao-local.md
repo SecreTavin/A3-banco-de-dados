@@ -44,22 +44,44 @@ Assim ninguém precisa de credencial de nuvem para rodar o projeto.
 > `Storage` do `appsettings.json` não é lida por nenhum código. O envio de
 > arquivo com URL assinada é a evolução prevista no ADR 0009, não algo pronto.
 
-## Autenticação em desenvolvimento
+## Login com Google
 
-`Auth:Provider` controla o modo:
+O acesso é só pelo Google ([ADR 0021](adr/0021-login-exclusivo-google.md)). O
+login de desenvolvimento, por seleção de usuário, saiu em 20/11/2026. Três
+variáveis do `.env` controlam o login:
 
-| Valor | Comportamento |
+| Variável | Para quê |
 | --- | --- |
-| `Dev` | `POST /api/auth/dev/login` aceita um apelido do seed e devolve JWT válido |
-| `Google` | Os endpoints `dev` retornam 404 e o acesso exige token do provedor |
+| `GOOGLE_CLIENT_ID` | Client ID do projeto no Google Cloud. Sem ele, a API sobe, mas o login responde 503 e a tela avisa que não foi configurado |
+| `AUTH_CHAVE` | Chave que assina as sessões. Sem ela, vale o padrão de desenvolvimento, que está no repositório; no ambiente público ela é obrigatória (`openssl rand -base64 48`) |
+| `DEMO_CONTAS` | Liga contas Google reais aos usuários do seed para a demonstração: `"Tavin=fulano@gmail.com;Lari=ciclana@gmail.com"` |
 
-Os dois caminhos produzem o **mesmo JWT** e passam pela mesma validação — o
-bypass troca só a origem da identidade, não o resto do fluxo. Trocar de modo é
-mudar uma variável de ambiente.
+**No Google Cloud** (uma vez só):
 
-Usuários disponíveis: **Tavin**, **Biel**, **Theus**, **Lari**, **Lipe**,
-**Aninha**, **Brunão**, **Mila** e **Dieguinho** (os nove do
-[seed](../03-banco-de-dados/implementacao/13-povoamento-dml.md)).
+* um *OAuth client ID* do tipo *Web application*, com as origens
+  `http://localhost`, `http://localhost:5173`, `http://localhost:8080` e o
+  endereço público;
+* tela de consentimento *External*, publicada (*In production*), com os
+  escopos `openid`, `email` e `profile`, e sem logo, para não cair em
+  verificação.
+
+**Os usuários do seed** (Tavin, Biel, Theus, Lari, Lipe, Aninha, Brunão, Mila e
+Dieguinho, os nove do [seed](../03-banco-de-dados/implementacao/13-povoamento-dml.md))
+têm e-mails fictícios. Para entrar como um deles, ligue uma conta Google real a
+ele:
+
+```bash
+scripts/demo/vincular-contas.sh
+```
+
+O script lê `DEMO_CONTAS` e troca os e-mails numa transação só. O
+`recriar-banco.sh` já o chama depois de cada recriação. Cada personagem precisa
+de uma conta Google diferente.
+
+**Testes automáticos:** o popup do Google não se automatiza. Os roteiros de
+ponta a ponta assinam a sessão com a mesma chave (`AUTH_CHAVE`, ou o padrão de
+desenvolvimento) em [`scripts/testes/sessao.mjs`](../../scripts/testes/sessao.mjs)
+e no `roteiro-e2e.py`.
 
 ## Moderação por IA: a chave da Groq
 
@@ -188,8 +210,9 @@ internet por um túnel nomeado da Cloudflare. Não depende de nenhum computador
 do time estar ligado. O endereço antigo, `euduvido.secretavin.workers.dev`,
 redireciona para este.
 
-Para entrar, digite o apelido de um usuário do banco (ex.: `Tavin`). O login é o
-de desenvolvimento, sem senha.
+O login é pelo Google. O `.env` da VM precisa de `GOOGLE_CLIENT_ID`,
+`AUTH_CHAVE` (nova, não a padrão) e `DEMO_CONTAS`, e o endereço público precisa
+estar nas origens autorizadas do Client ID.
 
 | Peça | Como está na VM |
 | --- | --- |

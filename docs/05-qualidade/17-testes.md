@@ -115,13 +115,13 @@ python3 scripts/testes/roteiro-e2e.py
 
 | ID | Procedimento | Resultado esperado | Resultado obtido |
 | --- | --- | --- | --- |
-| E01 | Abrir o login de desenvolvimento | Os 9 usuários do seed listados | Aprovado |
+| E01 | Acesso: tentar o login de desenvolvimento e um token falso do Google | `/api/auth/dev/usuarios` responde 404; a configuração do login responde 200; o token falso é recusado (401, ou 503 sem Client ID) e não gera sessão | Aprovado |
 | E02 | Consultar os grupos do Tavin | 2 grupos, com saldo e nível de filtro de cada um | Aprovado |
 | E03 | Abrir a Central de Votação como Lari | A evidência "Correr 5km" pendente | Aprovado |
 | E04 | Lari vota `VALIDO` (roteiro da demo) | Evidência `ACEITA`, desafio `FINALIZADA_CUMPRIU`, pote de 60 CP dividido entre Tavin e Theus, 2 CP para cada votante, contabilidade fechando | Aprovado |
 | E05 | Lari vota de novo na mesma evidência | Recusado (HTTP 409) | Aprovado |
-| E06 | Cadastrar usuário com 12 anos | Recusado (HTTP 422, RN26), nada gravado | Aprovado |
-| E07 | Cadastrar usuário com 22 anos | Usuário criado (HTTP 201) | Aprovado |
+| E06 | Completar o cadastro do Google com 12 anos | Recusado (HTTP 422, RN26), nada gravado | Aprovado |
+| E07 | Completar o cadastro do Google com 22 anos | Usuário criado (HTTP 201) | Aprovado |
 | E08 | ADMIN adiciona o novo usuário ao grupo | Membro entra com 100 CP lançados no ledger (RN06, RN25) | Aprovado |
 | E09 | Membro comum tenta adicionar alguém | Recusado (HTTP 403) | Aprovado |
 | E10 | Membro comum tenta mudar o nível de filtro | Recusado (HTTP 403), nível inalterado (RN27) | Aprovado |
@@ -174,6 +174,7 @@ rodada. Para repetir, volte ao seed (`docker compose down -v` e `up`, ou
 | U11 | Alternar o tema, recarregar e percorrer 8 telas em 1440x900 | Tema persiste; nenhuma tela rola na vertical | Aprovado |
 | U12 | Celular 390x844: login, desafios e detalhe do grupo | Nenhum overflow horizontal | Aprovado |
 | U13 | Abrir `/` sem sessão, apertar uma tecla; entrar, abrir `/` e clicar; abrir com "reduzir movimento" | A abertura anima; a tecla leva a `/login`; logado, o clique leva a `/desafios`; com menos movimento a cena fica parada | Aprovado |
+| U14 | Abrir a tela de login | Só o botão do Google (ou o aviso de "não configurado"); nenhum usuário do seed listado; `/api/auth/dev/usuarios` responde 404 | Aprovado |
 
 Executado em 30/10/2026 num banco recém-semeado: **12 de 12 aprovados**, uma vez
 com o navegador visível e outra sem janela.
@@ -201,6 +202,20 @@ Reexecutado em 07/11/2026 com a abertura em 3D
 sem recriar o banco e com a API sem chave da IA: **12 de 13**. O U13 passou; o
 único reprovado foi o U11, pelos mesmos 45 px de `/desafios/nova` causados pelos
 dados acumulados. O roteiro de IA simulada passou **14 de 14**.
+
+Reexecutado em 20/11/2026 com o login só pelo Google
+([ADR 0021](../02-arquitetura/adr/0021-login-exclusivo-google.md)), num banco
+recém-criado e com a API sem chave da IA nem Client ID do Google:
+
+* API de ponta a ponta: **18 de 18**;
+* tela: **14 de 14**, com o U14 novo;
+* IA simulada: **14 de 14**;
+* testes da API (`dotnet test`): **162 de 162**, com 15 novos de login e tokens.
+
+O popup do Google não se automatiza. Os roteiros criam a sessão assinando o JWT
+com a chave do ambiente de teste
+([`scripts/testes/sessao.mjs`](../../scripts/testes/sessao.mjs)), e o popup real
+é testado à mão, com uma conta Google, antes do merge.
 
 O que a tela **não** cobre, e onde cada coisa é testada:
 

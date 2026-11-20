@@ -48,5 +48,8 @@ for _ in $(seq 1 30); do
   sleep 2
 done
 
+# Login so pelo Google: liga as contas da demonstracao (DEMO_CONTAS), se houver.
+"$RAIZ/scripts/demo/vincular-contas.sh"
+
 echo
 "$RAIZ/scripts/demo/conferir-demo.sh"
