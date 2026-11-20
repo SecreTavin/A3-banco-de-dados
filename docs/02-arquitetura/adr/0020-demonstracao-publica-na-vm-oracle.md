@@ -2,7 +2,7 @@
 
 * **Status:** Aceita
 * **Data:** 2026-11-16
-* **Decisores:** Rafael Alves; Octávio Arruda (Product Owner), na revisão de 16/11/2026
+* **Decisores:** Rafael Alves; Octávio Augusto Arruda dos Prazeres (Product Owner), na revisão de 16/11/2026
 
 ## Contexto
 

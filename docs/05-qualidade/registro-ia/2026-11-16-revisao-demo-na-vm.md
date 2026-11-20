@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-11-16 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | ADR 0020 (decisores e seção "Revisão do PO"), documento 16 (seção "Ambiente público"), documento 18 (linhas e contagem), `SUMMARY.md` |
 

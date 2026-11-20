@@ -118,11 +118,15 @@
     * [2026-11-01 - Abertura em 3D estilo PS1, com plateia de colégio](docs/05-qualidade/registro-ia/2026-11-01-abertura-3d-ps1.md)
     * [2026-11-07 - Conclusão e referências da Banca Final](docs/05-qualidade/registro-ia/2026-11-07-conclusao-e-referencias.md)
     * [2026-11-07 - ADR 0010 com a hospedagem que existe de fato](docs/05-qualidade/registro-ia/2026-11-07-adr-0010-hospedagem-real.md)
+    * [2026-11-09 - Preenche o prompt utilizado nos registros do Rafael](docs/05-qualidade/registro-ia/2026-11-09-preenche-prompt-utilizado.md)
     * [2026-11-10 - Redesign mobile-first com tema claro padrão](docs/05-qualidade/registro-ia/2026-11-10-redesign-mobile-first.md)
     * [2026-11-10 - Ajustes nas resoluções mais usadas e medição de rolagem](docs/05-qualidade/registro-ia/2026-11-10-ajustes-resolucoes.md)
     * [2026-11-16 - Demonstração pública na VM da Oracle](docs/05-qualidade/registro-ia/2026-11-16-demo-na-vm-oracle.md)
     * [2026-11-16 - Revisão do PO da publicação na VM da Oracle](docs/05-qualidade/registro-ia/2026-11-16-revisao-demo-na-vm.md)
     * [2026-11-16 - Roteiro da demonstração da Banca Final](docs/05-qualidade/registro-ia/2026-11-16-roteiro-da-demonstracao.md)
+    * [2026-11-20 - Banco da demonstração e SQL ao vivo](docs/05-qualidade/registro-ia/2026-11-20-banco-da-demo-e-sql-ao-vivo.md)
+    * [2026-11-20 - Slides na ordem do edital e referência do edital](docs/05-qualidade/registro-ia/2026-11-20-slides-do-edital-e-referencias.md)
+    * [2026-11-20 - Nome completo do PO e card da EXPOUNA](docs/05-qualidade/registro-ia/2026-11-20-nome-completo-e-card-expouna.md)
 
 ## Produto
 
@@ -139,6 +143,7 @@
   * [Redesign de UI/UX (31/10/2026)](docs/04-ux/propostas/README.md)
     * [Tela inicial: abertura animada](docs/04-ux/propostas/tela-inicial/README.md)
   * [Redesign mobile-first (10/11/2026)](docs/04-ux/propostas/redesign-mobile/README.md)
+  * [Card da EXPOUNA 2026](docs/04-ux/card-expouna/README.md)
 
 ## Encerramento
 

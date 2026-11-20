@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-09-12 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Sonnet 5) |
 | **Artefato afetado** | `docs/02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md`, `docs/01-negocio/08-regras-de-negocio.md`, `docs/02-arquitetura/adr/README.md`, `SUMMARY.md` |
 
