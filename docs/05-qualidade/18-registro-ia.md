@@ -37,7 +37,7 @@ cada arquivo.
 
 ## Registros
 
-53 registros, em ordem cronológica.
+54 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -93,6 +93,7 @@ cada arquivo.
 | 2026-11-16 | [Roteiro da demonstração da Banca Final](registro-ia/2026-11-16-roteiro-da-demonstracao.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-20 | [Banco da demonstração e SQL ao vivo](registro-ia/2026-11-20-banco-da-demo-e-sql-ao-vivo.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-20 | [Slides na ordem do edital e referência do edital](registro-ia/2026-11-20-slides-do-edital-e-referencias.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-20 | [Nome completo do PO e card da EXPOUNA](registro-ia/2026-11-20-nome-completo-e-card-expouna.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-20 | [Login com Google](registro-ia/2026-11-20-login-com-google.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 
 ## Consolidação final
