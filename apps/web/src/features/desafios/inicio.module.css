@@ -11,14 +11,14 @@
 }
 
 .olaTitulo {
-  font-size: 30px;
+  font-size: 1.875rem;
   font-weight: 800;
   letter-spacing: -0.035em;
 }
 
 .olaResumo {
   margin-top: 4px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--texto-suave);
 }
 
@@ -104,7 +104,7 @@
 }
 
 .acaoRotulo {
-  font-size: 12.5px;
+  font-size: 0.7812rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -125,7 +125,7 @@
 
 .acaoTitulo {
   font-family: var(--fonte-titulo);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.015em;
@@ -135,7 +135,7 @@
   margin-top: auto;
   color: var(--destaque-texto);
   font-weight: 650;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .barra {
@@ -159,7 +159,7 @@
   justify-content: space-between;
   gap: 10px;
   margin-top: auto;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--texto-suave);
 }
 
@@ -170,7 +170,7 @@
   background: var(--texto);
   color: var(--fundo);
   font-weight: 650;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .carteiraLinha {
@@ -178,7 +178,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   color: var(--texto-suave);
 }
@@ -207,7 +207,7 @@
   border-radius: var(--raio-chip);
   background: transparent;
   color: var(--texto-suave);
-  font-size: 14.5px;
+  font-size: 0.9062rem;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
@@ -249,7 +249,7 @@
   background-color: transparent;
   background-position: right 6px center;
   color: var(--texto-suave);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   text-overflow: ellipsis;
   cursor: pointer;
@@ -302,7 +302,7 @@
 }
 
 .prazo {
-  font-size: 12.5px;
+  font-size: 0.7812rem;
   font-weight: 500;
   color: var(--texto-fraco);
   white-space: nowrap;
@@ -314,20 +314,20 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   font-family: var(--fonte-titulo);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.015em;
 }
 
 .linhaMeta {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--texto-fraco);
 }
 
 .papel {
   margin-top: 2px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--texto-suave);
 }
 
@@ -376,7 +376,7 @@
 }
 
 .passo {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--texto-suave);
 }
@@ -393,7 +393,7 @@
 }
 
 .poteLegenda {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 500;
   color: var(--cp);
   white-space: nowrap;
@@ -484,11 +484,11 @@
   }
 
   .olaTitulo {
-    font-size: 36px;
+    font-size: 2.25rem;
   }
 
   .olaResumo {
-    font-size: 16.5px;
+    font-size: 1.0312rem;
   }
 
   .vez {
@@ -497,7 +497,7 @@
   }
 
   .acaoTitulo {
-    font-size: 19px;
+    font-size: 1.1875rem;
   }
 
   .abas {
@@ -509,7 +509,7 @@
   }
 
   .linhaTitulo {
-    font-size: 19px;
+    font-size: 1.1875rem;
     white-space: normal;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -519,6 +519,6 @@
   .linhaMeta,
   .papel,
   .passo {
-    font-size: 14px;
+    font-size: 0.875rem;
   }
 }

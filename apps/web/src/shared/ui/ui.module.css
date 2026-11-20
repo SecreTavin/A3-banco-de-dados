@@ -24,7 +24,7 @@
   background: var(--primaria);
   color: var(--sobre-primaria);
   font-weight: 650;
-  font-size: 15.5px;
+  font-size: 0.9688rem;
   letter-spacing: 0.005em;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.12s ease;
@@ -98,7 +98,7 @@
 .pequeno {
   min-height: 40px;
   padding: 0 14px;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .blocao {
@@ -111,7 +111,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 650;
   letter-spacing: 0.01em;
   white-space: nowrap;
@@ -131,7 +131,7 @@
   padding: 3px 9px;
   border-radius: 7px;
   background: var(--superficie-alta);
-  font-size: 12.5px;
+  font-size: 0.7812rem;
 }
 
 .badgeSemPonto::before {
@@ -174,7 +174,7 @@
   color: var(--destaque-texto);
   font-family: var(--fonte-titulo);
   font-weight: 800;
-  font-size: 14px;
+  font-size: 0.875rem;
   letter-spacing: -0.02em;
   object-fit: cover;
   overflow: hidden;
@@ -183,13 +183,13 @@
 .avatarGrande {
   width: 64px;
   height: 64px;
-  font-size: 22px;
+  font-size: 1.375rem;
 }
 
 .avatarEnorme {
   width: 56px;
   height: 56px;
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 /* ---------- campo de formulário ---------- */
@@ -201,18 +201,18 @@
 }
 
 .rotulo {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 650;
   color: var(--texto-suave);
 }
 
 .dica {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--texto-fraco);
 }
 
 .erroCampo {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--erro-texto);
 }
 
@@ -224,7 +224,7 @@
   border: 1px solid color-mix(in srgb, var(--perdeu) 40%, transparent);
   background: color-mix(in srgb, var(--perdeu) 9%, transparent);
   color: var(--erro-texto);
-  font-size: 14.5px;
+  font-size: 0.9062rem;
   line-height: 1.45;
 }
 
@@ -261,7 +261,7 @@
   right: -4px;
   bottom: -52px;
   font-family: var(--fonte-titulo);
-  font-size: 130px;
+  font-size: 8.125rem;
   font-weight: 800;
   line-height: 1;
   color: var(--texto);
@@ -271,7 +271,7 @@
 
 .vazioTitulo {
   font-family: var(--fonte-titulo);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--texto);
 }
@@ -293,7 +293,7 @@
   color: var(--cp);
   font-family: var(--fonte-titulo);
   font-weight: 800;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -301,7 +301,7 @@
 
 .cpUnidade {
   font-family: var(--fonte-texto);
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   opacity: 0.85;
@@ -309,11 +309,11 @@
 
 .cpGrande {
   padding: 4px 14px;
-  font-size: 28px;
+  font-size: 1.75rem;
 }
 
 .cpGrande .cpUnidade {
-  font-size: 13px;
+  font-size: 0.8125rem;
 }
 
 /* ---------- cabeçalho de página ---------- */
@@ -333,13 +333,13 @@
 }
 
 .cabecalhoTitulo {
-  font-size: 28px;
+  font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -0.03em;
 }
 
 .cabecalhoDescricao {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--texto-suave);
   max-width: 56ch;
 }
@@ -356,7 +356,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--texto);
@@ -368,7 +368,7 @@
   background: var(--superficie-alta);
   color: var(--texto-suave);
   font-family: var(--fonte-texto);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 650;
 }
 
@@ -382,7 +382,7 @@
   margin: -8px 0 0 -6px;
   padding: 0 8px 0 4px;
   border-radius: var(--raio-pequeno);
-  font-size: 14.5px;
+  font-size: 0.9062rem;
   font-weight: 600;
   color: var(--texto-suave);
   transition: color 0.18s ease, background 0.18s ease;
@@ -401,7 +401,7 @@
   }
 
   .botao {
-    font-size: 15.5px;
+    font-size: 0.9688rem;
   }
 
   .avatar {
@@ -412,13 +412,13 @@
   .avatarGrande {
     width: 72px;
     height: 72px;
-    font-size: 24px;
+    font-size: 1.5rem;
   }
 
   .avatarEnorme {
     width: 64px;
     height: 64px;
-    font-size: 22px;
+    font-size: 1.375rem;
   }
 
   .cabecalho {
@@ -426,11 +426,11 @@
   }
 
   .cabecalhoTitulo {
-    font-size: 36px;
+    font-size: 2.25rem;
   }
 
   .cabecalhoDescricao {
-    font-size: 16.5px;
+    font-size: 1.0312rem;
   }
 
   .secao {
@@ -439,10 +439,10 @@
   }
 
   .secaoTitulo {
-    font-size: 18px;
+    font-size: 1.125rem;
   }
 
   .cpGrande {
-    font-size: 32px;
+    font-size: 2rem;
   }
 }

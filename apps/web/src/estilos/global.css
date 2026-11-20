@@ -137,6 +137,12 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* Fonte de projetor (botao "A+"): todo font-size esta em rem, entao so o
+   texto cresce; espacamentos e larguras ficam como estao. */
+:root[data-escala='maior'] {
+  font-size: 120%;
+}
+
 body {
   margin: 0;
   overflow: hidden;
@@ -144,7 +150,7 @@ body {
   background: var(--fundo);
   color: var(--texto);
   font-family: var(--fonte-texto);
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -316,7 +322,7 @@ select {
   }
 
   body {
-    font-size: 16.5px;
+    font-size: 1.0312rem;
   }
 }
 
@@ -327,6 +333,6 @@ select {
   }
 
   body {
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
 }

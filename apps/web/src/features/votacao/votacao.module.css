@@ -28,7 +28,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--texto-suave);
 }
 
@@ -38,7 +38,7 @@
 
 .titulo {
   font-family: var(--fonte-titulo);
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   line-height: 1.2;
   letter-spacing: -0.025em;
@@ -55,7 +55,7 @@
   border-left: 3px solid var(--primaria);
   border-radius: 0 12px 12px 0;
   background: var(--superficie-alta);
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 1.5;
   color: var(--texto-suave);
 }
@@ -63,7 +63,7 @@
 .regraRotulo {
   display: block;
   margin-bottom: 3px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -71,7 +71,7 @@
 }
 
 .comentario {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: var(--texto-suave);
 }
 
@@ -82,7 +82,7 @@
   padding: 12px 14px;
   border: 1px solid var(--borda);
   border-radius: 12px;
-  font-size: 14.5px;
+  font-size: 0.9062rem;
   line-height: 1.45;
   color: var(--texto-suave);
 }
@@ -128,12 +128,12 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--texto-fraco);
 }
 
 .ganha {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 600;
   color: var(--cp);
   text-align: center;
@@ -150,7 +150,7 @@
   min-height: 58px;
   border-radius: 14px;
   font-family: var(--fonte-titulo);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -163,7 +163,7 @@
 
   .botoes button {
     padding: 0 10px;
-    font-size: 16.5px;
+    font-size: 1.0312rem;
   }
 }
 
@@ -190,7 +190,7 @@
 /* ---------- confirmação ---------- */
 
 .textoDialogo {
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 1.5;
   color: var(--texto-suave);
 }
@@ -227,7 +227,7 @@
   border-radius: var(--raio-chip);
   background: transparent;
   color: var(--texto-suave);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
@@ -251,7 +251,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--texto-fraco);
 }
 
@@ -260,7 +260,7 @@
 .resultadoTitulo {
   width: 100%;
   text-align: center;
-  font-size: 24px;
+  font-size: 1.5rem;
 }
 
 /* O carimbo do júri. */
@@ -289,7 +289,7 @@
 }
 
 .resultadoResumo {
-  font-size: 15.5px;
+  font-size: 0.9688rem;
   color: var(--texto-suave);
   text-align: center;
 }
@@ -308,7 +308,7 @@
   gap: 10px;
   padding: 10px 0;
   border-bottom: 1px solid var(--borda);
-  font-size: 15.5px;
+  font-size: 0.9688rem;
   font-weight: 500;
 }
 
@@ -340,7 +340,7 @@
   border: 1px dashed color-mix(in srgb, var(--cp) 50%, transparent);
   border-radius: 12px;
   background: var(--cp-fraca);
-  font-size: 15.5px;
+  font-size: 0.9688rem;
   font-weight: 500;
 }
 
@@ -349,7 +349,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--texto-fraco);
 }
 
@@ -375,13 +375,13 @@
 
 @media (min-width: 1024px) {
   .titulo {
-    font-size: 26px;
+    font-size: 1.625rem;
   }
 
   .regra,
   .comentario,
   .quem,
   .fecha {
-    font-size: 15.5px;
+    font-size: 0.9688rem;
   }
 }

@@ -5,14 +5,14 @@
 }
 
 .cabecalho h1 {
-  font-size: 27px;
+  font-size: 1.6875rem;
   font-weight: 800;
   letter-spacing: -0.03em;
 }
 
 .cabecalho p {
   margin-top: 4px;
-  font-size: 14.5px;
+  font-size: 0.9062rem;
   color: var(--texto-suave);
 }
 
@@ -57,7 +57,7 @@
   margin-bottom: 8px;
   padding: 0;
   font-family: var(--fonte-titulo);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.01em;
 }
@@ -70,7 +70,7 @@
 .campo legend small {
   margin-left: auto;
   font-family: var(--fonte-texto);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0;
   color: var(--texto-fraco);
@@ -107,11 +107,11 @@
 
 .grupo strong {
   display: block;
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .grupo small {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--texto-fraco);
 }
 
@@ -125,7 +125,7 @@
   flex: none;
   padding: 3px 8px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
@@ -157,7 +157,7 @@
   border-radius: var(--raio-chip);
   background: var(--superficie);
   color: var(--texto-suave);
-  font-size: 14.5px;
+  font-size: 0.9062rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
@@ -189,7 +189,7 @@
 
 .nota,
 .notaErro {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--texto-fraco);
 }
 
@@ -212,7 +212,7 @@
   border-top: 1px dashed var(--borda-forte);
   background: transparent;
   color: var(--destaque-texto);
-  font-size: 14.5px;
+  font-size: 0.9062rem;
   font-weight: 600;
   text-align: left;
   cursor: pointer;
@@ -227,7 +227,7 @@
 .rotuloLateral {
   display: block;
   margin-bottom: 8px;
-  font-size: 12.5px;
+  font-size: 0.7812rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -249,7 +249,7 @@
 
 .previa strong {
   font-family: var(--fonte-titulo);
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 700;
   letter-spacing: -0.015em;
 }
@@ -259,7 +259,7 @@
 }
 
 .previaMeta {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--texto-fraco);
 }
 
@@ -271,7 +271,7 @@
   margin-top: 10px;
   padding-top: 10px;
   border-top: 2px dashed var(--borda-forte);
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--texto-suave);
 }
 
@@ -289,7 +289,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 .fluxo {
@@ -304,7 +304,7 @@
 .fluxo li {
   padding-top: 8px;
   border-top: 3px solid var(--borda);
-  font-size: 12.5px;
+  font-size: 0.7812rem;
   font-weight: 500;
   color: var(--texto-fraco);
 }
@@ -320,7 +320,7 @@
 }
 
 .avaliando {
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: var(--destaque-texto);
 }
@@ -333,7 +333,7 @@
   padding: 12px 14px;
   border: 1px solid;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.45;
 }
 
@@ -349,7 +349,7 @@
 
 .recusa strong,
 .indisponivel strong {
-  font-size: 15px;
+  font-size: 0.9375rem;
 }
 
 .recusa p,
@@ -380,12 +380,12 @@
   }
 
   .cabecalho h1 {
-    font-size: 34px;
+    font-size: 2.125rem;
   }
 
   .cabecalho p {
     margin: 0;
-    font-size: 16px;
+    font-size: 1rem;
   }
 
   .grade {

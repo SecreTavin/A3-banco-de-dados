@@ -40,7 +40,7 @@
   box-shadow: 0 16px 40px rgba(68, 51, 204, 0.3);
   color: var(--sobre-primaria);
   font-family: var(--fonte-titulo);
-  font-size: 42px;
+  font-size: 2.625rem;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.12em;
@@ -53,7 +53,7 @@
 
 .titulo {
   margin-top: 6px;
-  font-size: 36px;
+  font-size: 2.25rem;
   font-weight: 800;
   letter-spacing: -0.04em;
 }
@@ -61,13 +61,13 @@
 .subtitulo {
   max-width: 320px;
   color: var(--texto-suave);
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.45;
 }
 
 .rotuloLista {
   font-family: var(--fonte-titulo);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--texto);
@@ -100,11 +100,11 @@
 .perfilNome {
   font-family: var(--fonte-titulo);
   font-weight: 700;
-  font-size: 17px;
+  font-size: 1.0625rem;
 }
 
 .perfilEmail {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--texto-fraco);
   overflow-wrap: anywhere;
 }
@@ -121,7 +121,7 @@
 
 .rodape {
   text-align: center;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--texto-fraco);
 }
 
@@ -165,7 +165,7 @@
     background: #f5f2ea;
     color: #2d1f9e;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
-    font-size: 58px;
+    font-size: 3.625rem;
   }
 
   .logo em {
@@ -173,14 +173,14 @@
   }
 
   .titulo {
-    font-size: 64px;
+    font-size: 4rem;
     line-height: 1;
   }
 
   .subtitulo {
     max-width: 420px;
     color: rgba(245, 242, 234, 0.8);
-    font-size: 21px;
+    font-size: 1.3125rem;
   }
 
   .entrada {
@@ -219,11 +219,11 @@
   .logo {
     width: 80px;
     height: 80px;
-    font-size: 48px;
+    font-size: 3rem;
   }
 
   .titulo {
-    font-size: 54px;
+    font-size: 3.375rem;
   }
 
   .entrada {
