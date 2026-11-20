@@ -33,7 +33,7 @@ ajuste antes de fechar.
 | 2 | [Modelagem](entrega-2-modelagem.md) | Quais dados o sistema precisa armazenar e como esses dados se relacionam? | 2026-10-02 | 🟢 Entregue (8/8) |
 | 3 | [Banco de Dados](entrega-3-banco-de-dados.md) | O modelo foi efetivamente transformado em um Banco de Dados funcional? | 2026-10-30 | 🟢 Entregue (8/8) |
 | 4 | [Sistema Funcional](entrega-4-sistema-funcional.md) | O sistema funciona e utiliza efetivamente o Banco de Dados desenvolvido? | 2026-11-20 | 🔵 Pronta para entrega (10/10) |
-| 5 | [Banca Final](banca-final.md) | O grupo compreendeu e é capaz de explicar o que desenvolveu, do problema à demonstração? | 2026-12-04 | 🟡 Em construção (1/3) |
+| 5 | [Banca Final](banca-final.md) | O grupo compreendeu e é capaz de explicar o que desenvolveu, do problema à demonstração? | 2026-12-04 | 🔵 Pronta para entrega (3/3) |
 <!-- entregas:indice:end -->
 
 ## Convenção de tags

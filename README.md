@@ -30,7 +30,10 @@ Google — porque `Auth:Provider` está em `Dev`. Os cinco usuários disponívei
 
 ### Roteiro de demonstração
 
-O seed deixa o sistema no estado exato para isto:
+O roteiro completo da banca, com as funcionalidades em 13 minutos e os números
+conferidos, está em
+[Roteiro da demonstração](docs/06-encerramento/roteiro-da-demonstracao.md). A
+versão curta, só com o voto que fecha o quórum:
 
 1. Entre como **Lari** e vá para a Central de Votação.
 2. A evidência do desafio *"Correr 5km abaixo de 25 minutos"* está aguardando um

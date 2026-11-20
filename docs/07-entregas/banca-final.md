@@ -8,7 +8,7 @@
 | **Pergunta que a entrega precisa responder** | O grupo compreendeu e é capaz de explicar o que desenvolveu, do problema à demonstração? |
 
 <!-- entregas:status:start -->
-🟡 **Em construção** — 1/3 itens prontos · revisão em sala: 2026-12-04
+🔵 **Pronta para entrega** — 3/3 itens prontos · revisão em sala: 2026-12-04
 <!-- entregas:status:end -->
 
 ## Checklist
@@ -21,8 +21,8 @@ a tabela a mão — edite os documentos linkados e rode o script de novo.
 | Item | Situação | Local |
 | --- | --- | --- |
 | Limitações e melhorias futuras | ✅ | [`docs/06-encerramento/19-limitacoes-e-melhorias.md`](../06-encerramento/19-limitacoes-e-melhorias.md) |
-| Conclusão | ❌ | [`docs/06-encerramento/20-conclusao.md`](../06-encerramento/20-conclusao.md) |
-| Referências (ABNT) | ❌ | [`docs/06-encerramento/21-referencias.md`](../06-encerramento/21-referencias.md) |
+| Conclusão | ✅ | [`docs/06-encerramento/20-conclusao.md`](../06-encerramento/20-conclusao.md) |
+| Referências (ABNT) | ✅ | [`docs/06-encerramento/21-referencias.md`](../06-encerramento/21-referencias.md) |
 <!-- entregas:checklist:end -->
 
 ## Por que só estes três itens
