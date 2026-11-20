@@ -125,6 +125,7 @@
     * [2026-11-16 - Revisão do PO da publicação na VM da Oracle](docs/05-qualidade/registro-ia/2026-11-16-revisao-demo-na-vm.md)
     * [2026-11-16 - Roteiro da demonstração da Banca Final](docs/05-qualidade/registro-ia/2026-11-16-roteiro-da-demonstracao.md)
     * [2026-11-20 - Banco da demonstração e SQL ao vivo](docs/05-qualidade/registro-ia/2026-11-20-banco-da-demo-e-sql-ao-vivo.md)
+    * [2026-11-20 - Slides na ordem do edital e referência do edital](docs/05-qualidade/registro-ia/2026-11-20-slides-do-edital-e-referencias.md)
     * [2026-11-20 - Login com Google](docs/05-qualidade/registro-ia/2026-11-20-login-com-google.md)
 
 ## Produto
