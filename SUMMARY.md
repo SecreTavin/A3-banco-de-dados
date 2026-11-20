@@ -120,9 +120,11 @@
     * [2026-11-07 - Conclusão e referências da Banca Final](docs/05-qualidade/registro-ia/2026-11-07-conclusao-e-referencias.md)
     * [2026-11-07 - ADR 0010 com a hospedagem que existe de fato](docs/05-qualidade/registro-ia/2026-11-07-adr-0010-hospedagem-real.md)
     * [2026-11-07 - Especificação do login com Google](docs/05-qualidade/registro-ia/2026-11-07-especificacao-login-google.md)
+    * [2026-11-09 - Preenche o prompt utilizado nos registros do Rafael](docs/05-qualidade/registro-ia/2026-11-09-preenche-prompt-utilizado.md)
     * [2026-11-16 - Demonstração pública na VM da Oracle](docs/05-qualidade/registro-ia/2026-11-16-demo-na-vm-oracle.md)
     * [2026-11-16 - Revisão do PO da publicação na VM da Oracle](docs/05-qualidade/registro-ia/2026-11-16-revisao-demo-na-vm.md)
     * [2026-11-16 - Roteiro da demonstração da Banca Final](docs/05-qualidade/registro-ia/2026-11-16-roteiro-da-demonstracao.md)
+    * [2026-11-20 - Banco da demonstração e SQL ao vivo](docs/05-qualidade/registro-ia/2026-11-20-banco-da-demo-e-sql-ao-vivo.md)
 
 ## Produto
 

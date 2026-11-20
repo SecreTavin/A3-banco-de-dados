@@ -91,15 +91,62 @@ Os padrões apontam para a Groq com o modelo `openai/gpt-oss-120b`;
 
 ## Recomeçar a demonstração
 
-O seed só roda quando o volume do banco está vazio. Depois de ensaiar — votar,
-criar desafios —, volte ao estado original apagando o volume:
+Depois de ensaiar (votar, criar desafios), volte o banco ao estado do seed e
+confira se ele está como o [roteiro da banca](../06-encerramento/roteiro-da-demonstracao.md)
+espera:
 
 ```bash
-docker compose down -v && docker compose up -d
+scripts/demo/recriar-banco.sh
 ```
 
-O voto pendente da Lari no desafio 1, que fecha o quórum na banca, volta a
-estar disponível.
+O script pede para digitar `RECRIAR`, apaga só o schema `public` e aplica o
+`schema.sql` e o `seed.sql` pelo `psql`. Ele funciona no Docker local e na VM,
+mesmo que a VM desligue o seed no *initdb*. No fim, ele roda a conferência:
+
+```bash
+scripts/demo/conferir-demo.sh
+```
+
+A conferência só lê o banco e marca ✔ ou ✘ para cada pré-condição do roteiro:
+
+* 9 usuários;
+* "Correr 5km" com 1 de 2 votos e a Lari ainda sem votar;
+* "Tirar nota máxima" aberta;
+* "Dinossauro" em andamento;
+* os saldos de partida;
+* as views de contabilidade vazias.
+
+Rode antes de cada ensaio e na véspera da banca.
+
+O caminho antigo, `docker compose down -v && docker compose up -d`, também
+volta ao seed no Docker local, porque o seed roda quando o volume está vazio.
+
+## Ver o SQL ao vivo
+
+Durante a demonstração, uma janela ao lado do navegador mostra cada comando
+que a aplicação manda ao PostgreSQL:
+
+```bash
+python3 scripts/demo/ver-sql.py
+```
+
+O script liga o log de comandos do PostgreSQL com `ALTER SYSTEM`, sem reiniciar
+o banco, e mostra cada comando colorido, com os parâmetros já preenchidos:
+`SELECT` em azul, `INSERT` em verde, `UPDATE` em amarelo e `CALL` em magenta,
+com o `BEGIN` e o `COMMIT` da transação em destaque. No voto que fecha o
+quórum, aparece:
+
+```
+BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED
+UPDATE jurado_evidencia SET ... voto = 'VALIDO' WHERE id_evidencia = '2' AND id_usuario = '4'
+CALL apurar_votacao('2')
+COMMIT
+```
+
+Os comandos do próprio `psql` ficam de fora. `Ctrl+C` sai e desliga o log; se o
+terminal fechar de outro jeito, desligue com
+`python3 scripts/demo/ver-sql.py --desligar`. Na VM, rode o script pelo SSH, na
+pasta do repositório.
 
 ## Ordem de subida
 

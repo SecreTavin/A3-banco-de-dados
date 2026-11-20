@@ -37,7 +37,7 @@ cada arquivo.
 
 ## Registros
 
-50 registros, em ordem cronológica.
+51 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -91,6 +91,7 @@ cada arquivo.
 | 2026-11-16 | [Demonstração pública na VM da Oracle](registro-ia/2026-11-16-demo-na-vm-oracle.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-16 | [Revisão do PO da publicação na VM da Oracle](registro-ia/2026-11-16-revisao-demo-na-vm.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 | 2026-11-16 | [Roteiro da demonstração da Banca Final](registro-ia/2026-11-16-roteiro-da-demonstracao.md) | Claude Code (Opus 5.5) | Octávio Arruda |
+| 2026-11-20 | [Banco da demonstração e SQL ao vivo](registro-ia/2026-11-20-banco-da-demo-e-sql-ao-vivo.md) | Claude Code (Opus 5.5) | Octávio Arruda |
 
 ## Consolidação final
 
