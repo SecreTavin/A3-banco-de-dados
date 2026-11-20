@@ -7,12 +7,16 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { width: 900px; height: 1200px; overflow: hidden; background: #22143A; }
   .card { position: relative; width: 900px; height: 1200px; overflow: hidden;
-    background: radial-gradient(circle at 50% 18%, #4A2C7A 0%, #2A1747 45%, #22143A 70%); }
-  /* Cena 3D da abertura, recortada sem o convite de baixo. */
-  .cena { position: absolute; left: 0; bottom: 0; width: 900px; height: 610px;
-    background: url('cena-abertura-900x1200.png') 0 -508px / 900px 1200px no-repeat; }
-  .cena::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 170px;
-    background: linear-gradient(180deg, #22143A 0%, rgba(34,20,58,.85) 35%, rgba(34,20,58,0) 100%); }
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 2px, transparent 2px 28px),
+      radial-gradient(circle at 50% 18%, #4A2C7A 0%, #2A1747 45%, #22143A 72%); }
+  /* Metade de baixo so decorativa: o texto fica todo na de cima. */
+  .fundo { position: absolute; left: 0; right: 0; bottom: 0; height: 600px; }
+  .glifo { position: absolute; font: 900 520px/1 'Rubik', Arial, sans-serif; opacity: .08; color: #fff; }
+  .moeda { position: absolute; display: grid; place-items: center; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #FFE9A8, #F6C453 45%, #C98F1E 100%);
+    box-shadow: inset 0 -6px 0 rgba(0,0,0,.18), 0 14px 30px rgba(0,0,0,.35);
+    font: 900 28px/1 'Rubik', Arial, sans-serif; color: #7A4E00; }
   .topo { position: absolute; inset: 0 0 auto 0; height: 600px; display: flex; flex-direction: column;
     align-items: center; padding-top: 78px; text-align: center; }
   .marca { width: 104px; height: 92px; border-radius: 28px; display: flex; align-items: center; justify-content: center;
@@ -31,7 +35,14 @@
 </head>
 <body>
 <div class="card">
-  <div class="cena"></div>
+  <div class="fundo" aria-hidden="true">
+    <span class="glifo" style="left:40px; bottom:-60px; transform:rotate(-12deg)">?</span>
+    <span class="glifo" style="right:70px; bottom:-40px; transform:rotate(10deg); color:#F6C453; opacity:.12">!</span>
+    <span class="moeda" style="width:120px; height:120px; left:350px; bottom:250px; font-size:40px">CP</span>
+    <span class="moeda" style="width:84px; height:84px; left:520px; bottom:150px; transform:rotate(14deg)">CP</span>
+    <span class="moeda" style="width:64px; height:64px; left:250px; bottom:110px; transform:rotate(-18deg); font-size:22px">CP</span>
+    <span class="moeda" style="width:70px; height:70px; left:640px; bottom:330px; transform:rotate(8deg); font-size:24px">CP</span>
+  </div>
   <div class="topo">
     <div class="marca">?<svg width="20" height="50" viewBox="0 0 20 50" aria-hidden="true"><rect x="3" y="4" width="14" height="30" rx="7" fill="#F6C453"/><circle cx="10" cy="43" r="6.5" fill="#F6C453"/></svg></div>
     <svg class="titulo" width="760" height="150" viewBox="0 0 760 150" aria-label="Eu Duvido!">
