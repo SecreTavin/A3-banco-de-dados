@@ -19,7 +19,7 @@ public static class RankingEndpoints
 
             return Results.Ok(await conexao.QueryAsync(
                 """
-                SELECT u.apelido, u.avatar_url AS "avatarUrl", m.saldo_cp AS "saldoCp",
+                SELECT m.id_usuario AS "idUsuario", u.apelido, u.avatar_url AS "avatarUrl", m.saldo_cp AS "saldoCp",
                        COUNT(DISTINCT p.id_desafio) AS "desafiosParticipadas",
                        COUNT(DISTINCT p.id_desafio) FILTER (
                            WHERE (a.status = 'FINALIZADA_CUMPRIU' AND p.escolha = 'VAI_CUMPRIR')

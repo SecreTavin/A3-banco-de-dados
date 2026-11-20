@@ -5,9 +5,9 @@ import { useRankingQuery } from '../../ranking/hooks/useRankingQuery'
 import estilos from '../perfil.module.css'
 
 /** Saldo num grupo e a posição no ranking dele: cada grupo é uma economia à parte. */
-export function SaldoNoGrupo({ saldo, apelido }: { saldo: SaldoPorGrupo; apelido: string }) {
+export function SaldoNoGrupo({ saldo, idUsuario }: { saldo: SaldoPorGrupo; idUsuario: number }) {
   const { dados: ranking } = useRankingQuery(saldo.idGrupo)
-  const posicao = ranking ? ranking.findIndex((linha) => linha.apelido === apelido) + 1 : 0
+  const posicao = ranking ? ranking.findIndex((linha) => linha.idUsuario === idUsuario) + 1 : 0
 
   return (
     <li className={estilos.saldo}>

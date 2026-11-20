@@ -1,117 +1,51 @@
-using Dapper;
-using EuDuvido.Api.Modules.Identidade.Domain;
+using EuDuvido.Api.Modules.Identidade.Features.CompletarCadastro;
+using EuDuvido.Api.Modules.Identidade.Features.EntrarComGoogle;
 using EuDuvido.Api.Shared.Auth;
-using EuDuvido.Api.Shared.Database;
 using EuDuvido.Api.Shared.Results;
-using Microsoft.EntityFrameworkCore;
+using FluentValidation;
 
 namespace EuDuvido.Api.Modules.Identidade.Features;
 
+// Acesso so pelo Google (RN05, ADR 0021): o login de desenvolvimento saiu.
 public static class AuthEndpoints
 {
     public static void MapAuthEndpoints(this IEndpointRouteBuilder app)
     {
         var grupo = app.MapGroup("/api/auth").WithTags("Auth");
 
-        // Bypass de desenvolvimento. Com Auth:Provider = "Google" estes dois
-        // endpoints somem e o fluxo passa a exigir o token do provedor.
-        grupo.MapGet("/dev/usuarios", async (AuthOptions auth, IConexaoLeitura leitura,
+        // O Client ID nao e segredo; o front le daqui em vez de embuti-lo no build.
+        grupo.MapGet("/configuracao", (AuthOptions auth) =>
+            Results.Ok(new { googleClientId = auth.GoogleClientId }))
+        .WithSummary("Client ID do Google para o botao de login.");
+
+        grupo.MapPost("/google", async (EntrarComGoogleRequest requisicao, AuthOptions auth,
+            EntrarComGoogleHandler handler, CancellationToken ct) =>
+        {
+            if (string.IsNullOrWhiteSpace(auth.GoogleClientId))
+                return Results.Problem("O login com Google não está configurado no servidor.", statusCode: 503);
+            if (string.IsNullOrWhiteSpace(requisicao.Credential))
+                return Results.ValidationProblem(new Dictionary<string, string[]>
+                {
+                    ["credential"] = ["Credencial do Google ausente."]
+                });
+
+            var resultado = await handler.Handle(requisicao.Credential, ct);
+            return resultado.ToHttp();
+        })
+        .WithSummary("Valida o ID token do Google: entra, ou pede para completar o cadastro.");
+
+        // RN26: menor de 16 anos e recusado pelo dominio e, por baixo, pela trigger.
+        grupo.MapPost("/cadastro", async (CompletarCadastroCommand comando,
+            IValidator<CompletarCadastroCommand> validador, CompletarCadastroHandler handler,
             CancellationToken ct) =>
         {
-            if (auth.Provider != "Dev") return Results.NotFound();
+            var validacao = await validador.ValidateAsync(comando, ct);
+            if (!validacao.IsValid)
+                return Results.ValidationProblem(validacao.ToDictionary());
 
-            using var conexao = await leitura.AbrirAsync(ct);
-            var usuarios = await conexao.QueryAsync(
-                """
-                SELECT id_usuario AS "idUsuario", nome, apelido, email, avatar_url AS "avatarUrl"
-                  FROM usuario ORDER BY id_usuario
-                """);
-            return Results.Ok(usuarios);
+            var resultado = await handler.Handle(comando, ct);
+            return resultado.ToHttp(r => Results.Created($"/api/perfil", r));
         })
-        .WithSummary("Usuarios disponiveis para login de desenvolvimento.");
-
-        grupo.MapPost("/dev/login", async (LoginDevRequest requisicao, AuthOptions auth,
-            TokenService tokens, IConexaoLeitura leitura, CancellationToken ct) =>
-        {
-            if (auth.Provider != "Dev")
-                return Results.Problem("Login de desenvolvimento desabilitado.", statusCode: 403);
-
-            using var conexao = await leitura.AbrirAsync(ct);
-            var usuario = await conexao.QuerySingleOrDefaultAsync<UsuarioAutenticado>(
-                """
-                SELECT id_usuario AS IdUsuario, nome AS Nome, apelido AS Apelido,
-                       email AS Email, avatar_url AS AvatarUrl
-                  FROM usuario WHERE apelido = @apelido
-                """,
-                new { requisicao.Apelido });
-
-            if (usuario is null)
-                return Results.NotFound(new { erro = $"Usuario '{requisicao.Apelido}' nao existe." });
-
-            return Results.Ok(new
-            {
-                token = tokens.Gerar(usuario.IdUsuario, usuario.Apelido, usuario.Email),
-                usuario
-            });
-        })
-        .WithSummary("Autentica pelo apelido, sem senha. Somente em desenvolvimento.");
-
-        // Demonstra a RN26 ao vivo: o cadastro de quem tem menos de 16 anos e
-        // recusado pelo dominio (e, por baixo, pelo trigger do banco).
-        grupo.MapPost("/dev/cadastro", async (CadastroDevRequest requisicao, AuthOptions auth,
-            TokenService tokens, EuDuvidoDbContext db, CancellationToken ct) =>
-        {
-            if (auth.Provider != "Dev")
-                return Results.Problem("Cadastro de desenvolvimento desabilitado.", statusCode: 403);
-
-            var erros = new Dictionary<string, string[]>();
-            if (string.IsNullOrWhiteSpace(requisicao.Nome) || requisicao.Nome.Trim().Length > 100)
-                erros["nome"] = ["Informe o nome (até 100 caracteres)."];
-            if (string.IsNullOrWhiteSpace(requisicao.Email) || requisicao.Email.Trim().Length > 120 ||
-                !requisicao.Email.Contains('@'))
-                erros["email"] = ["Informe um e-mail válido."];
-            if (string.IsNullOrWhiteSpace(requisicao.Apelido) || requisicao.Apelido.Trim().Length > 50)
-                erros["apelido"] = ["Informe o apelido (até 50 caracteres)."];
-            if (requisicao.DataNascimento < new DateOnly(1900, 1, 1))
-                erros["dataNascimento"] = ["Informe a data de nascimento."];
-            if (erros.Count > 0)
-                return Results.ValidationProblem(erros);
-
-            var email = requisicao.Email.Trim().ToLowerInvariant();
-            if (await db.Usuarios.AnyAsync(u => u.Email.ToLower() == email, ct))
-                return ((ErrorOr.ErrorOr<Usuario>)UsuarioErrors.EmailEmUso).ToHttp();
-
-            // Apelido nao e unico no modelo, mas o login de desenvolvimento entra
-            // por ele: dois iguais deixariam ambos sem conseguir entrar.
-            var apelido = requisicao.Apelido.Trim();
-            if (await db.Usuarios.AnyAsync(u => u.Apelido == apelido, ct))
-                return Results.Conflict(new { erro = $"O apelido '{apelido}' ja esta em uso." });
-
-            var novo = Usuario.Criar(
-                requisicao.Nome.Trim(), email, apelido, null,
-                requisicao.DataNascimento);
-            if (novo.IsError) return novo.ToHttp();
-
-            db.Usuarios.Add(novo.Value);
-            await db.SaveChangesAsync(ct);
-
-            var usuario = new UsuarioAutenticado(
-                novo.Value.IdUsuario, novo.Value.Nome, novo.Value.Apelido,
-                novo.Value.Email, novo.Value.AvatarUrl);
-
-            return Results.Created($"/api/auth/dev/usuarios/{usuario.IdUsuario}", new
-            {
-                token = tokens.Gerar(usuario.IdUsuario, usuario.Apelido, usuario.Email),
-                usuario
-            });
-        })
-        .WithSummary("Cadastra usuario de teste com data de nascimento (RN26). Somente em desenvolvimento.");
+        .WithSummary("Completa o cadastro de quem entrou pelo Google pela primeira vez.");
     }
 }
-
-public record LoginDevRequest(string Apelido);
-
-public record CadastroDevRequest(string Nome, string Email, string Apelido, DateOnly DataNascimento);
-
-public record UsuarioAutenticado(
-    int IdUsuario, string Nome, string Apelido, string Email, string? AvatarUrl);

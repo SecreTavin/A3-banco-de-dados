@@ -93,7 +93,7 @@ export function CartaoProva({ evidencia, destaque }: Props) {
 
       <ul className={estilos.juri} aria-label="Júri">
         {evidencia.jurados.map((jurado) => (
-          <li key={jurado.apelido} className={estilos.jurado} title={jurado.votou ? 'já votou' : 'ainda não votou'}>
+          <li key={jurado.idUsuario} className={estilos.jurado} title={jurado.votou ? 'já votou' : 'ainda não votou'}>
             <span className={estilos.juradoAvatar}>
               <Avatar apelido={jurado.apelido} url={jurado.avatarUrl} />
               <span className={jurado.votou ? estilos.votou : estilos.falta}>

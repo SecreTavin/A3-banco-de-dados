@@ -5,6 +5,8 @@ using EuDuvido.Api.Modules.Desafios.Features.CriarDesafio;
 using EuDuvido.Api.Modules.Desafios.Infrastructure;
 using EuDuvido.Api.Modules.Grupos.Features;
 using EuDuvido.Api.Modules.Identidade.Features;
+using EuDuvido.Api.Modules.Identidade.Features.CompletarCadastro;
+using EuDuvido.Api.Modules.Identidade.Features.EntrarComGoogle;
 using EuDuvido.Api.Modules.Ranking.Features;
 using EuDuvido.Api.Modules.Validacao.Features;
 using EuDuvido.Api.Modules.Validacao.Features.EnviarEvidencia;
@@ -29,6 +31,9 @@ var auth = builder.Configuration.GetSection(AuthOptions.Secao).Get<AuthOptions>(
 
 builder.Services.AddSingleton(auth);
 builder.Services.AddSingleton<TokenService>();
+builder.Services.AddSingleton<IValidadorGoogle, ValidadorGoogle>();
+builder.Services.AddScoped<EntrarComGoogleHandler>();
+builder.Services.AddScoped<CompletarCadastroHandler>();
 
 builder.Services.AddDbContext<EuDuvidoDbContext>(o =>
     o.UseNpgsql(conexao, npg => npg.EnableRetryOnFailure()));
@@ -64,16 +69,8 @@ builder.Services.AddScoped<INotificadorVotacao, NotificadorVotacao>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(o =>
     {
-        o.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = auth.Emissor,
-            ValidAudience = auth.Audiencia,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(auth.Chave))
-        };
+        // So a audiencia da sessao: o token de cadastro nao abre endpoint nenhum.
+        o.TokenValidationParameters = TokenService.ParametrosValidacao(auth);
 
         // O cliente SignalR manda o token na query string do handshake.
         o.Events = new JwtBearerEvents

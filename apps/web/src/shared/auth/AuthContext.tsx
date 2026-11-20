@@ -1,12 +1,14 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { api } from '../api/client'
-import type { NovoCadastro, RespostaLogin, Usuario } from '../api/tipos'
+import type { NovoCadastro, RespostaEntrada, Usuario } from '../api/tipos'
+import { esquecerContaGoogle } from './google'
 import { aoExpirarSessao, gravarSessao, lerUsuario, limparSessao } from './sessao'
 
 interface Sessao {
   usuario: Usuario | null
-  entrar: (apelido: string) => Promise<void>
+  /** Valida o ID token do Google na API. Sem conta ainda, devolve `cadastroPendente`. */
+  entrarComGoogle: (credencial: string) => Promise<RespostaEntrada>
   cadastrar: (dados: NovoCadastro) => Promise<void>
   sair: () => void
 }
@@ -23,14 +25,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
-  const iniciarSessao = useCallback((resposta: RespostaLogin) => {
-    gravarSessao(resposta.token, resposta.usuario)
-    setUsuario(resposta.usuario)
+  const iniciarSessao = useCallback((token: string, quem: Usuario) => {
+    gravarSessao(token, quem)
+    setUsuario(quem)
   }, [])
 
-  const entrar = useCallback(
-    async (apelido: string) => {
-      iniciarSessao(await api.post<RespostaLogin>('/api/auth/dev/login', { apelido }))
+  const entrarComGoogle = useCallback(
+    async (credencial: string) => {
+      const resposta = await api.post<RespostaEntrada>('/api/auth/google', { credential: credencial })
+      if (resposta.token && resposta.usuario) iniciarSessao(resposta.token, resposta.usuario)
+      return resposta
     },
     [iniciarSessao],
   )
@@ -38,19 +42,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // O cadastro devolve o mesmo corpo do login: quem se cadastra já sai logado.
   const cadastrar = useCallback(
     async (dados: NovoCadastro) => {
-      iniciarSessao(await api.post<RespostaLogin>('/api/auth/dev/cadastro', dados))
+      const resposta = await api.post<RespostaEntrada>('/api/auth/cadastro', dados)
+      if (resposta.token && resposta.usuario) iniciarSessao(resposta.token, resposta.usuario)
     },
     [iniciarSessao],
   )
 
   const sair = useCallback(() => {
     limparSessao()
+    esquecerContaGoogle()
     setUsuario(null)
   }, [])
 
   const valor = useMemo(
-    () => ({ usuario, entrar, cadastrar, sair }),
-    [usuario, entrar, cadastrar, sair],
+    () => ({ usuario, entrarComGoogle, cadastrar, sair }),
+    [usuario, entrarComGoogle, cadastrar, sair],
   )
 
   return <Contexto.Provider value={valor}>{children}</Contexto.Provider>

@@ -43,6 +43,16 @@ if ! curl -fsS "$API_LOCAL/health" >/dev/null; then
   exit 1
 fi
 
+# Com login de verdade (ADR 0021), a chave padrao do repositorio permitiria
+# forjar sessoes no site publico.
+CHAVE_PADRAO="chave-de-desenvolvimento-nao-usar-em-producao-min-32-chars"
+CHAVE_API="$(cd "$RAIZ" && docker compose exec -T api printenv Auth__Chave 2>/dev/null || true)"
+if [[ -z "$CHAVE_API" || "$CHAVE_API" == "$CHAVE_PADRAO" ]]; then
+  echo "A API esta com a chave de sessao padrao. Defina AUTH_CHAVE no .env" >&2
+  echo "(openssl rand -base64 48) e rode docker compose up -d antes de publicar." >&2
+  exit 1
+fi
+
 echo "==> Build do frontend ($WEB_DIR), com a API na mesma origem"
 (cd "$WEB_DIR" && VITE_API_URL="" npm run build)
 if [[ "$WEB_DIR/dist" != "$RAIZ/apps/web/dist" ]]; then

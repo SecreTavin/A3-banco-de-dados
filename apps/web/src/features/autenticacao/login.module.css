@@ -47,11 +47,6 @@
   max-width: 320px;
 }
 
-.lista {
-  display: grid;
-  gap: 10px;
-}
-
 .rotuloLista {
   font-size: 14px;
   font-weight: 700;
@@ -60,43 +55,38 @@
   color: var(--texto-fraco);
 }
 
-.usuario {
+.google {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+
+.botaoGoogle {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  justify-content: center;
+}
+
+.perfilGoogle {
   display: flex;
   align-items: center;
   gap: 12px;
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--borda);
-  border-radius: var(--raio);
-  background: var(--superficie);
-  cursor: pointer;
-  text-align: left;
-  transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
 }
 
-.usuario:hover:not(:disabled) {
-  transform: translateY(-1px);
-  border-color: var(--primaria);
-  background: var(--superficie-alta);
-}
-
-.usuario:disabled {
-  opacity: 0.6;
-  cursor: progress;
-}
-
-.usuarioTextos {
+.perfilTextos {
   display: grid;
-  flex: 1;
+  min-width: 0;
 }
 
-.usuarioApelido {
+.perfilNome {
   font-weight: 600;
 }
 
-.usuarioNome {
+.perfilEmail {
   font-size: 14px;
   color: var(--texto-fraco);
+  overflow-wrap: anywhere;
 }
 
 .formulario {
@@ -115,7 +105,7 @@
   color: var(--texto-fraco);
 }
 
-/* ---------- Desktop (>= 1100px): marca à esquerda, usuários numa grade 3x3 à direita ---------- */
+/* ---------- Desktop (>= 1100px): marca à esquerda, login à direita ---------- */
 @media (min-width: 1100px) {
   .tela {
     padding: 48px 80px;
@@ -164,55 +154,14 @@
   }
 
   .entrada > [role='alert'],
-  .entrada > .lista,
+  .entrada > .google,
   .entrada > .cadastro {
     grid-column: 1 / -1;
-  }
-
-  .lista {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
   }
 
   .rotuloLista {
     grid-column: 1 / -1;
     font-size: 15px;
-  }
-
-  .usuario {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    padding: 18px 20px;
-  }
-
-  .usuarioTextos {
-    flex: none;
-  }
-
-  .usuarioApelido {
-    font-size: 20px;
-  }
-
-  .usuarioNome {
-    font-size: 16px;
-  }
-
-  /* Com mais de 9 usuários a grade vertical não cabe: os cartões passam a ser horizontais. */
-  .listaCompacta .usuario {
-    flex-direction: row;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 16px;
-  }
-
-  .listaCompacta .usuarioTextos {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .entradaCadastrando > .lista {
-    display: none;
   }
 
   .formulario {
@@ -227,15 +176,9 @@
   }
 
   .rodape {
-    order: 1;
-    grid-column: 1;
+    grid-column: 1 / -1;
     text-align: left;
     font-size: 16px;
-  }
-
-  .criarConta {
-    order: 2;
-    width: auto;
   }
 
   .cadastro {
@@ -255,15 +198,6 @@
   .entrada {
     padding: 24px;
     gap: 14px 16px;
-  }
-
-  .usuario {
-    gap: 6px;
-    padding: 12px 18px;
-  }
-
-  .lista {
-    gap: 12px;
   }
 
   .logo {

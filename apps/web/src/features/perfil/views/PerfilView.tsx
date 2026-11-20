@@ -71,7 +71,7 @@ export function PerfilView() {
         ) : (
           <ul className={estilos.saldos}>
             {saldos.map((saldo) => (
-              <SaldoNoGrupo key={saldo.idGrupo} saldo={saldo} apelido={usuario.apelido} />
+              <SaldoNoGrupo key={saldo.idGrupo} saldo={saldo} idUsuario={usuario.idUsuario} />
             ))}
           </ul>
         )}

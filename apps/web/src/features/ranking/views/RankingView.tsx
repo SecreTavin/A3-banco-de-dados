@@ -67,7 +67,7 @@ export function RankingView() {
         <SpinnerCentral />
       ) : ranking && ranking.length > 0 ? (
         <div className={estilos.corpo}>
-          <Podio primeiros={ranking.slice(0, 3)} meuApelido={usuario?.apelido} />
+          <Podio primeiros={ranking.slice(0, 3)} meuId={usuario?.idUsuario} />
           {resto.length > 0 && (
             <div className={estilos.tabela}>
               <div className={[estilos.linha, estilos.titulos].join(' ')} aria-hidden="true">
@@ -80,10 +80,10 @@ export function RankingView() {
               <ol className={estilos.lista}>
                 {resto.map((linha, indice) => (
                   <LinhaRanking
-                    key={linha.apelido}
+                    key={linha.idUsuario}
                     posicao={indice + 4}
                     linha={linha}
-                    souEu={linha.apelido === usuario?.apelido}
+                    souEu={linha.idUsuario === usuario?.idUsuario}
                   />
                 ))}
               </ol>
