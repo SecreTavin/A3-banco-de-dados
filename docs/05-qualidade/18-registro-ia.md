@@ -37,7 +37,7 @@ cada arquivo.
 
 ## Registros
 
-51 registros, em ordem cronológica.
+52 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -52,7 +52,7 @@ cada arquivo.
 | 2026-09-11 | [Registra distribuição de responsabilidades](registro-ia/2026-09-11-distribuicao-de-responsabilidades.md) | Claude Code (Sonnet 5) | Rafael Alves |
 | 2026-09-11 | [Fortalece contexto e justificativa contra o guia RT01](registro-ia/2026-09-11-fortalece-contexto-e-justificativa.md) | Claude Code (Sonnet 5) | Rafael Alves |
 | 2026-09-11 | [Resposta síntese no formato pedido pelo RT01](registro-ia/2026-09-11-resposta-sintese-rt01.md) | Claude Code (Sonnet 5) | Rafael Alves |
-| 2026-09-12 | [ADR de idade mínima e moderação de desafios por IA](registro-ia/2026-09-12-adr-idade-minima-moderacao-ia.md) | Claude Code (Sonnet 5) | Octávio Arruda |
+| 2026-09-12 | [ADR de idade mínima e moderação de desafios por IA](registro-ia/2026-09-12-adr-idade-minima-moderacao-ia.md) | Claude Code (Sonnet 5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-10-02 | [Atualiza plano de trabalho (E2)](registro-ia/2026-10-02-atualiza-plano-trabalho.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-02 | [Corrige contagem de tabelas nos docs de modelagem e DDL](registro-ia/2026-10-02-corrige-contagem-tabelas.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-02 | [DER com chaves (PK, FK, UK) e júri validando o desafio](registro-ia/2026-10-02-der-com-chaves-e-juri.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
@@ -67,8 +67,8 @@ cada arquivo.
 | 2026-10-02 | [Público-alvo na introdução e no documento 06](registro-ia/2026-10-02-publico-alvo.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-02 | [Renomeia "aposta" para "desafio" (docs, banco, API e front)](registro-ia/2026-10-02-renomeia-aposta-para-desafio.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-06 | [Integra o modelo v3 à main com os nomes de "desafio" (issue #30)](registro-ia/2026-10-06-integra-modelo-v3-desafio.md) | Claude Code | Arthur Marzano |
-| 2026-10-29 | [Fechamento da Entrega 3: seed, consultas, documentos e CI](registro-ia/2026-10-29-fechamento-entrega-3.md) | Claude Code (Opus 5.5) | Octávio Arruda |
-| 2026-10-29 | [Verificação do GitBook e do sistema funcionando](registro-ia/2026-10-29-verificacao-gitbook-e-sistema.md) | Claude Code (Opus 5.5) | Octávio Arruda |
+| 2026-10-29 | [Fechamento da Entrega 3: seed, consultas, documentos e CI](registro-ia/2026-10-29-fechamento-entrega-3.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-10-29 | [Verificação do GitBook e do sistema funcionando](registro-ia/2026-10-29-verificacao-gitbook-e-sistema.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-10-30 | [Correções de responsividade, legibilidade e toque no front](registro-ia/2026-10-30-correcoes-ux-responsividade.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [Redesign desktop: sem rolagem de página, textos maiores, menos margem lateral](registro-ia/2026-10-30-redesign-desktop.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [Troca da imagem do MinIO e subida do compose do zero](registro-ia/2026-10-30-troca-imagem-minio.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
@@ -79,19 +79,20 @@ cada arquivo.
 | 2026-10-30 | [E2E de criar desafio com a IA simulada](registro-ia/2026-10-30-e2e-ia-simulada.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-10-30 | [Regenera o status da Entrega 3](registro-ia/2026-10-30-gera-status-entrega-3.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
 | 2026-11-09 | [Preenche o prompt utilizado nos registros de Rafael](registro-ia/2026-11-09-preenche-prompt-utilizado.md) | Claude Code (Sonnet 5.5) | Rafael Alves |
-| 2026-10-31 | [Preparação da Entrega 4: telas reais, IA com chave real e lacunas do edital](registro-ia/2026-10-31-preparacao-entrega-4.md) | Claude Code (Opus 5.5) | Octávio Arruda |
-| 2026-10-31 | [Redesign de UI/UX: seis propostas, da prancha ao código](registro-ia/2026-10-31-redesign-ux.md) | Claude Code (Opus 5.5) | Octávio Arruda |
-| 2026-10-31 | [Tela inicial: abertura animada com o monge e o nerd](registro-ia/2026-10-31-tela-inicial-abertura.md) | Claude Code (Opus 5.5) | Octávio Arruda |
-| 2026-10-31 | [Jogos online no Brasil em números](registro-ia/2026-10-31-jogos-online-em-numeros.md) | Claude Code (Opus 5.5) | Octávio Arruda |
-| 2026-10-31 | [Publicação na Cloudflare com a API por túnel](registro-ia/2026-10-31-publicacao-cloudflare.md) | Claude Code (Opus 5.5) | Octávio Arruda |
-| 2026-11-01 | [Abertura em 3D estilo PS1, com plateia de colégio](registro-ia/2026-11-01-abertura-3d-ps1.md) | Claude Code (Opus 5.5) | Octávio Arruda |
-| 2026-11-07 | [Conclusão e referências da Banca Final](registro-ia/2026-11-07-conclusao-e-referencias.md) | Claude Code (Opus 5.5) | Octávio Arruda |
-| 2026-11-07 | [ADR 0010 com a hospedagem que existe de fato](registro-ia/2026-11-07-adr-0010-hospedagem-real.md) | Claude Code (Opus 5.5) | Octávio Arruda |
+| 2026-10-31 | [Preparação da Entrega 4: telas reais, IA com chave real e lacunas do edital](registro-ia/2026-10-31-preparacao-entrega-4.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-10-31 | [Redesign de UI/UX: seis propostas, da prancha ao código](registro-ia/2026-10-31-redesign-ux.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-10-31 | [Tela inicial: abertura animada com o monge e o nerd](registro-ia/2026-10-31-tela-inicial-abertura.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-10-31 | [Jogos online no Brasil em números](registro-ia/2026-10-31-jogos-online-em-numeros.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-10-31 | [Publicação na Cloudflare com a API por túnel](registro-ia/2026-10-31-publicacao-cloudflare.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-01 | [Abertura em 3D estilo PS1, com plateia de colégio](registro-ia/2026-11-01-abertura-3d-ps1.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-07 | [Conclusão e referências da Banca Final](registro-ia/2026-11-07-conclusao-e-referencias.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-07 | [ADR 0010 com a hospedagem que existe de fato](registro-ia/2026-11-07-adr-0010-hospedagem-real.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-16 | [Demonstração pública na VM da Oracle](registro-ia/2026-11-16-demo-na-vm-oracle.md) | Claude Code (Opus 5.5) | Rafael Alves |
-| 2026-11-16 | [Revisão do PO da publicação na VM da Oracle](registro-ia/2026-11-16-revisao-demo-na-vm.md) | Claude Code (Opus 5.5) | Octávio Arruda |
-| 2026-11-16 | [Roteiro da demonstração da Banca Final](registro-ia/2026-11-16-roteiro-da-demonstracao.md) | Claude Code (Opus 5.5) | Octávio Arruda |
-| 2026-11-20 | [Banco da demonstração e SQL ao vivo](registro-ia/2026-11-20-banco-da-demo-e-sql-ao-vivo.md) | Claude Code (Opus 5.5) | Octávio Arruda |
-| 2026-11-20 | [Slides na ordem do edital e referência do edital](registro-ia/2026-11-20-slides-do-edital-e-referencias.md) | Claude Code (Opus 5.5) | Octávio Arruda |
+| 2026-11-16 | [Revisão do PO da publicação na VM da Oracle](registro-ia/2026-11-16-revisao-demo-na-vm.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-16 | [Roteiro da demonstração da Banca Final](registro-ia/2026-11-16-roteiro-da-demonstracao.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-20 | [Banco da demonstração e SQL ao vivo](registro-ia/2026-11-20-banco-da-demo-e-sql-ao-vivo.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-20 | [Slides na ordem do edital e referência do edital](registro-ia/2026-11-20-slides-do-edital-e-referencias.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-20 | [Nome completo do PO e card da EXPOUNA](registro-ia/2026-11-20-nome-completo-e-card-expouna.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 
 ## Consolidação final
 

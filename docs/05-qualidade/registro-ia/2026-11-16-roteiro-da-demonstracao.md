@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-11-16 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | `docs/06-encerramento/roteiro-da-demonstracao.md` (novo), `README.md`, índice do encerramento, `SUMMARY.md`, slide de demonstração do deck da banca |
 

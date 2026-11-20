@@ -2,7 +2,7 @@
 
 * **Status:** Substituída por [`0020-demonstracao-publica-na-vm-oracle.md`](0020-demonstracao-publica-na-vm-oracle.md)
 * **Data:** 2026-10-31
-* **Decisores:** Octávio Arruda (Product Owner)
+* **Decisores:** Octávio Augusto Arruda dos Prazeres (Product Owner)
 
 ## Contexto
 

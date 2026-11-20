@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-11-07 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | ADR 0010 (status e quadro "Situação em 07/11/2026"), índice dos ADRs, ADR 0019 (atualização), `tecnologias.md` (linhas de hospedagem e CI), documento 19 (limitação de hospedagem) |
 

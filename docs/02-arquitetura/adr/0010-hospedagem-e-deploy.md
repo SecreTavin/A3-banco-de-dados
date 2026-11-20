@@ -2,7 +2,7 @@
 
 * **Status:** Substituída por `0019-demonstracao-publica-cloudflare-tunel.md` (hospedagem, em 07/11/2026)
 * **Data:** 2026-09-03
-* **Decisores:** Octávio Arruda, Rafael Alves, Arthur Marzano
+* **Decisores:** Octávio Augusto Arruda dos Prazeres, Rafael Alves, Arthur Marzano
 
 ## Situação em 07/11/2026 (atualizada em 16/11/2026)
 

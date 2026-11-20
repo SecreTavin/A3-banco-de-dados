@@ -6,7 +6,7 @@ Os TODOs levantados no refinamento **foram resolvidos** pelas decisões de arqui
 
 Cada tela tem também a seção **"Como ficou implementada"**, com a captura do sistema rodando e o que ficou diferente do especificado. As capturas são geradas por [`scripts/telas/capturar-telas.mjs`](../../scripts/telas/capturar-telas.mjs) a partir do seed da demonstração, então podem ser refeitas a qualquer momento.
 
-O redesign de 31/10/2026 — seis propostas aprovadas pelo PO, implementadas e testadas — está em [Redesign de UI/UX](propostas/README.md). A abertura animada, pedida depois da apresentação, está em [Tela inicial](propostas/tela-inicial/README.md).
+O redesign de 31/10/2026 — seis propostas aprovadas pelo PO, implementadas e testadas — está em [Redesign de UI/UX](propostas/README.md). A abertura animada, pedida depois da apresentação, está em [Tela inicial](propostas/tela-inicial/README.md). O card da Vitrine Virtual da EXPOUNA 2026 está em [Card da EXPOUNA](card-expouna/README.md).
 
 ## Telas
 

@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-10-29 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | `SUMMARY.md`, `docs/05-qualidade/18-registro-ia.md`, `docs/05-qualidade/17-testes.md`, `scripts/testes/roteiro-e2e.py` |
 

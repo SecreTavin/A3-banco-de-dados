@@ -2,7 +2,7 @@
 
 * **Status:** Aceita — implementação pendente (hoje a evidência entra por URL; ver [19 - Limitações](../../06-encerramento/19-limitacoes-e-melhorias.md))
 * **Data:** 2026-09-03
-* **Decisores:** Octávio Arruda, Rafael Alves, Arthur Marzano
+* **Decisores:** Octávio Augusto Arruda dos Prazeres, Rafael Alves, Arthur Marzano
 
 ## Contexto
 
