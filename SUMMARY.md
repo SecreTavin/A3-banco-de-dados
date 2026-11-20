@@ -120,6 +120,7 @@
     * [2026-11-07 - ADR 0010 com a hospedagem que existe de fato](docs/05-qualidade/registro-ia/2026-11-07-adr-0010-hospedagem-real.md)
     * [2026-11-16 - Demonstração pública na VM da Oracle](docs/05-qualidade/registro-ia/2026-11-16-demo-na-vm-oracle.md)
     * [2026-11-16 - Revisão do PO da publicação na VM da Oracle](docs/05-qualidade/registro-ia/2026-11-16-revisao-demo-na-vm.md)
+    * [2026-11-16 - Roteiro da demonstração da Banca Final](docs/05-qualidade/registro-ia/2026-11-16-roteiro-da-demonstracao.md)
 
 ## Produto
 
@@ -142,3 +143,4 @@
   * [19 - Limitações e Melhorias Futuras](docs/06-encerramento/19-limitacoes-e-melhorias.md)
   * [20 - Conclusão](docs/06-encerramento/20-conclusao.md)
   * [21 - Referências](docs/06-encerramento/21-referencias.md)
+  * [Roteiro da demonstração](docs/06-encerramento/roteiro-da-demonstracao.md)
