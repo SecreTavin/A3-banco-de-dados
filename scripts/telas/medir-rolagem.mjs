@@ -90,8 +90,6 @@ const problemas = []
 
 async function irPara(pagina, url) {
   await pagina.goto(url)
-  const abertura = pagina.locator('main[aria-label^="Eu Duvido!"]')
-  if (await abertura.count()) await pagina.keyboard.press('Enter')
   await pagina.waitForLoadState('networkidle')
   await pagina.waitForTimeout(350)
 }
@@ -142,10 +140,6 @@ for (const tam of TAMANHOS) {
     }
 
     await pagina.goto(`${WEB}/login`)
-    await pagina.waitForLoadState('networkidle')
-    await pagina.waitForTimeout(600)
-    if (tema === 'claro') await capturar('00-abertura')
-    await pagina.keyboard.press('Enter')
     await pagina.waitForLoadState('networkidle')
     await pagina.waitForTimeout(350)
     await capturar('01-login')

@@ -131,6 +131,7 @@
     * [2026-11-20 - Nome completo do PO e card da EXPOUNA](docs/05-qualidade/registro-ia/2026-11-20-nome-completo-e-card-expouna.md)
     * [2026-11-20 - Login com Google](docs/05-qualidade/registro-ia/2026-11-20-login-com-google.md)
     * [2026-11-20 - Login com Google no visual do redesign](docs/05-qualidade/registro-ia/2026-11-20-login-google-no-redesign.md)
+    * [2026-11-20 - Abertura animada removida do app](docs/05-qualidade/registro-ia/2026-11-20-remove-abertura.md)
 
 ## Produto
 
