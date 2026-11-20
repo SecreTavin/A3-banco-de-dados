@@ -21,7 +21,7 @@ Registro das decisões de arquitetura do Eu Duvido!. Uma decisão por arquivo, e
 | [0006](0006-cp-como-moeda.md) | CP como moeda única do sistema | Aceita | 2026-09-03 |
 | [0007](0007-ledger-append-only.md) | Ledger append-only com saldo materializado | Aceita | 2026-09-03 |
 | [0008](0008-quorum-congelado.md) | Conjunto de validadores congelado por evidência | Aceita | 2026-09-03 |
-| [0009](0009-armazenamento-de-midia-r2.md) | Mídia em Cloudflare R2 com upload por URL assinada | Aceita | 2026-09-03 |
+| [0009](0009-armazenamento-de-midia-r2.md) | Mídia em Cloudflare R2 com upload por URL assinada | Substituída pela 0022 | 2026-09-03 |
 | [0010](0010-hospedagem-e-deploy.md) | Hospedagem gerenciada e deploy contínuo | Substituída por 0019 | 2026-09-03 |
 | [0011](0011-notificacoes-web-push.md) | Notificações persistidas com Web Push e tempo real via SignalR | Substituída por 0016 | 2026-09-03 |
 | [0012](0012-contrato-openapi.md) | Contrato entre API e frontend gerado a partir do OpenAPI | Aceita | 2026-09-03 |
@@ -34,6 +34,7 @@ Registro das decisões de arquitetura do Eu Duvido!. Uma decisão por arquivo, e
 | [0019](0019-demonstracao-publica-cloudflare-tunel.md) | Demonstração pública pela Cloudflare, com a API por túnel | Substituída por 0020 | 2026-10-31 |
 | [0020](0020-demonstracao-publica-na-vm-oracle.md) | Demonstração pública numa VM da Oracle Cloud | Aceita | 2026-11-16 |
 | [0021](0021-login-exclusivo-google.md) | Login exclusivo com Google e fim do login de desenvolvimento | Aceita | 2026-11-07 |
+| [0022](0022-foto-da-prova-no-minio-pela-api.md) | Foto da prova no MinIO, enviada e lida pela API | Aceita | 2026-11-20 |
 
 ## Status possíveis
 

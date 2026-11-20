@@ -24,7 +24,7 @@ flowchart TB
 
     subgraph Dados
         PG[("PostgreSQL<br/>schema único<br/>procedures + triggers")]
-        R2[("Cloudflare R2<br/>fotos e vídeos")]
+        R2[("MinIO<br/>fotos da prova")]
     end
 
     GOOGLE["Google OAuth"]
@@ -32,7 +32,7 @@ flowchart TB
 
     WEB -->|"REST (cliente gerado do OpenAPI)"| REST
     WEB <-->|"WebSocket"| HUB
-    WEB -.->|"upload direto via URL assinada (previsto)"| R2
+    WEB -->|"foto da prova (POST /api/midia)"| REST
     WEB --> GOOGLE
     SW -.->|"Web Push"| WEB
 
@@ -41,7 +41,7 @@ flowchart TB
     BG --> MOD
     MOD -->|"EF Core (Commands)"| PG
     MOD -->|"Dapper (Queries)"| PG
-    MOD -->|"URL assinada"| R2
+    MOD -->|"grava e lê a foto"| R2
     BG -.->|"Web Push"| SW
     API --> GRAFANA
     PG --> GRAFANA
@@ -51,11 +51,11 @@ flowchart TB
 
 | Camada | Responsabilidade | O que **não** faz |
 | --- | --- | --- |
-| React | Renderizar, capturar entrada, enviar arquivo ao R2 | Nenhuma regra de negócio |
+| React | Renderizar, capturar entrada, reduzir e enviar a foto à API | Nenhuma regra de negócio |
 | Minimal API | Autenticar, validar entrada, orquestrar o caso de uso | Não decide resultado de desafio |
 | Domínio (C#) | Invariantes de agregado, máquina de estados, `Result` | Não acessa banco diretamente |
 | **PostgreSQL** | **Integridade referencial, apuração de quórum, liquidação de CP** | — |
-| R2 | Guardar bytes | Não sabe nada do domínio |
+| MinIO | Guardar bytes da foto | Não sabe nada do domínio |
 
 A linha em negrito é deliberada. A decisão estrutural mais importante do projeto
 é que **a apuração de votos e a liquidação de CP acontecem dentro do banco, em
@@ -90,18 +90,18 @@ sequenceDiagram
     participant V as Validadores
     participant API
     participant PG as PostgreSQL
-    participant R2
+    participant R2 as MinIO
 
     Note over API,PG: Criação
     API->>PG: cria desafio (status ABERTA, valor_cp)
     API->>PG: debitar_escrow por participante que aceita
     Note over PG: CP sai da carteira → conta do desafio
 
-    Note over D,R2: Cumprimento (o envio do arquivo ao R2 é previsto, mas hoje o desafiado informa a URL do comprovante)
-    D->>API: solicita URL assinada
-    API-->>D: presigned URL
-    D->>R2: envia arquivo
-    D->>API: confirma upload
+    Note over D,R2: Cumprimento (ADR 0022)
+    D->>API: envia a foto (POST /api/midia)
+    API->>R2: grava o arquivo
+    API-->>D: 201 com a URL da foto
+    D->>API: envia a evidência com essa URL
     API->>PG: cria evidencia + congela o júri (jurado_evidencia)
     Note over PG: status do desafio → EM_VOTACAO
 
@@ -133,7 +133,7 @@ sequenceDiagram
 | CP como moeda única | [0006](adr/0006-cp-como-moeda.md) |
 | Ledger append-only com escrow | [0007](adr/0007-ledger-append-only.md) |
 | Validadores congelados por evidência | [0008](adr/0008-quorum-congelado.md) |
-| Mídia no R2 com URL assinada | [0009](adr/0009-armazenamento-de-midia-r2.md) |
+| Foto da prova no MinIO, pela API (substitui o R2 com URL assinada) | [0022](adr/0022-foto-da-prova-no-minio-pela-api.md) |
 | Hospedagem e deploy | [0010](adr/0010-hospedagem-e-deploy.md) |
 | ~~Notificações e tempo real~~ (substituído) | ~~[0011](adr/0011-notificacoes-web-push.md)~~ → [0016](adr/0016-schema-unico-e-modelo-enxuto.md) |
 | Idade mínima e moderação por IA | [0015](adr/0015-idade-minima-e-moderacao-ia.md) |

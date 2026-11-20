@@ -25,6 +25,7 @@ import { useAceitarDesafioCommand } from '../hooks/useAceitarDesafioCommand'
 import { useCancelarDesafioCommand } from '../hooks/useCancelarDesafioCommand'
 import { useDesafioQuery } from '../hooks/useDesafioQuery'
 import { useEnviarEvidenciaCommand } from '../hooks/useEnviarEvidenciaCommand'
+import { EnvioDeFoto } from '../components/EnvioDeFoto'
 import estilos from '../detalhe.module.css'
 
 const MIDIAS: TipoMidia[] = ['FOTO', 'VIDEO', 'LINK', 'TEXTO']
@@ -62,6 +63,9 @@ export function DetalheDesafioView() {
   const [cancelando, setCancelando] = useState(false)
   const [tipoMidia, setTipoMidia] = useState<TipoMidia>('FOTO')
   const [urlComprovante, setUrlComprovante] = useState('')
+  // Foto sobe direto do aparelho; o link fica como alternativa (ADR 0022).
+  const [fotoPorLink, setFotoPorLink] = useState(false)
+  const enviandoArquivo = tipoMidia === 'FOTO' && !fotoPorLink
   const [notaEvidencia, setNotaEvidencia] = useState('')
 
   if (carregando) return <SpinnerCentral />
@@ -124,6 +128,7 @@ export function DetalheDesafioView() {
 
     setUrlComprovante('')
     setNotaEvidencia('')
+    setFotoPorLink(false)
     recarregar()
   }
 
@@ -267,24 +272,43 @@ export function DetalheDesafioView() {
                     role="radio"
                     aria-checked={tipoMidia === midia}
                     className={[estilos.opcao, tipoMidia === midia && estilos.opcaoAtiva].filter(Boolean).join(' ')}
-                    onClick={() => setTipoMidia(midia)}
+                    onClick={() => {
+                      setTipoMidia(midia)
+                      setUrlComprovante('')
+                    }}
                   >
                     {rotuloMidia[midia]}
                   </button>
                 ))}
               </div>
-              <Campo
-                rotulo={tipoMidia === 'TEXTO' ? 'Relato' : 'Link do comprovante'}
-                dica="O júri é definido no envio: quem entrar no grupo depois não vota."
-              >
-                <input
-                  value={urlComprovante}
-                  onChange={(e) => setUrlComprovante(e.target.value)}
-                  maxLength={500}
-                  placeholder={tipoMidia === 'TEXTO' ? 'Conte como foi' : 'https://'}
-                  required
-                />
-              </Campo>
+              {enviandoArquivo ? (
+                <>
+                  <EnvioDeFoto key={ultima?.idEvidencia ?? 0} aoMudar={setUrlComprovante} />
+                  <button
+                    type="button"
+                    className={estilos.alternarLink}
+                    onClick={() => {
+                      setFotoPorLink(true)
+                      setUrlComprovante('')
+                    }}
+                  >
+                    Prefiro colar um link
+                  </button>
+                </>
+              ) : (
+                <Campo
+                  rotulo={tipoMidia === 'TEXTO' ? 'Relato' : 'Link do comprovante'}
+                  dica="O júri é definido no envio: quem entrar no grupo depois não vota."
+                >
+                  <input
+                    value={urlComprovante}
+                    onChange={(e) => setUrlComprovante(e.target.value)}
+                    maxLength={500}
+                    placeholder={tipoMidia === 'TEXTO' ? 'Conte como foi' : 'https://'}
+                    required
+                  />
+                </Campo>
+              )}
               <Campo rotulo="Comentário">
                 <input
                   value={notaEvidencia}
@@ -294,7 +318,11 @@ export function DetalheDesafioView() {
                 />
               </Campo>
               {enviarEvidencia.erro && <Alerta>{enviarEvidencia.erro}</Alerta>}
-              <Botao type="submit" carregando={enviarEvidencia.enviando}>
+              <Botao
+                type="submit"
+                carregando={enviarEvidencia.enviando}
+                disabled={enviandoArquivo && !urlComprovante}
+              >
                 Mandar para o júri
               </Botao>
             </form>

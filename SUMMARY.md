@@ -61,6 +61,7 @@
     * [0019 - Demonstração pública pela Cloudflare](docs/02-arquitetura/adr/0019-demonstracao-publica-cloudflare-tunel.md)
     * [0020 - Demonstração pública na VM da Oracle](docs/02-arquitetura/adr/0020-demonstracao-publica-na-vm-oracle.md)
     * [0021 - Login exclusivo com Google](docs/02-arquitetura/adr/0021-login-exclusivo-google.md)
+    * [0022 - Foto da prova no MinIO, pela API](docs/02-arquitetura/adr/0022-foto-da-prova-no-minio-pela-api.md)
 * [03 - Banco de Dados](docs/03-banco-de-dados/README.md)
   * [Modelagem](docs/03-banco-de-dados/modelagem/README.md)
     * [09 - Evolução da Modelagem](docs/03-banco-de-dados/modelagem/09-evolucao-modelagem.md)
@@ -131,6 +132,7 @@
     * [2026-11-20 - Nome completo do PO e card da EXPOUNA](docs/05-qualidade/registro-ia/2026-11-20-nome-completo-e-card-expouna.md)
     * [2026-11-20 - Login com Google](docs/05-qualidade/registro-ia/2026-11-20-login-com-google.md)
     * [2026-11-20 - Login com Google no visual do redesign](docs/05-qualidade/registro-ia/2026-11-20-login-google-no-redesign.md)
+    * [2026-11-20 - Ajustes pedidos na revisão do professor (31/10)](docs/05-qualidade/registro-ia/2026-11-20-ajustes-revisao-do-professor.md)
 
 ## Produto
 

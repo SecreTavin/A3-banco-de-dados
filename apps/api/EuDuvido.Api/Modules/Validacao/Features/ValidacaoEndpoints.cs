@@ -1,8 +1,10 @@
 using Dapper;
 using EuDuvido.Api.Modules.Validacao.Features.EnviarEvidencia;
+using EuDuvido.Api.Modules.Validacao.Features.EnviarFoto;
 using EuDuvido.Api.Modules.Validacao.Features.RegistrarVoto;
 using EuDuvido.Api.Shared.Database;
 using EuDuvido.Api.Shared.Auth;
+using EuDuvido.Api.Shared.Midia;
 using EuDuvido.Api.Shared.Results;
 using FluentValidation;
 
@@ -85,7 +87,47 @@ public static class ValidacaoEndpoints
         .RequireAuthorization()
         .WithTags("Validacao")
         .WithSummary("Envia evidencia e congela o juri.");
+
+        // Foto da prova (ADR 0022): sobe antes da evidencia, que so guarda a URL.
+        // A linha em evidencia continua nascendo depois do arquivo (RN22).
+        var midia = app.MapGroup("/api/midia").RequireAuthorization().WithTags("Validacao");
+
+        midia.MapPost("/", async (IFormFile? arquivo, IArmazenamentoMidia armazenamento, CancellationToken ct) =>
+        {
+            if (arquivo is null || arquivo.Length == 0)
+                return Erro("Escolha uma foto.");
+            if (arquivo.Length > FotoDaProva.LimiteBytes)
+                return Erro($"A foto passa de {FotoDaProva.LimiteBytes / 1024 / 1024} MB.");
+
+            await using var conteudo = arquivo.OpenReadStream();
+            var inicio = new byte[12];
+            var lidos = await conteudo.ReadAtLeastAsync(inicio, inicio.Length, throwOnEndOfStream: false, ct);
+            if (FotoDaProva.Identificar(inicio.AsSpan(0, lidos)) is not var (extensao, tipo))
+                return Erro("A foto precisa ser JPG, PNG ou WebP.");
+
+            conteudo.Position = 0;
+            var nome = FotoDaProva.NovoNome(extensao);
+            await armazenamento.SalvarAsync(nome, conteudo, arquivo.Length, tipo, ct);
+            return Results.Created($"/api/midia/{nome}", new { url = $"/api/midia/{nome}" });
+        })
+        .DisableAntiforgery()
+        .WithSummary("Recebe a foto da prova e devolve a URL para a evidencia.");
+
+        midia.MapGet("/{nome}", async (string nome, IArmazenamentoMidia armazenamento, HttpContext http, CancellationToken ct) =>
+        {
+            if (!FotoDaProva.NomeValido(nome)) return Results.NotFound();
+            var arquivo = await armazenamento.LerAsync(nome, ct);
+            if (arquivo is null) return Results.NotFound();
+
+            // O nome nunca muda de conteudo; so quem esta logado le (ADR 0022).
+            http.Response.Headers.CacheControl = "private, max-age=31536000, immutable";
+            return Results.File(arquivo.Conteudo, arquivo.Tipo);
+        })
+        .WithSummary("Foto da prova, para quem esta logado.");
     }
+
+    private static IResult Erro(string mensagem) =>
+        Results.ValidationProblem(new Dictionary<string, string[]> { ["arquivo"] = [mensagem] });
 }
 
 public record EnviarEvidenciaRequest(string TipoMidia, string UrlComprovante, string? Comentario);

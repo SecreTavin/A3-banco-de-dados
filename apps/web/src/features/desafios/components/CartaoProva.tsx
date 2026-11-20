@@ -3,6 +3,8 @@ import { Avatar, Badge, Icone } from '../../../shared/ui'
 import { descreverPrazo, formatarDataHora } from '../../../shared/ui/formato'
 import { aparenciaStatusEvidencia, rotuloMidia } from '../../../shared/ui/status'
 import type { Evidencia } from '../../../shared/api/tipos'
+import { rotaDeMidia } from '../../../shared/api/client'
+import { useFotoDaProvaQuery } from '../hooks/useFotoDaProvaQuery'
 import estilos from '../detalhe.module.css'
 
 interface Props {
@@ -13,27 +15,32 @@ interface Props {
 
 /** O comprovante na própria tela. Se a imagem não carregar, cai no link. */
 export function MidiaProva({ evidencia }: { evidencia: Pick<Evidencia, 'tipoMidia' | 'urlComprovante'> }) {
-  const [falhou, setFalhou] = useState(false)
+  const [quebrou, setQuebrou] = useState(false)
+  const foto = useFotoDaProvaQuery(evidencia.urlComprovante)
+  const falhou = quebrou || foto.falhou
 
   if (evidencia.tipoMidia === 'TEXTO') {
     return <p className={estilos.relato}>{evidencia.urlComprovante}</p>
   }
 
-  if (evidencia.tipoMidia === 'FOTO' && !falhou) {
+  if (evidencia.tipoMidia === 'FOTO' && foto.carregando) {
+    return <div className={[estilos.foto, estilos.fotoCarregando].join(' ')} aria-busy="true" aria-label="Carregando a foto" />
+  }
+
+  if (evidencia.tipoMidia === 'FOTO' && !falhou && foto.src) {
     return (
-      <a
-        className={estilos.foto}
-        href={evidencia.urlComprovante}
-        target="_blank"
-        rel="noreferrer"
-        title="Abrir em tamanho real"
-      >
-        <img src={evidencia.urlComprovante} alt="Comprovante enviado" onError={() => setFalhou(true)} />
+      <a className={estilos.foto} href={foto.src} target="_blank" rel="noreferrer" title="Abrir em tamanho real">
+        <img src={foto.src} alt="Comprovante enviado" onError={() => setQuebrou(true)} />
         <span className={estilos.ampliar}>
           <Icone nome="ampliar" tamanho={16} />
         </span>
       </a>
     )
+  }
+
+  // Foto guardada pela API só abre com o token: o link puro daria 401.
+  if (rotaDeMidia(evidencia.urlComprovante)) {
+    return <p className={estilos.relato}>Não foi possível carregar a foto. Recarregue a página.</p>
   }
 
   return (

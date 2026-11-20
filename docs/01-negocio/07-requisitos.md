@@ -22,10 +22,10 @@
 ### Validação
 
 * **RF06:** Submissão de fotos, vídeos, links ou texto como evidência de
-  cumprimento, com upload direto para o storage de objetos.
-  **Estado:** implementada para link e texto; foto e vídeo entram como link
-  externo (`url_comprovante`). O upload direto de arquivo para o storage
-  **não foi implementado** — ver [19 - Limitações](../06-encerramento/19-limitacoes-e-melhorias.md).
+  cumprimento, com a foto enviada do próprio aparelho para o storage de objetos.
+  **Estado:** a foto sobe pela API para o MinIO desde 20/11/2026
+  ([ADR 0022](../02-arquitetura/adr/0022-foto-da-prova-no-minio-pela-api.md));
+  vídeo, link e texto entram como antes, pelo `url_comprovante`.
 * **RF07:** Votação de validação pelos membros do grupo, com justificativa.
 * **RF13:** Apuração automática do resultado quando o quórum é atingido,
   encerrando o desafio e liquidando o CP na mesma transação.

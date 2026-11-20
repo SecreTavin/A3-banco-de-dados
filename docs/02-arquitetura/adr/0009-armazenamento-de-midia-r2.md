@@ -1,6 +1,6 @@
 # 0009 - Midia em Cloudflare R2 com upload por URL assinada
 
-* **Status:** Aceita — implementação pendente (hoje a evidência entra por URL; ver [19 - Limitações](../../06-encerramento/19-limitacoes-e-melhorias.md))
+* **Status:** Substituída pelo [ADR 0022](0022-foto-da-prova-no-minio-pela-api.md) em 2026-11-20 (nunca implementada: a evidência entrava por URL)
 * **Data:** 2026-09-03
 * **Decisores:** Octávio Augusto Arruda dos Prazeres, Rafael Alves, Arthur Marzano
 

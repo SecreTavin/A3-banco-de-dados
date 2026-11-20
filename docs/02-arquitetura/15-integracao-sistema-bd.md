@@ -35,14 +35,13 @@ O caso mais completo do sistema, ponta a ponta.
 sequenceDiagram
     autonumber
     participant APP as Aplicação
-    participant R2 as Cloudflare R2
+    participant R2 as MinIO
     participant PG as PostgreSQL
 
     APP->>APP: valida que quem envia é o DESAFIADO
-    Note over APP,R2: Previsto (ADR 0009). Hoje a aplicação recebe a URL do comprovante e pula os passos do R2
-    APP->>R2: gera URL assinada
-    Note over APP,R2: cliente envia o arquivo direto ao R2
-    R2-->>APP: upload confirmado
+    Note over APP,R2: Foto da prova (ADR 0022); vídeo e link pulam estes passos
+    APP->>R2: grava a foto recebida em POST /api/midia
+    R2-->>APP: arquivo confirmado (201 com a URL)
 
     rect rgb(240, 240, 240)
         Note over APP,PG: TRANSAÇÃO
@@ -56,14 +55,14 @@ sequenceDiagram
 ```
 
 O passo 4 é o que a maioria dos sistemas erra: a linha em `evidencia` só é criada
-**depois** que o R2 confirma o upload. Criar antes deixaria `url_comprovante`
+**depois** que o MinIO confirma o arquivo. Criar antes deixaria `url_comprovante`
 apontando para um arquivo que não existe, e o júri votaria numa prova fantasma
-([ADR 0009](adr/0009-armazenamento-de-midia-r2.md)).
+([ADR 0022](adr/0022-foto-da-prova-no-minio-pela-api.md)).
 
-> **Estado atual (30/10/2026).** O upload direto ao R2 não foi implementado. A
-> transação abaixo é a que roda hoje, mas com a URL do comprovante vinda do
-> desafiado, sem o passo de confirmação do storage. Ver
-> [19 - Limitações](../06-encerramento/19-limitacoes-e-melhorias.md).
+> **Estado atual (20/11/2026).** A foto sobe pela API para o MinIO
+> ([ADR 0022](adr/0022-foto-da-prova-no-minio-pela-api.md)), e a tela só manda a
+> evidência depois do `201`. Vídeo e link continuam com a URL informada pelo
+> desafiado.
 
 ## Fluxo transacional: encerramento após apuração
 

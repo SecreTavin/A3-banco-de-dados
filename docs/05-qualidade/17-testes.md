@@ -175,6 +175,7 @@ rodada. Para repetir, volte ao seed (`docker compose down -v` e `up`, ou
 | U12 | Celular 390x844: login, desafios e detalhe do grupo | Nenhum overflow horizontal | Aprovado |
 | U13 | Abrir `/` sem sessão, apertar uma tecla; entrar, abrir `/` e clicar; abrir com "reduzir movimento" | A abertura anima; a tecla leva a `/login`; logado, o clique leva a `/desafios`; com menos movimento a cena fica parada | Aprovado |
 | U14 | Abrir a tela de login | Só o botão do Google (ou o aviso de "não configurado"); nenhum usuário do seed listado; `/api/auth/dev/usuarios` responde 404 | Aprovado |
+| U15 | Como Lipe, escolher **Foto** no desafio do dinossauro, enviar um PNG pelo seletor de arquivo e mandar ao júri; depois, como Tavin, abrir a Votação | "Mandar para o júri" só libera depois da foto; `url_comprovante` aponta para `/api/midia/<guid>`; a URL sem login responde 401; o júri vê a imagem carregada ([ADR 0022](../02-arquitetura/adr/0022-foto-da-prova-no-minio-pela-api.md)) | Aprovado |
 
 Executado em 30/10/2026 num banco recém-semeado: **12 de 12 aprovados**, uma vez
 com o navegador visível e outra sem janela.
@@ -216,6 +217,23 @@ O popup do Google não se automatiza. Os roteiros criam a sessão assinando o JW
 com a chave do ambiente de teste
 ([`scripts/testes/sessao.mjs`](../../scripts/testes/sessao.mjs)), e o popup real
 é testado à mão, com uma conta Google, antes do merge.
+
+Reexecutado em 20/11/2026 com a foto da prova pelo MinIO
+([ADR 0022](../02-arquitetura/adr/0022-foto-da-prova-no-minio-pela-api.md)) e o
+botão **A+** de fonte maior, num banco recém-criado e com a API sem chave da IA:
+
+* API de ponta a ponta: **18 de 18**;
+* tela: **14 de 15**, com o U15 novo aprovado. O U11 reprovou pela rolagem da
+  área de conteúdo em `/desafios/nova` (146 px), `/grupos/:id` (68 px) e
+  `/perfil` (2 px) em 1440x900. A falha vem do redesign mobile-first, é a mesma
+  da branch do login e fica para decisão do time;
+* IA simulada: **14 de 14**;
+* testes da API (`dotnet test`): **170 de 170**, com 8 novos para a foto (tipo
+  pelos primeiros bytes e nome sem caminho).
+
+O envio também foi conferido direto na API: sem login responde 401; texto com
+nome `.png` responde 400; arquivo de 9 MB responde 400; nome com `../` responde
+404; e a foto lida de volta tem os mesmos bytes enviados.
 
 O que a tela **não** cobre, e onde cada coisa é testada:
 

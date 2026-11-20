@@ -15,6 +15,7 @@ using EuDuvido.Api.Modules.Validacao.Infrastructure;
 using EuDuvido.Api.Shared.Auth;
 using EuDuvido.Api.Shared.Database;
 using EuDuvido.Api.Shared.Ia;
+using EuDuvido.Api.Shared.Midia;
 using EuDuvido.Api.Shared.Realtime;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,6 +43,10 @@ builder.Services.AddSingleton<IConexaoLeitura>(new ConexaoLeitura(conexao));
 builder.Services.AddScoped<IApuracao, Apuracao>();
 builder.Services.AddScoped<RegistrarVotoHandler>();
 builder.Services.AddScoped<EnviarEvidenciaHandler>();
+
+var storage = builder.Configuration.GetSection(StorageOptions.Secao).Get<StorageOptions>() ?? new StorageOptions();
+builder.Services.AddSingleton(storage);
+builder.Services.AddSingleton<IArmazenamentoMidia, ArmazenamentoMinio>();
 builder.Services.AddScoped<CriarDesafioHandler>();
 builder.Services.AddHostedService<PrazosWorker>();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
