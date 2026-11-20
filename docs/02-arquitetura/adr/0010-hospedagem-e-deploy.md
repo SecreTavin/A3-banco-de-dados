@@ -1,8 +1,34 @@
 # 0010 - Hospedagem gerenciada e deploy continuo
 
-* **Status:** Aceita
+* **Status:** Substituída por `0019-demonstracao-publica-cloudflare-tunel.md` (hospedagem, em 07/11/2026)
 * **Data:** 2026-09-03
 * **Decisores:** Octávio Arruda, Rafael Alves, Arthur Marzano
+
+## Situação em 07/11/2026 (atualizada em 16/11/2026)
+
+O texto abaixo é a decisão de 03/09 e fica como foi escrito. A hospedagem
+gerenciada nunca saiu do papel: nenhuma conta na Vercel, na Render ou no Aiven
+foi criada. O sistema roda no Docker
+([16 - Execução Local](../16-execucao-local.md)). A publicação na internet foi
+primeiro a do [0019](0019-demonstracao-publica-cloudflare-tunel.md), no Mac do
+PO, e desde 16/11 é a do [0020](0020-demonstracao-publica-na-vm-oracle.md), numa
+VM da Oracle.
+
+| O que este ADR previa | O que existe de fato |
+| --- | --- |
+| Frontend na Vercel, com preview por PR | Container `web` (nginx) numa VM da Oracle, em `euduvido.falveshub.com`, atrás de um túnel nomeado da Cloudflare ([0020](0020-demonstracao-publica-na-vm-oracle.md)). Sem preview por PR |
+| API na Render | API em Docker na mesma VM; o nginx repassa `/api` e `/hubs` ([0020](0020-demonstracao-publica-na-vm-oracle.md)) |
+| PostgreSQL no Aiven, com backup gerenciado | PostgreSQL 16 em Docker, recriado do seed (`docker compose down -v`). **Não há backup**: o banco da demonstração se refaz do zero a partir do `seed.sql` |
+| Mídia no Cloudflare R2 | MinIO em Docker, com o bucket de evidências criado. A API grava só a URL da evidência; o upload direto não foi implementado ([19](../../06-encerramento/19-limitacoes-e-melhorias.md)) |
+| Merge na `main` dispara o deploy | O merge não publica nada. A VM é atualizada à mão (`git pull && docker compose up -d --build`) |
+| Migrations aplicadas sozinhas | **Vale:** a API roda `MigrateAsync()` ao subir |
+| CI aplica o `schema.sql` num PostgreSQL limpo | **Vale:** o CI aplica o schema, o seed e as consultas e confere as views de contabilidade |
+| Revisão obrigatória por outro desenvolvedor | **Não está imposta:** a `main` não tem proteção de branch, e a revisão depende do combinado do time |
+| `Maximum Pool Size=15` | **Vale:** está na connection string do `docker-compose.yml` |
+
+O risco que motivou este ADR, perder o banco na véspera da banca, continua
+coberto, mas de outro jeito: em vez de backup gerenciado, o banco se reconstrói a
+partir do `schema.sql` e do `seed.sql` versionados.
 
 ## Contexto
 
