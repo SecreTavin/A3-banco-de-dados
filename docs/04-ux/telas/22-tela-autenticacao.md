@@ -24,7 +24,7 @@ Cadastro e login de usuários via Google (RF01).
 * `POST /api/auth/google`: valida o ID token. Quem já tem conta recebe a sessão. Quem não tem recebe um token de cadastro de 15 minutos, com audiência própria, que não abre nenhum outro endpoint.
 * `POST /api/auth/cadastro`: completa o cadastro com esse token, o apelido e a data de nascimento.
 
-Antes desta tela vem a abertura animada ([30 - Abertura](30-tela-abertura.md)), em toda carga da página.
+É a primeira tela do app: a abertura animada ([30 - Abertura](30-tela-abertura.md)) foi removida em 20/11/2026.
 
 *Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 

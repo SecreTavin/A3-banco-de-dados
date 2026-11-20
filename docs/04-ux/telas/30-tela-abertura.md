@@ -1,5 +1,7 @@
 # 30 - Tela: Abertura
 
+> **Removida do app em 20/11/2026.** A animação saiu da versão final: o app abre direto no login. O código continua no histórico do Git (último commit com a abertura: `0ffd3e9`).
+
 ## Objetivo
 Apresentar o app com uma animação curta, com o nome "Eu Duvido!" em destaque,
 antes da tela de contas (RF17). Desenho, rodadas de aprovação e verificação em

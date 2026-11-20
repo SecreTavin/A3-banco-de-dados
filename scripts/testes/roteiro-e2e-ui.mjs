@@ -94,16 +94,8 @@ async function cenario(id, descricao, fn) {
 const campo = (rotulo) =>
   pagina.locator('label').filter({ has: pagina.getByText(rotulo, { exact: true }) })
 
-// Toda carga de pagina passa pela abertura (tela inicial animada); qualquer
-// tecla segue para a tela pedida.
 async function irPara(url) {
   await pagina.goto(url)
-  await passarAbertura()
-}
-
-async function passarAbertura() {
-  await pagina.locator('main[aria-label^="Eu Duvido!"]').waitFor()
-  await pagina.keyboard.press('Enter')
 }
 
 async function esperarRede() {
@@ -467,7 +459,6 @@ async function rodar() {
     const trocado = await tema()
     confere(trocado && trocado !== inicial, `tema nao mudou (${inicial} -> ${trocado})`)
     await pagina.reload()
-    await passarAbertura()
     await esperarRede()
     confere((await tema()) === trocado, 'tema nao persistiu apos recarregar')
     await pagina.locator('button[aria-label^="Mudar para o tema"]').click()
@@ -516,45 +507,21 @@ async function rodar() {
     }
   })
 
-  await cenario('U13', 'Abertura: anima, segue com tecla ou toque, logado ou nao', async () => {
-    const abertura = pagina.locator('main[aria-label^="Eu Duvido!"]')
-    const cena = pagina.locator('main svg > g')
-
+  await cenario('U13', 'Sem abertura: / leva direto ao login, ou ao app se logado', async () => {
     await pagina.goto(`${WEB}/`)
     await pagina.evaluate(() => {
       localStorage.removeItem('euduvido.token')
       localStorage.removeItem('euduvido.usuario')
     })
     await pagina.goto(`${WEB}/`)
-    await abertura.waitFor()
-    const antes = await cena.innerHTML()
-    await pagina.waitForTimeout(400)
-    confere(antes.length > 0 && (await cena.innerHTML()) !== antes, 'a cena nao mudou em 400 ms: a animacao nao esta rodando')
-    await pagina.keyboard.press('x')
     await pagina.waitForURL('**/login')
     await pagina.getByText('não guarda senha').waitFor()
+    confere((await pagina.locator('main[aria-label^="Eu Duvido!"]').count()) === 0, 'a abertura animada ainda aparece')
 
-    // Logado, a abertura aparece do mesmo jeito; o toque leva direto ao app.
     await entrar('Tavin')
     await pagina.goto(`${WEB}/`)
-    await abertura.waitFor()
-    await pagina.mouse.click(200, 200)
     await pagina.waitForURL('**/desafios')
-
-    // Quem pede menos movimento ve o quadro final parado.
-    const calmo = await navegador.newContext({ reducedMotion: 'reduce', viewport: { width: 1280, height: 800 } })
-    const paginaCalma = await calmo.newPage()
-    try {
-      await paginaCalma.goto(`${WEB}/`)
-      const cenaCalma = paginaCalma.locator('main svg > g')
-      await cenaCalma.locator('text').first().waitFor({ state: 'attached' })
-      const parado = await cenaCalma.innerHTML()
-      await paginaCalma.waitForTimeout(400)
-      confere((await cenaCalma.innerHTML()) === parado, 'com reducedMotion a cena deveria ficar parada')
-    } finally {
-      await calmo.close()
-    }
-    return 'anima; tecla leva a /login (sem sessao); clique leva a /desafios (logado); parada com reducedMotion'
+    return 'sem sessao / vai a /login; logado / vai a /desafios; nenhuma abertura no caminho'
   })
 
   await cenario('U14', 'Login so pelo Google: sem lista de usuarios nem login de desenvolvimento', async () => {

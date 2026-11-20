@@ -30,7 +30,7 @@ celular, e quem apresenta narra o que muda na tela do projetor.
 
 | # | Tempo | Funcionalidade | Entra como | Regra ou objeto do banco |
 | --- | --- | --- | --- | --- |
-| 1 | 0:30 | Abertura animada | — | Nenhum (só front, tela 30) |
+| 1 | 0:30 | Abrir o site e apresentar o app | — | Nenhum (o site abre direto no login) |
 | 2 | 1:00 | Login com Google e idade mínima | Uma conta Google sem vínculo | Trigger `trg_valida_idade_minima` (RN26) |
 | 3 | 1:30 | Grupo: membros, saldos e entrada de membro | Tavin | Trigger `trg_credito_inicial`: 100 CP no ledger (RN06) |
 | 4 | 2:00 | Criar desafio com moderação por IA | Tavin | `moderacao_desafio`: toda proposta fica gravada (RN28) |
@@ -109,17 +109,17 @@ roteiro são os mesmos.
   aceita HTTPS fora do `localhost`. Os personagens se revezam no computador do
   projetor, trocando a conta Google: é mais lento, então ensaie a troca.
 * **Sem internet:** nem o login com Google nem a IA funcionam. Mostrar o fluxo
-  pelas capturas do GitBook (telas 22 a 30) e o banco pelo `psql` local, com as
+  pelas capturas do GitBook (telas 22 a 29) e o banco pelo `psql` local, com as
   recusas já gravadas no seed (passo 9, consulta extra).
 
 ---
 
 ## Passo a passo
 
-### 1. Abertura (0:30)
+### 1. Abrir o site (0:30)
 
-**Tela:** abrir o site. A animação do monge contra o nerd roda sozinha; tocar
-ou apertar qualquer tecla segue para o login.
+**Tela:** abrir o site. Ele cai direto na tela de login; a abertura animada
+saiu da versão final em 20/11/2026.
 
 **Fala:** "O Eu Duvido! transforma o 'duvido que você consegue' entre amigos
 num desafio registrado, com prova e júri. Quem garante as regras é o banco de

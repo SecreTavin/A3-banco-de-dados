@@ -6,7 +6,7 @@ Os TODOs levantados no refinamento **foram resolvidos** pelas decisões de arqui
 
 Cada tela tem também a seção **"Como ficou implementada"**, com a captura do sistema rodando e o que ficou diferente do especificado. As capturas são geradas por [`scripts/telas/capturar-telas.mjs`](../../scripts/telas/capturar-telas.mjs) a partir do seed da demonstração, então podem ser refeitas a qualquer momento.
 
-O redesign de 31/10/2026 — seis propostas aprovadas pelo PO, implementadas e testadas — está em [Redesign de UI/UX](propostas/README.md). A abertura animada, pedida depois da apresentação, está em [Tela inicial](propostas/tela-inicial/README.md). O card da Vitrine Virtual da EXPOUNA 2026 está em [Card da EXPOUNA](card-expouna/README.md).
+O redesign de 31/10/2026 — seis propostas aprovadas pelo PO, implementadas e testadas — está em [Redesign de UI/UX](propostas/README.md). A abertura animada, pedida depois da apresentação e removida da versão final em 20/11/2026, está em [Tela inicial](propostas/tela-inicial/README.md). O card da Vitrine Virtual da EXPOUNA 2026 está em [Card da EXPOUNA](card-expouna/README.md).
 
 A segunda rodada, de 10/11/2026 — celular primeiro, tema claro como padrão e a identidade de bilhete e carimbo —, está em [Redesign mobile-first](propostas/redesign-mobile/README.md).
 
@@ -20,4 +20,4 @@ A segunda rodada, de 10/11/2026 — celular primeiro, tema claro como padrão e 
 * [27 - Central de Votação](telas/27-tela-central-votacao.md)
 * [28 - Ranking](telas/28-tela-ranking.md)
 * [29 - Perfil](telas/29-tela-perfil.md)
-* [30 - Abertura](telas/30-tela-abertura.md)
+* [30 - Abertura](telas/30-tela-abertura.md) (removida em 20/11/2026)
