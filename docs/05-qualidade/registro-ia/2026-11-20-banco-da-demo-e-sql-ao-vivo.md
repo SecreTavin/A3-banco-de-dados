@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-11-20 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | `scripts/demo/recriar-banco.sh`, `scripts/demo/conferir-demo.sh`, `scripts/demo/ver-sql.py` (novos), documento 16 |
 

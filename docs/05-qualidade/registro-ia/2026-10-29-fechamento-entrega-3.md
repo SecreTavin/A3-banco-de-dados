@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-10-29 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | `seed.sql`, `analytical_queries.sql`, documentos 11, 12, 13, 16, 17, 08, 19, telas 23–29, arquitetura 13–15, `CLAUDE.md`, ADR 0018, `manifest.json`, `.github/workflows/ci.yml` |
 

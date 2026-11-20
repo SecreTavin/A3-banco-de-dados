@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-10-31 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | `scripts/cloudflare/` (novo), ADR 0019, documento 16, conta da Cloudflare (subdomínio `workers.dev`) |
 

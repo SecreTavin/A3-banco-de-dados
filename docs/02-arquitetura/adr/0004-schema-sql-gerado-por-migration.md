@@ -2,7 +2,7 @@
 
 * **Status:** Aceita
 * **Data:** 2026-09-03
-* **Decisores:** Octávio Arruda, Rafael Alves, Arthur Marzano
+* **Decisores:** Octávio Augusto Arruda dos Prazeres, Rafael Alves, Arthur Marzano
 
 ## Contexto
 

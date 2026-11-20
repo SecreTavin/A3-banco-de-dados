@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-10-31 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | Telas 22–29 e `docs/04-ux/README.md`, `scripts/telas/capturar-telas.mjs`, documentos 16, 17, 18 e 19, modelo de registro de IA, três registros anteriores do PO, `manifest.json` |
 

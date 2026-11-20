@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-10-31 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | `apps/web/src/features/abertura/` (novo), `apps/web/src/App.tsx`, `scripts/testes/roteiro-e2e-ui.mjs` (U13 e passagem pela abertura), `scripts/testes/roteiro-e2e-ia.mjs`, `docs/04-ux/propostas/tela-inicial/`, tela 30, RF17, documento 17 |
 

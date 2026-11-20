@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-11-01 (documentação e reexecução dos testes em 2026-11-07) |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | `apps/web/src/features/abertura/` (5 arquivos alterados; `motor3d.ts`, `pintor.ts` e `plateia.ts` novos), `docs/04-ux/propostas/tela-inicial/` (rodada 4 e `06-quadros-3d.jpg`), tela 30, documento 17 |
 

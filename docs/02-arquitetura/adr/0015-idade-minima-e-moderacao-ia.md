@@ -2,7 +2,7 @@
 
 * **Status:** Aceita
 * **Data:** 2026-09-12
-* **Decisores:** Octávio Arruda (Product Owner)
+* **Decisores:** Octávio Augusto Arruda dos Prazeres (Product Owner)
 
 ## Contexto
 

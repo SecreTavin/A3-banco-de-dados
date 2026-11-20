@@ -2,7 +2,7 @@
 
 * **Status:** Aceita — invariante do grupo reenunciada no [0018](0018-saida-de-membro-e-invariante-do-ledger.md)
 * **Data:** 2026-09-03
-* **Decisores:** Octávio Arruda, Rafael Alves, Arthur Marzano
+* **Decisores:** Octávio Augusto Arruda dos Prazeres, Rafael Alves, Arthur Marzano
 
 ## Contexto
 
