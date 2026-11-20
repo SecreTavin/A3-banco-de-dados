@@ -56,25 +56,21 @@ export function LoginView() {
     <div className={estilos.tela}>
       <div className={estilos.painel}>
         <div className={estilos.marca}>
-          <span className={estilos.logo}>?</span>
+          <span className={estilos.logo} aria-hidden="true">
+            ?<em>!</em>
+          </span>
           <h1 className={estilos.titulo}>Eu Duvido!</h1>
-          <p className={estilos.subtitulo}>
-            Desafios entre amigos, decididas pelo grupo — e pagas em CP.
-          </p>
+          <p className={estilos.subtitulo}>Desafios entre amigos, decididos pelo grupo e pagos em CP.</p>
         </div>
 
-        <div className={[estilos.entrada, cadastrando && estilos.entradaCadastrando].filter(Boolean).join(' ')}>
+        <div className={estilos.entrada}>
         {erro && <Alerta>{erro}</Alerta>}
         {erroLogin && <Alerta>{erroLogin}</Alerta>}
 
         {carregando ? (
           <SpinnerCentral />
         ) : (
-          <div
-            className={[estilos.lista, (usuarios?.length ?? 0) > 9 && estilos.listaCompacta]
-              .filter(Boolean)
-              .join(' ')}
-          >
+          <div className={estilos.lista}>
             <span className={estilos.rotuloLista}>Entrar como</span>
             {usuarios?.map((usuario) => (
               <CartaoUsuario

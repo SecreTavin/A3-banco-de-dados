@@ -14,7 +14,8 @@ export function BotaoTema() {
 
   return (
     <button
-      className={estilos.sair}
+      type="button"
+      className={estilos.tema}
       onClick={alternar}
       title={`Tema ${proximo}`}
       aria-label={`Mudar para o tema ${proximo}`}

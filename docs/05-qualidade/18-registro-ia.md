@@ -37,7 +37,7 @@ cada arquivo.
 
 ## Registros
 
-52 registros, em ordem cronológica.
+54 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -87,6 +87,8 @@ cada arquivo.
 | 2026-11-01 | [Abertura em 3D estilo PS1, com plateia de colégio](registro-ia/2026-11-01-abertura-3d-ps1.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-07 | [Conclusão e referências da Banca Final](registro-ia/2026-11-07-conclusao-e-referencias.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-07 | [ADR 0010 com a hospedagem que existe de fato](registro-ia/2026-11-07-adr-0010-hospedagem-real.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-10 | [Redesign mobile-first com tema claro padrão](registro-ia/2026-11-10-redesign-mobile-first.md) | Claude Code (Fable 5.1) | Rafael Alves |
+| 2026-11-10 | [Ajustes nas resoluções mais usadas e medição de rolagem](registro-ia/2026-11-10-ajustes-resolucoes.md) | Claude Code (Fable 5.1) | Rafael Alves |
 | 2026-11-16 | [Demonstração pública na VM da Oracle](registro-ia/2026-11-16-demo-na-vm-oracle.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-16 | [Revisão do PO da publicação na VM da Oracle](registro-ia/2026-11-16-revisao-demo-na-vm.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-16 | [Roteiro da demonstração da Banca Final](registro-ia/2026-11-16-roteiro-da-demonstracao.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |

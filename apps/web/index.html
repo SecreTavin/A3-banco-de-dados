@@ -3,16 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="color-scheme" content="dark light" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f5f2ea" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d0b1c" />
+    <meta name="description" content="Eu Duvido! — desafios entre amigos, decididos pelo grupo e pagos em CP." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%234433cc'/%3E%3Ctext x='22' y='46' font-family='Arial Black,Arial,sans-serif' font-weight='900' font-size='40' text-anchor='middle' fill='%23ffffff'%3E%3F%3C/text%3E%3Ctext x='44' y='46' font-family='Arial Black,Arial,sans-serif' font-weight='900' font-size='40' text-anchor='middle' fill='%23f6c453'%3E!%3C/text%3E%3C/svg%3E"
+    />
     <script>
-      // Aplica o tema antes da primeira pintura, para nao piscar: preferencia
-      // salva ou, na falta dela, a do sistema.
+      // Aplica o tema antes da primeira pintura, para nao piscar. O claro e o
+      // tema primario do sistema: so sai dele quem escolheu o escuro no botao.
       (function () {
         var tema = null
         try { tema = localStorage.getItem('tema') } catch (e) {}
-        if (tema !== 'claro' && tema !== 'escuro') {
-          tema = window.matchMedia('(prefers-color-scheme: light)').matches ? 'claro' : 'escuro'
-        }
+        if (tema !== 'claro' && tema !== 'escuro') tema = 'claro'
         document.documentElement.setAttribute('data-tema', tema)
       })()
     </script>
