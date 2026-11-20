@@ -173,7 +173,7 @@ rodada. Para repetir, volte ao seed (`docker compose down -v` e `up`, ou
 | U10 | Perfil e Ranking | Saldos iguais aos do banco, por grupo e por membro | Aprovado |
 | U11 | Alternar o tema, recarregar e percorrer 8 telas em 1440x900 | Tema persiste; nenhuma tela rola na vertical | Aprovado |
 | U12 | Celular 390x844: login, desafios e detalhe do grupo | Nenhum overflow horizontal | Aprovado |
-| U13 | Abrir `/` sem sessão, apertar uma tecla; entrar, abrir `/` e clicar; abrir com "reduzir movimento" | A abertura anima; a tecla leva a `/login`; logado, o clique leva a `/desafios`; com menos movimento a cena fica parada | Aprovado |
+| U13 | Abrir `/` sem sessão; entrar e abrir `/` de novo | Sem sessão vai direto a `/login`; logado vai a `/desafios`; nenhuma abertura animada no caminho (removida em 20/11/2026) | Aprovado |
 | U14 | Abrir a tela de login | Só o botão do Google (ou o aviso de "não configurado"); nenhum usuário do seed listado; `/api/auth/dev/usuarios` responde 404 | Aprovado |
 | U15 | Como Lipe, escolher **Foto** no desafio do dinossauro, enviar um PNG pelo seletor de arquivo e mandar ao júri; depois, como Tavin, abrir a Votação | "Mandar para o júri" só libera depois da foto; `url_comprovante` aponta para `/api/midia/<guid>`; a URL sem login responde 401; o júri vê a imagem carregada ([ADR 0022](../02-arquitetura/adr/0022-foto-da-prova-no-minio-pela-api.md)) | Aprovado |
 

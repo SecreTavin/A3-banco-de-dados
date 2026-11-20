@@ -237,12 +237,8 @@ function soNoSimulado() {
 
 // --- Ajudas de tela -----------------------------------------------------------
 
-// Toda carga de pagina passa pela abertura (tela inicial animada); qualquer
-// tecla segue para a tela pedida.
 async function irPara(url) {
   await pagina.goto(url)
-  await pagina.locator('main[aria-label^="Eu Duvido!"]').waitFor()
-  await pagina.keyboard.press('Enter')
 }
 
 async function esperarRede() {

@@ -105,7 +105,7 @@ cada arquivo.
 
 ## Registros
 
-58 registros, em ordem cronológica.
+59 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -166,6 +166,7 @@ cada arquivo.
 | 2026-11-20 | [Nome completo do PO e card da EXPOUNA](registro-ia/2026-11-20-nome-completo-e-card-expouna.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-20 | [Login com Google](registro-ia/2026-11-20-login-com-google.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-20 | [Login com Google no visual do redesign](registro-ia/2026-11-20-login-google-no-redesign.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-20 | [Abertura animada removida do app](registro-ia/2026-11-20-remove-abertura.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-20 | [Ajustes pedidos na revisão do professor (31/10)](registro-ia/2026-11-20-ajustes-revisao-do-professor.md) | Claude Code (Opus 5.5) | Rafael Alves |
 
 ## Consolidação final

@@ -42,11 +42,8 @@ async function capturar(arquivo) {
   console.log('ok', arquivo)
 }
 
-// Toda carga de pagina passa pela abertura (tela 30); qualquer tecla segue.
 async function irPara(url) {
   await pagina.goto(url)
-  await pagina.locator('main[aria-label^="Eu Duvido!"]').waitFor()
-  await pagina.keyboard.press('Enter')
 }
 
 const sql = (consulta) =>

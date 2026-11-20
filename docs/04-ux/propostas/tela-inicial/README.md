@@ -1,5 +1,7 @@
 # Tela inicial: abertura animada (31/10/2026)
 
+> **Removida do app em 20/11/2026.** A animação saiu da versão final: o app abre direto no login. O código continua no histórico do Git (último commit com a abertura: `0ffd3e9`).
+
 Pedido do PO depois da apresentação: uma tela antes da tela de contas, com uma
 animação no estilo *ragdoll* em que um personagem acerta o outro e o golpe põe o
 nome do app em destaque. Qualquer interação segue para a tela de contas.

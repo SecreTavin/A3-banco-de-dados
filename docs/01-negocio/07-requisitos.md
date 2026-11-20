@@ -44,9 +44,10 @@
 
 ### Abertura
 
-* **RF17:** Tela de abertura animada antes da tela de contas, em toda carga da
+* ~~**RF17:** Tela de abertura animada antes da tela de contas, em toda carga da
   página, que segue com qualquer toque, clique ou tecla
-  ([30 - Abertura](../04-ux/telas/30-tela-abertura.md)).
+  ([30 - Abertura](../04-ux/telas/30-tela-abertura.md)).~~ **Removido em
+  20/11/2026:** a animação saiu da versão final e o app abre direto no login.
 
 ## 7.2 Requisitos Não Funcionais (RNF)
 
