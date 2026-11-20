@@ -22,6 +22,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { chromium } from 'playwright-core'
+import { consultaUsuario, gravarSessao, sessaoDe } from './sessao.mjs'
 
 const WEB = process.env.EUDUVIDO_WEB ?? 'http://localhost:8080'
 const API = process.env.EUDUVIDO_API ?? 'http://localhost:5080'
@@ -109,15 +110,12 @@ async function esperarRede() {
   await pagina.waitForLoadState('networkidle')
 }
 
+// O login e so pelo Google, que nao se automatiza: a sessao e assinada pelo
+// roteiro (sessao.mjs) e gravada no localStorage, como a tela de login faria.
 async function entrar(apelido) {
   await irPara(`${WEB}/login`)
-  await pagina.evaluate(() => {
-    localStorage.removeItem('euduvido.token')
-    localStorage.removeItem('euduvido.usuario')
-  })
-  await irPara(`${WEB}/login`)
-  await esperarRede()
-  await pagina.getByText(apelido, { exact: true }).first().click()
+  await gravarSessao(pagina, sessaoDe(sql(consultaUsuario(esc(apelido)))))
+  await irPara(`${WEB}/desafios`)
   await pagina.waitForURL('**/desafios', { timeout: 15000 })
   await esperarRede()
 }
@@ -534,7 +532,7 @@ async function rodar() {
     confere(antes.length > 0 && (await cena.innerHTML()) !== antes, 'a cena nao mudou em 400 ms: a animacao nao esta rodando')
     await pagina.keyboard.press('x')
     await pagina.waitForURL('**/login')
-    await pagina.getByText('Entrar como').waitFor()
+    await pagina.getByText('não guarda senha').waitFor()
 
     // Logado, a abertura aparece do mesmo jeito; o toque leva direto ao app.
     await entrar('Tavin')
@@ -557,6 +555,27 @@ async function rodar() {
       await calmo.close()
     }
     return 'anima; tecla leva a /login (sem sessao); clique leva a /desafios (logado); parada com reducedMotion'
+  })
+
+  await cenario('U14', 'Login so pelo Google: sem lista de usuarios nem login de desenvolvimento', async () => {
+    await irPara(`${WEB}/login`)
+    await pagina.evaluate(() => {
+      localStorage.removeItem('euduvido.token')
+      localStorage.removeItem('euduvido.usuario')
+    })
+    await irPara(`${WEB}/login`)
+    await esperarRede()
+    await pagina.getByText('não guarda senha').waitFor()
+    // Com GOOGLE_CLIENT_ID, o botao do Google; sem ele, o aviso de configuracao.
+    const botao = await pagina.locator('[aria-label="Entrar com Google"]').count()
+    const aviso = await pagina.getByText('não foi configurado').count()
+    confere(botao + aviso === 1, `esperava o botao do Google ou o aviso (botao=${botao}, aviso=${aviso})`)
+    for (const apelido of ['Tavin', 'Lari', 'Biel']) {
+      confere((await pagina.getByText(apelido, { exact: true }).count()) === 0, `${apelido} aparece na tela de login`)
+    }
+    const dev = await fetch(`${API}/api/auth/dev/usuarios`)
+    confere(dev.status === 404, `/api/auth/dev/usuarios respondeu ${dev.status}`)
+    return `${botao ? 'botao do Google' : 'aviso de Google nao configurado'}; nenhum usuario do seed na tela; endpoint dev 404`
   })
 
   await navegador.close()

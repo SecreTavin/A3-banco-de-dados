@@ -60,6 +60,7 @@
     * [0018 - Saída de membro e invariante do ledger](docs/02-arquitetura/adr/0018-saida-de-membro-e-invariante-do-ledger.md)
     * [0019 - Demonstração pública pela Cloudflare](docs/02-arquitetura/adr/0019-demonstracao-publica-cloudflare-tunel.md)
     * [0020 - Demonstração pública na VM da Oracle](docs/02-arquitetura/adr/0020-demonstracao-publica-na-vm-oracle.md)
+    * [0021 - Login exclusivo com Google](docs/02-arquitetura/adr/0021-login-exclusivo-google.md)
 * [03 - Banco de Dados](docs/03-banco-de-dados/README.md)
   * [Modelagem](docs/03-banco-de-dados/modelagem/README.md)
     * [09 - Evolução da Modelagem](docs/03-banco-de-dados/modelagem/09-evolucao-modelagem.md)
@@ -118,6 +119,7 @@
     * [2026-11-01 - Abertura em 3D estilo PS1, com plateia de colégio](docs/05-qualidade/registro-ia/2026-11-01-abertura-3d-ps1.md)
     * [2026-11-07 - Conclusão e referências da Banca Final](docs/05-qualidade/registro-ia/2026-11-07-conclusao-e-referencias.md)
     * [2026-11-07 - ADR 0010 com a hospedagem que existe de fato](docs/05-qualidade/registro-ia/2026-11-07-adr-0010-hospedagem-real.md)
+    * [2026-11-07 - Especificação do login com Google](docs/05-qualidade/registro-ia/2026-11-07-especificacao-login-google.md)
     * [2026-11-09 - Preenche o prompt utilizado nos registros do Rafael](docs/05-qualidade/registro-ia/2026-11-09-preenche-prompt-utilizado.md)
     * [2026-11-10 - Redesign mobile-first com tema claro padrão](docs/05-qualidade/registro-ia/2026-11-10-redesign-mobile-first.md)
     * [2026-11-10 - Ajustes nas resoluções mais usadas e medição de rolagem](docs/05-qualidade/registro-ia/2026-11-10-ajustes-resolucoes.md)
@@ -127,6 +129,8 @@
     * [2026-11-20 - Banco da demonstração e SQL ao vivo](docs/05-qualidade/registro-ia/2026-11-20-banco-da-demo-e-sql-ao-vivo.md)
     * [2026-11-20 - Slides na ordem do edital e referência do edital](docs/05-qualidade/registro-ia/2026-11-20-slides-do-edital-e-referencias.md)
     * [2026-11-20 - Nome completo do PO e card da EXPOUNA](docs/05-qualidade/registro-ia/2026-11-20-nome-completo-e-card-expouna.md)
+    * [2026-11-20 - Login com Google](docs/05-qualidade/registro-ia/2026-11-20-login-com-google.md)
+    * [2026-11-20 - Login com Google no visual do redesign](docs/05-qualidade/registro-ia/2026-11-20-login-google-no-redesign.md)
 
 ## Produto
 

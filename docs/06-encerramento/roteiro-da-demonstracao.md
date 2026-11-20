@@ -9,13 +9,29 @@ funcionalidade e o banco mostra a regra que a garante.
 > pela API. Todos os números deste roteiro (saldos, votos, jurados, lançamentos)
 > foram conferidos no PostgreSQL. Eles **só valem com o banco recém-semeado e
 > com os passos na ordem**: cada passo muda saldos que os seguintes mostram.
+> Revisado em 20/11/2026 para o login só pelo Google
+> ([ADR 0021](../02-arquitetura/adr/0021-login-exclusivo-google.md)) e o SQL ao
+> vivo.
+
+**Quem faz o quê:** o login é só pelo Google, então cada integrante entra **no
+próprio celular**, com a conta Google ligada a um personagem do seed
+(`DEMO_CONTAS`). O projetor mostra o computador do Tavin. Os outros agem pelo
+celular, e quem apresenta narra o que muda na tela do projetor.
+
+| Personagem | Papel no roteiro | Quem segura o celular |
+| --- | --- | --- |
+| Tavin | Admin do grupo, cria o desafio (projetor) | [nome] |
+| Biel | Aceita como desafiado (passo 5) | [nome] |
+| Theus | Aceita como desafiante (passo 5) | [nome] |
+| Lipe | Manda a prova; mostra o placar ao vivo (passos 6 e 7) | [nome] |
+| Lari | Dá o voto que fecha o quórum (passo 7) | [nome] |
 
 ## Visão geral
 
 | # | Tempo | Funcionalidade | Entra como | Regra ou objeto do banco |
 | --- | --- | --- | --- | --- |
 | 1 | 0:30 | Abertura animada | — | Nenhum (só front, tela 30) |
-| 2 | 1:00 | Login e cadastro com idade mínima | Cadastro novo | Trigger `trg_valida_idade_minima` (RN26) |
+| 2 | 1:00 | Login com Google e idade mínima | Uma conta Google sem vínculo | Trigger `trg_valida_idade_minima` (RN26) |
 | 3 | 1:30 | Grupo: membros, saldos e entrada de membro | Tavin | Trigger `trg_credito_inicial`: 100 CP no ledger (RN06) |
 | 4 | 2:00 | Criar desafio com moderação por IA | Tavin | `moderacao_desafio`: toda proposta fica gravada (RN28) |
 | 5 | 1:30 | Aceitar desafio: CP vai para o escrow | Biel e Theus | Procedure `debitar_escrow` (RN18) |
@@ -27,9 +43,31 @@ funcionalidade e o banco mostra a regra que a garante.
 
 **Equipamento:**
 
-* **Projetor:** um computador, com o navegador no site e um terminal com o `psql`.
-* **Celular, opcional mas recomendado:** logado como **Lipe**, aberto em
-  **Votação**. No passo 7 ele mostra o placar mudar sozinho (SignalR).
+* **Projetor:** um computador com duas janelas lado a lado:
+  * o navegador no site, logado como Tavin;
+  * um terminal com o **SQL ao vivo** (`python3 scripts/demo/ver-sql.py`), que
+    mostra cada comando que a aplicação manda ao banco durante toda a
+    demonstração.
+  * Um segundo terminal fica com o `psql` para o passo 9.
+* **Quatro celulares,** logados como Biel, Theus, Lipe e Lari. O do Lipe fica
+  aberto em **Votação**: no passo 7 ele mostra o placar mudar sozinho
+  (SignalR).
+* **Acesso ao banco da VM:** o SQL ao vivo e o `psql` rodam no servidor, pela
+  sessão SSH de quem administra a VM (Rafael), na pasta do repositório.
+
+## O que o edital pede na demonstração (seção 16)
+
+| Exigência | Onde aparece |
+| --- | --- |
+| Acesso ao sistema | Passo 2 (login com Google) |
+| Execução de uma funcionalidade | Passos 4 a 7 |
+| Inclusão de dados | Passo 3 (membro novo) e passo 4 (desafio novo) |
+| Consulta dos dados | Passo 8 (ranking e perfil) |
+| Alteração de dados | Passos 5 e 7: o aceite muda o status do desafio, e o voto é um `UPDATE` que aparece no SQL ao vivo |
+| Relacionamento entre informações | Passo 6 (júri ligado à prova) e passo 7 (pagamento no ledger de cada participante) |
+| Execução de consulta SQL | Passo 9 |
+| Dados armazenados no banco | Passo 9 e o SQL ao vivo |
+| Integração aplicação × banco | O SQL ao vivo, durante a demonstração inteira |
 
 ---
 
@@ -37,9 +75,14 @@ funcionalidade e o banco mostra a regra que a garante.
 
 **Na véspera:**
 
-- [ ] O banco do site está **recriado a partir do seed**
-      (`docker compose down -v && docker compose up -d` na VM; issue #65).
-- [ ] A VM roda a `main`.
+- [ ] O banco do site está **recriado a partir do seed**:
+      `scripts/demo/recriar-banco.sh` na VM. O script já vincula as contas
+      Google de `DEMO_CONTAS` e termina com a conferência, que precisa dizer
+      "Pronto para a demonstração".
+- [ ] A VM roda a `main`, com `GOOGLE_CLIENT_ID`, `AUTH_CHAVE` e `DEMO_CONTAS`
+      no `.env`.
+- [ ] Cada integrante entrou pelo Google no próprio celular e caiu no
+      personagem certo.
 - [ ] Criar um desafio de teste no site e ver a IA responder. Isso confirma que
       a chave da Groq está válida e com cota. **Depois, recriar o banco de
       novo**, porque o teste muda os dados.
@@ -47,19 +90,27 @@ funcionalidade e o banco mostra a regra que a garante.
 
 **Uma hora antes:**
 
-- [ ] Abrir o site no projetor, com zoom de 125% para a sala ler.
-- [ ] Deixar o celular logado como Lipe, na aba **Votação**.
-- [ ] Abrir o terminal com o `psql` do banco do site. Na VM:
-      `docker compose exec db psql -U euduvido -d euduvido`. Testar com
+- [ ] `scripts/demo/conferir-demo.sh` na VM: "Pronto para a demonstração".
+- [ ] Abrir o site no projetor, com zoom de 125% para a sala ler, logado como
+      Tavin.
+- [ ] Deixar os celulares logados (Biel, Theus, Lipe e Lari), o do Lipe na aba
+      **Votação**.
+- [ ] Abrir o SQL ao vivo (`python3 scripts/demo/ver-sql.py`) e o `psql`
+      (`docker compose exec db psql -U euduvido -d euduvido`) na VM. Testar com
       `SELECT count(*) FROM usuario;`: deve responder **9**.
 - [ ] Deixar este roteiro aberto numa aba ou impresso.
 
-**Plano B, se a VM ou a internet falharem:** rodar no Docker local
-(`docker compose down -v && docker compose up -d --build`), abrir
-<http://localhost:8080> no projetor e usar
-`docker exec -it euduvido-db-1 psql -U euduvido -d euduvido`. Os números do
-roteiro são os mesmos. Sem internet, só o passo 4 (IA) não funciona: mostrar a
-recusa já gravada no seed (passo 9, consulta extra).
+**Plano B, se a VM cair:** rodar no Docker local do computador do projetor
+(`docker compose up -d --build` e `scripts/demo/recriar-banco.sh`), abrir
+<http://localhost:8080> e usar o SQL ao vivo e o `psql` locais. Os números do
+roteiro são os mesmos.
+
+* **Login:** os celulares não conseguem entrar no `localhost`. O Google só
+  aceita HTTPS fora do `localhost`. Os personagens se revezam no computador do
+  projetor, trocando a conta Google: é mais lento, então ensaie a troca.
+* **Sem internet:** nem o login com Google nem a IA funcionam. Mostrar o fluxo
+  pelas capturas do GitBook (telas 22 a 30) e o banco pelo `psql` local, com as
+  recusas já gravadas no seed (passo 9, consulta extra).
 
 ---
 
@@ -74,32 +125,34 @@ ou apertar qualquer tecla segue para o login.
 num desafio registrado, com prova e júri. Quem garante as regras é o banco de
 dados."
 
-### 2. Login e idade mínima (1:00)
+### 2. Login com Google e idade mínima (1:00)
 
-**Tela:**
+**Tela, num navegador anônimo do projetor:**
 
-1. Na tela de login, mostrar a lista **"Entrar como"**, com os usuários do
-   seed.
-2. Clicar em **Criar conta** e preencher um cadastro com nascimento em 2014,
-   ou seja, 12 anos.
-3. Clicar em **Criar e entrar**. A tela recusa: *"É preciso ter ao menos 16
-   anos para usar o Eu Duvido!"*.
+1. Clicar em **Entrar com Google** e escolher uma conta Google que **não** está
+   em `DEMO_CONTAS`. Por ser o primeiro acesso, aparece **Complete seu
+   cadastro**, com nome, e-mail e foto vindos do Google.
+2. Informar um apelido e a data de nascimento em 2014, ou seja, 12 anos.
+3. Clicar em **Criar conta e entrar**. A tela recusa: *"É preciso ter ao menos
+   16 anos para usar o Eu Duvido!"*.
+4. Fechar a janela anônima. O projetor segue logado como Tavin.
 
-**Banco:** o domínio recusa, e por baixo dele a trigger
-`trg_valida_idade_minima` barraria o `INSERT` mesmo se o código falhasse
-(RN26). O número de usuários continua **9**.
+**Banco:**
 
-**Fala:** "O login de demonstração é por seleção de usuário. O login com Google
-está especificado na issue #60."
+* O domínio recusa, e por baixo dele a trigger `trg_valida_idade_minima`
+  barraria o `INSERT` mesmo se o código falhasse (RN26).
+* O número de usuários continua **9**: no SQL ao vivo, não aparece nenhum
+  `INSERT INTO usuario`.
 
-> Se o login com Google (#60) entrar antes da banca, este passo muda: o login
-> passa a ser pelo botão do Google, com contas vinculadas aos usuários do seed.
+**Fala:** "Não guardamos senha: a identidade vem do Google, e a API confere o
+token no servidor. Cada colega está logado no próprio celular como um
+personagem do seed." 
 
 ### 3. Grupo, membros e crédito inicial (1:30)
 
 **Tela:**
 
-1. Entrar como **Tavin**. Em **Grupos**, ele está em dois grupos: *Calouros de
+1. No projetor, logado como **Tavin**: em **Grupos**, ele está em dois grupos: *Calouros de
    SI* (132 CP) e *Os Inimigos do Fim* (80 CP).
 2. Abrir *Os Inimigos do Fim*. Mostrar os membros, o saldo de cada um e o nível
    do filtro da IA (**Moderado**). Só o admin muda o filtro.
@@ -143,10 +196,10 @@ para o passo 5 e mostrar no passo 9 as recusas já gravadas no seed.
 
 **Tela:** o desafio **Tirar nota máxima no projeto A3** (25 CP) está **Aberto**.
 
-1. Sair e entrar como **Biel**. Abrir o desafio, escolher **Desafiado** e
+1. **No celular do Biel**, abrir o desafio, escolher **Desafiado** e
    **Vai cumprir**, e clicar em **Entrar como desafiado**. O saldo dele no grupo
    vai de **110 para 85**.
-2. Sair e entrar como **Theus**. Escolher **Desafiante** e **Não vai cumprir**,
+2. **No celular do Theus**, escolher **Desafiante** e **Não vai cumprir**,
    e clicar em **Entrar como desafiante**. O saldo vai de **35 para 10**, e o
    desafio passa a **Em andamento**.
 
@@ -161,7 +214,7 @@ para o passo 5 e mostrar no passo 9 as recusas já gravadas no seed.
 
 **Tela:**
 
-1. Entrar como **Lipe**. Abrir **Ir fantasiado de dinossauro na aula** (ele é o
+1. **No celular do Lipe**, abrir **Ir fantasiado de dinossauro na aula** (ele é o
    desafiado) e clicar em **Enviar a prova**:
    * tipo foto;
    * link `https://midia.euduvido.app/provas/lipe_dinossauro.jpg`;
@@ -184,12 +237,15 @@ está com **1 de 2 votos**. O Theus já votou "Vale".
 
 **Tela:**
 
-1. Entrar como **Lari** e ir em **Votação**. A prova do Tavin está lá, com o
+1. **No celular da Lari**, ir em **Votação**. A prova do Tavin está lá, com o
    placar 1 de 2.
 2. Clicar em **Vale** e depois em **Confirmar voto**.
 3. **No celular do Lipe**, na Votação, o placar muda sozinho, sem recarregar.
 4. Tentar votar de novo: a tela não oferece mais **Vale/Não vale**. O voto é
    definitivo.
+5. **Apontar o SQL ao vivo:** a transação aparece inteira, com `BEGIN`, o
+   `UPDATE jurado_evidencia ... voto = 'VALIDO'`,
+   `CALL apurar_votacao('2')` e `COMMIT`.
 
 **Banco, numa única transação dentro da procedure `apurar_votacao`:**
 
@@ -207,7 +263,7 @@ commit; ele nunca decide o resultado."
 
 ### 8. Ranking e perfil (1:00)
 
-**Tela:** entrar como **Tavin** e abrir **Ranking** de *Os Inimigos do Fim*.
+**Tela, no projetor (Tavin):** abrir **Ranking** de *Os Inimigos do Fim*.
 
 | Posição | Membro | Saldo |
 | --- | --- | --- |

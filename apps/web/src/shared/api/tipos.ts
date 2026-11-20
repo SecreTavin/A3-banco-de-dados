@@ -23,9 +23,23 @@ export interface Usuario {
   avatarUrl: string | null
 }
 
-export interface RespostaLogin {
-  token: string
-  usuario: Usuario
+/**
+ * Resposta do login com Google. Quem já tem conta recebe `token` e `usuario`;
+ * quem entra pela primeira vez recebe `cadastroPendente` e o `tokenCadastro`
+ * para completar o cadastro.
+ */
+export interface RespostaEntrada {
+  token: string | null
+  usuario: Usuario | null
+  cadastroPendente: boolean
+  tokenCadastro: string | null
+  nome: string | null
+  email: string | null
+  avatarUrl: string | null
+}
+
+export interface ConfiguracaoAuth {
+  googleClientId: string | null
 }
 
 export interface GrupoResumo {
@@ -129,6 +143,8 @@ export interface Evidencia {
 
 /** Quem está no júri e se já votou — o voto de cada um não é exposto. */
 export interface Jurado {
+  /** O apelido pode repetir; quem identifica o jurado é o id. */
+  idUsuario: number
   apelido: string
   avatarUrl: string | null
   votou: boolean
@@ -170,6 +186,8 @@ export interface EvidenciaPendente {
 }
 
 export interface PosicaoRanking {
+  /** O apelido pode repetir; quem identifica o membro é o id. */
+  idUsuario: number
   apelido: string
   avatarUrl: string | null
   saldoCp: number
@@ -218,9 +236,9 @@ export interface NovoMembro {
   email: string
 }
 
+/** Nome, e-mail e foto vêm do Google, dentro do `tokenCadastro`. */
 export interface NovoCadastro {
-  nome: string
-  email: string
+  tokenCadastro: string
   apelido: string
   /** `YYYY-MM-DD`, direto do `<input type="date">`. */
   dataNascimento: string

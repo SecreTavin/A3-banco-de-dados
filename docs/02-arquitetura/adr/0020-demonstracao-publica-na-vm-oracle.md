@@ -78,6 +78,9 @@ mesmo em qualquer ambiente.
 * **Login de desenvolvimento aberto**, como no 0019: qualquer pessoa com o link
   entra com o apelido de qualquer usuário do banco. Aceitável com dados
   fictícios, não para uso real. A cota da chave da Groq também fica exposta.
+  *Atualização (20/11/2026): o login passou a ser só pelo Google
+  ([ADR 0021](0021-login-exclusivo-google.md)); o `.env` da VM precisa de
+  `GOOGLE_CLIENT_ID`, `AUTH_CHAVE` e `DEMO_CONTAS`.*
 * **Sem backup do banco.** Os dados estão num volume Docker da VM. Se o volume
   se perder, o banco se refaz pelo seed; perde-se só o que foi criado no site
   depois da última recriação.

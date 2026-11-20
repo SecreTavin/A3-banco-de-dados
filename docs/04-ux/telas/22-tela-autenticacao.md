@@ -10,12 +10,19 @@ Cadastro e login de usuários via Google (RF01).
 
 ## Como ficou implementada
 
-![Tela de login de desenvolvimento](img/22-login.png)
+![Tela de login com Google](img/22-login.png)
 
-| Especificado | Implementado |
+| Especificado | Implementado (20/11/2026, [ADR 0021](../../02-arquitetura/adr/0021-login-exclusivo-google.md)) |
 | --- | --- |
-| Login com Google | Login de desenvolvimento: escolhe-se um usuário do seed. O Google entra quando `Auth:Provider` virar `Google` |
-| Cadastro com apelido e data de nascimento | **Criar conta de teste** pede nome, e-mail, apelido e data de nascimento; menor de 16 anos é recusado (RN26, trigger `trg_usuario_idade_minima`) |
+| Login com Google | Botão oficial **Entrar com Google**. O ID token do Google vai para a API, que o valida no servidor (assinatura, Client ID, validade, e-mail verificado) e emite a sessão. Não existe mais login de desenvolvimento |
+| Cadastro com apelido e data de nascimento | No primeiro acesso aparece **Complete seu cadastro**, com nome, e-mail e foto vindos do Google. A pessoa informa apelido e data de nascimento e clica em **Criar conta e entrar**. Menor de 16 anos é recusado e nada é gravado (RN26, trigger `trg_usuario_idade_minima`) |
+| Sem configuração | Sem `GOOGLE_CLIENT_ID`, a tela avisa que o login não foi configurado, e a API responde 503 |
+
+**Contrato da API:**
+
+* `GET /api/auth/configuracao`: devolve o Client ID para o botão.
+* `POST /api/auth/google`: valida o ID token. Quem já tem conta recebe a sessão. Quem não tem recebe um token de cadastro de 15 minutos, com audiência própria, que não abre nenhum outro endpoint.
+* `POST /api/auth/cadastro`: completa o cadastro com esse token, o apelido e a data de nascimento.
 
 Antes desta tela vem a abertura animada ([30 - Abertura](30-tela-abertura.md)), em toda carga da página.
 
@@ -26,7 +33,7 @@ Antes desta tela vem a abertura animada ([30 - Abertura](30-tela-abertura.md)), 
 
 ## Decisões (validado com o time)
 - Login é exclusivamente via Google — recuperação de senha e regras de validação de senha saem de escopo (não existe senha própria no sistema).
-- `apelido` não precisa ser UNIQUE (pode repetir entre usuários); a distinção entre contas passa a ser feita pelo `email`/id do Google, não pelo apelido.
+- `apelido` não é UNIQUE e pode repetir entre usuários. Quem identifica o usuário é o `id_usuario` (decisão do PO em 09/11/2026); ranking, pódio, perfil e júri usam o id.
 
 ## Resolvido na arquitetura
 - **Sem senha no banco:** o login é externo, então `usuario` não tem `senha_hash` nem tabela de credencial; a identidade é o `email` (RN05).

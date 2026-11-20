@@ -108,7 +108,7 @@ public static class DesafiosEndpoints
             // quem votou em que.
             var jurados = (await conexao.QueryAsync<JuradoLido>(
                 """
-                SELECT j.id_evidencia AS IdEvidencia, u.apelido AS Apelido,
+                SELECT j.id_evidencia AS IdEvidencia, j.id_usuario AS IdUsuario, u.apelido AS Apelido,
                        u.avatar_url AS AvatarUrl, (j.voto IS NOT NULL) AS Votou
                   FROM jurado_evidencia j
                   JOIN evidencia e ON e.id_evidencia = j.id_evidencia
@@ -130,7 +130,7 @@ public static class DesafiosEndpoints
                     e.dataEnvio, e.dataLimiteVotacao, e.votosFavoraveis, e.votosContra, e.quorum,
                     e.totalValidadores,
                     jurados = jurados[(int)e.idEvidencia]
-                        .Select(j => new { j.Apelido, j.AvatarUrl, j.Votou })
+                        .Select(j => new { j.IdUsuario, j.Apelido, j.AvatarUrl, j.Votou })
                 })
             });
         });
@@ -222,4 +222,5 @@ public static class DesafiosEndpoints
 
 public record AceitarRequest(string PapelDesafio, string Escolha);
 public record CancelarRequest(string Motivo);
-public record JuradoLido(int IdEvidencia, string Apelido, string? AvatarUrl, bool Votou);
+// O apelido pode repetir; quem identifica o jurado e o id.
+public record JuradoLido(int IdEvidencia, int IdUsuario, string Apelido, string? AvatarUrl, bool Votou);

@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Alerta, Botao, Campo, Card, SpinnerCentral } from '../../../shared/ui'
-import { CartaoUsuario } from '../components/CartaoUsuario'
+import type { RespostaEntrada } from '../../../shared/api/tipos'
+import { desenharBotaoGoogle } from '../../../shared/auth/google'
+import { Alerta, Avatar, Botao, Campo, Card, SpinnerCentral } from '../../../shared/ui'
 import { useCadastroCommand } from '../hooks/useCadastroCommand'
-import { useLoginCommand } from '../hooks/useLoginCommand'
-import { useUsuariosSeedQuery } from '../hooks/useUsuariosSeedQuery'
+import { useConfiguracaoAuthQuery } from '../hooks/useConfiguracaoAuthQuery'
+import { useLoginGoogleCommand } from '../hooks/useLoginGoogleCommand'
 import estilos from '../login.module.css'
 
 /** `<input type="date">` compara com a data local, não com UTC. */
@@ -14,41 +15,58 @@ function hojeLocal() {
   return new Date(agora.getTime() - agora.getTimezoneOffset() * 60_000).toISOString().slice(0, 10)
 }
 
+/** O acesso é só pelo Google (RN05, ADR 0021). Quem entra pela primeira vez completa o cadastro. */
 export function LoginView() {
-  const { dados: usuarios, carregando, erro } = useUsuariosSeedQuery()
-  const { executar: entrar, enviando, erro: erroLogin } = useLoginCommand()
+  const config = useConfiguracaoAuthQuery()
+  const login = useLoginGoogleCommand()
   const cadastro = useCadastroCommand()
-  const [escolhido, setEscolhido] = useState<string | null>(null)
   const navegar = useNavigate()
 
-  const [cadastrando, setCadastrando] = useState(false)
-  const [nome, setNome] = useState('')
-  const [email, setEmail] = useState('')
+  const lugarDoBotao = useRef<HTMLDivElement>(null)
+  const [erroGoogle, setErroGoogle] = useState<string | null>(null)
+  const [pendente, setPendente] = useState<RespostaEntrada | null>(null)
   const [apelido, setApelido] = useState('')
   const [dataNascimento, setDataNascimento] = useState('')
 
-  async function selecionar(apelidoEscolhido: string) {
-    setEscolhido(apelidoEscolhido)
-    const resultado = await entrar(apelidoEscolhido)
+  const clientId = config.dados?.googleClientId ?? null
 
-    if (resultado.ok) navegar('/desafios', { replace: true })
-    else setEscolhido(null)
-  }
+  // O executar do login muda a cada render; a ref evita redesenhar o botão por isso.
+  const entrarRef = useRef(login.executar)
+  entrarRef.current = login.executar
 
-  async function submeterCadastro(evento: FormEvent) {
+  useEffect(() => {
+    if (!clientId || pendente || !lugarDoBotao.current) return
+    let ativo = true
+    desenharBotaoGoogle(lugarDoBotao.current, clientId, async (credencial) => {
+      const resultado = await entrarRef.current(credencial)
+      if (!ativo || !resultado.ok) return
+      if (resultado.dados.cadastroPendente) {
+        setPendente(resultado.dados)
+        setApelido(resultado.dados.nome?.split(' ')[0] ?? '')
+      } else {
+        navegar('/desafios', { replace: true })
+      }
+    }).catch((falha: Error) => ativo && setErroGoogle(falha.message))
+    return () => {
+      ativo = false
+    }
+  }, [clientId, pendente, navegar])
+
+  async function completarCadastro(evento: FormEvent) {
     evento.preventDefault()
+    if (!pendente?.tokenCadastro) return
     const resultado = await cadastro.executar({
-      nome: nome.trim(),
-      email: email.trim(),
+      tokenCadastro: pendente.tokenCadastro,
       apelido: apelido.trim(),
       dataNascimento,
     })
-
     if (resultado.ok) navegar('/desafios', { replace: true })
+    // Token de cadastro vencido: volta ao botão do Google.
+    else if (resultado.status === 401) setPendente(null)
   }
 
-  function fecharCadastro() {
-    setCadastrando(false)
+  function voltar() {
+    setPendente(null)
     cadastro.limparErro()
   }
 
@@ -64,98 +82,64 @@ export function LoginView() {
         </div>
 
         <div className={estilos.entrada}>
-        {erro && <Alerta>{erro}</Alerta>}
-        {erroLogin && <Alerta>{erroLogin}</Alerta>}
+          {config.erro && <Alerta>{config.erro}</Alerta>}
+          {erroGoogle && <Alerta>{erroGoogle}</Alerta>}
+          {login.erro && <Alerta>{login.erro}</Alerta>}
 
-        {carregando ? (
-          <SpinnerCentral />
-        ) : (
-          <div className={estilos.lista}>
-            <span className={estilos.rotuloLista}>Entrar como</span>
-            {usuarios?.map((usuario) => (
-              <CartaoUsuario
-                key={usuario.idUsuario}
-                usuario={usuario}
-                entrando={enviando && escolhido === usuario.apelido}
-                desabilitado={enviando || cadastro.enviando}
-                aoSelecionar={selecionar}
-              />
-            ))}
-          </div>
-        )}
+          {pendente ? (
+            <Card className={estilos.cadastro}>
+              <form className={estilos.formulario} onSubmit={completarCadastro}>
+                <span className={estilos.rotuloLista}>Complete seu cadastro</span>
 
-        {cadastrando ? (
-          <Card className={estilos.cadastro}>
-            <form className={estilos.formulario} onSubmit={submeterCadastro}>
-              <span className={estilos.rotuloLista}>Criar conta</span>
+                <div className={estilos.perfilGoogle}>
+                  <Avatar apelido={pendente.nome ?? '?'} url={pendente.avatarUrl} grande />
+                  <span className={estilos.perfilTextos}>
+                    <span className={estilos.perfilNome}>{pendente.nome}</span>
+                    <span className={estilos.perfilEmail}>{pendente.email}</span>
+                  </span>
+                </div>
 
-              <Campo rotulo="Nome">
-                <input
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                  maxLength={100}
-                  autoComplete="name"
-                  required
-                />
-              </Campo>
+                <Campo rotulo="Apelido" dica="É como o grupo vai te ver. Pode repetir o de outra pessoa.">
+                  <input value={apelido} onChange={(e) => setApelido(e.target.value)} maxLength={50} required />
+                </Campo>
 
-              <Campo rotulo="E-mail" dica="É por ele que um admin te adiciona a um grupo.">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  maxLength={120}
-                  autoComplete="email"
-                  required
-                />
-              </Campo>
+                <Campo rotulo="Data de nascimento" dica="É preciso ter 16 anos ou mais.">
+                  <input
+                    type="date"
+                    value={dataNascimento}
+                    onChange={(e) => setDataNascimento(e.target.value)}
+                    max={hojeLocal()}
+                    required
+                  />
+                </Campo>
 
-              <Campo rotulo="Apelido" dica="É como o grupo vai te ver.">
-                <input
-                  value={apelido}
-                  onChange={(e) => setApelido(e.target.value)}
-                  maxLength={50}
-                  required
-                />
-              </Campo>
+                {cadastro.erro && <Alerta>{cadastro.erro}</Alerta>}
 
-              <Campo rotulo="Data de nascimento" dica="É preciso ter 16 anos ou mais.">
-                <input
-                  type="date"
-                  value={dataNascimento}
-                  onChange={(e) => setDataNascimento(e.target.value)}
-                  max={hojeLocal()}
-                  required
-                />
-              </Campo>
+                <div className={estilos.formularioBotoes}>
+                  <Botao type="submit" carregando={cadastro.enviando}>
+                    Criar conta e entrar
+                  </Botao>
+                  <Botao type="button" variante="fantasma" onClick={voltar}>
+                    Voltar
+                  </Botao>
+                </div>
+              </form>
+            </Card>
+          ) : config.carregando ? (
+            <SpinnerCentral />
+          ) : clientId ? (
+            <div className={estilos.google}>
+              <span className={estilos.rotuloLista}>Entrar</span>
+              <div ref={lugarDoBotao} className={estilos.botaoGoogle} aria-label="Entrar com Google" />
+              {login.enviando && <SpinnerCentral />}
+            </div>
+          ) : (
+            !config.erro && <Alerta>O login com Google ainda não foi configurado neste servidor.</Alerta>
+          )}
 
-              {cadastro.erro && <Alerta>{cadastro.erro}</Alerta>}
-
-              <div className={estilos.formularioBotoes}>
-                <Botao type="submit" carregando={cadastro.enviando} disabled={enviando}>
-                  Criar e entrar
-                </Botao>
-                <Botao type="button" variante="fantasma" onClick={fecharCadastro}>
-                  Cancelar
-                </Botao>
-              </div>
-            </form>
-          </Card>
-        ) : (
-          <Botao
-            variante="secundaria"
-            bloco
-            className={estilos.criarConta}
-            onClick={() => setCadastrando(true)}
-          >
-            Criar conta de teste
-          </Botao>
-        )}
-
-        <p className={estilos.rodape}>
-          Login de desenvolvimento. O acesso por Google entra quando <code>Auth:Provider</code>{' '}
-          virar <code>Google</code>.
-        </p>
+          <p className={estilos.rodape}>
+            Sua identidade vem do Google: o Eu Duvido! não guarda senha.
+          </p>
         </div>
       </div>
     </div>

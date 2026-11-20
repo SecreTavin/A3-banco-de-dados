@@ -24,9 +24,12 @@ Sobe PostgreSQL, MinIO, API e frontend. Quando os quatro estiverem de pé:
 | MinIO (console) | <http://localhost:9001> |
 | PostgreSQL | `localhost:5432` — `euduvido` / `euduvido` |
 
-O banco já sobe povoado. O login é por seleção de usuário — sem senha, sem
-Google — porque `Auth:Provider` está em `Dev`. Os cinco usuários disponíveis são
-**Tavin**, **Biel**, **Theus**, **Lari** e **Lipe**.
+O banco já sobe povoado. O login é só pelo Google
+([ADR 0021](docs/02-arquitetura/adr/0021-login-exclusivo-google.md)). Preencha
+`GOOGLE_CLIENT_ID` no `.env` e, para entrar como um usuário do seed (Tavin,
+Biel, Theus, Lari, Lipe…), ligue sua conta Google a ele com `DEMO_CONTAS` e
+`scripts/demo/vincular-contas.sh`. Detalhes no
+[documento 16](docs/02-arquitetura/16-execucao-local.md#login-com-google).
 
 ### Roteiro de demonstração
 

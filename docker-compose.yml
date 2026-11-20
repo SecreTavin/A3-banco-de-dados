@@ -68,8 +68,10 @@ services:
         condition: service_healthy
     environment:
       ConnectionStrings__Postgres: "Host=db;Port=5432;Database=euduvido;Username=euduvido;Password=euduvido;Maximum Pool Size=15"
-      Auth__Provider: "Dev"
-      Auth__Chave: "chave-de-desenvolvimento-nao-usar-em-producao-min-32-chars"
+      # Login so pelo Google (ADR 0021). A chave que assina as sessoes tem um
+      # padrao so para desenvolvimento e CI; no ambiente publico vem do .env.
+      Auth__Chave: "${AUTH_CHAVE:-chave-de-desenvolvimento-nao-usar-em-producao-min-32-chars}"
+      Auth__GoogleClientId: "${GOOGLE_CLIENT_ID:-}"
       Cors__Origens__0: "http://localhost:8080"
       Cors__Origens__1: "http://localhost:5173"
       # Moderacao de desafios por IA na Groq (ADR 0015). A chave vem do .env.
