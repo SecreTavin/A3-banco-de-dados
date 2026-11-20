@@ -59,3 +59,13 @@ EXPOUNA 2026: 900 x 1200, em retrato, com o texto na metade de cima.
 
 Entram o nome completo nos documentos e no deck, e o card com o HTML de origem.
 O PO hospeda o card no Imgur e cola o link na plataforma MostraPlus.
+
+## Atualização: card sem a cena 3D
+
+O PO pediu:
+
+> Retire a cena 3D do card
+
+A metade de baixo passou a ser só decorativa: o "?" e o "!" da marca em marca
+d'água, moedas de CP e as linhas diagonais do fundo da abertura. O texto
+continua todo nos primeiros 580 px. O quadro da abertura saiu do repositório.
