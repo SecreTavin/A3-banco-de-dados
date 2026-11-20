@@ -140,6 +140,18 @@ Rode antes de cada ensaio e na véspera da banca.
 O caminho antigo, `docker compose down -v && docker compose up -d`, também
 volta ao seed no Docker local, porque o seed roda quando o volume está vazio.
 
+**Começar sem o seed.** Para usar o sistema com pessoas reais, sem os
+personagens da demonstração:
+
+```bash
+scripts/demo/recriar-banco.sh --vazio
+```
+
+O banco fica só com o schema e as quatro categorias
+(`database/scripts/dml/categorias.sql`). As categorias não têm tela de gestão;
+sem elas, nenhum desafio pode ser criado. Cada pessoa se cadastra ao entrar com
+o Google, e só dá para adicionar a um grupo quem já entrou uma vez.
+
 ## Ver o SQL ao vivo
 
 Durante a demonstração, uma janela ao lado do navegador mostra cada comando
@@ -216,7 +228,7 @@ estar nas origens autorizadas do Client ID.
 | Código | Checkout da `main` deste repositório; atualização manual, sem deploy automático |
 | Frontend | Build com `VITE_API_URL` vazio; o nginx repassa `/api/` e `/hubs/` para a API |
 | Portas | Nenhuma aberta; só o `web` escuta, em `127.0.0.1:5380`, atrás do túnel |
-| Banco | Criado pelo `schema.sql` e pelo `seed.sql`, como no Docker local. Para recriar: `docker compose down -v && docker compose up -d` na VM |
+| Banco | Desde 20/11/2026, sem o seed: só o schema e as categorias, com os dados reais dos participantes. Antes de recriar, faça backup (`pg_dump`); recriar com `scripts/demo/recriar-banco.sh --vazio` apaga tudo |
 
 O override do compose, a configuração do nginx e o `.env` com a chave da Groq
 existem só na VM. Para atualizar, quem tem acesso SSH roda no checkout dela:
@@ -237,3 +249,4 @@ repositório e funciona, mas deixou de ser o endereço divulgado.
 | `Maximum Pool Size=15` | Fixado na connection string por causa do teto de 20 conexões do Aiven, mesmo em desenvolvimento — para que o comportamento local seja igual ao de produção |
 | Migrations automáticas | Convenientes aqui, mas em produção significam que um merge altera o banco sem gate humano ([ADR 0010](adr/0010-hospedagem-e-deploy.md)) |
 | Foto da prova | Sobe pela API para o MinIO ([ADR 0022](adr/0022-foto-da-prova-no-minio-pela-api.md)). Um proxy na frente da API precisa de `client_max_body_size 10m` em `/api`; o padrão do nginx (1 MB) recusa a foto com 413. O backup do banco não leva as fotos: elas ficam no volume `storage-data` |
+| Proxy de `/api` com cache de estáticos | A foto é lida em `/api/midia/<nome>.jpg`. No nginx, uma regra por regex de estáticos (`location ~* \.(png\|jpg)$`) vence o prefixo `location /api/` e responde 404 sem chamar a API. Use `location ^~ /api/`. O `nginx.vm.conf` é montado como arquivo: depois de editá-lo, `docker compose restart web`, porque o `reload` continua lendo a versão antiga |

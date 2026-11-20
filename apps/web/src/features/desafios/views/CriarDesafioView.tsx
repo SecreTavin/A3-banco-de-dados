@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Alerta, Badge, Botao, Icone, LinkVoltar, SaldoCp, SpinnerCentral } from '../../../shared/ui'
+import { Alerta, Badge, Botao, EstadoVazio, Icone, LinkVoltar, SaldoCp, SpinnerCentral } from '../../../shared/ui'
 import { formatarDataHora } from '../../../shared/ui/formato'
 import { exemploRecompensa, rotuloNivelFiltro, rotuloRecompensa } from '../../../shared/ui/status'
 import type { NivelFiltro, TipoRecompensa } from '../../../shared/api/tipos'
@@ -67,6 +67,23 @@ export function CriarDesafioView() {
   const [moderacao, setModeracao] = useState<Moderacao>({ tipo: 'parada' })
 
   if (carregandoGrupos || carregandoCategorias) return <SpinnerCentral />
+
+  // Desafio sempre nasce num grupo: sem grupo, o formulário não teria onde criar.
+  if (!grupos || grupos.length === 0) {
+    return (
+      <>
+        <LinkVoltar para="/desafios" rotulo="Desafios" />
+        <header className={estilos.cabecalho}>
+          <h1>Novo desafio</h1>
+        </header>
+        <EstadoVazio
+          titulo="Primeiro, um grupo"
+          descricao="Todo desafio acontece dentro de um grupo. Crie um ou peça para alguém te adicionar."
+          acao={<Botao onClick={() => navegar('/grupos')}>Ir para meus grupos</Botao>}
+        />
+      </>
+    )
+  }
 
   const grupo = grupos?.find((g) => g.idGrupo === idGrupo) ?? grupos?.[0]
   const categoria = categorias?.find((c) => c.idCategoria === idCategoria)

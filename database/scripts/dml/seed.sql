@@ -44,7 +44,7 @@ INSERT INTO membro_grupo (id_grupo, id_usuario, papel) VALUES
 (1, 5, 'MEMBRO');
 
 -- -----------------------------------------------------------------------------
--- Categorias (lista fixa - sem tela de gestao)
+-- Categorias (lista fixa - sem tela de gestao; a mesma de categorias.sql)
 -- -----------------------------------------------------------------------------
 INSERT INTO categoria_desafio (nome, descricao) VALUES
 ('Esportes & Fitness', 'Desafios de corrida, academia, flexoes e partidas de futebol'),
