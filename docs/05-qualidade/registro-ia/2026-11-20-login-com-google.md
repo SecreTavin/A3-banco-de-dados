@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-11-20 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | API (módulo Identidade, `TokenService`, `ValidadorGoogle`, ranking e júri com `idUsuario`), front (tela 22, `AuthContext`, ranking, pódio, perfil, júri), `docker-compose.yml`, `.env.example`, `publicar.sh`, `scripts/demo/vincular-contas.sh`, roteiros de teste e de capturas, testes da API, documentos 16, 17 e 22, ADRs 0020 e 0021, roteiro da demonstração, `README.md` |
 

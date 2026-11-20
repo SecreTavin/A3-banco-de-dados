@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | **Data** | 2026-10-31 |
-| **Responsável** | Octávio Arruda (Product Owner) |
+| **Responsável** | Octávio Augusto Arruda dos Prazeres (Product Owner) |
 | **Ferramenta** | Claude Code (Opus 5.5) |
 | **Artefato afetado** | `apps/web` (seis telas, componentes comuns), leituras Dapper em `apps/api`, mensagens de erro, `scripts/testes/roteiro-e2e-ui.mjs` e `roteiro-e2e-ia.mjs`, `docs/04-ux/propostas/`, documento 17 |
 

@@ -2,7 +2,7 @@
 
 * **Status:** Aceita (implementada em 20/11/2026)
 * **Data:** 2026-11-07
-* **Decisores:** Octávio Arruda (Product Owner)
+* **Decisores:** Octávio Augusto Arruda dos Prazeres (Product Owner)
 
 ## Contexto
 
