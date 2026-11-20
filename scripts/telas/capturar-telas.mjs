@@ -12,14 +12,17 @@
 // capturar, recrie o banco para a demonstracao:
 //     docker compose down -v && docker compose up -d
 //
-// Variaveis: EUDUVIDO_WEB (http://localhost:8080), CHROME_PATH.
+// Variaveis: EUDUVIDO_WEB (http://localhost:8080), EUDUVIDO_DB (euduvido-db-1), CHROME_PATH.
 
+import { execFileSync } from 'node:child_process'
 import { mkdirSync } from 'node:fs'
 import { chromium } from 'playwright-core'
+import { consultaUsuario, gravarSessao, sessaoDe } from '../testes/sessao.mjs'
 
 const WEB = process.env.EUDUVIDO_WEB ?? 'http://localhost:8080'
 const CHROME = process.env.CHROME_PATH ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 const CAPTURAR_RECUSA = process.env.EUDUVIDO_CAPTURAR_RECUSA === '1'
+const CONTAINER_DB = process.env.EUDUVIDO_DB ?? 'euduvido-db-1'
 const DESTINO = new URL('../../docs/04-ux/telas/img/', import.meta.url).pathname
 
 mkdirSync(DESTINO, { recursive: true })
@@ -46,15 +49,17 @@ async function irPara(url) {
   await pagina.keyboard.press('Enter')
 }
 
+const sql = (consulta) =>
+  execFileSync('docker', ['exec', CONTAINER_DB, 'psql', '-U', 'euduvido', '-d', 'euduvido', '-tA', '-c', consulta], {
+    encoding: 'utf8',
+  }).trim()
+
+// O login e so pelo Google, que nao se automatiza: a sessao e assinada aqui
+// (scripts/testes/sessao.mjs) e gravada como a tela de login faria.
 async function entrar(apelido) {
   await irPara(`${WEB}/login`)
-  await pagina.evaluate(() => {
-    localStorage.removeItem('euduvido.token')
-    localStorage.removeItem('euduvido.usuario')
-  })
-  await irPara(`${WEB}/login`)
-  await esperar()
-  await pagina.getByText(apelido, { exact: true }).first().click()
+  await gravarSessao(pagina, sessaoDe(sql(consultaUsuario(apelido.replaceAll("'", "''")))))
+  await irPara(`${WEB}/desafios`)
   await pagina.waitForURL('**/desafios', { timeout: 15000 })
 }
 

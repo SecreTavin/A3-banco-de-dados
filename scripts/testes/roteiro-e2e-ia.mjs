@@ -44,6 +44,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright-core'
 import { iniciarIaFalsa } from './ia-falsa.mjs'
+import { consultaUsuario, gravarSessao, sessaoDe } from './sessao.mjs'
 
 const WEB = process.env.EUDUVIDO_WEB ?? 'http://localhost:8080'
 const API = process.env.EUDUVIDO_API ?? 'http://localhost:5080'
@@ -167,14 +168,9 @@ async function chamar(metodo, rota, corpo, token) {
   return { status: resposta.status, corpo: json }
 }
 
-const tokens = {}
+// O login e so pelo Google: a sessao e assinada pelo roteiro (sessao.mjs).
 async function token(apelido) {
-  if (!tokens[apelido]) {
-    const { status, corpo } = await chamar('POST', '/api/auth/dev/login', { apelido })
-    confere(status === 200, `login de ${apelido}: HTTP ${status}`)
-    tokens[apelido] = corpo.token
-  }
-  return tokens[apelido]
+  return sessaoDe(sql(consultaUsuario(esc(apelido)))).token
 }
 
 const prazo = (dias = 7) => new Date(Date.now() + dias * 86_400_000).toISOString()
@@ -255,13 +251,8 @@ async function esperarRede() {
 
 async function entrar(apelido) {
   await irPara(`${WEB}/login`)
-  await pagina.evaluate(() => {
-    localStorage.removeItem('euduvido.token')
-    localStorage.removeItem('euduvido.usuario')
-  })
-  await irPara(`${WEB}/login`)
-  await esperarRede()
-  await pagina.getByText(apelido, { exact: true }).first().click()
+  await gravarSessao(pagina, sessaoDe(sql(consultaUsuario(esc(apelido)))))
+  await irPara(`${WEB}/desafios`)
   await pagina.waitForURL('**/desafios', { timeout: 15000 })
   await esperarRede()
 }

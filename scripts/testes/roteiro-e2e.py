@@ -10,12 +10,19 @@ pelo seed, porque o roteiro altera os dados (vota, cancela, remove membro):
 E12 espera o comportamento sem chave da Groq (IA_API_KEY vazia): criar desafio
 responde 503 e nada e gravado. Com a chave configurada, o desafio passa pela
 moderacao e E12 deixa de se aplicar.
+
+O login e so pelo Google (ADR 0021), e o popup do Google nao se automatiza. O
+roteiro cria a sessao assinando o JWT com a chave do ambiente de teste
+(AUTH_CHAVE, ou o padrao de desenvolvimento), exatamente como a API faria.
 """
+import base64, hashlib, hmac, time
 import json, subprocess, urllib.request, urllib.error, datetime
 
 import os
 
 API = os.environ.get("EUDUVIDO_API", "http://localhost:5080")
+CHAVE = os.environ.get("AUTH_CHAVE") or "chave-de-desenvolvimento-nao-usar-em-producao-min-32-chars"
+CLAIM = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/"
 CONTAINER_DB = os.environ.get("EUDUVIDO_DB", "euduvido-db-1")
 resultados = []
 
@@ -41,10 +48,25 @@ def chamar(metodo, rota, corpo=None, token=None):
         except Exception:
             return e.code, txt
 
+def _b64(dados):
+    return base64.urlsafe_b64encode(dados).rstrip(b"=").decode()
+
+def assinar(audiencia, claims, minutos=60):
+    """JWT HS256 com o mesmo emissor, audiencia e chave que a API usa."""
+    corpo = {**claims, "iss": "euduvido", "aud": audiencia, "exp": int(time.time()) + minutos * 60}
+    cabeca = _b64(json.dumps({"alg": "HS256", "typ": "JWT"}).encode())
+    carga = _b64(json.dumps(corpo).encode())
+    assinatura = hmac.new(CHAVE.encode(), f"{cabeca}.{carga}".encode(), hashlib.sha256).digest()
+    return f"{cabeca}.{carga}.{_b64(assinatura)}"
+
 def login(apelido):
-    s, r = chamar("POST", "/api/auth/dev/login", {"apelido": apelido})
-    assert s == 200, (apelido, s, r)
-    return r["token"]
+    """Sessao de um usuario do seed, como o login com Google entregaria."""
+    id_, email = sql(f"SELECT id_usuario || '|' || email FROM usuario WHERE apelido = '{apelido}' ORDER BY id_usuario LIMIT 1").split("|")
+    return assinar("euduvido", {CLAIM + "nameidentifier": id_, CLAIM + "name": apelido, CLAIM + "emailaddress": email})
+
+def token_cadastro(email, nome):
+    """O que a API devolve a quem entra pelo Google pela primeira vez."""
+    return assinar("euduvido-cadastro", {CLAIM + "emailaddress": email, "nome": nome}, minutos=15)
 
 def caso(id_, descricao, ok, detalhe=""):
     resultados.append((id_, descricao, "Aprovado" if ok else "REPROVADO", detalhe))
@@ -53,8 +75,12 @@ def contabilidade():
     return sql("SELECT (SELECT count(*) FROM vw_reconciliacao_saldo) + (SELECT count(*) FROM vw_escrow_orfao)")
 
 # --- E01 acesso -------------------------------------------------------------
-s, us = chamar("GET", "/api/auth/dev/usuarios")
-caso("E01", "Acesso: lista de usuários do login de desenvolvimento", s == 200 and len(us) == 9, f"HTTP {s}, {len(us)} usuários")
+s_dev, _ = chamar("GET", "/api/auth/dev/usuarios")
+s_cfg, cfg = chamar("GET", "/api/auth/configuracao")
+s_g, r_g = chamar("POST", "/api/auth/google", {"credential": "token-forjado"})
+caso("E01", "Acesso: só pelo Google; o login de desenvolvimento não existe e token falso é recusado",
+     s_dev == 404 and s_cfg == 200 and s_g in (401, 503) and not (isinstance(r_g, dict) and r_g.get("token")),
+     f"dev HTTP {s_dev}; configuração HTTP {s_cfg}; Google com token falso HTTP {s_g}")
 tavin, lari, biel, theus = (login(a) for a in ("Tavin", "Lari", "Biel", "Theus"))
 
 # --- E02 consulta / relacionamento -------------------------------------------
@@ -80,12 +106,12 @@ caso("E05", "Validação: segundo voto na mesma evidência é recusado", s >= 40
 
 # --- E06/E07 idade mínima (RN26) ---------------------------------------------
 hoje = datetime.date.today()
-s, r = chamar("POST", "/api/auth/dev/cadastro", {"nome": "Menor Teste", "email": "menor@email.com", "apelido": "Menor",
-                                                 "dataNascimento": hoje.replace(year=hoje.year - 12).isoformat()})
+s, r = chamar("POST", "/api/auth/cadastro", {"tokenCadastro": token_cadastro("menor@email.com", "Menor Teste"), "apelido": "Menor",
+                                             "dataNascimento": hoje.replace(year=hoje.year - 12).isoformat()})
 existe = sql("SELECT count(*) FROM usuario WHERE email='menor@email.com'")
 caso("E06", "RN26: cadastro de usuário com 12 anos é recusado", s == 422 and existe == "0", f"HTTP {s}: {str(r)[:90]}")
-s, r = chamar("POST", "/api/auth/dev/cadastro", {"nome": "Julia Prado", "email": "julia@email.com", "apelido": "Ju",
-                                                 "dataNascimento": "2004-04-04"})
+s, r = chamar("POST", "/api/auth/cadastro", {"tokenCadastro": token_cadastro("julia@email.com", "Julia Prado"), "apelido": "Ju",
+                                             "dataNascimento": "2004-04-04"})
 caso("E07", "Inclusão: cadastro de usuário com 22 anos", s in (200, 201) and sql("SELECT count(*) FROM usuario WHERE email='julia@email.com'") == "1", f"HTTP {s}")
 
 # --- E08 ADMIN adiciona membro ------------------------------------------------
