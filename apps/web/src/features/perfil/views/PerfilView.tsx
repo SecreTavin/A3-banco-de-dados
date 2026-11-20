@@ -10,6 +10,7 @@ import {
   SpinnerCentral,
 } from '../../../shared/ui'
 import { formatarDataCompleta } from '../../../shared/ui/formato'
+import { useAuth } from '../../../shared/auth/AuthContext'
 import { LinhaExtrato } from '../components/LinhaExtrato'
 import { SaldoNoGrupo } from '../components/SaldoNoGrupo'
 import { usePerfilQuery } from '../hooks/usePerfilQuery'
@@ -17,6 +18,7 @@ import estilos from '../perfil.module.css'
 
 export function PerfilView() {
   const { dados: perfil, carregando, erro } = usePerfilQuery()
+  const { sair } = useAuth()
   const navegar = useNavigate()
 
   if (carregando) return <SpinnerCentral />
@@ -93,6 +95,13 @@ export function PerfilView() {
           </ul>
         )}
       </Secao>
+      </div>
+
+      {/* No celular o topo não tem o botão de sair; ele mora aqui. */}
+      <div className={estilos.sairConta}>
+        <Botao variante="fantasma" bloco onClick={sair}>
+          Sair da conta
+        </Botao>
       </div>
     </>
   )

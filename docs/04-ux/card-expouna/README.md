@@ -13,11 +13,13 @@ Card de identidade visual do Eu Duvido! para a Vitrine Virtual da EXPOUNA 2026
 
 **De onde vem cada peça:**
 
-* **Metade de baixo:** um quadro real da abertura em 3D (tela 30), com o monge,
-  o nerd e a plateia no corredor do colégio, capturado do app em 900 x 1200.
+* **Metade de baixo:** só decorativa. O "?" e o "!" da marca aparecem em marca
+  d'água, junto com moedas de CP e as linhas diagonais do fundo da abertura.
+  Na primeira versão, essa metade tinha a cena 3D da abertura; o PO pediu para
+  tirá-la.
 * **Título:** branco com borda dourada, como na abertura. O "!" é desenhado em
   SVG, porque o glifo da fonte em peso alto fecha o vão entre o traço e o ponto.
 * **Marca "?!":** a mesma do ícone do app.
 
 **Para refazer:** abra `card.html` num navegador em 900 x 1200 e capture a
-página. O quadro de fundo é `cena-abertura-900x1200.png`.
+página.

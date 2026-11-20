@@ -1,56 +1,63 @@
 /* Ranking: pódio dos três primeiros e a tabela do resto, com "você" marcado. */
 
-.cabecalho,
-.corpo {
-  flex-shrink: 0;
-}
-
 .cabecalho {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 14px;
+  margin-bottom: 18px;
 }
 
 .cabecalho h1 {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
+  letter-spacing: -0.03em;
 }
 
 .cabecalho p {
+  margin-top: 4px;
   font-size: 15px;
   color: var(--texto-suave);
 }
 
 .grupos {
   display: flex;
-  gap: 4px;
-  width: fit-content;
+  gap: 8px;
   max-width: 100%;
-  padding: 4px;
+  margin: 0 -16px;
+  padding: 0 16px;
   overflow-x: auto;
-  border: 1px solid var(--borda);
-  border-radius: 12px;
-  background: var(--superficie);
   scrollbar-width: none;
+}
+
+.grupos::-webkit-scrollbar {
+  display: none;
 }
 
 .grupo {
   flex: none;
-  padding: 8px 14px;
-  border: none;
-  border-radius: 9px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--borda-forte);
+  border-radius: var(--raio-chip);
   background: transparent;
   color: var(--texto-suave);
   font-size: 14.5px;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 
-.grupoAtivo {
-  background: var(--primaria-fraca);
+.grupo:hover {
+  border-color: var(--texto-fraco);
   color: var(--texto);
+}
+
+.grupoAtivo,
+.grupoAtivo:hover {
+  border-color: var(--texto);
+  background: var(--texto);
+  color: var(--fundo);
 }
 
 .corpo {
@@ -75,35 +82,39 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   min-width: 0;
-  padding: 14px 8px;
+  padding: 16px 8px 14px;
   border: 1px solid var(--borda);
-  border-radius: 16px;
+  border-radius: var(--raio);
   background: var(--superficie);
   text-align: center;
 }
 
 .primeiro {
-  padding-top: 20px;
-  border-color: color-mix(in srgb, var(--cp) 50%, transparent);
-  background: linear-gradient(180deg, var(--cp-fraca), transparent);
+  padding-top: 22px;
+  border-color: color-mix(in srgb, var(--cp-fundo) 70%, transparent);
+  background: linear-gradient(180deg, var(--cp-fraca), var(--superficie) 70%);
 }
 
 .primeiro :global(img),
 .primeiro > span:nth-child(2) {
-  box-shadow: 0 0 0 3px var(--cp);
+  box-shadow: 0 0 0 3px var(--cp-fundo);
 }
 
 .lugar {
+  font-family: var(--fonte-titulo);
   font-size: 13px;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   color: var(--texto-fraco);
 }
 
 .primeiro .lugar {
-  color: var(--cp);
+  padding: 2px 10px;
+  border-radius: var(--raio-chip);
+  background: var(--cp-fundo);
+  color: var(--sobre-cp);
 }
 
 .nome {
@@ -114,7 +125,9 @@
   gap: 6px;
   max-width: 100%;
   overflow: hidden;
+  font-family: var(--fonte-titulo);
   font-size: 15px;
+  font-weight: 700;
   text-overflow: ellipsis;
 }
 
@@ -123,6 +136,7 @@
   border-radius: 6px;
   background: var(--primaria-fraca);
   color: var(--destaque-texto);
+  font-family: var(--fonte-texto);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -151,21 +165,23 @@
 
 .linha {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) 110px 70px;
+  grid-template-columns: 28px minmax(0, 1fr) 110px 76px;
   grid-template-areas: 'pos jogador acerto saldo';
   align-items: center;
   gap: 10px;
-  padding: 11px 14px;
+  min-height: 56px;
+  padding: 8px 14px;
   border-top: 1px solid var(--borda);
   font-size: 15px;
 }
 
 .titulos {
+  min-height: 0;
+  padding: 10px 14px 6px;
   border-top: none;
-  padding-bottom: 6px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--texto-fraco);
 }
@@ -185,8 +201,10 @@
 }
 
 .posicao {
-  font-weight: 700;
+  font-family: var(--fonte-titulo);
+  font-weight: 800;
   color: var(--texto-fraco);
+  font-variant-numeric: tabular-nums;
 }
 
 .jogador {
@@ -224,6 +242,10 @@
   color: var(--texto-fraco);
 }
 
+.premios {
+  font-variant-numeric: tabular-nums;
+}
+
 @media (min-width: 720px) {
   .cabecalho {
     flex-direction: row;
@@ -231,12 +253,21 @@
     justify-content: space-between;
   }
 
+  .grupos {
+    margin: 0;
+    padding: 0;
+  }
+
+  .podio {
+    gap: 12px;
+  }
+
   .degrau {
-    padding: 18px 14px;
+    padding: 20px 14px 18px;
   }
 
   .primeiro {
-    padding-top: 28px;
+    padding-top: 30px;
   }
 
   .nome {
@@ -249,7 +280,7 @@
 
   .linha {
     grid-template-columns: 40px minmax(0, 1fr) 170px 110px 120px;
-    padding: 12px 20px;
+    padding: 10px 20px;
   }
 
   .titulos span:nth-child(4),
@@ -263,25 +294,21 @@
   }
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 1024px) {
   .cabecalho {
-    margin-bottom: 0;
+    margin-bottom: 24px;
   }
 
   .cabecalho h1 {
-    font-size: 34px;
+    font-size: 36px;
   }
 
   .cabecalho p {
-    font-size: 17px;
-  }
-
-  .grupo {
     font-size: 16px;
   }
 
   .podio {
-    gap: 14px;
+    gap: 16px;
   }
 
   .nome {
@@ -289,14 +316,10 @@
   }
 
   .resumo {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   .linha {
-    font-size: 17px;
-  }
-
-  .acerto {
     font-size: 16px;
   }
 }

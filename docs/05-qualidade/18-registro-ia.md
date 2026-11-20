@@ -37,7 +37,7 @@ cada arquivo.
 
 ## Registros
 
-54 registros, em ordem cronológica.
+57 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -88,6 +88,8 @@ cada arquivo.
 | 2026-11-07 | [Conclusão e referências da Banca Final](registro-ia/2026-11-07-conclusao-e-referencias.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-07 | [ADR 0010 com a hospedagem que existe de fato](registro-ia/2026-11-07-adr-0010-hospedagem-real.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-07 | [Especificação do login com Google](registro-ia/2026-11-07-especificacao-login-google.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-10 | [Redesign mobile-first com tema claro padrão](registro-ia/2026-11-10-redesign-mobile-first.md) | Claude Code (Fable 5.1) | Rafael Alves |
+| 2026-11-10 | [Ajustes nas resoluções mais usadas e medição de rolagem](registro-ia/2026-11-10-ajustes-resolucoes.md) | Claude Code (Fable 5.1) | Rafael Alves |
 | 2026-11-16 | [Demonstração pública na VM da Oracle](registro-ia/2026-11-16-demo-na-vm-oracle.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-16 | [Revisão do PO da publicação na VM da Oracle](registro-ia/2026-11-16-revisao-demo-na-vm.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-16 | [Roteiro da demonstração da Banca Final](registro-ia/2026-11-16-roteiro-da-demonstracao.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
@@ -95,6 +97,7 @@ cada arquivo.
 | 2026-11-20 | [Slides na ordem do edital e referência do edital](registro-ia/2026-11-20-slides-do-edital-e-referencias.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-20 | [Nome completo do PO e card da EXPOUNA](registro-ia/2026-11-20-nome-completo-e-card-expouna.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-20 | [Login com Google](registro-ia/2026-11-20-login-com-google.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-20 | [Login com Google no visual do redesign](registro-ia/2026-11-20-login-google-no-redesign.md) | Claude Code (Opus 5.5) | Rafael Alves |
 
 ## Consolidação final
 

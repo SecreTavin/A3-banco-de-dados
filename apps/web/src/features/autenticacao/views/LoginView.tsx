@@ -74,11 +74,11 @@ export function LoginView() {
     <div className={estilos.tela}>
       <div className={estilos.painel}>
         <div className={estilos.marca}>
-          <span className={estilos.logo}>?</span>
+          <span className={estilos.logo} aria-hidden="true">
+            ?<em>!</em>
+          </span>
           <h1 className={estilos.titulo}>Eu Duvido!</h1>
-          <p className={estilos.subtitulo}>
-            Desafios entre amigos, decididos pelo grupo — e pagos em CP.
-          </p>
+          <p className={estilos.subtitulo}>Desafios entre amigos, decididos pelo grupo e pagos em CP.</p>
         </div>
 
         <div className={estilos.entrada}>
