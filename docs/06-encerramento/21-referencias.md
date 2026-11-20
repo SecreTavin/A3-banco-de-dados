@@ -1,8 +1,10 @@
 # 21 - Referências
 
 Fontes citadas na documentação do projeto, em ordem alfabética, no formato da
-ABNT NBR 6023:2018. São 21 referências:
+ABNT NBR 6023:2018. São 22 referências:
 
+* **1 da disciplina:** o edital do Projeto A3, que define entregas, critérios e
+  a estrutura deste GitBook;
 * **14 sobre o contexto:** jogos online e competições no Brasil, da página
   [Jogos online no Brasil em números](../00-introducao/jogos-online-em-numeros.md);
 * **7 técnicas,** que fundamentaram decisões de arquitetura no
@@ -28,6 +30,11 @@ Acesso em: 7 nov. 2026.
 ALLCORRECT. **Brazil Gaming Market 2025: Data, Trends and Growth**. 2025.
 Disponível em: <https://allcorrectgames.com/insights/brazil/>. Acesso em: 31 out.
 2026.
+
+ÂNIMA EDUCAÇÃO. **Ficha de inscrição: Projeto A3 UC Banco de Dados**.
+Orientação: Prof. Mario Sergio Caldas Teixeira. [*S. l.*]: Ânima Educação, 2026.
+Documento da Unidade Curricular Banco de Dados, com data de entrega da ficha em
+11 set. 2026.
 
 CORREIO DA MANHÃ. Mercado de games movimenta R$ 13 bilhões no Brasil e amplia
 participação global. **Correio da Manhã**, Rio de Janeiro, abr. 2026.
