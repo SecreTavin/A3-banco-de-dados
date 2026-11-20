@@ -32,19 +32,21 @@ celular, e quem apresenta narra o que muda na tela do projetor.
 | --- | --- | --- | --- | --- |
 | 1 | 0:30 | Abrir o site e apresentar o app | — | Nenhum (o site abre direto no login) |
 | 2 | 1:00 | Login com Google e idade mínima | Uma conta Google sem vínculo | Trigger `trg_valida_idade_minima` (RN26) |
-| 3 | 1:30 | Grupo: membros, saldos e entrada de membro | Tavin | Trigger `trg_credito_inicial`: 100 CP no ledger (RN06) |
+| 3 | 2:00 | Grupo: entrada e saída de membro | Tavin | Trigger `trg_credito_inicial` (RN06) e procedure `remover_membro` (RN25) |
 | 4 | 2:00 | Criar desafio com moderação por IA | Tavin | `moderacao_desafio`: toda proposta fica gravada (RN28) |
 | 5 | 1:30 | Aceitar desafio: CP vai para o escrow | Biel e Theus | Procedure `debitar_escrow` (RN18) |
 | 6 | 1:00 | Enviar a prova: júri congelado | Lipe | `jurado_evidencia` (RN14) |
 | 7 | 2:30 | **Voto que fecha o quórum** | Lari | Procedure `apurar_votacao`, numa transação |
 | 8 | 1:00 | Ranking e perfil | Tavin | Consultas Dapper sobre o ledger |
 | 9 | 2:00 | O banco por dentro (psql) | — | Ledger append-only e views de contabilidade |
-| | **13:00** | | | |
+| | **13:30** | | | |
 
 **Equipamento:**
 
 * **Projetor:** um computador com duas janelas lado a lado:
-  * o navegador no site, logado como Tavin;
+  * o navegador no site, logado como Tavin, com o botão **A+** ligado. Ele
+    aumenta a fonte em 20% para o datashow, como o professor pediu na revisão
+    de 31/10, e fica salvo naquele navegador;
   * um terminal com o **SQL ao vivo** (`python3 scripts/demo/ver-sql.py`), que
     mostra cada comando que a aplicação manda ao banco durante toda a
     demonstração.
@@ -64,6 +66,7 @@ celular, e quem apresenta narra o que muda na tela do projetor.
 | Inclusão de dados | Passo 3 (membro novo) e passo 4 (desafio novo) |
 | Consulta dos dados | Passo 8 (ranking e perfil) |
 | Alteração de dados | Passos 5 e 7: o aceite muda o status do desafio, e o voto é um `UPDATE` que aparece no SQL ao vivo |
+| Exclusão de dados | Passo 3: remover a Aninha do grupo é um `DELETE` em `membro_grupo`, com o `SAIDA_GRUPO` lançado antes no ledger |
 | Relacionamento entre informações | Passo 6 (júri ligado à prova) e passo 7 (pagamento no ledger de cada participante) |
 | Execução de consulta SQL | Passo 9 |
 | Dados armazenados no banco | Passo 9 e o SQL ao vivo |
@@ -148,7 +151,7 @@ dados."
 token no servidor. Cada colega está logado no próprio celular como um
 personagem do seed." 
 
-### 3. Grupo, membros e crédito inicial (1:30)
+### 3. Grupo: entrada e saída de membro (2:00)
 
 **Tela:**
 
@@ -158,10 +161,18 @@ personagem do seed."
    do filtro da IA (**Moderado**). Só o admin muda o filtro.
 3. Em **Adicionar membro**, digitar `ana@email.com` e clicar em **Adicionar ·
    entra com 100 CP**. A Aninha aparece com **100 CP**.
+4. No menu da Aninha, escolher **Remover do grupo…** e confirmar. Ela some da
+   lista de membros.
 
 **Banco:** a entrada no grupo dispara a trigger `trg_credito_inicial`, que lança
 `CREDITO_INICIAL +100` em `transacao_cp`. Ninguém escreveu esse lançamento no
 código C# (RN06).
+
+A remoção chama a procedure `remover_membro`. Ela lança `SAIDA_GRUPO -100` no
+ledger e só então faz o `DELETE` em `membro_grupo`, numa transação. O SQL ao vivo
+mostra o `DELETE`, e o saldo não some sem lançamento: o ledger continua
+fechando (ADR 0018). A mesma procedure recusa quem está em desafio ou júri em
+curso (RN25).
 
 ### 4. Criar desafio: a IA aprova e recusa (2:00)
 
@@ -224,11 +235,11 @@ para o passo 5 e mostrar no passo 9 as recusas já gravadas no seed.
 **Banco:**
 
 * O júri é **congelado** na chegada da prova, em `jurado_evidencia`: Tavin,
-  Biel, Lari e Aninha.
+  Biel e Lari.
 * Quem é parte do desafio fica de fora: Lipe, o desafiado, e Theus, o
   desafiante.
-* Quem entrar no grupo depois **não** muda o quórum (RN14). A Aninha entrou no
-  passo 3, antes da prova, e por isso está no júri.
+* Quem entrar no grupo depois **não** muda o quórum (RN14). A Aninha entrou e
+  saiu no passo 3, antes da prova, e por isso não está no júri.
 
 ### 7. O voto que fecha o quórum (2:30) — o clímax
 
@@ -269,10 +280,9 @@ commit; ele nunca decide o resultado."
 | --- | --- | --- |
 | 1º | Tavin | 110 CP |
 | 2º | Lari | 102 CP |
-| 3º | Aninha | 100 CP |
-| 4º | Biel | 85 CP |
-| 4º | Lipe | 85 CP |
-| 6º | Theus | 42 CP |
+| 3º | Biel | 85 CP |
+| 3º | Lipe | 85 CP |
+| 5º | Theus | 42 CP |
 
 Depois, abrir **Perfil**: saldo por grupo e histórico.
 

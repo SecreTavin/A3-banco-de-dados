@@ -32,17 +32,14 @@ imagem Bitnami é o mesmo MinIO, com versão fixa, e traz o cliente `mc`. O
 console web na porta 9001 não respondeu nessa versão; a API e o bucket não
 dependem dele.
 
-## MinIO no lugar do R2
+## MinIO: a foto da prova
 
-O [ADR 0009](adr/0009-armazenamento-de-midia-r2.md) escolheu Cloudflare R2. Em
-desenvolvimento usamos **MinIO**, que fala o mesmo protocolo S3: o código de
-geração de URL assinada será idêntico, mudando apenas o endpoint na configuração.
-Assim ninguém precisa de credencial de nuvem para rodar o projeto.
-
-> **Estado atual.** O bucket existe, mas a API ainda não grava nele: o endpoint
-> de evidência recebe só a URL do comprovante (`UrlComprovante`), e a seção
-> `Storage` do `appsettings.json` não é lida por nenhum código. O envio de
-> arquivo com URL assinada é a evolução prevista no ADR 0009, não algo pronto.
+A foto da prova fica no **MinIO**, no bucket privado `evidencias`
+([ADR 0022](adr/0022-foto-da-prova-no-minio-pela-api.md), que substitui o R2 do
+ADR 0009). O navegador manda a foto para `POST /api/midia`, e a API grava no
+bucket com a seção `Storage` da configuração. A leitura também passa pela API
+(`GET /api/midia/{nome}`), só com login. O MinIO não precisa de porta pública:
+o console em `localhost:9001` é só para inspeção local.
 
 ## Login com Google
 
@@ -239,4 +236,4 @@ repositório e funciona, mas deixou de ser o endereço divulgado.
 | --- | --- |
 | `Maximum Pool Size=15` | Fixado na connection string por causa do teto de 20 conexões do Aiven, mesmo em desenvolvimento — para que o comportamento local seja igual ao de produção |
 | Migrations automáticas | Convenientes aqui, mas em produção significam que um merge altera o banco sem gate humano ([ADR 0010](adr/0010-hospedagem-e-deploy.md)) |
-| Upload de mídia | Não implementado. A tela de evidência aceita uma URL; o fluxo de URL assinada está modelado, não construído |
+| Foto da prova | Sobe pela API para o MinIO ([ADR 0022](adr/0022-foto-da-prova-no-minio-pela-api.md)). Um proxy na frente da API precisa de `client_max_body_size 10m` em `/api`; o padrão do nginx (1 MB) recusa a foto com 413. O backup do banco não leva as fotos: elas ficam no volume `storage-data` |

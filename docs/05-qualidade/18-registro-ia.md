@@ -18,6 +18,74 @@ A obrigação está registrada no [`CLAUDE.md`](../../CLAUDE.md) da raiz, que é
 carregado automaticamente por toda sessão de IA no repositório. Sem isso a
 prática dependeria de alguém lembrar.
 
+## Resumo para a banca
+
+Relatório sumarizado do uso de IA, como o professor pediu na revisão de
+31/10/2026: o que usamos, para quê, o que deu certo e o que não deu. O detalhe de
+cada uso está nos registros listados mais abaixo.
+
+### Ferramentas
+
+| Onde | Ferramenta | Para quê |
+| --- | --- | --- |
+| No desenvolvimento | **Claude Code** (Anthropic), com os modelos Sonnet, Opus e Fable | Todos os registros desta seção |
+| **Dentro do app** | Modelo aberto `gpt-oss-120b`, hospedado na **Groq** | Moderação dos desafios antes de entrarem no grupo ([ADR 0015](../02-arquitetura/adr/0015-idade-minima-e-moderacao-ia.md)) |
+
+**O agente de IA dentro do app.** Toda proposta de desafio passa pela IA antes
+de ser criada. O admin do grupo escolhe o nível do filtro (leve, moderado ou
+pesado), e a IA aprova ou recusa com um motivo. Toda decisão fica gravada no
+banco, na tabela `moderacao_desafio` (RN28). Sem IA disponível, o desafio não é
+criado. Na revisão de 31/10, no nível pesado, a IA barrou "correr 15 km em uma
+hora" e deixou passar "correr 15 km em uma semana".
+
+### Para que a IA serviu no desenvolvimento
+
+| Uso | Exemplos |
+| --- | --- |
+| Código | API, banco (procedures, triggers, views), telas em React |
+| Testes e depuração | Roteiros de ponta a ponta pela API, pela tela e pela moderação; análise de falhas |
+| Design | Seis propostas de redesign, o redesign mobile-first, o card da EXPOUNA |
+| Documentação | GitBook, decisões de arquitetura (ADRs), plano de trabalho, justificativa com dados |
+| Publicação | Docker, Cloudflare e a VM da demonstração |
+
+### O que deu certo
+
+* **Velocidade:** API, banco e telas saíram em dias, e o time pôde gastar o
+  tempo na modelagem e nas regras de negócio.
+* **Conferência dos números:** comparar os saldos do banco com o esperado achou
+  60 CP presos no escrow por um erro no seed. Daí nasceu a view
+  `vw_escrow_orfao`, que hoje vigia esse tipo de falha.
+* **Ensaio antes da banca:** os roteiros de ponta a ponta e o ensaio da
+  demonstração rodam o sistema inteiro num banco recém-criado. O ensaio achou,
+  por exemplo, um erro 500 da API com datas em outro fuso horário.
+* **Pesquisa com fontes:** os dados de "Jogos online no Brasil em números"
+  vieram da IA, mas cada número foi conferido na fonte original antes de entrar.
+
+### O que não deu certo
+
+Os erros se repetiram em quatro padrões. Todos estão nos registros, com a
+correção feita pelo time.
+
+| Padrão | Exemplo |
+| --- | --- |
+| Afirmar sem conferir | Um número de acesso à internet que não estava na página do IBGE; dizer que a API usava o MinIO para guardar provas, quando ela recebe só um link |
+| Mudança em massa sem revisar | Renomear "aposta" para "desafio" quebrou a gramática em vários textos ("o desafio já foi encerrada") |
+| Recomendação de regra contrariada pelo time | A IA recomendou recusar a prova em caso de empate; o time manteve em votação, e estava certo (RN16) |
+| Visual sem olhar a tela inteira | O menu lateral do desktop saiu cortado em todas as capturas; quem percebeu foi um integrante abrindo o app |
+
+Ações arriscadas também foram barradas antes de causar dano: uma migration
+gerada pelo EF que apagaria tabelas (reescrita com `RENAME`), a criação de uma
+tag de entrega sem pedido e uma mudança no túnel da Cloudflare que derrubaria
+outro projeto.
+
+### Como o time controlou
+
+* **Um registro por alteração**, sempre com a seção "o que a IA errou". A regra
+  está no `CLAUDE.md`, que toda sessão de IA lê ao abrir o repositório.
+* **Testes automáticos** rodando a cada PR, mais os roteiros de ponta a ponta
+  num banco recém-criado.
+* **Revisão de PR** por outro integrante antes de ir para a `main`.
+
 ## O que cada registro precisa conter
 
 O campo que dá valor ao documento é **o que a IA errou**. A disciplina não
@@ -37,7 +105,7 @@ cada arquivo.
 
 ## Registros
 
-58 registros, em ordem cronológica.
+59 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -99,6 +167,7 @@ cada arquivo.
 | 2026-11-20 | [Login com Google](registro-ia/2026-11-20-login-com-google.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-20 | [Login com Google no visual do redesign](registro-ia/2026-11-20-login-google-no-redesign.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-20 | [Abertura animada removida do app](registro-ia/2026-11-20-remove-abertura.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-20 | [Ajustes pedidos na revisão do professor (31/10)](registro-ia/2026-11-20-ajustes-revisao-do-professor.md) | Claude Code (Opus 5.5) | Rafael Alves |
 
 ## Consolidação final
 

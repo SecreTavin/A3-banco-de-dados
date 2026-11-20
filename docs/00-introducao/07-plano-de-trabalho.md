@@ -11,6 +11,31 @@ data de revisão), ver [07 - Entregas](../07-entregas/README.md). Este
 documento é sobre a semana a semana; aquele é sobre "o que a entrega N
 exige".
 
+## Visão em uma tela (setembro a novembro)
+
+Pedido do professor na revisão de 31/10/2026: o plano inteiro num único slide,
+com atividades, responsáveis e meses, para a parte da banca que avalia o plano
+de trabalho. O detalhe semana a semana está nas seções seguintes.
+
+| Atividade | Responsáveis | Set | Out | Nov |
+| --- | --- | :-: | :-: | :-: |
+| Problema, requisitos, regras de negócio e justificativa | Octávio, Rafael | ● | ● | |
+| Modelagem: DER, modelo lógico e schema | Arthur, Rafael | ● | ● | |
+| Idade mínima e moderação por IA (ADR 0015) | Octávio, Arthur | ● | ● | |
+| Banco: constraints, procedures, seed e consultas | Arthur, Octávio | | ● | |
+| API e telas | Arthur, Rafael, Octávio | ● | ● | ● |
+| Testes de aceitação e roteiros de ponta a ponta | Mario e Luís (testes), Rafael | | ● | ● |
+| Redesign de UI/UX e redesign mobile-first | Octávio, Rafael | | ● | ● |
+| Login com Google | Octávio (especificação), Rafael (Google Cloud e publicação) | | | ● |
+| Publicação: Cloudflare e VM da Oracle | Octávio, Rafael | | ● | ● |
+| Registro de uso de IA | Rafael, Octávio, Arthur | ● | ● | ● |
+| Apresentação: roteiro da demonstração, slides e card | Octávio | | | ● |
+| Revisões em sala: 11/09, 02/10, 30/10 e 20/11 (virtual) | Todos | ● | ● | ● |
+
+Os responsáveis saem dos commits, dos PRs e dos registros de IA de cada
+atividade. Trabalho que não deixou rastro no repositório (reuniões, conversas no
+grupo, testes manuais) está nas linhas semanais, quando foi informado ao time.
+
 ## Como ler a coluna Responsável
 
 * Nas semanas **vencidas**, o responsável sai do histórico de commits e PRs do
@@ -46,15 +71,15 @@ exige".
 | 16/10 | Recesso do professor | — | — |
 | 23/10 | **Semana Prova A1** — presencial em sala (15 pontos, individual) | Todos, individualmente | ➖ Individual, em sala — sem rastro no repositório |
 | 26–30/10 | Testes de aceitação do protótipo: desktop e mobile; feedback consolidado e corrigido | Mario Lana Veloso Junior (desktop) e Luís Phillipe Pedra Souza (mobile), testes; Rafael Alves, correções | ✅ Concluído — correções nos PRs #34 e #35 (ver [17 - Testes](../05-qualidade/17-testes.md)) |
-| 30/10 | **Revisão de Projeto em sala** — fechamento da Entrega 3 | Rafael Alves (PRs #34 a #36: redesign do front e MinIO), Octávio Augusto Arruda dos Prazeres (PR #33: GitBook e registros de IA) | 🔵 Em andamento hoje — 8/8 itens do checklist; tag `entrega-3` após a revisão |
+| 30/10 | **Revisão de Projeto em sala** — fechamento da Entrega 3 | Rafael Alves (PRs #34 a #36: redesign do front e MinIO), Octávio Augusto Arruda dos Prazeres (PR #33: GitBook e registros de IA) | ✅ Concluído — 8/8, tag `entrega-3` enviada |
 
 ## E4 — Sistema Funcional e Banca ExpoUna (1ª janela)
 
 | Semana | Atividade | Responsável | Status |
 | --- | --- | --- | --- |
-| 06/11 | Testes do sistema, registro de uso de IA | Luís Phillipe Pedra Souza, Mario Lana Veloso Junior (testes); Rafael Alves (registro de IA) *(proposto)* | ⚪ Planejado |
-| 13/11 | Preparação da apresentação e roteiro de demonstração | Octávio Augusto Arruda dos Prazeres (roteiro), Rafael Alves (material) *(proposto)* | ⚪ Planejado |
-| 20/11 | Feriado (Consciência Negra) — **fechamento da Entrega 4 é virtual, pelo GitBook**, em vez de revisão presencial | Rafael Alves *(proposto)* | ⚪ Planejado |
+| 06/11 | Testes do sistema, registro de uso de IA | Luís Phillipe Pedra Souza, Mario Lana Veloso Junior (testes); Rafael Alves (registro de IA) *(proposto)* | ✅ Concluído — roteiros reexecutados com a abertura em 3D em 07/11 (Octávio) e campo *Prompt utilizado* preenchido nos registros em 09/11 (Rafael, PR #55); testes de Luís e Mario nesta semana sem rastro no repositório |
+| 13/11 | Preparação da apresentação e roteiro de demonstração | Octávio Augusto Arruda dos Prazeres (roteiro), Rafael Alves (VM e redesign) | ✅ Concluído em 16/11 — roteiro da demonstração (Octávio) e site público na VM da Oracle (Rafael, ADR 0020); redesign mobile-first em 10/11 (Rafael, PR #63) |
+| 20/11 | Feriado (Consciência Negra) — **fechamento da Entrega 4 é virtual, pelo GitBook**, em vez de revisão presencial | Rafael Alves *(proposto)* | 🔵 Em andamento — login com Google (PR #61), slides, card da EXPOUNA e conclusão no GitBook; a tag `entrega-4` fica com o PO |
 | 27/11 | **Banca ExpoUna (1ª janela)** — apresentação do Projeto A3 (20 pontos, 2 ou 3 grupos nesta janela) | Todos | ⚪ Planejado |
 
 > O Anexo 1 original (ficha de inscrição) imprime essa semana como "20/12",

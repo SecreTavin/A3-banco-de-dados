@@ -66,7 +66,7 @@
 }
 
 .rotulo {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 650;
   line-height: 1.2;
   color: var(--texto-fraco);
@@ -83,7 +83,7 @@
 }
 
 .detalhe {
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.3;
   color: var(--texto-fraco);
   hyphens: auto;
@@ -93,12 +93,12 @@
 /* Em 360px cada etapa tem ~70px: "andamento" só cabe inteiro com 12px. */
 @media (max-width: 399px) {
   .rotulo {
-    font-size: 12px;
+    font-size: 0.75rem;
     letter-spacing: -0.01em;
   }
 
   .detalhe {
-    font-size: 11.5px;
+    font-size: 0.7188rem;
   }
 
   .textos {
@@ -131,10 +131,10 @@
 
 @media (min-width: 1024px) {
   .rotulo {
-    font-size: 14.5px;
+    font-size: 0.9062rem;
   }
 
   .detalhe {
-    font-size: 13.5px;
+    font-size: 0.8438rem;
   }
 }

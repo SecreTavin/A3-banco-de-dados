@@ -61,7 +61,7 @@
   background: var(--primaria);
   color: var(--sobre-primaria);
   font-family: var(--fonte-titulo);
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.12em;
@@ -75,7 +75,7 @@
 .marcaNome {
   overflow: hidden;
   font-family: var(--fonte-titulo);
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   white-space: nowrap;
@@ -90,6 +90,7 @@
 }
 
 .tema,
+.escala,
 .sair {
   display: grid;
   place-items: center;
@@ -104,9 +105,22 @@
 }
 
 .tema:hover,
+.escala:hover,
 .sair:hover {
   background: var(--superficie-alta);
   color: var(--texto);
+}
+
+.escala {
+  font-family: var(--fonte-titulo);
+  font-size: 0.9375rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.escala[aria-pressed='true'] {
+  background: var(--superficie-alta);
+  color: var(--primaria);
 }
 
 /* No celular sair fica no perfil: o topo guarda só o essencial. */
@@ -138,13 +152,13 @@
 .apelido {
   overflow: hidden;
   font-weight: 650;
-  font-size: 15px;
+  font-size: 0.9375rem;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .verPerfil {
-  font-size: 12.5px;
+  font-size: 0.7812rem;
   color: var(--texto-fraco);
 }
 
@@ -195,7 +209,7 @@
   height: var(--altura-nav);
   padding: 6px 2px 8px;
   color: var(--texto-fraco);
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 600;
   letter-spacing: 0.01em;
   transition: color 0.18s ease;
@@ -244,7 +258,7 @@
   border-radius: 9px;
   background: var(--perdeu);
   color: #fff;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 800;
   line-height: 1;
 }
@@ -284,7 +298,7 @@
 
 .novoRotulo {
   margin-top: 4px;
-  font-size: 11.5px;
+  font-size: 0.7188rem;
   font-weight: 650;
   color: var(--destaque-texto);
   white-space: nowrap;
@@ -305,7 +319,7 @@
 
   .aba,
   .novoRotulo {
-    font-size: 10.5px;
+    font-size: 0.6562rem;
   }
 }
 
@@ -360,11 +374,11 @@
     height: 40px;
     padding-top: 6px;
     border-radius: 13px;
-    font-size: 23px;
+    font-size: 1.4375rem;
   }
 
   .marcaNome {
-    font-size: 22px;
+    font-size: 1.375rem;
   }
 
   .nav {
@@ -391,7 +405,7 @@
     padding: 0 12px;
     border-radius: var(--raio-pequeno);
     color: var(--texto-suave);
-    font-size: 15.5px;
+    font-size: 0.9688rem;
     transition: background 0.18s ease, color 0.18s ease;
   }
 
@@ -433,7 +447,7 @@
     background: var(--primaria);
     color: var(--sobre-primaria);
     font-weight: 650;
-    font-size: 15.5px;
+    font-size: 0.9688rem;
     box-shadow: 0 8px 20px rgba(68, 51, 204, 0.22);
     transition: background 0.18s ease, transform 0.18s ease;
   }

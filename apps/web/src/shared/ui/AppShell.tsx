@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import type { Usuario } from '../api/tipos'
 import { Avatar } from './Avatar'
+import { BotaoEscala } from './BotaoEscala'
 import { BotaoTema } from './BotaoTema'
 import { Icone } from './Icone'
 import type { NomeIcone } from './Icone'
@@ -74,6 +75,7 @@ export function AppShell({ usuario, abas, aoSair }: Props) {
         </nav>
 
         <div className={estilos.acoes}>
+          <BotaoEscala />
           <BotaoTema />
           <NavLink
             to="/perfil"

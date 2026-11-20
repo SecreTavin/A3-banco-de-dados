@@ -38,7 +38,8 @@ async function requisitar<T>(rota: string, init?: RequestInit): Promise<T> {
   const resposta = await fetch(`${API_URL}${rota}`, {
     ...init,
     headers: {
-      'Content-Type': 'application/json',
+      // Com FormData o navegador monta o Content-Type com o boundary.
+      ...(init?.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...init?.headers,
     },
@@ -68,6 +69,34 @@ export const api = {
   patch: <T>(rota: string, corpo?: unknown) =>
     requisitar<T>(rota, { method: 'PATCH', body: JSON.stringify(corpo ?? {}) }),
   delete: <T>(rota: string) => requisitar<T>(rota, { method: 'DELETE' }),
+  enviarArquivo: <T>(rota: string, formulario: FormData) =>
+    requisitar<T>(rota, { method: 'POST', body: formulario }),
+}
+
+/** Arquivo protegido pela API (foto da prova): vem com o token, como Blob. */
+export async function lerArquivo(rota: string): Promise<Blob> {
+  const token = lerToken()
+  const resposta = await fetch(`${API_URL}${rota}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  })
+  if (!resposta.ok) throw new ApiError(resposta.status, `Falha ao abrir o arquivo (HTTP ${resposta.status}).`)
+  return resposta.blob()
+}
+
+/** Endereço absoluto de uma rota da API, para gravar em `url_comprovante`. */
+export function urlDaApi(rota: string): string {
+  return new URL(`${API_URL}${rota}`, window.location.origin).href
+}
+
+/** A rota `/api/midia/...` quando a URL é uma foto guardada pela própria API; senão null. */
+export function rotaDeMidia(url: string): string | null {
+  try {
+    const alvo = new URL(url)
+    const api = new URL(API_URL || '/', window.location.origin)
+    return alvo.origin === api.origin && alvo.pathname.startsWith('/api/midia/') ? alvo.pathname : null
+  } catch {
+    return null
+  }
 }
 
 export function mensagemDeErro(falha: unknown): string {

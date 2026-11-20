@@ -50,7 +50,7 @@
   border-radius: 9px;
   background: transparent;
   text-align: left;
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   cursor: pointer;
 }
@@ -69,7 +69,7 @@
 }
 
 .motivo {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--em-andamento);
 }

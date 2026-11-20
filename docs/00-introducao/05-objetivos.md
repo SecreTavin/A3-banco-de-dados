@@ -1,7 +1,9 @@
 # 05 - Objetivos
 
 ## Objetivo Geral
-Desenvolver um protótipo funcional de uma **plataforma web de desafios sociais entre amigos** (o **Eu Duvido!**), na qual grupos criam desafios, enviam evidências de cumprimento e decidem o resultado por votação do júri do grupo, com recompensas em créditos virtuais ou prendas. A plataforma é estruturada sobre um Banco de Dados relacional normalizado, povoado e integrado a uma interface de gerenciamento de desafios, desafios e votações.
+O **Eu Duvido!** é um protótipo funcional de uma **plataforma web de desafios sociais entre amigos**, na qual grupos criam desafios, enviam evidências de cumprimento e decidem o resultado por votação do júri do grupo, com recompensas em créditos virtuais ou prendas. A plataforma é estruturada sobre um Banco de Dados relacional normalizado, povoado e integrado a uma interface de gerenciamento de grupos, desafios e votações.
+
+> Este parágrafo é também o texto do campo **Sobre** na Vitrine Virtual da EXPOUNA, por pedido do professor na revisão de 31/10/2026.
 
 ## Objetivos Específicos
 

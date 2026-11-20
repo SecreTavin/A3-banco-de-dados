@@ -19,20 +19,20 @@
 }
 
 .nome {
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 800;
   letter-spacing: -0.025em;
 }
 
 .apelido {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 650;
   color: var(--destaque-texto);
 }
 
 .contato {
   overflow: hidden;
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--texto-fraco);
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -54,14 +54,14 @@
 
 .numeroValor {
   font-family: var(--fonte-titulo);
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
 
 .numeroRotulo {
-  font-size: 12.5px;
+  font-size: 0.7812rem;
   color: var(--texto-fraco);
 }
 
@@ -95,13 +95,13 @@
 }
 
 .saldoPosicao {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--texto-fraco);
 }
 
 .saldoGrupo {
   font-weight: 650;
-  font-size: 15.5px;
+  font-size: 0.9688rem;
 }
 
 /* A linha inteira é a área de toque; só o nome é um <a>. */
@@ -139,12 +139,12 @@
 }
 
 .lancamentoDescricao {
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 600;
 }
 
 .lancamentoMeta {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--texto-fraco);
 }
 
@@ -155,7 +155,7 @@
 }
 
 .lancamentoSaldo {
-  font-size: 12.5px;
+  font-size: 0.7812rem;
   color: var(--texto-fraco);
   font-variant-numeric: tabular-nums;
 }
@@ -188,7 +188,7 @@
   }
 
   .nome {
-    font-size: 24px;
+    font-size: 1.5rem;
   }
 
   .numeros {
@@ -200,7 +200,7 @@
   }
 
   .numeroValor {
-    font-size: 30px;
+    font-size: 1.875rem;
   }
 
   .saldo {
@@ -208,7 +208,7 @@
   }
 
   .saldoGrupo {
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
 
   .areaExtrato {
@@ -225,7 +225,7 @@
   }
 
   .lancamentoDescricao {
-    font-size: 15.5px;
+    font-size: 0.9688rem;
   }
 
   .sairConta {

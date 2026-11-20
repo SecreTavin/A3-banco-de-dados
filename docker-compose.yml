@@ -41,7 +41,8 @@ services:
       timeout: 5s
       retries: 10
 
-  # Cria o bucket de evidencias e sai. O MinIO nao faz isso sozinho. O laco de
+  # Cria o bucket de evidencias e sai. O MinIO nao faz isso sozinho. O bucket e
+  # privado: a foto da prova so sai pela API, para quem esta logado (ADR 0022). O laco de
   # tentativas existe porque a imagem Bitnami sobe o MinIO, derruba e sobe de
   # novo: o healthcheck pode passar na primeira subida.
   storage-init:
@@ -55,7 +56,7 @@ services:
         echo 'aguardando o MinIO...'; sleep 2;
       done &&
       mc mb --ignore-existing local/evidencias &&
-      mc anonymous set download local/evidencias
+      mc anonymous set none local/evidencias
       "
 
   api:

@@ -21,6 +21,7 @@ import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
+import zlib from 'node:zlib'
 import { chromium } from 'playwright-core'
 import { consultaUsuario, gravarSessao, sessaoDe } from './sessao.mjs'
 
@@ -545,7 +546,77 @@ async function rodar() {
     return `${botao ? 'botao do Google' : 'aviso de Google nao configurado'}; nenhum usuario do seed na tela; endpoint dev 404`
   })
 
+  await cenario('U15', 'Foto da prova: escolhida no aparelho, guardada no MinIO e vista pelo juri', async () => {
+    const idDesafio = num(
+      "SELECT id_desafio FROM desafio WHERE titulo LIKE 'Ir fantasiado de dinossauro%' AND status = 'EM_ANDAMENTO'",
+    )
+    precisa(idDesafio, 'desafio do dinossauro em andamento no seed')
+    await entrar('Lipe')
+    await irPara(`${WEB}/desafios/${idDesafio}`)
+    await esperarRede()
+    await pagina.getByRole('radio', { name: 'Foto', exact: true }).click()
+    const enviar = pagina.getByRole('button', { name: 'Mandar para o júri' })
+    confere(await enviar.isDisabled(), 'Mandar para o juri liberado antes de escolher a foto')
+
+    const arquivo = path.join(os.tmpdir(), `${ETIQUETA}.png`)
+    fs.writeFileSync(arquivo, pngDeTeste())
+    await pagina.locator('input[type=file]').setInputFiles(arquivo)
+    await pagina.getByRole('button', { name: 'Trocar foto' }).waitFor()
+    await pagina.waitForFunction(
+      () => ![...document.querySelectorAll('button')].find((b) => b.textContent?.includes('Mandar para o júri'))?.disabled,
+    )
+    await enviar.click()
+    await esperarRede()
+
+    const url = sql(
+      `SELECT url_comprovante FROM evidencia WHERE id_desafio = ${idDesafio} AND tipo_midia = 'FOTO' ORDER BY id_evidencia DESC LIMIT 1`,
+    )
+    confere(/\/api\/midia\/[0-9a-f]{32}\.(jpg|png)$/.test(url), `URL gravada fora da API: ${url}`)
+    const anonimo = await fetch(url)
+    confere(anonimo.status === 401, `foto aberta sem login (HTTP ${anonimo.status})`)
+
+    await entrar('Tavin')
+    await irPara(`${WEB}/votacao`)
+    await pagina.waitForFunction(() =>
+      [...document.querySelectorAll('img[alt="Comprovante enviado"]')].some(
+        (i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('blob:'),
+      ),
+    )
+    return 'botao so libera com a foto; URL da API gravada; sem login 401; o juri ve a imagem'
+  })
+
   await navegador.close()
+}
+
+/** PNG 2x2 valido, sem dependencia: o navegador precisa conseguir decodificar. */
+function pngDeTeste() {
+  const crc = (buf) => {
+    let c = ~0
+    for (const b of buf) {
+      c ^= b
+      for (let k = 0; k < 8; k++) c = (c >>> 1) ^ (0xedb88320 & -(c & 1))
+    }
+    return ~c >>> 0
+  }
+  const bloco = (tipo, dados) => {
+    const corpo = Buffer.concat([Buffer.from(tipo), dados])
+    const tam = Buffer.alloc(4)
+    tam.writeUInt32BE(dados.length)
+    const fim = Buffer.alloc(4)
+    fim.writeUInt32BE(crc(corpo))
+    return Buffer.concat([tam, corpo, fim])
+  }
+  const ihdr = Buffer.alloc(13)
+  ihdr.writeUInt32BE(2, 0)
+  ihdr.writeUInt32BE(2, 4)
+  ihdr.set([8, 2, 0, 0, 0], 8)
+  const linhas = Buffer.from([0, 68, 51, 204, 246, 196, 83, 0, 246, 196, 83, 68, 51, 204])
+  return Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    bloco('IHDR', ihdr),
+    bloco('IDAT', zlib.deflateSync(linhas)),
+    bloco('IEND', Buffer.alloc(0)),
+  ])
 }
 
 try {

@@ -22,6 +22,10 @@
         try { tema = localStorage.getItem('tema') } catch (e) {}
         if (tema !== 'claro' && tema !== 'escuro') tema = 'claro'
         document.documentElement.setAttribute('data-tema', tema)
+        // Fonte 20% maior para projetor (botao "A+"), escolha de quem apresenta.
+        try {
+          if (localStorage.getItem('escala') === 'maior') document.documentElement.setAttribute('data-escala', 'maior')
+        } catch (e) {}
       })()
     </script>
     <title>Eu Duvido!</title>
