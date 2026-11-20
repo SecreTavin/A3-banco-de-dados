@@ -7,7 +7,7 @@
 | **Pergunta que a entrega precisa responder** | O sistema funciona e utiliza efetivamente o Banco de Dados desenvolvido? |
 
 <!-- entregas:status:start -->
-🔵 **Pronta para entrega** — 10/10 itens prontos · revisão em sala: 2026-11-20
+🟢 **Entregue** — tag `entrega-4` em 2026-11-20 · 10/10 itens prontos
 <!-- entregas:status:end -->
 
 ## Checklist
