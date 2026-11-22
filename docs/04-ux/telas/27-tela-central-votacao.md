@@ -13,8 +13,8 @@ Validação por evidência pelos membros do grupo (RF07).
 
 ![Central de votação com o voto pendente da demonstração](img/27-central-votacao.png)
 
-É a tela do roteiro da banca: o voto da Lari fecha o quórum e dispara
-`apurar_votacao` no banco.
+É a tela do roteiro da banca: o voto que fecha o quórum dispara `apurar_votacao`
+no banco.
 
 | Especificado | Implementado |
 | --- | --- |
@@ -22,7 +22,7 @@ Validação por evidência pelos membros do grupo (RF07).
 | Contagem de votos, quórum e prazo | Sim, e avisa quando o meu voto fecha o júri |
 | Votar `VALIDO`/`INVALIDO` com justificativa | Sim: **Vale** ou **Não vale**, confirmação com motivos prontos e justificativa opcional; depois do voto que fecha o júri, a tela mostra o resultado e o pagamento |
 
-*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+*Captura do sistema na base de ensaio com os cinco integrantes (e-mails de exemplo e moderação simulada), gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 
 ## Dados (origem: `evidencia`, `jurado_evidencia`)
 `tipo_midia`, `url_comprovante`, `status`, `data_limite_votacao` / jurados congelados / `voto`, `justificativa`, `data_voto` — voto único por usuário/evidência (RN04). A tela é alimentada pela view `vw_status_votacao`, que já entrega votos, quórum e situação por evidência.

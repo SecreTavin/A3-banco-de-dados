@@ -26,7 +26,7 @@ Gestão de grupos privados de amigos (RF02).
 | Detalhe: desafios do grupo | Sim, na aba **Desafios**; a aba **Ranking** leva ao ranking do grupo |
 | Nível de filtro (só `ADMIN`) | Sim, em *Filtro da IA para novos desafios*, com um exemplo aprovado e um recusado por nível (RN27) |
 
-*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+*Captura do sistema na base de ensaio com os cinco integrantes (e-mails de exemplo e moderação simulada), gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 
 ## Dados (origem: `grupo_amigos`, `membro_grupo`)
 `nome`, `descricao`, `id_criador`, `nivel_filtro`, `data_criacao` / `papel`, `saldo_cp`, `data_entrada`

@@ -24,24 +24,25 @@ Sobe PostgreSQL, MinIO, API e frontend. Quando os quatro estiverem de pé:
 | MinIO (console) | <http://localhost:9001> |
 | PostgreSQL | `localhost:5432` — `euduvido` / `euduvido` |
 
-O banco já sobe povoado. O login é só pelo Google
-([ADR 0021](docs/02-arquitetura/adr/0021-login-exclusivo-google.md)). Preencha
-`GOOGLE_CLIENT_ID` no `.env` e, para entrar como um usuário do seed (Tavin,
-Biel, Theus, Lari, Lipe…), ligue sua conta Google a ele com `DEMO_CONTAS` e
-`scripts/demo/vincular-contas.sh`. Detalhes no
+O banco local sobe com dados fictícios, usados só pelos testes automáticos. O
+banco da demonstração é povoado pelos cinco integrantes, com as próprias contas
+Google ([13 - Povoamento](docs/03-banco-de-dados/implementacao/13-povoamento-dml.md)).
+O login é só pelo Google
+([ADR 0021](docs/02-arquitetura/adr/0021-login-exclusivo-google.md)): preencha
+`GOOGLE_CLIENT_ID` no `.env`. Detalhes no
 [documento 16](docs/02-arquitetura/16-execucao-local.md#login-com-google).
 
 ### Roteiro de demonstração
 
-O roteiro completo da banca, com as funcionalidades em 13 minutos e os números
-conferidos, está em
+O roteiro completo da banca, com as funcionalidades em 14 minutos, feitas ao vivo
+pelos integrantes, está em
 [Roteiro da demonstração](docs/06-encerramento/roteiro-da-demonstracao.md). A
 versão curta, só com o voto que fecha o quórum:
 
-1. Entre como **Lari** e vá para a Central de Votação.
-2. A evidência do desafio *"Correr 5km abaixo de 25 minutos"* está aguardando um
-   voto — o quórum é 2 e já há 1 voto favorável.
-3. Vote `VÁLIDO`.
+1. Num grupo com cinco pessoas, crie um desafio. Uma pessoa entra como desafiada,
+   outra como desafiante, e a desafiada envia a prova.
+2. O júri são as outras três pessoas, e o quórum é 2. Uma delas vota `Vale`.
+3. Outra pessoa do júri vota `Vale` na Central de Votação.
 4. A apuração roda dentro do banco, numa transação: a evidência vira `ACEITA`, o desafio vira `FINALIZADA_CUMPRIU`, o pote de CP é transferido aos vencedores e
    quem votou recebe 2 CP.
 5. Abra a mesma tela em outro navegador antes de votar — a contagem se move ao
@@ -50,7 +51,7 @@ versão curta, só com o voto que fecha o quórum:
 Para conferir que a contabilidade fechou:
 
 ```bash
-docker exec euduvido-db-1 psql -U euduvido -d euduvido \
+docker compose exec db psql -U euduvido -d euduvido \
   -c "SELECT * FROM vw_reconciliacao_saldo;" \
   -c "SELECT * FROM vw_escrow_orfao;"
 ```
@@ -104,7 +105,8 @@ apps/
 database/scripts/
   ddl/schema.sql         GERADO pelas migrations - não editar à mão
   ddl/functions/         Procedures, triggers e views (escritos à mão)
-  dml/seed.sql           Massa de demonstração
+  dml/categorias.sql     Carga mínima da produção
+  dml/seed.sql           Dados fictícios, só para os testes automáticos
   queries/               Consultas analíticas
 scripts/entregas/        Automação da documentação de entrega (ver abaixo)
 docs/                    Documentação por tipo - ver docs/README.md

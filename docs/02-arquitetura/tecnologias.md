@@ -13,7 +13,7 @@ estrutural tem um ADR correspondente em [adr/](adr/README.md).
 | Leitura | Dapper com SQL à mão (Queries) | Em uso | [0003](adr/0003-cqrs-dapper-ef.md) |
 | Migrations | EF Core code-first, `schema.sql` gerado | Em uso | [0004](adr/0004-schema-sql-gerado-por-migration.md) |
 | Lógica no banco | Procedures e triggers para apuração e invariantes | Em uso | [0008](adr/0008-quorum-congelado.md) |
-| Hospedagem | PostgreSQL em Docker na VM da Oracle, recriado do seed; Aiven previsto e não implementado | Em uso | [0020](adr/0020-demonstracao-publica-na-vm-oracle.md) (substitui o [0010](adr/0010-hospedagem-e-deploy.md)) |
+| Hospedagem | PostgreSQL em Docker na VM da Oracle, povoado pelos integrantes; Aiven previsto e não implementado | Em uso | [0020](adr/0020-demonstracao-publica-na-vm-oracle.md) (substitui o [0010](adr/0010-hospedagem-e-deploy.md)) |
 
 O SGBD não era realmente uma decisão em aberto: o `schema.sql` original já usava
 `SERIAL` e `TIMESTAMP`, sintaxe PostgreSQL que SQL Server e Oracle rejeitam. A
@@ -55,7 +55,7 @@ lado da operação visível no ponto de uso.
 | Hospedagem do frontend | Container `web` (nginx) numa VM da Oracle, em `euduvido.falveshub.com`, por túnel nomeado da Cloudflare; Vercel prevista e não implementada | Em uso | [0020](adr/0020-demonstracao-publica-na-vm-oracle.md) (substitui o [0010](adr/0010-hospedagem-e-deploy.md)) |
 | Hospedagem da API | Docker na mesma VM, atrás do nginx do `web`; Render prevista e não implementada | Em uso | [0020](adr/0020-demonstracao-publica-na-vm-oracle.md) (substitui o [0010](adr/0010-hospedagem-e-deploy.md)) |
 | Contêineres | Docker | Em uso | [0010](adr/0010-hospedagem-e-deploy.md) |
-| CI | GitHub Actions: schema, seed, consultas, testes e build a cada PR; sem deploy automático | Em uso | [0010](adr/0010-hospedagem-e-deploy.md) |
+| CI | GitHub Actions: schema, dados de teste, consultas, testes e build a cada PR; sem deploy automático | Em uso | [0010](adr/0010-hospedagem-e-deploy.md) |
 | Observabilidade | Grafana Cloud (free) | Em uso | [0013](adr/0013-observabilidade.md) |
 | Autenticação | Google OAuth / OIDC | Em uso | [0001](adr/0001-stack-tecnologica.md) |
 

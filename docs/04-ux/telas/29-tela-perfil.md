@@ -21,7 +21,7 @@ Dados do usuário e histórico pessoal. Confirmado no escopo do MVP.
 | Saldo por grupo e extrato | Sim; saldo e posição no ranking de cada grupo, e o extrato lê o ledger `transacao_cp` com saldo acumulado e o grupo de cada lançamento |
 | Histórico: criados, participações, evidências | Sim |
 
-*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+*Captura do sistema na base de ensaio com os cinco integrantes (e-mails de exemplo e moderação simulada), gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 
 ## Dados (origem: `usuario`, `desafio`, `participante_desafio`, `evidencia`, `membro_grupo`, `transacao_cp`)
 `nome`, `apelido`, `email`, `avatar_url`, `data_cadastro` / `saldo_cp` / `tipo`, `valor`, `descricao`, `data_lancamento`

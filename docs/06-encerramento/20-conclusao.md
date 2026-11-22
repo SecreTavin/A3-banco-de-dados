@@ -28,7 +28,7 @@ falhar estão no PostgreSQL, e não só no código:
   nos roteiros de ponta a ponta (E18 e U08).
 * **Consultas analíticas:** 11 consultas respondem perguntas do produto.
 
-O CI confere schema, seed, consultas e views a cada pull request.
+O CI confere schema, dados de teste, consultas e views a cada pull request.
 
 ## O que aprendemos
 

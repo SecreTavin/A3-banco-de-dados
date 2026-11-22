@@ -106,6 +106,11 @@ PostgreSQL. Cobre o que a seção 12 do edital lista — cadastro, consulta,
 alteração, exclusão, relacionamentos, validação, dados inválidos e comunicação
 entre sistema e banco.
 
+> **Dados destes roteiros.** Os cenários abaixo usam o `seed.sql`, com usuários
+> fictícios, porque precisam de um estado fixo para conferir saldos e ids. Esses
+> nomes existem só nos testes: a demonstração usa as contas dos cinco integrantes
+> ([13 - Povoamento](../03-banco-de-dados/implementacao/13-povoamento-dml.md)).
+
 Roteiro em [`scripts/testes/roteiro-e2e.py`](../../scripts/testes/roteiro-e2e.py):
 
 ```bash

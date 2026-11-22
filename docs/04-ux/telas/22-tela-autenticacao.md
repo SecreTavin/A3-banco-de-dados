@@ -26,7 +26,7 @@ Cadastro e login de usuários via Google (RF01).
 
 É a primeira tela do app: a abertura animada ([30 - Abertura](30-tela-abertura.md)) foi removida em 20/11/2026.
 
-*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+*Captura do sistema rodando, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 
 ## Dados (origem: `usuario`)
 `nome`, `email` (UNIQUE), `apelido`, `avatar_url`, `data_nascimento`, `data_cadastro`
