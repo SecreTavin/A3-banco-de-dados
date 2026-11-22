@@ -1,85 +1,103 @@
 # 13 - Povoamento do Banco de Dados (DML)
 
-Massa de demonstração em
-[`database/scripts/dml/seed.sql`](../../../database/scripts/dml/seed.sql),
-executada automaticamente pelo `docker compose up` logo depois do
-[`schema.sql`](12-ddl-schema.md). O banco nunca sobe vazio.
+O banco da demonstração é povoado pelos **cinco integrantes do grupo**, com as
+próprias contas Google, usando o sistema. Não há pessoas fictícias na produção.
+Cada linha passa pelo mesmo caminho de um uso real: API, regras de domínio,
+triggers e procedures.
 
-## Volume
+## Como o banco é povoado
+
+| Etapa | O que grava | Quem faz |
+| --- | --- | --- |
+| Estrutura | `schema.sql`, com tabelas, constraints, procedures, triggers e views | Script de criação |
+| Categorias | As 4 categorias de [`categorias.sql`](../../../database/scripts/dml/categorias.sql), que não têm tela de gestão | Script de criação |
+| Cadastro | `usuario`, a partir do login com Google | Cada integrante |
+| Grupos | `grupo_amigos` e `membro_grupo`; a trigger lança os 100 CP de entrada | Admin do grupo |
+| Desafios | `moderacao_desafio` e `desafio`, depois da avaliação da IA | Integrantes |
+| Aceites | `participante_desafio` e o escrow em `transacao_cp` | Integrantes |
+| Provas e votos | `evidencia`, `jurado_evidencia`, prêmios e recompensas | Integrantes |
+
+O volume da produção cresce com o uso. Na banca, ele é consultado ao vivo
+([roteiro, passo 10](../../06-encerramento/roteiro-da-demonstracao.md)):
+
+```sql
+SELECT (SELECT count(*) FROM usuario)      AS usuarios,
+       (SELECT count(*) FROM grupo_amigos) AS grupos,
+       (SELECT count(*) FROM desafio)      AS desafios,
+       (SELECT count(*) FROM evidencia)    AS provas,
+       (SELECT count(*) FROM transacao_cp) AS lancamentos;
+```
+
+## Base de ensaio
+
+Para as capturas do GitBook e os resultados do
+[documento 16](16-consultas-sql.md), a mesma sequência foi executada num banco
+local vazio por
+[`scripts/telas/povoar-integrantes.mjs`](../../../scripts/telas/povoar-integrantes.mjs),
+em 22/11/2026.
+
+Ela usa os nomes dos integrantes, com **e-mails de exemplo**, a mesma data de
+nascimento fictícia para todos e um **moderador simulado**. Os desafios, votos e
+saldos são de ensaio, não um histórico real. O script recusa rodar fora do
+`localhost` ou num banco que já tenha usuários.
 
 | Tabela | Linhas | O que está lá |
 | --- | --- | --- |
-| `usuario` | 9 | Integrantes fictícios de 16 a 24 anos |
+| `usuario` | 5 | Os cinco integrantes |
 | `grupo_amigos` | 3 | Um grupo em cada nível de filtro: `MODERADO`, `PESADO`, `LEVE` |
-| `membro_grupo` | 14 | Usuários em mais de um grupo, com saldo próprio em cada |
+| `membro_grupo` | 13 | Integrantes em mais de um grupo, com saldo próprio em cada |
 | `categoria_desafio` | 4 | Lista fixa: Esportes, Prendas, Games, Acadêmico |
-| `desafio` | 10 | Todos os seis status do ciclo de vida |
-| `moderacao_desafio` | 16 | 10 aprovadas (uma por desafio) e 6 recusadas |
-| `participante_desafio` | 19 | Desafiante, desafiado e apostadores dos dois lados |
-| `evidencia` | 6 | Aceitas, recusadas e uma em votação |
-| `jurado_evidencia` | 18 | Júri congelado de cada evidência, com e sem voto |
-| `transacao_cp` | 72 | Todos os tipos de lançamento em uso, inclusive `SAIDA_GRUPO` |
+| `desafio` | 7 | Todos os seis status do ciclo de vida |
+| `moderacao_desafio` | 10 | 7 aprovadas (uma por desafio) e 3 recusadas |
+| `participante_desafio` | 11 | Desafiante, desafiado e apostadores |
+| `evidencia` | 5 | Com foto: aceita, recusadas e uma em votação |
+| `jurado_evidencia` | 15 | Júri congelado de cada evidência, com e sem voto |
+| `transacao_cp` | 52 | Crédito, escrow, prêmio, estorno, recompensa e saída de grupo |
 
-## O que cada parte demonstra
-
-**O roteiro da banca.** O desafio 1, *"Correr 5km abaixo de 25 minutos"*, está
-`EM_VOTACAO` com júri de 3, quórum 2 e um voto favorável. Um voto ao vivo
-(Lari, pela Central de Votação) dispara a apuração dentro do banco: a evidência
-é aceita, o desafio encerra, o pote é dividido e quem votou recebe 2 CP — tudo
-numa transação. O passo a passo está no [README](../../../README.md).
-
-**Os seis status do desafio** (RN03): 3 `ABERTA`, 2 `EM_ANDAMENTO`, 1
-`EM_VOTACAO`, 2 `FINALIZADA_CUMPRIU`, 1 `FINALIZADA_PERDEU` e 1 `CANCELADA`.
+**Os seis status do desafio** (RN03): 2 `ABERTA`, 1 `EM_ANDAMENTO`, 1
+`EM_VOTACAO`, 1 `FINALIZADA_CUMPRIU`, 1 `FINALIZADA_PERDEU` e 1 `CANCELADA`.
 
 **Regras em ação, não só declaradas:**
 
-| Situação no seed | Regra |
+| Situação na base de ensaio | Regra |
 | --- | --- |
-| Desafio 5: júri aprova a prova e `apurar_votacao` encerra, paga e recompensa os votantes | RN15, RN17, RN23 |
-| Desafio 6: três provas recusadas seguidas; na terceira, o desafio é encerrado contra o desafiado | RN10 |
-| Desafio 7: cancelado com motivo; cada participante recebe o CP de volta | RN12 |
-| Brunão é apostador no desafio 5 e ainda assim é jurado — só desafiante e desafiado ficam de fora | RN14 |
-| Dieguinho entra no grupo 2 e sai: `CREDITO_INICIAL` de +100 e `SAIDA_GRUPO` de −100 | RN06, RN25 |
-| Aninha tem exatamente 16 anos — o limite que o trigger aceita | RN26 |
-| Seis propostas recusadas pela IA, com motivo, sem nenhum desafio criado | RN28 |
-| A proposta das pimentas foi aprovada no grupo `LEVE` (virou o desafio 8) e recusada no `PESADO` | RN27 |
+| *Entregar o DER*: o júri aprova a prova, e `apurar_votacao` encerra, paga e recompensa quem votou | RN15, RN17, RN23 |
+| *Correr 5 km*: júri de 3, quórum 2 e um voto dado; o próximo voto fecha a apuração | RN14, RN15 |
+| *50 flexões*: três provas recusadas seguidas; na terceira, o desafio é encerrado contra o desafiado | RN10 |
+| *Cantar na cantina*: cancelado com motivo; quem tinha entrado recebe o CP de volta | RN12 |
+| Mario é apostador na corrida e ainda assim é jurado; só desafiante e desafiado ficam de fora | RN14 |
+| Octávio entra em *Pelada de Sexta* e é removido: `CREDITO_INICIAL` de +100 e `SAIDA_GRUPO` de −100 | RN06, RN25 |
+| Três propostas recusadas pela moderação, com motivo, sem nenhum desafio criado | RN28 |
 
-A distribuição das recusas acompanha o rigor do filtro — 25% no `LEVE`, 33% no
-`MODERADO`, 50% no `PESADO` — e é exatamente o que a consulta Q9 do
-[16 - Consultas](16-consultas-sql.md) mostra.
-
-## Como foi escrito
-
-**À mão, de propósito.** Um seeder em C# que passasse pelo domínio não
-conseguiria criar estados intermediários — um desafio parado em votação com o
-escrow aberto — sem simular o fluxo inteiro.
-
-**Nenhum lançamento de CP escrito à mão.** Os 100 CP de entrada vêm do trigger
-`trg_membro_credito_inicial`; débitos, prêmios, estornos, recompensas e a saída
-de membro vêm das procedures reais (`debitar_escrow`, `apurar_votacao`,
-`encerrar_desafio`, `cancelar_desafio`, `remover_membro`). Se o seed fechasse a
-contabilidade "na mão", ele não provaria nada sobre as procedures.
-
-**Duas partes.** A primeira monta o estado da demonstração e não muda; a
-segunda, acrescentada para a Entrega 3, traz os grupos `PESADO` e `LEVE`, os
-históricos e as recusas da moderação. Acrescentar depois, sem reordenar, mantém
-os ids da demonstração estáveis.
-
-**Uma exceção controlada.** Os dois votos do histórico mais antigo (desafio 3)
-são gravados com o trigger de voto desligado, porque representam uma votação
-anterior ao prazo atual; o trigger é religado na linha seguinte. Todos os
-outros votos passam pelo trigger normalmente.
+**Nenhum lançamento de CP é escrito à mão.** Os 100 CP de entrada vêm do trigger
+`trg_credito_inicial`; débitos, prêmios, estornos, recompensas e a saída de
+membro vêm das procedures reais (`debitar_escrow`, `apurar_votacao`,
+`encerrar_desafio`, `cancelar_desafio`, `remover_membro`).
 
 ## Verificação
 
-Depois do seed, estas duas consultas devem voltar **vazias** — qualquer linha é
-bug de contabilidade:
+Depois de povoar, e a qualquer momento na produção, estas duas consultas devem
+voltar **vazias**. Qualquer linha é bug de contabilidade:
 
 ```sql
 SELECT * FROM vw_reconciliacao_saldo;
 SELECT * FROM vw_escrow_orfao;
 ```
 
-Verificado em 29/10/2026 num PostgreSQL 16 limpo: as duas vazias, e a consulta
-Q7 do 16 confirma, grupo a grupo, que a soma do ledger é igual aos saldos dos
-membros mais o CP retido em desafios.
+Verificado em 22/11/2026 na base de ensaio: as duas vazias, e a consulta Q7 do
+[documento 16](16-consultas-sql.md) confirma, grupo a grupo, que a soma do ledger
+é igual aos saldos dos membros mais o CP retido em desafios.
+
+## Dados de teste automatizado
+
+[`database/scripts/dml/seed.sql`](../../../database/scripts/dml/seed.sql) continua
+no repositório **só para os testes**. O CI e os roteiros de ponta a ponta precisam
+de um estado fixo e conhecido, com usuários fictícios. Esse arquivo **não é
+aplicado na produção** desde 20/11/2026 e não faz parte da demonstração.
+
+O `docker compose up` local ainda o aplica na primeira subida, para os testes
+funcionarem sem preparação. Para começar um banco local sem ele:
+
+```bash
+scripts/demo/recriar-banco.sh --vazio
+```

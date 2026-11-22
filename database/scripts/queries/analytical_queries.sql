@@ -2,7 +2,7 @@
 -- Consultas Analiticas - Eu Duvido! (modelo v3, schema unico)
 -- =============================================================================
 -- Cada consulta responde uma pergunta do produto e e explicada no documento
--- 16 - Consultas SQL. Rodam contra o banco povoado por seed.sql:
+-- 16 - Consultas SQL. Rodam contra qualquer banco povoado:
 --
 --   docker exec -i euduvido-db-1 psql -U euduvido -d euduvido \
 --     < database/scripts/queries/analytical_queries.sql
@@ -108,7 +108,7 @@ SELECT c.nome                                                                 AS
  ORDER BY desafios DESC, c.nome;
 
 -- -----------------------------------------------------------------------------
--- Q5 - Extrato de CP de um membro em um grupo (Tavin no grupo 2).
+-- Q5 - Extrato de CP do membro com mais lancamentos, no grupo em que ele mais movimentou.
 -- Cada linha e um lancamento do ledger; a window function acumula o saldo e a
 -- ultima linha bate com membro_grupo.saldo_cp (ADR 0007).
 -- -----------------------------------------------------------------------------
@@ -123,8 +123,14 @@ SELECT t.data_lancamento,
        )        AS saldo_apos_lancamento
   FROM transacao_cp t
   LEFT JOIN desafio d ON d.id_desafio = t.id_desafio
- WHERE t.id_grupo = 2
-   AND t.id_usuario = 1
+ WHERE (t.id_grupo, t.id_usuario) = (
+           SELECT id_grupo, id_usuario
+             FROM transacao_cp
+            WHERE id_usuario IS NOT NULL
+            GROUP BY id_grupo, id_usuario
+            ORDER BY count(*) DESC, id_grupo, id_usuario
+            LIMIT 1
+       )
  ORDER BY t.data_lancamento, t.id_transacao;
 
 -- -----------------------------------------------------------------------------

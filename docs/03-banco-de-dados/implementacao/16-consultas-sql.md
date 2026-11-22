@@ -7,11 +7,13 @@ mais cinco views de uso recorrente em
 Cada consulta responde uma pergunta do produto; o conjunto foi escolhido para
 cobrir recursos de SQL diferentes, não para repetir a mesma agregação.
 
-Os resultados abaixo foram obtidos em 29/10/2026, num PostgreSQL 16 limpo
-povoado pelo [seed](13-povoamento-dml.md). Para reproduzir:
+Os resultados abaixo foram obtidos em 22/11/2026, num PostgreSQL 16 local
+povoado com os cinco integrantes pela [base de ensaio](13-povoamento-dml.md#base-de-ensaio).
+Os desafios e saldos são de ensaio, e a moderação foi simulada. Na banca, as
+mesmas consultas rodam sobre os dados reais. Para reproduzir:
 
 ```bash
-docker exec -i euduvido-db-1 psql -U euduvido -d euduvido \
+docker compose exec -T db psql -U euduvido -d euduvido \
   < database/scripts/queries/analytical_queries.sql
 ```
 
@@ -56,9 +58,8 @@ então conta só quem já votou.
 
 | Desafio | Tentativa | Status | Júri | Quórum | Votos | Válidos | Inválidos |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Correr 5km abaixo de 25 minutos | 1 | EM_VOTACAO | 3 | 2 | 1 | 1 | 0 |
-| Ganhar de 3 gols de diferença no FIFA | 1 | ACEITA | 3 | 2 | 2 | 2 | 0 |
-| Entregar o trabalho de Algoritmos 3 dias antes | 1 | ACEITA | 3 | 2 | 2 | 2 | 0 |
+| Entregar o DER sem nenhum erro | 1 | ACEITA | 3 | 2 | 2 | 2 | 0 |
+| Correr 5 km abaixo de 25 minutos | 1 | EM_VOTACAO | 3 | 2 | 1 | 1 | 0 |
 | Fazer 50 flexões sem parar | 1, 2 e 3 | RECUSADA | 3 | 2 | 2 | 0 | 2 |
 
 As três tentativas recusadas das flexões são a RN10 acontecendo: na terceira, o
@@ -72,22 +73,22 @@ entram na mesma conta ([ADR 0006](../../02-arquitetura/adr/0006-cp-como-moeda.md
 Usa subconsultas correlacionadas em vez de um `JOIN` direto entre participações
 e lançamentos — o `JOIN` multiplicaria as linhas e inflaria a soma dos prêmios.
 
-Trecho do grupo *Calouros de SI*:
+Trecho do grupo *Turma do A3*:
 
 | Membro | Saldo | Desafios | Acertos | Erros | CP em prêmios |
 | --- | --- | --- | --- | --- | --- |
-| Tavin | 132 | 1 | 1 | 0 | 45 |
-| Aninha | 124 | 2 | 1 | 0 | 30 |
-| Lari | 106 | 0 | 0 | 0 | 0 |
-| Mila | 79 | 3 | 0 | 2 | 0 |
-| Brunão | 75 | 2 | 0 | 2 | 0 |
+| Mario | 90 | 2 | 1 | 0 | 30 |
+| Arthur | 90 | 2 | 1 | 0 | 30 |
+| Octávio | 87 | 1 | 0 | 0 | 0 |
+| Luís | 80 | 2 | 0 | 1 | 0 |
+| Rafael | 67 | 2 | 0 | 0 | 0 |
 
 ### Q3 — Maiores desafios pelo pote
 
 Pote = custo por participante × número de participantes. A coluna
 `descricao_recompensa` aparece só como informação: registra o que foi combinado
-fora do app e nenhum cálculo a usa (RN02). Os maiores potes são de 60 CP — o
-desafio da corrida (em votação) e o do FIFA (cumprido).
+fora do app e nenhum cálculo a usa (RN02). Os maiores potes são de 60 CP: o
+desafio do DER (cumprido) e o da corrida (em votação).
 
 ### Q4 — Desafios por categoria
 
@@ -97,32 +98,34 @@ com zero.
 
 | Categoria | Desafios | Monetários | Prendas | Cumpridos | Perdidos | Cancelados | Custo médio |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| Esportes & Fitness | 3 | 2 | 1 | 0 | 1 | 0 | 15,0 |
-| Prendas & Zoeira | 3 | 0 | 3 | 0 | 0 | 1 | 13,3 |
-| Acadêmico | 2 | 0 | 2 | 1 | 0 | 0 | 17,5 |
-| Games & E-sports | 2 | 2 | 0 | 1 | 0 | 0 | 20,0 |
+| Esportes & Fitness | 3 | 3 | 0 | 0 | 1 | 0 | 15,0 |
+| Acadêmico | 2 | 2 | 0 | 1 | 0 | 0 | 22,5 |
+| Games & E-sports | 1 | 1 | 0 | 0 | 0 | 0 | 15,0 |
+| Prendas & Zoeira | 1 | 0 | 1 | 0 | 0 | 1 | 10,0 |
 
 ### Q5 — Extrato de CP de um membro
 
-Cada lançamento do ledger com o saldo acumulado, calculado por window function
+A consulta escolhe sozinha o membro com mais lançamentos, para funcionar em
+qualquer banco povoado. Cada lançamento do ledger com o saldo acumulado, calculado por window function
 (`SUM(valor) OVER (PARTITION BY … ORDER BY …)`). A última linha bate com o
 saldo materializado em `membro_grupo` — é a demonstração de que o saldo é
 derivável do ledger ([ADR 0007](../../02-arquitetura/adr/0007-ledger-append-only.md)).
 
-Tavin no grupo *Calouros de SI*:
+Arthur no grupo *Turma do A3*:
 
 | Tipo | Valor | Desafio | Saldo após |
 | --- | --- | --- | --- |
 | CREDITO_INICIAL | +100 | | 100 |
-| DESAFIO_ESCROW | −15 | Fazer 50 flexões sem parar | 85 |
-| RECOMPENSA_VOTO | +2 | | 87 |
-| PREMIO | +45 | Fazer 50 flexões sem parar | 132 |
+| DESAFIO_ESCROW | −20 | Entregar o DER sem nenhum erro | 80 |
+| PREMIO | +30 | Entregar o DER sem nenhum erro | 110 |
+| DESAFIO_ESCROW | −20 | Correr 5 km abaixo de 25 minutos | 90 |
 
 ### Q6 — Participação do júri
 
 Quantas vezes cada pessoa foi convocada como jurada e quantas vezes votou. Prova
 sem quórum por falta de voto é o maior risco do produto; esta consulta mostra
-onde ele está. Lipe e Brunão foram convocados e nunca votaram (0%).
+onde ele está. Na base de ensaio, Arthur e Mario foram convocados uma vez e não
+votaram (0%).
 
 ### Q7 — Integridade contábil por grupo
 
@@ -134,12 +137,12 @@ mesmo tempo.
 
 | Grupo | Membros | Soma do ledger | Saldos | Escrow | Divergência |
 | --- | --- | --- | --- | --- | --- |
-| Os Inimigos do Fim | 5 | 500 | 410 | 90 | **0** |
-| Calouros de SI | 5 | 516 | 516 | 0 | **0** |
-| Pelada de Quinta | 4 | 400 | 360 | 40 | **0** |
+| Turma do A3 | 5 | 504 | 414 | 90 | **0** |
+| Madrugada do Deploy | 5 | 512 | 512 | 0 | **0** |
+| Pelada de Sexta | 3 | 300 | 300 | 0 | **0** |
 
-O grupo *Calouros de SI* soma 516 e não 500 porque as recompensas de voto
-(RN17) são o único lançamento que cria CP: 8 votos × 2 CP = 16.
+O grupo *Madrugada do Deploy* soma 512 e não 500 porque as recompensas de voto
+(RN17) são o único lançamento que cria CP: 6 votos × 2 CP = 12.
 
 ### Q8 — Prazos nos próximos 30 dias
 
@@ -162,14 +165,15 @@ admin trocar o nível depois, o histórico continua correto (RN27).
 
 | Nível | Avaliações | Aprovadas | Recusadas | % recusa |
 | --- | --- | --- | --- | --- |
-| LEVE | 4 | 3 | 1 | 25,0 |
-| MODERADO | 6 | 4 | 2 | 33,3 |
-| PESADO | 6 | 3 | 3 | 50,0 |
+| MODERADO | 6 | 5 | 1 | 16,7 |
+| PESADO | 2 | 1 | 1 | 50,0 |
+| LEVE | 2 | 1 | 1 | 50,0 |
 
-A **Q9b** lista as propostas recusadas com o motivo dado pela IA. A mais
-didática é a das pimentas: aprovada no grupo `LEVE`, onde virou desafio, e
-recusada no `PESADO` — a mesma proposta, com decisões diferentes por causa do
-nível de filtro.
+Os vereditos desta tabela vêm do **moderador simulado** da base de ensaio. Eles
+mostram a consulta funcionando, não a qualidade do modelo real.
+
+A **Q9b** lista as propostas recusadas com o motivo gravado. Nenhuma delas virou
+desafio (RN28).
 
 ### Q10 — Faixa etária por grupo
 
@@ -178,14 +182,8 @@ lado do nível de filtro do grupo. A idade é calculada na consulta a partir de
 `data_nascimento`; armazená-la seria guardar um valor que muda todo dia.
 Ninguém fica abaixo de 16 anos, porque o trigger não deixa (RN26).
 
-| Grupo | Nível | Membros | Idade mín. | Idade máx. | Média | Menores de 18 |
-| --- | --- | --- | --- | --- | --- | --- |
-| Os Inimigos do Fim | MODERADO | 5 | 21 | 23 | 22,0 | 0 |
-| Calouros de SI | PESADO | 5 | 16 | 24 | 20,6 | 1 |
-| Pelada de Quinta | LEVE | 4 | 21 | 24 | 22,8 | 0 |
-
-O único grupo com menor de idade é o que usa o filtro `PESADO` — a relação que
-a exigência do professor pedia (ADR 0015).
+O resultado não é reproduzido aqui: na base de ensaio, todos têm a mesma data de
+nascimento fictícia, e as idades reais dos integrantes não são publicadas.
 
 ## Painéis
 

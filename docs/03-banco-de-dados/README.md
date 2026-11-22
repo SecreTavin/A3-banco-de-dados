@@ -21,5 +21,5 @@ Os arquivos `.sql` ficam versionados fora de `docs/`, em [`database/scripts/`](.
 | Script | Documento correspondente |
 | --- | --- |
 | [`ddl/schema.sql`](../../database/scripts/ddl/schema.sql) | [12 - DDL](implementacao/12-ddl-schema.md) |
-| [`dml/seed.sql`](../../database/scripts/dml/seed.sql) | [13 - Povoamento](implementacao/13-povoamento-dml.md) |
+| [`dml/categorias.sql`](../../database/scripts/dml/categorias.sql) (produção) e [`dml/seed.sql`](../../database/scripts/dml/seed.sql) (só testes) | [13 - Povoamento](implementacao/13-povoamento-dml.md) |
 | [`queries/analytical_queries.sql`](../../database/scripts/queries/analytical_queries.sql) | [16 - Consultas SQL](implementacao/16-consultas-sql.md) |

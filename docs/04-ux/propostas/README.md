@@ -1,8 +1,8 @@
 # Redesign de UI/UX (31/10/2026)
 
 O PO achou a interface feia e desajeitada para a apresentação. Antes de mexer no
-sistema, foram desenhadas seis propostas a partir das telas reais, com o seed da
-demonstração. O PO aprovou todas, e cada uma virou uma issue e um commit da
+sistema, foram desenhadas seis propostas a partir das telas reais, com os dados
+de teste da época. O PO aprovou todas, e cada uma virou uma issue e um commit da
 mesma PR.
 
 O que guiou as seis:
@@ -70,8 +70,8 @@ tabela, nem procedure:
 
 * Cada tela capturada no desktop (1366x768) e no celular (390x844), nos temas
   escuro e claro.
-* Voto da demonstração feito pela tela nova; a tela de resultado mostrou Tavin
-  +30, Theus +30 e Lari +2, os mesmos lançamentos que `apurar_votacao` gravou.
+* Voto da demonstração feito pela tela nova; a tela de resultado mostrou os
+  prêmios e a recompensa do júri, os mesmos lançamentos que `apurar_votacao` gravou.
 * Criação com a IA real: a proposta da foto de pijama foi recusada no filtro
   Pesado, com o motivo na tela, e "correr 5 km" foi aprovada e criada.
 * Roteiros de ponta a ponta reexecutados com os seletores novos —
