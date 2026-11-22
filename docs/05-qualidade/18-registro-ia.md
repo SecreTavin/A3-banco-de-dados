@@ -105,7 +105,7 @@ cada arquivo.
 
 ## Registros
 
-62 registros, em ordem cronológica.
+64 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -171,6 +171,8 @@ cada arquivo.
 | 2026-11-20 | [Produção com o banco limpo](registro-ia/2026-11-20-producao-com-banco-limpo.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-20 | [Regenera o status da Entrega 4](registro-ia/2026-11-20-gera-status-entrega-4.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-22 | [Demonstração e documentação só com os integrantes](registro-ia/2026-11-22-demo-com-os-integrantes.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-22 | [SQL ao vivo sem e-mails no projetor](registro-ia/2026-11-22-sql-ao-vivo-sem-emails.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-22 | [Roteiro da apresentação dos slides](registro-ia/2026-11-22-roteiro-dos-slides.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 
 ## Consolidação final
 

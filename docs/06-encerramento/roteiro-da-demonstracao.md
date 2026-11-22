@@ -1,6 +1,7 @@
 # Roteiro da demonstração (Banca Final)
 
-Demonstração ao vivo de **14 minutos** na banca de **27/11/2026**. Os cinco
+Demonstração ao vivo de **14 minutos** na banca de **27/11/2026**, dentro do
+[roteiro dos slides](roteiro-dos-slides.md) (slide 19). Os cinco
 integrantes entram com a **própria conta Google**, no próprio celular, e fazem
 na hora o ciclo de um desafio: entrar, criar, aceitar, provar, julgar e pagar.
 Em cada passo, a tela mostra a funcionalidade e o banco mostra a regra que a
@@ -49,10 +50,10 @@ garante.
   sessão SSH do Rafael, na pasta do repositório.
 * **Uma conta Google reserva,** que nunca entrou no site, para o passo 2.
 
-> **Cuidado com dados pessoais no projetor.** O SQL ao vivo mostra os valores de
-> cada comando, inclusive e-mails. Abra o terminal só depois de todos estarem
-> logados. Mesmo assim, o e-mail do Rafael aparece no passo 3, e a tela de
-> **Perfil** mostra o e-mail de quem está logado.
+> **Dados pessoais no projetor.** O SQL ao vivo mostra todo e-mail como `***@***`.
+> A tela do site não tem essa máscara: o e-mail do Rafael aparece enquanto é
+> digitado no passo 3, e o **Perfil** mostra o e-mail de quem está logado. Não
+> projete `docker compose logs`, que traz os valores originais.
 
 ## O que o edital pede na demonstração (seção 16)
 

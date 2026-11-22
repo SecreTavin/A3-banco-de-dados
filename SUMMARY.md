@@ -137,6 +137,8 @@
     * [2026-11-20 - Produção com o banco limpo](docs/05-qualidade/registro-ia/2026-11-20-producao-com-banco-limpo.md)
     * [2026-11-20 - Regenera o status da Entrega 4](docs/05-qualidade/registro-ia/2026-11-20-gera-status-entrega-4.md)
     * [2026-11-22 - Demonstração e documentação só com os integrantes](docs/05-qualidade/registro-ia/2026-11-22-demo-com-os-integrantes.md)
+    * [2026-11-22 - SQL ao vivo sem e-mails no projetor](docs/05-qualidade/registro-ia/2026-11-22-sql-ao-vivo-sem-emails.md)
+    * [2026-11-22 - Roteiro da apresentação dos slides](docs/05-qualidade/registro-ia/2026-11-22-roteiro-dos-slides.md)
 
 ## Produto
 
@@ -161,4 +163,5 @@
   * [19 - Limitações e Melhorias Futuras](docs/06-encerramento/19-limitacoes-e-melhorias.md)
   * [20 - Conclusão](docs/06-encerramento/20-conclusao.md)
   * [21 - Referências](docs/06-encerramento/21-referencias.md)
+  * [Roteiro dos slides](docs/06-encerramento/roteiro-dos-slides.md)
   * [Roteiro da demonstração](docs/06-encerramento/roteiro-da-demonstracao.md)
