@@ -1,0 +1,23 @@
+{
+  "name": "euduvido-video",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render Demo out/demo.mp4",
+    "still": "remotion still Demo out/quadro.png"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.545",
+    "@remotion/google-fonts": "4.0.545",
+    "@remotion/transitions": "4.0.545",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "remotion": "4.0.545"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "typescript": "~5.7.2"
+  }
+}
