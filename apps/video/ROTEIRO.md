@@ -26,21 +26,39 @@ PostgreSQL em 22/11/2026.
 | --- | --- | --- | --- | --- |
 | 1 | 0:00–0:08 | **Abertura** (`abertura`, clipe) | O Mario provoca o Arthur no pátio | — (fala dos dois) |
 | 2 | 0:08–0:12 | Virada (`virada`) | A frase vira o card do desafio | — (batida da trilha) |
-| 3 | 0:11–0:21 | Criar (`criar`) | O desafio passa pela IA; uma proposta perigosa é recusada | "No Eu Duvido!, a provocação vira desafio. O Mario cria, e uma IA avalia antes de publicar. Desafio perigoso não passa." |
-| 4 | 0:20–0:29 | Apostar (`escrow`) | Luís, Arthur e Mario entram, e o pote chega a 60 CP | "Quem entra tem o cê-pê retido na hora. Ninguém dá calote: ele só sai dali com o resultado." |
+| 3 | 0:11–0:21 | Criar (`criar`) | O desafio passa pela IA; uma proposta perigosa é recusada | "A provocação vira desafio, e uma inteligência artificial avalia antes de publicar. Desafio perigoso não passa." |
+| 4 | 0:20–0:29 | Apostar (`escrow`) | Luís, Arthur e Mario entram, e o pote chega a 60 CP | "Quem entra tem o cê pê retido na hora. Ninguém dá calote: ele só sai dali com o resultado." |
 | 5 | 0:29–0:35 | **Corrida** (`corrida`, clipe) | O Arthur correndo no parque | — (respiração e passos) |
 | 6 | 0:34–0:46 | Julgar (`juri`) | O print da corrida, o voto do Octávio e o carimbo VALE | "O Arthur manda o print da corrida. Quem não está no duelo vira júri, e o voto não tem volta." |
-| 7 | 0:46–0:58 | Apurar (`apuracao`) | O pagamento e o ranking: Luís 112, Arthur 110, Octávio 102 | "Quando o voto que faltava fecha o quórum, o PostgreSQL apura e paga todo mundo numa única transação. O ranking muda na hora." |
+| 7 | 0:46–0:58 | Apurar (`apuracao`) | O pagamento e o ranking: Luís 112, Arthur 110, Octávio 102 | "Quando o voto que faltava fecha o quórum, o Postgres apura e paga todo mundo numa única transação. O ranking muda na hora." |
 | 8 | 0:57–1:02 | **O troco** (`reacao`, clipe) | O Mario vê a notificação, e o Arthur cobra | — (fala dos dois) |
-| 9 | 1:02–1:16 | Banco (`banco`) | Terminal: transação, views vazias e `UPDATE` bloqueado | "Por baixo dos panos, quem manda é o banco: procedure transacional, views que provam que a conta fecha e um extrato que ninguém consegue alterar." |
+| 9 | 1:02–1:16 | Banco (`banco`) | Terminal: transação, views vazias e `UPDATE` bloqueado | "Por baixo dos panos, quem manda é o banco: uma procedure transacional, visões que provam que a conta fecha, e um extrato que ninguém consegue alterar." |
 | 10 | 1:15–1:21 | Fim (`fim`) | Logo, frase e "Duvida? euduvido.falveshub.com" | "Eu Duvido! A aplicação pode errar. O banco não deixa o erro virar dado." |
 
-O ritmo da narração é de ~2,5 palavras por segundo, e cada fala cabe na sua
-cena nesse ritmo. Se uma gravação passar do tempo, ajuste a duração em
-`src/Demo.tsx`; não acelere a voz.
+## Narração sintética
 
-**Pronúncia:** escreva "cê-pê" no texto da voz sintética, ou ela lê "CP" como
-uma palavra.
+A narração das seis cenas do sistema é gerada pela voz sintética **Luciana**, do
+macOS, a 175 palavras por minuto. O texto falado fica em
+[`narracao.json`](narracao.json), e `npm run narrar` refaz os seis arquivos de
+`public/narracao/`. Roda só no macOS, sem internet e sem chave de API. As falas
+dos clipes continuam sendo do time.
+
+| Cena | Fala | Cabe em |
+| --- | --- | --- |
+| `criar` | 8,0 s | 9,0 s |
+| `escrow` | 6,5 s | 8,0 s |
+| `juri` | 6,4 s | 11,0 s |
+| `apuracao` | 8,5 s | 11,0 s |
+| `banco` | 10,1 s | 13,0 s |
+| `fim` | 5,3 s | 5,6 s |
+
+"Cabe em" é a cena menos o atraso de 0,4 s e a transição de 0,6 s. Se uma fala
+nova passar desse tempo, ela invade a seguinte: encurte o texto ou aumente a
+duração em `src/Demo.tsx`.
+
+**Pronúncia:** o texto é o que a voz lê. "CP" vira "cê pê", "IA" vira
+"inteligência artificial", "PostgreSQL" vira "Postgres" e "views" vira "visões";
+sem isso, a voz lê as siglas como palavras.
 
 ## Áudio
 
@@ -53,10 +71,8 @@ ele aparece em `public/`.
 | `public/trilha.mp3` | O vídeo inteiro, em volume baixo (12%), com entrada e saída suaves. Se for menor que o vídeo, repete |
 | `public/clipes/<id>.mp4` | No lugar da claquete da cena: `abertura.mp4`, `corrida.mp4` e `reacao.mp4`. O som do clipe toca junto |
 
-| Opção de narração | Vantagem | Cuidado |
-| --- | --- | --- |
-| Voz de alguém do time | É autêntico, e a banca reconhece quem fala | Gravar num lugar silencioso; o fone do celular basta |
-| ElevenLabs (pt-BR) | Voz limpa e fácil de refazer quando o texto muda | Declarar no registro de IA |
+Para trocar a voz sintética pela de alguém do time, grave as seis falas num lugar
+silencioso e salve com os mesmos nomes. O fone do celular basta.
 
 A trilha precisa ter licença de uso livre, como as da biblioteca de áudio do
 YouTube. Anote a fonte no registro de IA ou nas referências.

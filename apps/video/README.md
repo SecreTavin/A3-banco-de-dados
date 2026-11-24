@@ -13,15 +13,16 @@ integrantes do grupo e os valores do
 | `npm run render` | Gera `out/demo.mp4` |
 | `npm run still -- --frame=1260` | Gera um quadro em `out/quadro.png` |
 | `npm run tipos` | Confere os tipos com o TypeScript |
+| `npm run narrar` | Refaz a narração com a voz sintética do macOS, a partir de `narracao.json` |
 
 Cada cena é um arquivo em `src/cenas/`. A ordem e a duração ficam em
 `src/Demo.tsx`. O roteiro, a narração e os clipes filmados estão em
 [ROTEIRO.md](ROTEIRO.md).
 
-**Arquivos opcionais em `public/`:** clipes (`clipes/<id>.mp4`), narração
-(`narracao/<id>.mp3`) e trilha (`trilha.mp3`). O vídeo renderiza sem eles e usa
-cada um assim que aparece. Enquanto um clipe não existe, uma claquete ocupa o
-lugar dele com o tempo certo.
+**Arquivos em `public/`:** a narração (`narracao/<id>.mp3`) já está gerada. Os
+clipes (`clipes/<id>.mp4`) e a trilha (`trilha.mp3`) são opcionais: o vídeo
+renderiza sem eles e usa cada um assim que aparece. Enquanto um clipe não existe,
+uma claquete ocupa o lugar dele com o tempo certo.
 
 **Desempenho do render:** o grão do fundo é a textura `public/grao.png`, e a barra
 de capítulos não usa `backdrop-filter`. Com as duas trocas, o render completo

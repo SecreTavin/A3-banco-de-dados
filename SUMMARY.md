@@ -139,6 +139,7 @@
     * [2026-11-20 - Rascunho do vídeo de demonstração em Remotion](docs/05-qualidade/registro-ia/2026-11-20-video-de-demonstracao.md)
     * [2026-11-22 - Demonstração e documentação só com os integrantes](docs/05-qualidade/registro-ia/2026-11-22-demo-com-os-integrantes.md)
     * [2026-11-24 - Vídeo de demonstração com os integrantes e render 3x mais rápido](docs/05-qualidade/registro-ia/2026-11-24-video-com-os-integrantes.md)
+    * [2026-11-24 - Narração sintética do vídeo de demonstração](docs/05-qualidade/registro-ia/2026-11-24-narracao-sintetica-do-video.md)
 
 ## Produto
 
