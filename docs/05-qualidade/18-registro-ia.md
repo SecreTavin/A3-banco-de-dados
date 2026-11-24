@@ -105,7 +105,7 @@ cada arquivo.
 
 ## Registros
 
-65 registros, em ordem cronológica.
+67 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -172,6 +172,8 @@ cada arquivo.
 | 2026-11-20 | [Regenera o status da Entrega 4](registro-ia/2026-11-20-gera-status-entrega-4.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-20 | [Rascunho do vídeo de demonstração em Remotion](registro-ia/2026-11-20-video-de-demonstracao.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-22 | [Demonstração e documentação só com os integrantes](registro-ia/2026-11-22-demo-com-os-integrantes.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-22 | [SQL ao vivo sem e-mails no projetor](registro-ia/2026-11-22-sql-ao-vivo-sem-emails.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-22 | [Roteiro da apresentação dos slides](registro-ia/2026-11-22-roteiro-dos-slides.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-24 | [Vídeo de demonstração com os integrantes e render 3x mais rápido](registro-ia/2026-11-24-video-com-os-integrantes.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-24 | [Narração sintética do vídeo de demonstração](registro-ia/2026-11-24-narracao-sintetica-do-video.md) | Claude Code (Opus 5.5) e voz Luciana (macOS) | Octávio Augusto Arruda dos Prazeres |
 

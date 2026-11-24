@@ -150,8 +150,10 @@ python3 scripts/demo/ver-sql.py
 O script liga o log de comandos do PostgreSQL com `ALTER SYSTEM`, sem reiniciar
 o banco, e mostra cada comando colorido, com os parâmetros já preenchidos:
 `SELECT` em azul, `INSERT` em verde, `UPDATE` em amarelo e `CALL` em magenta,
-com o `BEGIN` e o `COMMIT` da transação em destaque. No voto que fecha o
-quórum, aparece:
+com o `BEGIN` e o `COMMIT` da transação em destaque. Como a janela vai para o
+projetor e o banco tem contas reais, todo e-mail aparece como `***@***`. O log do
+PostgreSQL mantém o valor original, então não projete `docker compose logs`. No
+voto que fecha o quórum, aparece:
 
 ```
 BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED
