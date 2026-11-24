@@ -41,3 +41,10 @@ nenhuma fala foi cronometrada em voz alta.
 
 O roteiro entra no GitBook, ao lado do roteiro da demonstração. A demonstração
 acontece no slide 19, e a apresentação volta no slide 20.
+
+## Atualização em 24/11/2026
+
+Com o vídeo de demonstração e a narração sintética, o projeto chegou a 67
+registros de IA. A fala do slide 21 e o próprio slide passaram de 64 para 67. A
+correção entrou junto com o vídeo, sem registro próprio, para a contagem não
+mudar de novo.

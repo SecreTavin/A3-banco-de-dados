@@ -228,7 +228,7 @@ passos 1 a 10. Ao terminar, voltar ao **slide 20**.
 ### Slide 21 · IA no desenvolvimento (1:15)
 
 > Usamos IA de duas formas. No desenvolvimento, o Claude Code. Dentro do app, um
-> modelo na Groq faz a moderação. Nossa regra foi registrar cada uso: são 64
+> modelo na Groq faz a moderação. Nossa regra foi registrar cada uso: são 67
 > registros, e cada um diz a ferramenta, o prompt, o que a IA produziu, o que ela
 > errou e como o time validou. Um exemplo: pedimos um jeito de mostrar as chamadas
 > ao banco durante a apresentação. A IA colocou dois ALTER SYSTEM numa transação, e
