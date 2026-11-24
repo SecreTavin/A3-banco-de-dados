@@ -21,8 +21,14 @@ Cada cena é um arquivo em `src/cenas/`. A ordem e a duração ficam em
 
 **Arquivos em `public/`:** a narração (`narracao/<id>.mp3`) já está gerada. Os
 clipes (`clipes/<id>.mp4`) e a trilha (`trilha.mp3`) são opcionais: o vídeo
-renderiza sem eles e usa cada um assim que aparece. Enquanto um clipe não existe,
-uma claquete ocupa o lugar dele com o tempo certo.
+renderiza sem eles e usa cada um assim que aparece. Um clipe que ainda não existe
+sai do vídeo (63 s sem os três, 81 s com eles). Para editar com o tempo final, use
+a claquete no lugar: `npm run render -- --props='{"claquetes":true}'`, ou ligue
+`claquetes` no painel de props do Studio.
+
+**Versão da banca:** o MP4 e a página datada ficam em
+[`docs/06-encerramento/video-de-demonstracao.md`](../../docs/06-encerramento/video-de-demonstracao.md).
+Depois de um render novo, atualize os dois.
 
 **Desempenho do render:** o grão do fundo é a textura `public/grao.png`, e a barra
 de capítulos não usa `backdrop-filter`. Com as duas trocas, o render completo

@@ -10,9 +10,10 @@ export type DadosClipe = {
 };
 
 /**
- * Cena filmada (gravada pelo time ou gerada por IA). Enquanto o arquivo não existe em
- * public/clipes/, mostra uma claquete com o que precisa ser gerado; assim o
- * tempo do vídeo já fica certo antes de o clipe chegar.
+ * Cena filmada (gravada pelo time ou gerada por IA). Sem o arquivo em
+ * public/clipes/, a cena sai do vídeo (ver montarLinha em Demo.tsx). Com
+ * `claquetes: true`, ela aparece como esta claquete, com o que precisa ser
+ * gravado, para editar com o tempo final.
  */
 export const Clipe = ({ arquivo, titulo, descricao, falas = [] }: DadosClipe) => {
   const caminho = `clipes/${arquivo}`;

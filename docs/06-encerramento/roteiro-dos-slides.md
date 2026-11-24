@@ -1,8 +1,9 @@
 # Roteiro da apresentação dos slides (Banca Final)
 
 Fala de cada um dos 26 slides na banca de **27/11/2026**. O edital prevê **40 a 45
-minutos** por grupo. O plano usa **34 minutos** de apresentação e deixa de **6 a
-11 minutos** para as perguntas.
+minutos** por grupo. O plano usa **35:30** de apresentação, com o
+[vídeo de demonstração](video-de-demonstracao.md) na abertura, e deixa de **4:30 a
+9:30** para as perguntas.
 
 A demonstração acontece no slide 19 e segue o
 [Roteiro da demonstração](roteiro-da-demonstracao.md). O edital não exige que todos
@@ -13,17 +14,18 @@ perguntas da banca.
 
 | Bloco | Slides | Quem fala | Duração | Termina em |
 | --- | --- | --- | --- | --- |
-| Problema e solução | 1 a 6 | Octávio | 4:30 | 4:30 |
-| Modelagem e banco | 7 a 13 | Arthur | 6:00 | 10:30 |
-| Ledger, povoamento e consultas | 14 a 16 | Luís | 2:15 | 12:45 |
-| Sistema | 17 a 19 | Rafael | 2:00 | 14:45 |
-| **Demonstração ao vivo** | 19 | Todos | **14:00** | **28:45** |
-| Testes, IA, plano e limitações | 20 a 23 | Mario | 3:45 | 32:30 |
-| Conclusão e encerramento | 24 a 26 | Octávio | 1:30 | **34:00** |
-| Perguntas da banca | 26 | Todos | 6 a 11 min | 40 a 45 |
+| **Vídeo de abertura** | antes do 1 | Octávio dá o play | **1:30** | 1:30 |
+| Problema e solução | 1 a 6 | Octávio | 4:30 | 6:00 |
+| Modelagem e banco | 7 a 13 | Arthur | 6:00 | 12:00 |
+| Ledger, povoamento e consultas | 14 a 16 | Luís | 2:15 | 14:15 |
+| Sistema | 17 a 19 | Rafael | 2:00 | 16:15 |
+| **Demonstração ao vivo** | 19 | Todos | **14:00** | **30:15** |
+| Testes, IA, plano e limitações | 20 a 23 | Mario | 3:45 | 34:00 |
+| Conclusão e encerramento | 24 a 26 | Octávio | 1:30 | **35:30** |
+| Perguntas da banca | 26 | Todos | 4:30 a 9:30 | 40 a 45 |
 
-**Se o tempo apertar:** quem controla o relógio avisa ao chegar no slide 7 (4:30),
-no 14 (10:30) e no 19 (14:15). Com mais de 2 minutos de atraso antes da
+**Se o tempo apertar:** quem controla o relógio avisa ao chegar no slide 7 (6:00),
+no 14 (12:00) e no 19 (15:45). Com mais de 2 minutos de atraso antes da
 demonstração, reduza os slides **9, 11, 16 e 22** a uma frase cada. Eles somam
 quase 3 minutos.
 
@@ -32,14 +34,25 @@ quase 3 minutos.
 
 ---
 
+## Bloco 0: vídeo de abertura (Octávio, 1:30)
+
+O arquivo é [`video/eu-duvido-demo.mp4`](video/eu-duvido-demo.mp4), com 63 s, ou
+81 s se as cenas filmadas forem gravadas a tempo. Deixe-o aberto em tela cheia
+no computador do projetor, **com o som da sala testado**, porque a narração faz
+parte do vídeo. Depois, volte aos slides no slide 1.
+
+> Olá a todos. Antes dos slides, um minuto do Eu Duvido! funcionando.
+
+Dar o play. Ao terminar, ir para o slide 1.
+
 ## Bloco 1: problema e solução (Octávio, 4:30)
 
 ### Slide 1 · Capa (0:30)
 
-> Olá a todos. Nós somos o grupo do Eu Duvido!, projeto A3 da Unidade Curricular de
-> Banco de Dados, com o professor Mário Sérgio. O Eu Duvido! transforma o "duvido
-> que você consegue" entre amigos em um desafio registrado, com prova e júri. E
-> quem garante que as regras sejam cumpridas é o banco de dados.
+> Esse é o Eu Duvido!. Nós somos o grupo do projeto A3 da Unidade Curricular de
+> Banco de Dados, com o professor Mário Sérgio. Ele transforma o "duvido que você
+> consegue" entre amigos em um desafio registrado, com prova e júri. E quem
+> garante que as regras sejam cumpridas é o banco de dados.
 
 ### Slide 2 · Integrantes (0:20)
 
@@ -228,7 +241,7 @@ passos 1 a 10. Ao terminar, voltar ao **slide 20**.
 ### Slide 21 · IA no desenvolvimento (1:15)
 
 > Usamos IA de duas formas. No desenvolvimento, o Claude Code. Dentro do app, um
-> modelo na Groq faz a moderação. Nossa regra foi registrar cada uso: são 67
+> modelo na Groq faz a moderação. Nossa regra foi registrar cada uso: são 68
 > registros, e cada um diz a ferramenta, o prompt, o que a IA produziu, o que ela
 > errou e como o time validou. Um exemplo: pedimos um jeito de mostrar as chamadas
 > ao banco durante a apresentação. A IA colocou dois ALTER SYSTEM numa transação, e

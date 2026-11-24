@@ -142,6 +142,7 @@
     * [2026-11-22 - Roteiro da apresentação dos slides](docs/05-qualidade/registro-ia/2026-11-22-roteiro-dos-slides.md)
     * [2026-11-24 - Vídeo de demonstração com os integrantes e render 3x mais rápido](docs/05-qualidade/registro-ia/2026-11-24-video-com-os-integrantes.md)
     * [2026-11-24 - Narração sintética do vídeo de demonstração](docs/05-qualidade/registro-ia/2026-11-24-narracao-sintetica-do-video.md)
+    * [2026-11-24 - Vídeo na abertura da banca](docs/05-qualidade/registro-ia/2026-11-24-video-na-abertura-da-banca.md)
 
 ## Produto
 
@@ -166,5 +167,6 @@
   * [19 - Limitações e Melhorias Futuras](docs/06-encerramento/19-limitacoes-e-melhorias.md)
   * [20 - Conclusão](docs/06-encerramento/20-conclusao.md)
   * [21 - Referências](docs/06-encerramento/21-referencias.md)
+  * [Vídeo de demonstração](docs/06-encerramento/video-de-demonstracao.md)
   * [Roteiro dos slides](docs/06-encerramento/roteiro-dos-slides.md)
   * [Roteiro da demonstração](docs/06-encerramento/roteiro-da-demonstracao.md)

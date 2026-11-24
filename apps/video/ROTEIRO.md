@@ -69,7 +69,7 @@ ele aparece em `public/`.
 | --- | --- |
 | `public/narracao/<id>.mp3` | No começo da cena com esse `id` (coluna "Cena" acima), 0,4 s depois da transição. Só as cenas com texto na coluna "Narração" precisam de arquivo: `criar`, `escrow`, `juri`, `apuracao`, `banco` e `fim` |
 | `public/trilha.mp3` | O vídeo inteiro, em volume baixo (12%), com entrada e saída suaves. Se for menor que o vídeo, repete |
-| `public/clipes/<id>.mp4` | No lugar da claquete da cena: `abertura.mp4`, `corrida.mp4` e `reacao.mp4`. O som do clipe toca junto |
+| `public/clipes/<id>.mp4` | Na cena com esse `id`: `abertura.mp4`, `corrida.mp4` e `reacao.mp4`, com o som do clipe. Sem o arquivo, a cena sai do vídeo (com `claquetes: true`, uma claquete ocupa o lugar) |
 
 Para trocar a voz sintética pela de alguém do time, grave as seis falas num lugar
 silencioso e salve com os mesmos nomes. O fone do celular basta.
