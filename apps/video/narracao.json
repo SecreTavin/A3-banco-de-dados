@@ -1,0 +1,12 @@
+{
+  "voz": "Luciana",
+  "palavrasPorMinuto": 175,
+  "falas": {
+    "criar": "A provocação vira desafio, e uma inteligência artificial avalia antes de publicar. Desafio perigoso não passa.",
+    "escrow": "Quem entra tem o cê pê retido na hora. Ninguém dá calote: ele só sai dali com o resultado.",
+    "juri": "O Arthur manda o print da corrida. Quem não está no duelo vira júri, e o voto não tem volta.",
+    "apuracao": "Quando o voto que faltava fecha o quórum, o Postgres apura e paga todo mundo numa única transação. O ranking muda na hora.",
+    "banco": "Por baixo dos panos, quem manda é o banco: uma procedure transacional, visões que provam que a conta fecha, e um extrato que ninguém consegue alterar.",
+    "fim": "Eu Duvido! A aplicação pode errar. O banco não deixa o erro virar dado."
+  }
+}
