@@ -13,6 +13,10 @@ Liga com ALTER SYSTEM (sem reiniciar o banco) e desliga sozinho ao sair com
 Ctrl+C. Os comandos do próprio psql ficam de fora, para a tela mostrar só o
 que a aplicação faz. Funciona no Docker local e na VM: usa o `docker compose`
 da pasta do repositório.
+
+A tela vai para o projetor, e o banco tem contas reais: todo e-mail aparece como
+'***@***'. O log do PostgreSQL continua com o valor original, então não projete
+`docker compose logs`.
 """
 import os
 import re
@@ -31,6 +35,9 @@ PREFIXO = "%m [%a] "
 INICIO = re.compile(r"^(\d{4}-\d\d-\d\d (\d\d:\d\d:\d\d))\.\d+ \S+ \[(.*)\] (LOG|DETAIL|ERROR|STATEMENT):\s+(.*)$")
 COMANDO = re.compile(r"^(?:execute [^:]+|statement):\s*(.*)$", re.S)
 PARAMETROS = re.compile(r"\$(\d+) = ('(?:[^']|'')*'|NULL)")
+# Aspas duplicadas sao o escape do SQL (o''brien@...). O "@" colado em ">" ou "<"
+# fica de fora, porque e operador do PostgreSQL (@>, <@).
+EMAIL = re.compile(r"(?:[^\s'\"(),;<>=]|'')+@[^\s'\"(),;<>=]+")
 
 CORES = {
     "CALL": "\033[1;35m",
@@ -73,8 +80,13 @@ def preencher(sql, detalhe):
     return re.sub(r"\$(\d+)\b", lambda m: valores.get(int(m.group(1)), m.group(0)), sql)
 
 
+def mascarar(texto):
+    return EMAIL.sub("***@***", texto)
+
+
 def mostrar(hora, sql, detalhe):
-    sql = compactar(preencher(sql, detalhe))
+    # Mascara antes de cortar no LIMITE, para um e-mail cortado nao escapar.
+    sql = mascarar(compactar(preencher(sql, detalhe)))
     # SELECT 1 e DISCARD ALL sao do pool de conexoes, nao da aplicacao.
     if not sql or sql.upper() == "SELECT 1" or sql.upper().startswith(("SET ", "DISCARD", "SHOW ")):
         return
@@ -102,7 +114,7 @@ def acompanhar():
         if app == "psql":
             return
         if tipo == "ERROR":
-            print(f"{CINZA}{hora}{FIM}  {VERMELHO}ERRO: {compactar(texto)}{FIM}", flush=True)
+            print(f"{CINZA}{hora}{FIM}  {VERMELHO}ERRO: {mascarar(compactar(texto))}{FIM}", flush=True)
             return
         m = COMANDO.match(texto)
         if tipo == "LOG" and m:
