@@ -27,8 +27,9 @@ export const Capitulos = ({ capitulos }: { capitulos: Capitulo[] }) => {
         gap: 10,
         padding: 8,
         borderRadius: 999,
-        background: 'rgba(255,255,255,0.78)',
-        backdropFilter: 'blur(12px)',
+        // Sem backdrop-filter: o desfoque custava caro em cada quadro, e o fundo
+        // atrás da barra é liso.
+        background: 'rgba(255,255,255,0.94)',
         boxShadow: '0 6px 24px rgba(23,19,54,0.12)',
         fontFamily: fonteTexto,
       }}

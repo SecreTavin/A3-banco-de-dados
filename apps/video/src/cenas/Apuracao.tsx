@@ -5,21 +5,24 @@ import { Avatar, Cartao, Lado, Legenda, Palco, Surgir, useContagem, useMola } fr
 const RANKING = s(5.8);
 const REORDENA = RANKING + s(1.6);
 
-// Números do roteiro da banca, passo 7 (conferidos no PostgreSQL em 16/11).
+// Números do roteiro da banca, passo 7, conferidos no PostgreSQL em 22/11: grupo
+// novo, 100 CP de entrada e 20 CP de cada participante no escrow.
 const pagamentos = [
-  { nome: 'Tavin', motivo: 'PREMIO', ganho: 30, de: 80 },
-  { nome: 'Theus', motivo: 'PREMIO + RECOMPENSA_VOTO', ganho: 32, de: 10 },
-  { nome: 'Lari', motivo: 'RECOMPENSA_VOTO', ganho: 2, de: 100 },
-  { nome: 'Biel', motivo: 'Duvidou e perdeu os 20 CP do escrow', ganho: 0, de: 85 },
+  { nome: 'Arthur', motivo: 'PREMIO', ganho: 30, de: 80 },
+  { nome: 'Luís', motivo: 'PREMIO + RECOMPENSA_VOTO', ganho: 32, de: 80 },
+  { nome: 'Octávio', motivo: 'RECOMPENSA_VOTO', ganho: 2, de: 100 },
+  { nome: 'Rafael', motivo: 'Não votou: sem recompensa', ganho: 0, de: 100 },
+  { nome: 'Mario', motivo: 'Duvidou e perdeu os 20 CP do escrow', ganho: 0, de: 80 },
 ];
 
-// Ordem antes e depois da apuração; Tavin sobe de 4º para 1º.
+// Ordem antes e depois da apuração (empate por nome). Arthur sobe de 3º para 2º, e
+// o Luís, que apostou nele, vai para 1º.
 const ranking = [
-  { nome: 'Tavin', antes: 3, depois: 0, de: 80, para: 110 },
-  { nome: 'Lari', antes: 0, depois: 1, de: 100, para: 102 },
-  { nome: 'Biel', antes: 1, depois: 2, de: 85, para: 85 },
-  { nome: 'Lipe', antes: 2, depois: 3, de: 85, para: 85 },
-  { nome: 'Theus', antes: 4, depois: 4, de: 10, para: 42 },
+  { nome: 'Octávio', antes: 0, depois: 2, de: 100, para: 102 },
+  { nome: 'Rafael', antes: 1, depois: 3, de: 100, para: 100 },
+  { nome: 'Arthur', antes: 2, depois: 1, de: 80, para: 110 },
+  { nome: 'Luís', antes: 3, depois: 0, de: 80, para: 112 },
+  { nome: 'Mario', antes: 4, depois: 4, de: 80, para: 80 },
 ];
 
 const Pagamento = ({ nome, motivo, ganho, de, i }: (typeof pagamentos)[number] & { i: number }) => {
@@ -46,7 +49,7 @@ const LinhaRanking = ({ nome, antes, depois, de, para }: (typeof ranking)[number
   const p = useMola(REORDENA, { damping: 16, stiffness: 90 });
   const saldo = useContagem(de, para, REORDENA, s(1));
   const y = interpolate(p, [0, 1], [antes, depois]) * 92;
-  const lider = nome === 'Tavin';
+  const lider = nome === 'Arthur';
   return (
     <div
       style={{
@@ -93,13 +96,13 @@ export const Apuracao = () => {
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
               <div style={{ fontFamily: fonteTitulo, fontWeight: 800, fontSize: 36 }}>Pagamento</div>
-              <span style={{ fontSize: 22, color: cor.textoFraco }}>Pote de 60 CP · Tavin cumpriu</span>
+              <span style={{ fontSize: 22, color: cor.textoFraco }}>Pote de 60 CP · Arthur cumpriu</span>
             </div>
             {pagamentos.map((p, i) => <Pagamento key={p.nome} {...p} i={i} />)}
           </>
         ) : (
           <Surgir inicio={RANKING}>
-            <div style={{ fontFamily: fonteTitulo, fontWeight: 800, fontSize: 36, marginBottom: 24 }}>Ranking · Os Inimigos do Fim</div>
+            <div style={{ fontFamily: fonteTitulo, fontWeight: 800, fontSize: 36, marginBottom: 24 }}>Ranking · Banca do A3</div>
             <div style={{ position: 'relative', height: 92 * 5 }}>
               {ranking.map((r) => <LinhaRanking key={r.nome} {...r} />)}
             </div>

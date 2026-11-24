@@ -4,7 +4,7 @@ import { cor, fonteTitulo, s } from '../tema';
 // Rota fictícia: uma volta no parque, desenhada aos poucos.
 const ROTA = 'M40 150 C 90 40, 200 30, 260 90 S 380 170, 440 80 S 560 20, 600 120 S 520 190, 420 175 S 220 200, 120 185 Z';
 
-/** "Print" do app de corrida que o Tavin mandou como prova. */
+/** "Print" do app de corrida que o Arthur mandou como prova. */
 export const ProvaCorrida = () => {
   const frame = useCurrentFrame();
   const desenho = interpolate(frame, [s(0.3), s(2.5)], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });

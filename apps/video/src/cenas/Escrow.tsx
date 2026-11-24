@@ -1,12 +1,13 @@
 import { interpolate, useCurrentFrame } from 'remotion';
 import { cor, fonteTitulo, s } from '../tema';
-import { Avatar, Cartao, Chip, CP, Lado, Legenda, Palco, useContagem, useMola } from '../ui';
+import { Avatar, Cartao, Chip, contagem, CP, Lado, Legenda, Palco, useMola } from '../ui';
 
-// Desafio 1 do seed: Tavin cumpre, Biel duvida, Theus aposta a favor.
+// Os papéis e a ordem do roteiro da banca (passo 5): o apostador entra primeiro,
+// porque, com desafiado e desafiante dentro, o desafio deixa de estar aberto.
 const participantes = [
-  { nome: 'Tavin', papel: 'Desafiado · vai cumprir', inicio: s(1.2) },
-  { nome: 'Biel', papel: 'Desafiante · não vai cumprir', inicio: s(2.6) },
-  { nome: 'Theus', papel: 'Apostador · vai cumprir', inicio: s(4.0) },
+  { nome: 'Luís', papel: 'Apostador · vai cumprir', inicio: s(1.2) },
+  { nome: 'Arthur', papel: 'Desafiado · vai cumprir', inicio: s(2.6) },
+  { nome: 'Mario', papel: 'Desafiante · não vai cumprir', inicio: s(4.0) },
 ];
 const POTE = { x: 620, y: 470 };
 
@@ -37,8 +38,8 @@ const Moeda = ({ inicio, y }: { inicio: number; y: number }) => {
 // 9s: os três entram, o CP sai do saldo e fica retido no desafio.
 export const Escrow = () => {
   const frame = useCurrentFrame();
-  const pote = participantes.reduce((total, p) => total + useContagem(0, 20, p.inicio, s(0.8)), 0);
-  const andamento = frame >= participantes[1].inicio + s(0.9);
+  const pote = participantes.reduce((total, p) => total + contagem(frame, 0, 20, p.inicio, s(0.8)), 0);
+  const andamento = frame >= participantes[2].inicio + s(0.9);
   return (
     <Palco>
       <Legenda

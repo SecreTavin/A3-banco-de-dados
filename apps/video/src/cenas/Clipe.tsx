@@ -1,4 +1,5 @@
-import { AbsoluteFill, getStaticFiles, OffthreadVideo, staticFile } from 'remotion';
+import { AbsoluteFill, OffthreadVideo, staticFile } from 'remotion';
+import { temArquivo } from '../arquivos';
 import { cor, fonteMono, fonteTexto, fonteTitulo } from '../tema';
 
 export type DadosClipe = {
@@ -9,13 +10,13 @@ export type DadosClipe = {
 };
 
 /**
- * Cena filmada (gerada no Veo). Enquanto o arquivo não existe em
+ * Cena filmada (gravada pelo time ou gerada por IA). Enquanto o arquivo não existe em
  * public/clipes/, mostra uma claquete com o que precisa ser gerado; assim o
  * tempo do vídeo já fica certo antes de o clipe chegar.
  */
 export const Clipe = ({ arquivo, titulo, descricao, falas = [] }: DadosClipe) => {
   const caminho = `clipes/${arquivo}`;
-  if (getStaticFiles().some((f) => f.name === caminho)) {
+  if (temArquivo(caminho)) {
     return (
       <AbsoluteFill style={{ background: '#000' }}>
         <OffthreadVideo src={staticFile(caminho)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />

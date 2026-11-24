@@ -2,7 +2,8 @@ import { springTiming, TransitionSeries } from '@remotion/transitions';
 import { fade } from '@remotion/transitions/fade';
 import { slide } from '@remotion/transitions/slide';
 import type { ComponentType } from 'react';
-import { AbsoluteFill } from 'remotion';
+import { AbsoluteFill, Html5Audio, interpolate, Sequence, staticFile } from 'remotion';
+import { temArquivo } from './arquivos';
 import { Capitulos, type Capitulo } from './Capitulos';
 import { Grao } from './Grao';
 import { Apuracao } from './cenas/Apuracao';
@@ -21,24 +22,25 @@ const clipe = (dados: DadosClipe): ComponentType => () => <Clipe {...dados} />;
 const Abertura = clipe({
   arquivo: 'abertura.mp4',
   titulo: 'Abertura: o “eu duvido”',
-  descricao: 'Biel e Tavin no pátio da faculdade. Biel provoca, Tavin aceita.',
-  falas: ['Biel: “Tu? Correr 5 km em menos de 25 minutos? Eu duvido.”', 'Tavin: “Duvida? Então valendo.”'],
+  descricao: 'Mario e Arthur no pátio da faculdade. Mario provoca, Arthur aceita.',
+  falas: ['Mario: “Tu? Correr 5 km em menos de 25 minutos? Eu duvido.”', 'Arthur: “Duvida? Então valendo.”'],
 });
 const Corrida = clipe({
   arquivo: 'corrida.mp4',
   titulo: 'A corrida',
-  descricao: 'Tavin correndo no parque no fim da tarde. Olha o relógio, acelera. Sem fala.',
+  descricao: 'Arthur correndo no parque no fim da tarde. Olha o relógio, acelera. Sem fala.',
 });
 const Reacao = clipe({
   arquivo: 'reacao.mp4',
   titulo: 'O troco',
-  descricao: 'Biel recebe a notificação no celular, incrédulo. Tavin aparece por trás.',
-  falas: ['Biel: “Não acredito…”', 'Tavin: “Paga.”'],
+  descricao: 'Mario recebe a notificação no celular, incrédulo. Arthur aparece por trás.',
+  falas: ['Mario: “Não acredito…”', 'Arthur: “Paga.”'],
 });
 
 type Entrada = 'corte' | 'fade' | 'lado' | 'baixo';
 
-// ~85s. Uma história só, do desafio 1 do seed: Biel duvida do Tavin.
+// ~81s. Uma história só, com os papéis e os valores do roteiro da banca: o Mario
+// duvida do Arthur, e o Luís aposta a favor.
 const cenas: { id: string; Componente: ComponentType; duracao: number; entrada: Entrada }[] = [
   { id: 'abertura', Componente: Abertura, duracao: s(8), entrada: 'corte' },
   { id: 'virada', Componente: Gancho, duracao: s(4), entrada: 'corte' },
@@ -69,6 +71,40 @@ const capitulos: Capitulo[] = cenas.flatMap((cena, i) =>
 
 const apresentacao = { fade: fade(), lado: slide({ direction: 'from-right' }), baixo: slide({ direction: 'from-bottom' }) };
 
+// A fala começa um pouco depois da cena, quando a transição já assentou.
+const ATRASO_FALA = s(0.4);
+const VOLUME_TRILHA = 0.12;
+
+/** Narração por cena: public/narracao/<id da cena>.mp3, quando existir. */
+const Narracao = () => (
+  <>
+    {cenas.map(({ id }, i) => {
+      const caminho = `narracao/${id}.mp3`;
+      if (!temArquivo(caminho)) return null;
+      return (
+        <Sequence key={id} from={inicios[i] + ATRASO_FALA} layout="none">
+          <Html5Audio src={staticFile(caminho)} />
+        </Sequence>
+      );
+    })}
+  </>
+);
+
+/** Trilha de fundo baixa, com entrada e saída suaves: public/trilha.mp3. */
+const Trilha = () =>
+  temArquivo('trilha.mp3') ? (
+    <Html5Audio
+      src={staticFile('trilha.mp3')}
+      loop
+      volume={(f) =>
+        interpolate(f, [0, s(1), duracaoDemo - s(2), duracaoDemo], [0, VOLUME_TRILHA, VOLUME_TRILHA, 0], {
+          extrapolateLeft: 'clamp',
+          extrapolateRight: 'clamp',
+        })
+      }
+    />
+  ) : null;
+
 export const Demo = () => (
   <AbsoluteFill style={{ background: cor.fundo }}>
     <TransitionSeries>
@@ -91,5 +127,7 @@ export const Demo = () => (
     </TransitionSeries>
     <Capitulos capitulos={capitulos} />
     <Grao />
+    <Narracao />
+    <Trilha />
   </AbsoluteFill>
 );

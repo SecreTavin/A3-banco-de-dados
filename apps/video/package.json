@@ -6,7 +6,8 @@
   "scripts": {
     "studio": "remotion studio",
     "render": "remotion render Demo out/demo.mp4",
-    "still": "remotion still Demo out/quadro.png"
+    "still": "remotion still Demo out/quadro.png",
+    "tipos": "tsc"
   },
   "dependencies": {
     "@remotion/cli": "4.0.545",

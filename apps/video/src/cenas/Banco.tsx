@@ -4,7 +4,7 @@ import { Surgir } from '../ui';
 
 type Linha = { texto: string; inicio: number; tipo: 'cmd' | 'saida' | 'erro' | 'ok' };
 
-// As mesmas consultas do passo 9 do roteiro da banca.
+// O que o SQL ao vivo e o psql mostram nos passos 7 e 10 do roteiro da banca.
 const linhas: Linha[] = [
   { tipo: 'cmd', inicio: s(0.8), texto: 'BEGIN;' },
   { tipo: 'cmd', inicio: s(1.2), texto: "UPDATE jurado_evidencia SET voto = 'VALIDO' WHERE ...;" },

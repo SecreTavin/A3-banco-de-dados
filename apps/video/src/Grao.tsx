@@ -1,9 +1,12 @@
-import { AbsoluteFill } from 'remotion';
+import { AbsoluteFill, staticFile } from 'remotion';
 
-// Mesmo grão do app (--grao no global.css): ruído fixo, quase invisível,
-// que tira a cara de "slide" do fundo liso.
-const ruido = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
-
+// Mesmo grão do app (--grao no global.css): ruído fixo, quase invisível, que
+// tira a cara de "slide" do fundo liso. É uma textura pronta (public/grao.png,
+// preta com transparência de 0 a 1%), na intensidade medida do filtro antigo. O
+// filtro SVG feTurbulence com mix-blend-mode era refeito a cada quadro e dobrava
+// o tempo de render. Grão mais forte também engorda o MP4: ruído custa bitrate.
 export const Grao = () => (
-  <AbsoluteFill style={{ backgroundImage: ruido, opacity: 0.05, mixBlendMode: 'multiply', pointerEvents: 'none' }} />
+  <AbsoluteFill
+    style={{ backgroundImage: `url(${staticFile('grao.png')})`, backgroundSize: '128px 128px', pointerEvents: 'none' }}
+  />
 );

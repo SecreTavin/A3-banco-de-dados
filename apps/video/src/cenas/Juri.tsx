@@ -15,7 +15,8 @@ const Jurado = ({ nome, voto }: { nome: string; voto: 'vale' | 'pendente' }) => 
   </div>
 );
 
-// 12s: a Lari dá o voto que fecha o quórum. Carimbo do júri.
+// 12s: o voto do Octávio fecha o quórum, como no passo 7 do roteiro da banca.
+// Júri: Luís (já votou), Octávio e Rafael. Arthur e Mario são parte e ficam de fora.
 export const Juri = () => {
   const frame = useCurrentFrame();
   const votou = frame >= CLIQUE_CONFIRMA;
@@ -34,7 +35,7 @@ export const Juri = () => {
       <Cartao style={{ position: 'relative', width: 860, display: 'flex', flexDirection: 'column', gap: 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <Chip cor={cor.emVotacao}>● Em votação</Chip>
-          <span style={{ fontSize: 22, color: cor.textoFraco }}>Prova de Tavin</span>
+          <span style={{ fontSize: 22, color: cor.textoFraco }}>Prova de Arthur</span>
         </div>
         <div style={{ fontFamily: fonteTitulo, fontWeight: 800, fontSize: 40 }}>Correr 5 km abaixo de 25 minutos</div>
         <ProvaCorrida />
@@ -49,8 +50,9 @@ export const Juri = () => {
           </div>
         </div>
 
-        <Jurado nome="Theus" voto="vale" />
-        <Jurado nome="Lari" voto={votou ? 'vale' : 'pendente'} />
+        <Jurado nome="Luís" voto="vale" />
+        <Jurado nome="Octávio" voto={votou ? 'vale' : 'pendente'} />
+        <Jurado nome="Rafael" voto="pendente" />
 
         <div style={{ display: 'flex', gap: 16 }}>
           <Botao cliqueEm={CLIQUE_VALE} secundario={!escolheu} style={escolheu ? { background: cor.cumpriu } : undefined}>
@@ -91,8 +93,8 @@ export const Juri = () => {
       <Cursor
         pontos={[
           { f: s(1.4), x: 1500, y: 1000 },
-          { f: s(3.1), x: 1000, y: 818 },
-          { f: s(4.5), x: 1612, y: 818 },
+          { f: s(3.1), x: 1000, y: 858 },
+          { f: s(4.5), x: 1612, y: 858 },
           { f: s(6.5), x: 1700, y: 1040 },
         ]}
         cliques={[CLIQUE_VALE, CLIQUE_CONFIRMA]}

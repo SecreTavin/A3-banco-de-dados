@@ -29,17 +29,19 @@ export const useDigitado = (texto: string, inicio: number, porSegundo = 28) => {
   return texto.slice(0, n);
 };
 
-/** Número que rola de `de` para `para`. */
-export const useContagem = (de: number, para: number, inicio: number, duracao: number) => {
-  const frame = useCurrentFrame();
-  return Math.round(
+/** Valor de um número que rola de `de` para `para`, no quadro `frame`. */
+export const contagem = (frame: number, de: number, para: number, inicio: number, duracao: number) =>
+  Math.round(
     interpolate(frame, [inicio, inicio + duracao], [de, para], {
       extrapolateLeft: 'clamp',
       extrapolateRight: 'clamp',
       easing: Easing.out(Easing.cubic),
     }),
   );
-};
+
+/** Número que rola de `de` para `para`. */
+export const useContagem = (de: number, para: number, inicio: number, duracao: number) =>
+  contagem(useCurrentFrame(), de, para, inicio, duracao);
 
 export const Palco = ({ children }: { children: ReactNode }) => (
   <AbsoluteFill

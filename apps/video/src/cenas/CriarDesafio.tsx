@@ -36,7 +36,7 @@ const Proposta = ({ titulo, aposta, inicio, clique, resultado }: {
       <div style={{ fontFamily: fonteTitulo, fontWeight: 800, fontSize: 34 }}>Novo desafio</div>
       <Campo rotulo="Título" valor={digitado} ativo={frame < clique} />
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 180px', gap: 20 }}>
-        <Campo rotulo="Grupo" valor="Os Inimigos do Fim" />
+        <Campo rotulo="Grupo" valor="Banca do A3" />
         <Campo rotulo="Aposta" valor={`${aposta} CP`} />
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 20, minHeight: 72 }}>
@@ -71,7 +71,8 @@ const Proposta = ({ titulo, aposta, inicio, clique, resultado }: {
   );
 };
 
-// 10s: o desafio do Tavin passa; uma proposta perigosa não. As duas ficam gravadas.
+// 10s: o desafio do Mario para o Arthur passa; uma proposta perigosa não. As duas
+// ficam gravadas.
 export const CriarDesafio = () => {
   const frame = useCurrentFrame();
   return (
@@ -93,10 +94,10 @@ export const CriarDesafio = () => {
       <Cursor
         pontos={[
           { f: s(1.2), x: 1500, y: 900 },
-          { f: s(2.3), x: 1080, y: 690 },
-          { f: TROCA, x: 1080, y: 690 },
+          { f: s(2.3), x: 1080, y: 640 },
+          { f: TROCA, x: 1080, y: 640 },
           { f: TROCA + s(1), x: 1300, y: 860 },
-          { f: TROCA + s(1.8), x: 1080, y: 690 },
+          { f: TROCA + s(1.8), x: 1080, y: 640 },
         ]}
         cliques={[s(2.4), TROCA + s(1.9)]}
       />

@@ -65,7 +65,7 @@ export const Gancho = () => {
             </div>
             <div style={{ fontFamily: fonteTitulo, fontWeight: 800, fontSize: 44 }}>Correr 5 km abaixo de 25 minutos</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontSize: 24, color: cor.textoSuave }}>
-              <Avatar nome="Biel" tamanho={44} /> Biel duvidou do Tavin · Os Inimigos do Fim
+              <Avatar nome="Mario" tamanho={44} /> Mario duvidou do Arthur · Banca do A3
             </div>
           </Cartao>
         </div>

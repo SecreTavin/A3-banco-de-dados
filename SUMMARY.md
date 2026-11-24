@@ -136,7 +136,9 @@
     * [2026-11-20 - Ajustes pedidos na revisão do professor (31/10)](docs/05-qualidade/registro-ia/2026-11-20-ajustes-revisao-do-professor.md)
     * [2026-11-20 - Produção com o banco limpo](docs/05-qualidade/registro-ia/2026-11-20-producao-com-banco-limpo.md)
     * [2026-11-20 - Regenera o status da Entrega 4](docs/05-qualidade/registro-ia/2026-11-20-gera-status-entrega-4.md)
+    * [2026-11-20 - Rascunho do vídeo de demonstração em Remotion](docs/05-qualidade/registro-ia/2026-11-20-video-de-demonstracao.md)
     * [2026-11-22 - Demonstração e documentação só com os integrantes](docs/05-qualidade/registro-ia/2026-11-22-demo-com-os-integrantes.md)
+    * [2026-11-24 - Vídeo de demonstração com os integrantes e render 3x mais rápido](docs/05-qualidade/registro-ia/2026-11-24-video-com-os-integrantes.md)
 
 ## Produto
 
