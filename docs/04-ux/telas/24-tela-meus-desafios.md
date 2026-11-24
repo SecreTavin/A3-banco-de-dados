@@ -24,7 +24,7 @@ Dashboard principal do usuário com os desafios em que está envolvido (RF04, RF
 O redesign de UI/UX ([proposta 01](../propostas/README.md)) pôs no topo o que
 pede ação agora: prova esperando voto, prova a enviar e desafio aberto.
 
-*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+*Captura do sistema na base de ensaio com os cinco integrantes (e-mails de exemplo e moderação simulada), gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 
 ## Dados (origem: `desafio`, `participante_desafio`)
 `titulo`, `status`, `valor_cp`, `tipo_recompensa`, `descricao_recompensa`, `data_limite` / `papel_desafio`, `escolha`

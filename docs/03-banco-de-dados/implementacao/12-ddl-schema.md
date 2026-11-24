@@ -11,7 +11,7 @@ tabelas em um único schema (`public`)**, 18 chaves estrangeiras, 24 `CHECK`,
 
 O DDL roda contra um PostgreSQL 16 real a cada execução dos testes
 automatizados (Testcontainers) e a cada `docker compose up`. A verificação de
-29/10/2026 aplicou o `schema.sql` e o
+29/10/2026 aplicou o `schema.sql` e os dados de teste do
 [`seed.sql`](../../../database/scripts/dml/seed.sql) num banco vazio e
 conferiu, no catálogo do PostgreSQL, que tabelas, colunas, tipos,
 obrigatoriedade, constraints, índices e triggers batem um a um com o 11. As
@@ -195,6 +195,6 @@ crescendo.
 docker compose up
 ```
 
-O contêiner do PostgreSQL executa `schema.sql` e depois `seed.sql` na primeira
-subida; a API, ao iniciar, aplica qualquer migration que falte. Povoamento em
+O contêiner local do PostgreSQL executa `schema.sql` e os dados de teste do
+`seed.sql` na primeira subida; a produção usa só o schema e as categorias. A API, ao iniciar, aplica qualquer migration que falte. Povoamento em
 [13 - Povoamento](13-povoamento-dml.md).

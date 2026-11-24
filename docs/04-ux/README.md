@@ -4,7 +4,7 @@ Levantamento das telas do app "Eu Duvido!", derivado dos requisitos ([07](../01-
 
 Os TODOs levantados no refinamento **foram resolvidos** pelas decisões de arquitetura e pela modelagem definitiva do banco: cada tela tem uma seção "Resolvido na arquitetura" dizendo **como** a questão foi fechada e apontando o [ADR](../02-arquitetura/adr/) ou a regra de negócio correspondente. Os nomes de tabela aparecem sem prefixo de schema: todo o banco vive no schema `public` ([ADR 0016](../02-arquitetura/adr/0016-schema-unico-e-modelo-enxuto.md)), e o CP é a moeda única ([ADR 0006](../02-arquitetura/adr/0006-cp-como-moeda.md)).
 
-Cada tela tem também a seção **"Como ficou implementada"**, com a captura do sistema rodando e o que ficou diferente do especificado. As capturas são geradas por [`scripts/telas/capturar-telas.mjs`](../../scripts/telas/capturar-telas.mjs) a partir do seed da demonstração, então podem ser refeitas a qualquer momento.
+Cada tela tem também a seção **"Como ficou implementada"**, com a captura do sistema rodando e o que ficou diferente do especificado. As capturas são geradas por [`scripts/telas/capturar-telas.mjs`](../../scripts/telas/capturar-telas.mjs) a partir da base de ensaio com os cinco integrantes (e-mails de exemplo e moderação simulada), então podem ser refeitas a qualquer momento.
 
 O redesign de 31/10/2026 — seis propostas aprovadas pelo PO, implementadas e testadas — está em [Redesign de UI/UX](propostas/README.md). A abertura animada, pedida depois da apresentação e removida da versão final em 20/11/2026, está em [Tela inicial](propostas/tela-inicial/README.md). O card da Vitrine Virtual da EXPOUNA 2026 está em [Card da EXPOUNA](card-expouna/README.md).
 

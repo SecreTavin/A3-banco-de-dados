@@ -27,7 +27,7 @@ quadro *Moderação do grupo* e nada é criado (RN28).
 | Moderação de IA antes de criar | Sim, como etapa: cada grupo mostra o seu filtro e o quadro explica recusa e indisponibilidade |
 | Selecionar participantes na criação | **Não.** O desafio nasce `ABERTA` sem participantes; cada membro entra pela tela de detalhe, escolhendo papel e escolha (RN09, débito por `debitar_escrow`) |
 
-*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+*Captura do sistema na base de ensaio com os cinco integrantes (e-mails de exemplo e moderação simulada), gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 
 ## Dados (origem: `desafio`, `participante_desafio`, `categoria_desafio`, `membro_grupo`)
 `titulo`, `descricao`, `valor_cp`, `tipo_recompensa`, `descricao_recompensa`, `data_limite` / `papel_desafio`, `escolha` / `nome` (categoria) / `saldo_cp` (para checar se o usuário tem CP suficiente)

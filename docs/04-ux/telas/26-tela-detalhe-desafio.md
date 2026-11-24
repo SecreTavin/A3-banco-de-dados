@@ -24,7 +24,7 @@ Visão completa de um desafio específica: participantes, evidências e resultad
 | Envio de evidência | Sim, pelo `DESAFIADO`, como **URL** do comprovante. Upload direto de arquivo não foi implementado ([19 - Limitações](../../06-encerramento/19-limitacoes-e-melhorias.md)) |
 | Cancelamento com motivo | Sim, no menu "⋯" com diálogo de confirmação, só para quem criou e enquanto não encerrado |
 
-*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+*Captura do sistema na base de ensaio com os cinco integrantes (e-mails de exemplo e moderação simulada), gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 
 ## Dados (origem: `desafio`, `participante_desafio`, `evidencia`)
 `status`, `valor_cp`, `data_limite`, `motivo_cancelamento`, `data_encerramento` / `papel_desafio`, `escolha` / `ordem`, `tipo_midia`, `url_comprovante`, `comentario`, `status`, `data_envio`, `data_limite_votacao`, `data_apuracao`

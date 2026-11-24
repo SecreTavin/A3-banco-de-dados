@@ -105,7 +105,7 @@ cada arquivo.
 
 ## Registros
 
-61 registros, em ordem cronológica.
+62 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -170,6 +170,7 @@ cada arquivo.
 | 2026-11-20 | [Ajustes pedidos na revisão do professor (31/10)](registro-ia/2026-11-20-ajustes-revisao-do-professor.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-20 | [Produção com o banco limpo](registro-ia/2026-11-20-producao-com-banco-limpo.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-20 | [Regenera o status da Entrega 4](registro-ia/2026-11-20-gera-status-entrega-4.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-22 | [Demonstração e documentação só com os integrantes](registro-ia/2026-11-22-demo-com-os-integrantes.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 
 ## Consolidação final
 

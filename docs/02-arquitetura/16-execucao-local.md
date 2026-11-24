@@ -11,7 +11,7 @@ docker compose up
 
 | Serviço | Imagem | Porta | Papel |
 | --- | --- | --- | --- |
-| `db` | `postgres:16-alpine` | 5432 (`DB_PORT`) | Banco, já povoado na primeira subida |
+| `db` | `postgres:16-alpine` | 5432 (`DB_PORT`) | Banco, com os dados fictícios de teste na primeira subida local |
 | `storage` | `bitnamilegacy/minio:2025.7.23` | 9000 / 9001 | Armazenamento S3-compatível |
 | `storage-init` | `bitnamilegacy/minio:2025.7.23` | — | Cria o bucket `evidencias` e sai |
 | `api` | build de `apps/api` | 5080 | API .NET, aplica migrations na subida |
@@ -45,13 +45,13 @@ o console em `localhost:9001` é só para inspeção local.
 
 O acesso é só pelo Google ([ADR 0021](adr/0021-login-exclusivo-google.md)). O
 login de desenvolvimento, por seleção de usuário, saiu em 20/11/2026. Três
-variáveis do `.env` controlam o login:
+variáveis do `.env` controlam o login, e a terceira só importa nos testes locais:
 
 | Variável | Para quê |
 | --- | --- |
 | `GOOGLE_CLIENT_ID` | Client ID do projeto no Google Cloud. Sem ele, a API sobe, mas o login responde 503 e a tela avisa que não foi configurado |
 | `AUTH_CHAVE` | Chave que assina as sessões. Sem ela, vale o padrão de desenvolvimento, que está no repositório; no ambiente público ela é obrigatória (`openssl rand -base64 48`) |
-| `DEMO_CONTAS` | Liga contas Google reais aos usuários do seed para a demonstração: `"Tavin=fulano@gmail.com;Lari=ciclana@gmail.com"` |
+| `DEMO_CONTAS` | Opcional, só no ambiente local: liga uma conta Google a um usuário fictício dos dados de teste. Não é usada na produção |
 
 **No Google Cloud** (uma vez só):
 
@@ -62,18 +62,9 @@ variáveis do `.env` controlam o login:
   escopos `openid`, `email` e `profile`, e sem logo, para não cair em
   verificação.
 
-**Os usuários do seed** (Tavin, Biel, Theus, Lari, Lipe, Aninha, Brunão, Mila e
-Dieguinho, os nove do [seed](../03-banco-de-dados/implementacao/13-povoamento-dml.md))
-têm e-mails fictícios. Para entrar como um deles, ligue uma conta Google real a
-ele:
-
-```bash
-scripts/demo/vincular-contas.sh
-```
-
-O script lê `DEMO_CONTAS` e troca os e-mails numa transação só. O
-`recriar-banco.sh` já o chama depois de cada recriação. Cada personagem precisa
-de uma conta Google diferente.
+**Quem entra.** Na produção, cada integrante entra com a própria conta Google e
+completa o cadastro no primeiro acesso. Os dados fictícios de teste têm e-mails
+inválidos, então ninguém entra como um deles sem o `DEMO_CONTAS` local.
 
 **Testes automáticos:** o popup do Google não se automatiza. Os roteiros de
 ponta a ponta assinam a sessão com a mesma chave (`AUTH_CHAVE`, ou o padrão de
@@ -108,49 +99,44 @@ docker exec euduvido-api-1 sh -c 'test -n "$Ia__ApiKey" && echo com chave || ech
 Os padrões apontam para a Groq com o modelo `openai/gpt-oss-120b`;
 `IA_BASE_URL` e `IA_MODELO` trocam o provedor sem mexer em código.
 
-## Recomeçar a demonstração
+## Povoamento e dados de teste
 
-Depois de ensaiar (votar, criar desafios), volte o banco ao estado do seed e
-confira se ele está como o [roteiro da banca](../06-encerramento/roteiro-da-demonstracao.md)
-espera:
-
-```bash
-scripts/demo/recriar-banco.sh
-```
-
-O script pede para digitar `RECRIAR`, apaga só o schema `public` e aplica o
-`schema.sql` e o `seed.sql` pelo `psql`. Ele funciona no Docker local e na VM,
-mesmo que a VM desligue o seed no *initdb*. No fim, ele roda a conferência:
+**Produção.** O banco é povoado pelos integrantes, usando o site
+([13 - Povoamento](../03-banco-de-dados/implementacao/13-povoamento-dml.md)).
+**Não rode `scripts/demo/recriar-banco.sh` na VM:** ele apaga as contas e os
+dados reais. Antes de qualquer manutenção, faça backup:
 
 ```bash
-scripts/demo/conferir-demo.sh
+docker compose exec -T db pg_dump -U euduvido -d euduvido --no-owner > backup-banca.sql
 ```
 
-A conferência só lê o banco e marca ✔ ou ✘ para cada pré-condição do roteiro:
+As fotos das provas ficam no volume `storage-data`, fora desse backup. O arquivo
+tem e-mails reais e não pode entrar no repositório.
 
-* 9 usuários;
-* "Correr 5km" com 1 de 2 votos e a Lari ainda sem votar;
-* "Tirar nota máxima" aberta;
-* "Dinossauro" em andamento;
-* os saldos de partida;
-* as views de contabilidade vazias.
-
-Rode antes de cada ensaio e na véspera da banca.
-
-O caminho antigo, `docker compose down -v && docker compose up -d`, também
-volta ao seed no Docker local, porque o seed roda quando o volume está vazio.
-
-**Começar sem o seed.** Para usar o sistema com pessoas reais, sem os
-personagens da demonstração:
+**Base de ensaio local, só com os integrantes.** Sobe separada do banco principal,
+com o moderador simulado:
 
 ```bash
-scripts/demo/recriar-banco.sh --vazio
+COMPOSE_PROJECT_NAME=euduvido-ensaio docker compose -f docker-compose.yml -f scripts/testes/compose.ia-falsa.yml up -d --build
 ```
 
-O banco fica só com o schema e as quatro categorias
-(`database/scripts/dml/categorias.sql`). As categorias não têm tela de gestão;
-sem elas, nenhum desafio pode ser criado. Cada pessoa se cadastra ao entrar com
-o Google, e só dá para adicionar a um grupo quem já entrou uma vez.
+```bash
+COMPOSE_PROJECT_NAME=euduvido-ensaio scripts/demo/recriar-banco.sh --vazio --sim
+```
+
+```bash
+npm i --no-save playwright-core
+```
+
+```bash
+EUDUVIDO_DB=euduvido-ensaio-db-1 node scripts/telas/povoar-integrantes.mjs
+```
+
+**Dados de teste.** O CI e os roteiros de ponta a ponta usam o `seed.sql`, com
+usuários fictícios. Para voltar a esse estado no Docker **local**, rode
+`scripts/demo/recriar-banco.sh`, ou `docker compose down -v && docker compose up -d`,
+que também apaga os volumes. **Nenhum dos dois deve rodar na VM.** A conferência
+`scripts/demo/conferir-demo.sh` vale só para esses dados de teste.
 
 ## Ver o SQL ao vivo
 
@@ -191,7 +177,8 @@ não aceita conexão.
 Há dois caminhos, e eles não conflitam:
 
 1. **Contêiner do banco** — na primeira subida, o entrypoint do Postgres aplica
-   `database/scripts/ddl/schema.sql` e depois `seed.sql`. Como o `schema.sql` é
+   `database/scripts/ddl/schema.sql` e, no ambiente local, os dados de teste do
+   `seed.sql`. Como o `schema.sql` é
    gerado pelo `dotnet ef migrations script --idempotent`, ele já registra as
    migrations na tabela `__EFMigrationsHistory`.
 2. **API na subida** — chama `Database.MigrateAsync()`. Encontrando o histórico
@@ -216,11 +203,11 @@ O sistema está publicado em **https://euduvido.falveshub.com**
 ([ADR 0020](adr/0020-demonstracao-publica-na-vm-oracle.md)). Roda numa VM da
 Oracle Cloud, com o mesmo `docker-compose.yml` deste repositório, e chega à
 internet por um túnel nomeado da Cloudflare. Não depende de nenhum computador
-do time estar ligado. O endereço antigo, `euduvido.secretavin.workers.dev`,
-redireciona para este.
+do time estar ligado. O endereço antigo, `euduvido.secretavin.workers.dev`, ainda
+abre uma versão velha e sem API: use só o endereço acima.
 
 O login é pelo Google. O `.env` da VM precisa de `GOOGLE_CLIENT_ID`,
-`AUTH_CHAVE` (nova, não a padrão) e `DEMO_CONTAS`, e o endereço público precisa
+`AUTH_CHAVE` (nova, não a padrão), e o endereço público precisa
 estar nas origens autorizadas do Client ID.
 
 | Peça | Como está na VM |
@@ -228,7 +215,7 @@ estar nas origens autorizadas do Client ID.
 | Código | Checkout da `main` deste repositório; atualização manual, sem deploy automático |
 | Frontend | Build com `VITE_API_URL` vazio; o nginx repassa `/api/` e `/hubs/` para a API |
 | Portas | Nenhuma aberta; só o `web` escuta, em `127.0.0.1:5380`, atrás do túnel |
-| Banco | Desde 20/11/2026, sem o seed: só o schema e as categorias, com os dados reais dos participantes. Antes de recriar, faça backup (`pg_dump`); recriar com `scripts/demo/recriar-banco.sh --vazio` apaga tudo |
+| Banco | Desde 20/11/2026, só o schema e as categorias, povoado pelos integrantes com contas reais. Não recriar: qualquer modo de `recriar-banco.sh` apaga tudo |
 
 O override do compose, a configuração do nginx e o `.env` com a chave da Groq
 existem só na VM. Para atualizar, quem tem acesso SSH roda no checkout dela:

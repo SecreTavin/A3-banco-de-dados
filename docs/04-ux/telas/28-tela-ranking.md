@@ -19,7 +19,7 @@ Ranking de maiores desafios e apuração de resultados (RF08).
 | Maiores desafios por pote | **Não na tela.** Existe como consulta Q3 em [16 - Consultas SQL](../../03-banco-de-dados/implementacao/16-consultas-sql.md) |
 | % de aprovação, cumpridas × perdidas | **Não na tela.** Acertos e erros aparecem por jogador |
 
-*Captura do sistema rodando com o seed da demonstração, gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
+*Captura do sistema na base de ensaio com os cinco integrantes (e-mails de exemplo e moderação simulada), gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
 
 ## Dados (origem: queries analíticas sobre `desafio`, `participante_desafio`, `jurado_evidencia`, `transacao_cp`, `membro_grupo`)
 Baseado em [analytical_queries.sql](../../../database/scripts/queries/analytical_queries.sql) — `valor_cp`, `saldo_cp`, `percentual_aprovacao`, contagem de votos favoráveis/contra.
