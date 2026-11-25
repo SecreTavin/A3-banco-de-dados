@@ -15,6 +15,17 @@ PR #3 para uma branch nova a partir da `main`, com os nomes de `desafio` do ADR
 tirar o que está fora da especificação (triagem de prova por IA, RN29, e
 ngrok/Ollama como caminho oficial); usar a Groq; gerar testes unitários.
 
+## Prompt utilizado
+
+Prompt não recuperado. Não foi reconstruído de memória, como pede o
+[documento 18](../18-registro-ia.md).
+
+Em 25/11/2026, o histórico do Claude Code
+(`~/.claude/projects/<pasta-do-projeto>/*.jsonl`) foi vasculhado no computador
+usado no projeto, em todas as pastas de projeto, por termos do pedido. A
+transcrição mais antiga que existe lá é de 26/10/2026: as sessões de 06/10/2026 não
+existem mais. O Claude Code apaga transcrições antigas por padrão. O que foi pedido está resumido na seção anterior.
+
 ## O que a IA produziu
 
 * Porte por **merge de três vias arquivo a arquivo** (base da PR #3, `main` e
