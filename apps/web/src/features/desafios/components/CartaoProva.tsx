@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Avatar, Badge, Icone } from '../../../shared/ui'
+import { Avatar, Badge, Botao, Icone } from '../../../shared/ui'
 import { descreverPrazo, formatarDataHora } from '../../../shared/ui/formato'
 import { aparenciaStatusEvidencia, rotuloMidia } from '../../../shared/ui/status'
-import type { Evidencia } from '../../../shared/api/tipos'
+import type { Evidencia, TipoVoto } from '../../../shared/api/tipos'
 import { rotaDeMidia } from '../../../shared/api/client'
 import { useFotoDaProvaQuery } from '../hooks/useFotoDaProvaQuery'
 import estilos from '../detalhe.module.css'
@@ -11,6 +11,9 @@ interface Props {
   evidencia: Evidencia
   /** A prova mais recente aparece inteira; as anteriores, resumidas. */
   destaque: boolean
+  /** Quem está vendo: se estiver no júri e ainda não votou, vota por aqui. */
+  idUsuario?: number
+  aoVotar?: (voto: TipoVoto) => void
 }
 
 /** O comprovante na própria tela. Se a imagem não carregar, cai no link. */
@@ -51,10 +54,15 @@ export function MidiaProva({ evidencia }: { evidencia: Pick<Evidencia, 'tipoMidi
   )
 }
 
-export function CartaoProva({ evidencia, destaque }: Props) {
+export function CartaoProva({ evidencia, destaque, idUsuario, aoVotar }: Props) {
   const status = aparenciaStatusEvidencia[evidencia.status]
   const emVotacao = evidencia.status === 'EM_VOTACAO'
   const lider = Math.max(evidencia.votosFavoraveis, evidencia.votosContra)
+  const meuJurado = evidencia.jurados.find((jurado) => jurado.idUsuario === idUsuario)
+  const possoVotar = emVotacao && meuJurado !== undefined && !meuJurado.votou && aoVotar !== undefined
+  // RN29: para quem ainda vai votar, a API não manda os votos dos outros.
+  const votos = evidencia.jurados.filter((jurado) => jurado.voto !== null)
+  const votosOcultos = evidencia.jurados.some((jurado) => jurado.votou && jurado.voto === null)
 
   if (!destaque) {
     return (
@@ -111,6 +119,48 @@ export function CartaoProva({ evidencia, destaque }: Props) {
           </li>
         ))}
       </ul>
+
+      {votos.length > 0 && (
+        <ul className={estilos.votos} aria-label="Votos do júri">
+          {votos.map((jurado) => (
+            <li key={jurado.idUsuario} className={estilos.voto}>
+              <span className={estilos.votoTopo}>
+                <strong>{jurado.apelido}</strong>
+                <Badge cor={jurado.voto === 'VALIDO' ? 'var(--cumpriu)' : 'var(--perdeu)'}>
+                  {jurado.voto === 'VALIDO' ? 'Vale' : 'Não vale'}
+                </Badge>
+                {jurado.dataVoto && <span className={estilos.votoData}>{formatarDataHora(jurado.dataVoto)}</span>}
+              </span>
+              {jurado.justificativa ? (
+                <p className={estilos.votoTexto}>“{jurado.justificativa}”</p>
+              ) : (
+                <p className={estilos.votoSemTexto}>Votou sem comentário.</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      {possoVotar && (
+        <div className={estilos.votarAqui}>
+          <strong>Você está no júri desta prova.</strong>
+          <span>
+            {votosOcultos
+              ? 'Os votos e os comentários de quem já votou aparecem depois do seu voto.'
+              : 'Seu voto é definitivo.'}
+          </span>
+          <div className={estilos.botoesVoto}>
+            <Botao variante="recusa" onClick={() => aoVotar('INVALIDO')}>
+              <Icone nome="fechar" tamanho={20} />
+              Não vale
+            </Botao>
+            <Botao variante="sucesso" onClick={() => aoVotar('VALIDO')}>
+              <Icone nome="check" tamanho={20} />
+              Vale
+            </Botao>
+          </div>
+        </div>
+      )}
 
       {emVotacao ? (
         <p className={estilos.dicaVoto}>

@@ -77,6 +77,8 @@ invisível e caro: a liquidação dentro do banco e a conversão de dados.
 | I09 | Criar desafio com a IA fora do ar | Exceção; nada gravado em `desafio` nem em `moderacao_desafio` | Aprovado |
 | I10 | Envio de evidência | Júri congelado em `jurado_evidencia` sem as partes; desafio `EM_VOTACAO` | Aprovado |
 | I11 | Migration `AlinhamentoModeloV3` sobre banco povoado no modelo anterior | Só o schema `public`, com as 10 tabelas; linhas e saldos preservados; validador + voto viram `jurado_evidencia`; valor monetário e prenda viram `descricao_recompensa`; o voto que faltava fecha o desafio | Aprovado |
+| I12 | Voto e justificativa no detalhe do desafio, vistos pelo desafiado | Voto `VALIDO`, justificativa e data de quem votou; nulos para quem ainda não votou | Aprovado |
+| I13 | RN29: o mesmo detalhe visto por jurado pendente, por quem já votou e com a votação fechada | Pendente: só sabe quem votou, sem voto nem comentário. Quem votou e votação fechada: tudo visível | Aprovado |
 
 **I02 é o teste mais importante do projeto.** A view `vw_reconciliacao_saldo`
 deve estar sempre vazia; qualquer linha significa que o saldo materializado
@@ -181,6 +183,7 @@ rodada. Para repetir, volte ao seed (`docker compose down -v` e `up`, ou
 | U13 | Abrir `/` sem sessão; entrar e abrir `/` de novo | Sem sessão vai direto a `/login`; logado vai a `/desafios`; nenhuma abertura animada no caminho (removida em 20/11/2026) | Aprovado |
 | U14 | Abrir a tela de login | Só o botão do Google (ou o aviso de "não configurado"); nenhum usuário do seed listado; `/api/auth/dev/usuarios` responde 404 | Aprovado |
 | U15 | Como Lipe, escolher **Foto** no desafio do dinossauro, enviar um PNG pelo seletor de arquivo e mandar ao júri; depois, como Tavin, abrir a Votação | "Mandar para o júri" só libera depois da foto; `url_comprovante` aponta para `/api/midia/<guid>`; a URL sem login responde 401; o júri vê a imagem carregada ([ADR 0022](../02-arquitetura/adr/0022-foto-da-prova-no-minio-pela-api.md)) | Aprovado |
+| U16 | Na prova do U15, um jurado vota **Vale** pela tela do desafio, com comentário; outro jurado pendente abre a mesma tela; depois, o desafiado | Voto e comentário gravados; o jurado pendente não vê o comentário (RN29); o desafiado vê | Não executado no roteiro (sem Chrome no Mac, 26/11); fluxo conferido à mão |
 
 Executado em 30/10/2026 num banco recém-semeado: **12 de 12 aprovados**, uma vez
 com o navegador visível e outra sem janela.
@@ -235,6 +238,19 @@ botão **A+** de fonte maior, num banco recém-criado e com a API sem chave da I
 * IA simulada: **14 de 14**;
 * testes da API (`dotnet test`): **170 de 170**, com 8 novos para a foto (tipo
   pelos primeiros bytes e nome sem caminho).
+
+Reexecutado em 26/11/2026 com o voto e a justificativa na tela do desafio
+([#83](https://github.com/SecreTavin/A3-banco-de-dados/issues/83)):
+
+* testes da API (`dotnet test`): **174 de 174**, com 4 novos (I12 e I13);
+* API de ponta a ponta: **18 de 18**;
+* tela: **o roteiro não rodou**, porque o Google Chrome não estava instalado no
+  computador. O fluxo do U16 foi conferido à mão, no navegador embutido do
+  Claude Code, num ambiente isolado:
+  * o desafiado vê o voto e o comentário;
+  * o jurado pendente não vê o comentário e vota pela tela do desafio;
+  * o voto que fecha o júri apura e paga;
+  * no celular (375 px), a página não rola na horizontal.
 
 O envio também foi conferido direto na API: sem login responde 401; texto com
 nome `.png` responde 400; arquivo de 9 MB responde 400; nome com `../` responde

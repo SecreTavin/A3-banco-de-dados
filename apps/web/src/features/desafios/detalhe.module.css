@@ -484,6 +484,77 @@
   color: var(--texto);
 }
 
+/* Votos do júri com a justificativa (RF07, RN29). */
+.votos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.voto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+}
+
+.votoTopo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 0.875rem;
+}
+
+.votoData {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--texto-fraco);
+}
+
+.votoTexto {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.votoSemTexto {
+  font-size: 0.8125rem;
+  color: var(--texto-fraco);
+}
+
+/* O jurado vota pela própria tela do desafio, sem ir à aba Votação. */
+.votarAqui {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--primaria-fraca);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.botoesVoto {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* A coluna da prova é estreita: "Não vale" fica numa linha só. */
+.botoesVoto button {
+  min-height: 52px;
+  padding: 0 8px;
+  border-radius: 12px;
+  font-family: var(--fonte-titulo);
+  font-size: 1rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 .dicaVoto {
   padding: 10px 12px;
   border-radius: 10px;

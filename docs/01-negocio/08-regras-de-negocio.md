@@ -89,6 +89,13 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
 * **RN19 —** Só se vota em evidência `EM_VOTACAO` e dentro do prazo.
   *Trigger `trg_jurado_evidencia_valida`.*
 
+* **RN29 —** O voto e a justificativa de cada jurado ficam visíveis para o
+  grupo, com o nome de quem votou. Enquanto a evidência está `EM_VOTACAO`, o
+  jurado que ainda não votou vê só quem já votou e o placar, para não ser
+  influenciado; depois do voto dele, ou quando a votação fecha, vê tudo
+  ([#83](https://github.com/SecreTavin/A3-banco-de-dados/issues/83)).
+  *Aplicação: consulta `JuradosDoDesafio` do detalhe do desafio.*
+
 ## Economia de CP
 
 * **RN06 —** Todo membro entra no grupo com 100 CP, lançados no ledger.

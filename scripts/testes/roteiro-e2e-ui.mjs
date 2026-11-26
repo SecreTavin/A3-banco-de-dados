@@ -582,7 +582,49 @@ async function rodar() {
         (i) => i.complete && i.naturalWidth > 0 && i.src.startsWith('blob:'),
       ),
     )
+    S.provaFoto = { idDesafio }
     return 'botao so libera com a foto; URL da API gravada; sem login 401; o juri ve a imagem'
+  })
+
+  await cenario('U16', 'Jurado vota pela tela do desafio com comentario; RN29 esconde o comentario de quem ainda vai votar', async () => {
+    precisa(S.provaFoto, 'depende de U15')
+    const { idDesafio } = S.provaFoto
+    const idEvidencia = num(`SELECT max(id_evidencia) FROM evidencia WHERE id_desafio = ${idDesafio}`)
+    const jurados = sql(
+      `SELECT string_agg(u.apelido, ',' ORDER BY u.apelido) FROM jurado_evidencia j JOIN usuario u USING (id_usuario) WHERE j.id_evidencia = ${idEvidencia} AND j.voto IS NULL`,
+    ).split(',').filter(Boolean)
+    precisa(jurados.length > 0, 'nenhum jurado pendente na prova do U15')
+    const [primeiro, segundo] = jurados
+    const comentario = `${ETIQUETA}-voto`
+
+    await entrar(primeiro)
+    await irPara(`${WEB}/desafios/${idDesafio}`)
+    await esperarRede()
+    await pagina.getByText('Você está no júri desta prova.').waitFor()
+    await pagina.getByRole('button', { name: 'Vale', exact: true }).click()
+    await pagina.getByLabel('Justificativa').fill(comentario)
+    await pagina.getByRole('button', { name: 'Confirmar voto', exact: true }).click()
+    await pagina.getByText(/Voto registrado|Júri fechou/).first().waitFor({ timeout: 15000 })
+    const gravado = sql(
+      `SELECT voto || '|' || coalesce(justificativa, '') FROM jurado_evidencia WHERE id_evidencia = ${idEvidencia} AND id_usuario = ${idUsuario(primeiro)}`,
+    )
+    confere(gravado === `VALIDO|${comentario}`, `voto gravado: "${gravado}"`)
+
+    let rn29 = 'so havia um jurado pendente: RN29 coberta pelos testes da API'
+    if (segundo && sql(`SELECT status FROM evidencia WHERE id_evidencia = ${idEvidencia}`) === 'EM_VOTACAO') {
+      await entrar(segundo)
+      await irPara(`${WEB}/desafios/${idDesafio}`)
+      await esperarRede()
+      await pagina.getByText('aparecem depois do seu voto').waitFor()
+      confere((await pagina.getByText(comentario).count()) === 0, `${segundo} viu o comentario antes de votar (RN29)`)
+      rn29 = `${segundo}, ainda sem votar, nao ve o comentario`
+    }
+
+    await entrar(sql(`SELECT u.apelido FROM participante_desafio p JOIN usuario u USING (id_usuario) WHERE p.id_desafio = ${idDesafio} AND p.papel_desafio = 'DESAFIADO'`))
+    await irPara(`${WEB}/desafios/${idDesafio}`)
+    await esperarRede()
+    await pagina.getByText(comentario).first().waitFor()
+    return `${primeiro} votou Vale pela tela do desafio, com comentario gravado; ${rn29}; o desafiado ve o voto e o comentario`
   })
 
   await navegador.close()

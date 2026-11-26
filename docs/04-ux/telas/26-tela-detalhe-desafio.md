@@ -20,8 +20,9 @@ Visão completa de um desafio específica: participantes, evidências e resultad
 | --- | --- |
 | Cabeçalho com status, custo, pote, recompensa e prazo | Sim, com a linha do tempo das etapas |
 | Participantes com papel e escolha | Sim, em confronto: quem diz que cumpre contra quem diz que não, e quanto cada um ganha. Quem ainda não participa de desafio `ABERTA` escolhe o papel e clica em **Entrar como…** |
-| Evidências com status e votos | Sim, com quórum, prazo e os jurados (quem já votou, sem mostrar o voto) |
-| Envio de evidência | Sim, pelo `DESAFIADO`, como **URL** do comprovante. Upload direto de arquivo não foi implementado ([19 - Limitações](../../06-encerramento/19-limitacoes-e-melhorias.md)) |
+| Evidências com status e votos | Sim, com quórum, prazo e os jurados. Desde 26/11/2026, cada voto aparece com o nome, **Vale** ou **Não vale** e a justificativa; o jurado que ainda não votou só vê depois do próprio voto (RN29, [#83](https://github.com/SecreTavin/A3-banco-de-dados/issues/83)) |
+| Votar | Desde 26/11/2026, o jurado que ainda não votou vota na própria tela do desafio, com a mesma confirmação da [Central de Votação](27-tela-central-votacao.md) |
+| Envio de evidência | Sim, pelo `DESAFIADO`: foto enviada do aparelho ([ADR 0022](../../02-arquitetura/adr/0022-foto-da-prova-no-minio-pela-api.md)) ou link. Vídeo não sobe pelo app ([19 - Limitações](../../06-encerramento/19-limitacoes-e-melhorias.md)) |
 | Cancelamento com motivo | Sim, no menu "⋯" com diálogo de confirmação, só para quem criou e enquanto não encerrado |
 
 *Captura do sistema na base de ensaio com os cinco integrantes (e-mails de exemplo e moderação simulada), gerada por [`scripts/telas/capturar-telas.mjs`](../../../scripts/telas/capturar-telas.mjs).*
