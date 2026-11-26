@@ -105,7 +105,7 @@ cada arquivo.
 
 ## Registros
 
-70 registros, em ordem cronológica.
+71 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -179,6 +179,7 @@ cada arquivo.
 | 2026-11-24 | [Vídeo na abertura da banca](registro-ia/2026-11-24-video-na-abertura-da-banca.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-25 | [Busca dos prompts dos registros de setembro e outubro](registro-ia/2026-11-25-busca-dos-prompts-antigos.md) | Claude Code (Opus 5.5) | Arthur Araujo Marzano |
 | 2026-11-25 | [publicar.sh troca o túnel expirado](registro-ia/2026-11-25-publicar-tunel-expirado.md) | Claude Code (Opus 5.5) | Arthur Araujo Marzano |
+| 2026-11-26 | [Cloudflare como reserva da VM e fechamento das pendências](registro-ia/2026-11-26-cloudflare-reserva-e-fechamento.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 
 ## Consolidação final
 

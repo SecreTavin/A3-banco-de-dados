@@ -205,8 +205,10 @@ O sistema está publicado em **https://euduvido.falveshub.com**
 ([ADR 0020](adr/0020-demonstracao-publica-na-vm-oracle.md)). Roda numa VM da
 Oracle Cloud, com o mesmo `docker-compose.yml` deste repositório, e chega à
 internet por um túnel nomeado da Cloudflare. Não depende de nenhum computador
-do time estar ligado. O endereço antigo, `euduvido.secretavin.workers.dev`, ainda
-abre uma versão velha e sem API: use só o endereço acima.
+do time estar ligado. O endereço antigo, `euduvido.secretavin.workers.dev`, é a
+reserva para quando a VM falhar ([ADR 0023](adr/0023-cloudflare-como-reserva-da-vm.md)).
+Enquanto a reserva não é ativada, ele mostra uma versão velha: divulgue só o
+endereço acima.
 
 O login é pelo Google. O `.env` da VM precisa de `GOOGLE_CLIENT_ID`,
 `AUTH_CHAVE` (nova, não a padrão), e o endereço público precisa
@@ -226,10 +228,34 @@ existem só na VM. Para atualizar, quem tem acesso SSH roda no checkout dela:
 git pull && docker compose up -d --build
 ```
 
-O endereço antigo, `euduvido.secretavin.workers.dev`
-([ADR 0019](adr/0019-demonstracao-publica-cloudflare-tunel.md), substituído),
-dependia do Mac do PO ligado. O `scripts/cloudflare/publicar.sh` continua no
-repositório e funciona, mas deixou de ser o endereço divulgado.
+### Reserva na Cloudflare, se a VM falhar
+
+O `scripts/cloudflare/publicar.sh`, que publicava o site no
+[ADR 0019](adr/0019-demonstracao-publica-cloudflare-tunel.md), virou a reserva da
+VM ([ADR 0023](adr/0023-cloudflare-como-reserva-da-vm.md)). Ele publica o frontend
+em `euduvido.secretavin.workers.dev` e leva a API do Docker do Mac do PO até a
+internet por um túnel rápido. Com o HTTPS público, os celulares continuam
+entrando com o Google.
+
+Antes de precisar dela, deixe pronto no Mac:
+
+1. `.env` com `GOOGLE_CLIENT_ID`, `AUTH_CHAVE` (nova) e `IA_API_KEY`;
+2. `https://euduvido.secretavin.workers.dev` nas origens autorizadas do Client
+   ID, no Google Cloud;
+3. o backup mais recente da VM restaurado no banco local, com os comandos do
+   plano B do [roteiro da demonstração](../06-encerramento/roteiro-da-demonstracao.md).
+
+Para ativar:
+
+```bash
+docker compose up -d --build
+```
+
+```bash
+scripts/cloudflare/publicar.sh
+```
+
+Para desligar, `scripts/cloudflare/publicar.sh parar`.
 
 ### Publicar na Cloudflare (Mac do PO)
 

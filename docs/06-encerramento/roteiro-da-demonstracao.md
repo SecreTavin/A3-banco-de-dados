@@ -107,6 +107,9 @@ docker compose exec -T db pg_dump -U euduvido -d euduvido --no-owner > backup-ba
 
 - [ ] O Rafael copia também as fotos das provas, que ficam no volume
       `storage-data`, fora desse backup.
+- [ ] O Rafael manda o backup ao Octávio por um canal privado, e o Octávio deixa
+      a reserva na Cloudflare pronta e testada no Mac (plano B, abaixo). Depois
+      do teste, `scripts/cloudflare/publicar.sh parar`.
 
 **Uma hora antes:**
 
@@ -129,9 +132,11 @@ SELECT u.apelido, m.saldo_cp
       euduvido -d euduvido`).
 - [ ] Deixar este roteiro aberto numa aba ou impresso.
 
-**Plano B, se a VM cair:** subir o sistema no Docker do computador do projetor,
-com `GOOGLE_CLIENT_ID`, `AUTH_CHAVE` e `IA_API_KEY` no `.env`, e restaurar o
-backup de quinta:
+**Plano B, se a VM cair:** ativar a reserva na Cloudflare, no Mac do Octávio
+([ADR 0023](../02-arquitetura/adr/0023-cloudflare-como-reserva-da-vm.md)). O Mac
+precisa ter `GOOGLE_CLIENT_ID`, `AUTH_CHAVE` e `IA_API_KEY` no `.env`, e o endereço
+`https://euduvido.secretavin.workers.dev` precisa estar nas origens autorizadas do
+Client ID. Suba o Docker e restaure o backup de quinta:
 
 ```bash
 docker compose up -d --build
@@ -145,9 +150,20 @@ docker compose exec -T db psql -U euduvido -d euduvido -c 'DROP SCHEMA public CA
 docker compose exec -T db psql -U euduvido -d euduvido < backup-banca.sql
 ```
 
-Abra <http://localhost:8080> e rode o SQL ao vivo e o `psql` locais. Os celulares
-não entram no `localhost`, porque o Google só aceita HTTPS fora dele. Os
-integrantes se revezam no computador do projetor, trocando a conta Google.
+Depois, publique a reserva:
+
+```bash
+scripts/cloudflare/publicar.sh
+```
+
+Abra <https://euduvido.secretavin.workers.dev> no projetor e nos celulares, e rode
+o SQL ao vivo e o `psql` no Mac. Os números do roteiro valem se o backup foi feito
+com o Banca do A3 ainda sem uso, como pede a preparação.
+
+**Se a reserva não subir:** com o Docker e o backup já no ar, abra
+<http://localhost:8080> no projetor. Os celulares não entram no `localhost`,
+porque o Google só aceita HTTPS fora dele: os integrantes se revezam no
+computador do projetor, trocando a conta Google.
 
 **Sem internet:** nem o login com Google nem a IA funcionam. Mostre o fluxo pelas
 capturas do GitBook (telas 22 a 29) e o banco restaurado pelo `psql` local.
