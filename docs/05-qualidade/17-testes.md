@@ -79,6 +79,7 @@ invisível e caro: a liquidação dentro do banco e a conversão de dados.
 | I11 | Migration `AlinhamentoModeloV3` sobre banco povoado no modelo anterior | Só o schema `public`, com as 10 tabelas; linhas e saldos preservados; validador + voto viram `jurado_evidencia`; valor monetário e prenda viram `descricao_recompensa`; o voto que faltava fecha o desafio | Aprovado |
 | I12 | Voto e justificativa no detalhe do desafio, vistos pelo desafiado | Voto `VALIDO`, justificativa e data de quem votou; nulos para quem ainda não votou | Aprovado |
 | I13 | RN29: o mesmo detalhe visto por jurado pendente, por quem já votou e com a votação fechada | Pendente: só sabe quem votou, sem voto nem comentário. Quem votou e votação fechada: tudo visível | Aprovado |
+| I14 | Aba Votação do desafiado (`MinhasProvasNoJuri`) | A própria prova em votação, com placar e comentários; quem não enviou não a recebe; votação fechada sai da lista | Aprovado |
 
 **I02 é o teste mais importante do projeto.** A view `vw_reconciliacao_saldo`
 deve estar sempre vazia; qualquer linha significa que o saldo materializado
@@ -242,13 +243,14 @@ botão **A+** de fonte maior, num banco recém-criado e com a API sem chave da I
 Reexecutado em 26/11/2026 com o voto e a justificativa na tela do desafio
 ([#83](https://github.com/SecreTavin/A3-banco-de-dados/issues/83)):
 
-* testes da API (`dotnet test`): **174 de 174**, com 4 novos (I12 e I13);
+* testes da API (`dotnet test`): **176 de 176**, com 6 novos (I12 a I14);
 * API de ponta a ponta: **18 de 18**;
 * tela: **o roteiro não rodou**, porque o Google Chrome não estava instalado no
   computador. O fluxo do U16 foi conferido à mão, no navegador embutido do
   Claude Code, num ambiente isolado:
   * o desafiado vê o voto e o comentário;
   * o jurado pendente não vê o comentário e vota pela tela do desafio;
+  * o desafiado vê a própria prova na aba Votação, com o placar e os comentários;
   * o voto que fecha o júri apura e paga;
   * no celular (375 px), a página não rola na horizontal.
 

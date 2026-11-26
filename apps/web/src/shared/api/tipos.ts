@@ -192,6 +192,24 @@ export interface EvidenciaPendente {
   desafiado: string
 }
 
+/** Prova do próprio usuário no júri: o desafiado acompanha o placar e os comentários (#83). */
+export interface MinhaProvaNoJuri {
+  idEvidencia: number
+  idDesafio: number
+  desafio: string
+  idGrupo: number
+  grupo: string
+  ordem: number
+  comentario: string | null
+  dataLimiteVotacao: string
+  totalValidadores: number
+  quorum: number
+  votosFavoraveis: number
+  votosContra: number
+  votosFaltantes: number
+  jurados: Jurado[]
+}
+
 export interface PosicaoRanking {
   /** O apelido pode repetir; quem identifica o membro é o id. */
   idUsuario: number

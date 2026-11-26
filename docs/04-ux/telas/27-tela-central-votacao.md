@@ -16,6 +16,8 @@ Validação por evidência pelos membros do grupo (RF07).
 É a tela do roteiro da banca: o voto que fecha o quórum dispara `apurar_votacao`
 no banco. Desde 26/11/2026, o jurado também vota pela tela do desafio
 ([26](26-tela-detalhe-desafio.md), [#83](https://github.com/SecreTavin/A3-banco-de-dados/issues/83)).
+O desafiado não vota na própria prova (RN14), mas a aba mostra a seção **Suas
+provas no júri**, com o placar, o prazo e o voto e o comentário de cada jurado.
 
 | Especificado | Implementado |
 | --- | --- |

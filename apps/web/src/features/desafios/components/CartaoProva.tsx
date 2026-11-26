@@ -5,6 +5,7 @@ import { aparenciaStatusEvidencia, rotuloMidia } from '../../../shared/ui/status
 import type { Evidencia, TipoVoto } from '../../../shared/api/tipos'
 import { rotaDeMidia } from '../../../shared/api/client'
 import { useFotoDaProvaQuery } from '../hooks/useFotoDaProvaQuery'
+import { VotosDoJuri } from './VotosDoJuri'
 import estilos from '../detalhe.module.css'
 
 interface Props {
@@ -61,7 +62,6 @@ export function CartaoProva({ evidencia, destaque, idUsuario, aoVotar }: Props) 
   const meuJurado = evidencia.jurados.find((jurado) => jurado.idUsuario === idUsuario)
   const possoVotar = emVotacao && meuJurado !== undefined && !meuJurado.votou && aoVotar !== undefined
   // RN29: para quem ainda vai votar, a API não manda os votos dos outros.
-  const votos = evidencia.jurados.filter((jurado) => jurado.voto !== null)
   const votosOcultos = evidencia.jurados.some((jurado) => jurado.votou && jurado.voto === null)
 
   if (!destaque) {
@@ -120,26 +120,7 @@ export function CartaoProva({ evidencia, destaque, idUsuario, aoVotar }: Props) 
         ))}
       </ul>
 
-      {votos.length > 0 && (
-        <ul className={estilos.votos} aria-label="Votos do júri">
-          {votos.map((jurado) => (
-            <li key={jurado.idUsuario} className={estilos.voto}>
-              <span className={estilos.votoTopo}>
-                <strong>{jurado.apelido}</strong>
-                <Badge cor={jurado.voto === 'VALIDO' ? 'var(--cumpriu)' : 'var(--perdeu)'}>
-                  {jurado.voto === 'VALIDO' ? 'Vale' : 'Não vale'}
-                </Badge>
-                {jurado.dataVoto && <span className={estilos.votoData}>{formatarDataHora(jurado.dataVoto)}</span>}
-              </span>
-              {jurado.justificativa ? (
-                <p className={estilos.votoTexto}>“{jurado.justificativa}”</p>
-              ) : (
-                <p className={estilos.votoSemTexto}>Votou sem comentário.</p>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+      <VotosDoJuri jurados={evidencia.jurados} />
 
       {possoVotar && (
         <div className={estilos.votarAqui}>

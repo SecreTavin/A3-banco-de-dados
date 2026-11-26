@@ -230,7 +230,7 @@ passos 1 a 10. Ao terminar, voltar ao **slide 20**.
 
 ### Slide 20 · Qualidade (1:00)
 
-> O que vocês viram também foi testado de forma automática. Temos 174 testes da API,
+> O que vocês viram também foi testado de forma automática. Temos 176 testes da API,
 > contra um PostgreSQL real. O roteiro de ponta a ponta pela API passa em 18 de 18.
 > Os cenários de moderação com a IA simulada passam em 14 de 14. Pela tela, são 14
 > de 15. O cenário que falta, o U11, aponta que o redesign faz o conteúdo rolar
@@ -241,7 +241,7 @@ passos 1 a 10. Ao terminar, voltar ao **slide 20**.
 ### Slide 21 · IA no desenvolvimento (1:15)
 
 > Usamos IA de duas formas. No desenvolvimento, o Claude Code. Dentro do app, um
-> modelo na Groq faz a moderação. Nossa regra foi registrar cada uso: são 72
+> modelo na Groq faz a moderação. Nossa regra foi registrar cada uso: são 73
 > registros, e cada um diz a ferramenta, o prompt, o que a IA produziu, o que ela
 > errou e como o time validou. Um exemplo: pedimos um jeito de mostrar as chamadas
 > ao banco durante a apresentação. A IA colocou dois ALTER SYSTEM numa transação, e

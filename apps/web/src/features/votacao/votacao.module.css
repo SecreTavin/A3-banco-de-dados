@@ -132,6 +132,23 @@
   color: var(--texto-fraco);
 }
 
+.semVotos,
+.parte {
+  font-size: 0.875rem;
+  color: var(--texto-fraco);
+}
+
+.parte {
+  text-align: center;
+}
+
+.secao {
+  margin: 8px 0 -4px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.125rem;
+  font-weight: 800;
+}
+
 .ganha {
   font-size: 0.8438rem;
   font-weight: 600;
