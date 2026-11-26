@@ -144,6 +144,7 @@
     * [2026-11-24 - Narração sintética do vídeo de demonstração](docs/05-qualidade/registro-ia/2026-11-24-narracao-sintetica-do-video.md)
     * [2026-11-24 - Vídeo na abertura da banca](docs/05-qualidade/registro-ia/2026-11-24-video-na-abertura-da-banca.md)
     * [2026-11-25 - Busca dos prompts dos registros de setembro e outubro](docs/05-qualidade/registro-ia/2026-11-25-busca-dos-prompts-antigos.md)
+    * [2026-11-25 - publicar.sh troca o túnel expirado](docs/05-qualidade/registro-ia/2026-11-25-publicar-tunel-expirado.md)
 
 ## Produto
 

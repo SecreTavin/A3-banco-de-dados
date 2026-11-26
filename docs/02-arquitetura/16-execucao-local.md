@@ -231,6 +231,21 @@ O endereço antigo, `euduvido.secretavin.workers.dev`
 dependia do Mac do PO ligado. O `scripts/cloudflare/publicar.sh` continua no
 repositório e funciona, mas deixou de ser o endereço divulgado.
 
+### Publicar na Cloudflare (Mac do PO)
+
+`scripts/cloudflare/publicar.sh` gera o build do frontend, sobe um túnel rápido
+do `cloudflared` para a API local e publica o Worker com o endereço do túnel em
+`API_ORIGIN`. `publicar.sh parar` derruba o túnel.
+
+| Situação | O que o script faz |
+| --- | --- |
+| Túnel rodando e respondendo em `<túnel>/health` | Reaproveita o túnel e republica o Worker |
+| Processo do túnel vivo, mas o túnel expirou (ex.: depois de o Mac dormir; o site respondia HTTP 530) | Derruba o processo, sobe um túnel novo e republica. Não precisa mais rodar `parar` antes ([#58](https://github.com/SecreTavin/A3-banco-de-dados/issues/58)) |
+| Nenhum túnel | Sobe um túnel novo, espera ele responder em `/health` e publica. Se o DNS local ainda não resolver o endereço novo, avisa e publica mesmo assim |
+| Checkout fora da `main` ou com alterações não commitadas | Avisa antes do build: o site publicado reflete a pasta atual, não a `main` do GitHub |
+
+O `caffeinate`, que impede o Mac de dormir, só é usado quando existe (macOS).
+
 ## Limites conhecidos do ambiente
 
 | Limite | Efeito |

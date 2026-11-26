@@ -105,7 +105,7 @@ cada arquivo.
 
 ## Registros
 
-68 registros, em ordem cronológica.
+70 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -178,6 +178,7 @@ cada arquivo.
 | 2026-11-24 | [Narração sintética do vídeo de demonstração](registro-ia/2026-11-24-narracao-sintetica-do-video.md) | Claude Code (Opus 5.5) e voz Luciana (macOS) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-24 | [Vídeo na abertura da banca](registro-ia/2026-11-24-video-na-abertura-da-banca.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-25 | [Busca dos prompts dos registros de setembro e outubro](registro-ia/2026-11-25-busca-dos-prompts-antigos.md) | Claude Code (Opus 5.5) | Arthur Araujo Marzano |
+| 2026-11-25 | [publicar.sh troca o túnel expirado](registro-ia/2026-11-25-publicar-tunel-expirado.md) | Claude Code (Opus 5.5) | Arthur Araujo Marzano |
 
 ## Consolidação final
 
