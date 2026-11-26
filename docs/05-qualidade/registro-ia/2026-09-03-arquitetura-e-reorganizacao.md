@@ -14,6 +14,17 @@ separada por tipo; explicar o produto e apontar lacunas nas regras; e conduzir
 uma sessão de decisão de arquitetura em formato de sabatina, definindo stack,
 banco, formato da aplicação e tudo que isso engloba.
 
+## Prompt utilizado
+
+Prompt não recuperado. Não foi reconstruído de memória, como pede o
+[documento 18](../18-registro-ia.md).
+
+Em 25/11/2026, o histórico do Claude Code
+(`~/.claude/projects/<pasta-do-projeto>/*.jsonl`) foi vasculhado no computador
+usado no projeto, em todas as pastas de projeto, por termos do pedido. A
+transcrição mais antiga que existe lá é de 26/10/2026: as sessões de 03/09/2026 não
+existem mais. O Claude Code apaga transcrições antigas por padrão. O que foi pedido está resumido na seção anterior.
+
 ## O que a IA produziu
 
 * Reestruturação de 21 documentos em `docs/` com sete seções por tipo,

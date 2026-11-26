@@ -14,6 +14,17 @@ verificação obrigatório em cada um: banco no Docker, solução .NET com o DDL
 gerado por migration, fatia vertical da votação, resto da API, frontend e
 `docker compose up` funcionando de ponta a ponta.
 
+## Prompt utilizado
+
+Prompt não recuperado. Não foi reconstruído de memória, como pede o
+[documento 18](../18-registro-ia.md).
+
+Em 25/11/2026, o histórico do Claude Code
+(`~/.claude/projects/<pasta-do-projeto>/*.jsonl`) foi vasculhado no computador
+usado no projeto, em todas as pastas de projeto, por termos do pedido. A
+transcrição mais antiga que existe lá é de 26/10/2026: as sessões de 03/09/2026 não
+existem mais. O Claude Code apaga transcrições antigas por padrão. O que foi pedido está resumido na seção anterior.
+
 ## O que a IA produziu
 
 * `docker-compose.yml` com PostgreSQL, MinIO e criação automática do bucket.
