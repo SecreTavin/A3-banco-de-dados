@@ -3,6 +3,7 @@
 * **Status:** Aceita
 * **Data:** 2026-11-16
 * **Decisores:** Rafael Alves; Octávio Augusto Arruda dos Prazeres (Product Owner), na revisão de 16/11/2026
+* **Complementado por:** [ADR 0023](0023-cloudflare-como-reserva-da-vm.md), de 26/11/2026: o endereço antigo não redireciona, ele virou a reserva da VM
 
 ## Contexto
 

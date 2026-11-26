@@ -52,7 +52,7 @@ lado da operação visível no ponto de uso.
 | Item | Escolha | Status | ADR |
 | --- | --- | --- | --- |
 | Armazenamento de mídia | MinIO (bucket privado `evidencias`), foto enviada e lida pela API | Em uso | [0022](adr/0022-foto-da-prova-no-minio-pela-api.md) (substitui o [0009](adr/0009-armazenamento-de-midia-r2.md)) |
-| Hospedagem do frontend | Container `web` (nginx) numa VM da Oracle, em `euduvido.falveshub.com`, por túnel nomeado da Cloudflare; Vercel prevista e não implementada | Em uso | [0020](adr/0020-demonstracao-publica-na-vm-oracle.md) (substitui o [0010](adr/0010-hospedagem-e-deploy.md)) |
+| Hospedagem do frontend | Container `web` (nginx) numa VM da Oracle, em `euduvido.falveshub.com`, por túnel nomeado da Cloudflare; reserva num Worker da Cloudflare com o Docker do Mac do PO ([0023](adr/0023-cloudflare-como-reserva-da-vm.md)); Vercel prevista e não implementada | Em uso | [0020](adr/0020-demonstracao-publica-na-vm-oracle.md) (substitui o [0010](adr/0010-hospedagem-e-deploy.md)) |
 | Hospedagem da API | Docker na mesma VM, atrás do nginx do `web`; Render prevista e não implementada | Em uso | [0020](adr/0020-demonstracao-publica-na-vm-oracle.md) (substitui o [0010](adr/0010-hospedagem-e-deploy.md)) |
 | Contêineres | Docker | Em uso | [0010](adr/0010-hospedagem-e-deploy.md) |
 | CI | GitHub Actions: schema, dados de teste, consultas, testes e build a cada PR; sem deploy automático | Em uso | [0010](adr/0010-hospedagem-e-deploy.md) |
