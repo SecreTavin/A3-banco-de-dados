@@ -624,7 +624,34 @@ async function rodar() {
     await irPara(`${WEB}/desafios/${idDesafio}`)
     await esperarRede()
     await pagina.getByText(comentario).first().waitFor()
+    S.votoU16 = { idDesafio, idEvidencia, comentario }
     return `${primeiro} votou Vale pela tela do desafio, com comentario gravado; ${rn29}; o desafiado ve o voto e o comentario`
+  })
+
+  await cenario('U17', 'Desafiado acompanha a propria prova na aba Votacao, com placar e comentarios, sem votar (#83)', async () => {
+    precisa(S.votoU16, 'depende de U16')
+    const { idDesafio, idEvidencia, comentario } = S.votoU16
+    const desafiado = sql(`SELECT u.apelido FROM participante_desafio p JOIN usuario u USING (id_usuario) WHERE p.id_desafio = ${idDesafio} AND p.papel_desafio = 'DESAFIADO'`)
+    const titulo = sql(`SELECT titulo FROM desafio WHERE id_desafio = ${idDesafio}`)
+    const aberta = sql(`SELECT status FROM evidencia WHERE id_evidencia = ${idEvidencia}`) === 'EM_VOTACAO'
+
+    await entrar(desafiado)
+    await abrir('/votacao')
+    const cartao = pagina.locator('article').filter({ hasText: titulo }).filter({ hasText: 'Você é o desafiado' })
+
+    if (!aberta) {
+      // O voto do U16 fechou o juri: a prova sai da lista do desafiado.
+      confere((await cartao.count()) === 0, 'prova com o juri fechado continua em "Suas provas no júri"')
+      return 'o voto do U16 fechou o juri; a prova saiu da aba Votacao do desafiado'
+    }
+
+    await pagina.getByRole('heading', { name: 'Suas provas no júri' }).waitFor()
+    await cartao.waitFor()
+    const [favor, contra] = sql(`SELECT votos_favoraveis || '|' || votos_contra FROM vw_status_votacao WHERE id_evidencia = ${idEvidencia}`).split('|')
+    confere((await cartao.getByText(comentario).count()) === 1, 'o comentario do jurado nao aparece no cartao')
+    confere((await cartao.getByText(`${favor} vale · ${contra} não vale`).count()) === 1, `placar da tela difere do banco (${favor} x ${contra})`)
+    confere((await cartao.getByRole('button', { name: /^(Vale|Não vale)$/ }).count()) === 0, 'o desafiado recebeu botao de voto na propria prova (RN14)')
+    return `${desafiado} ve "${titulo}" com placar ${favor} x ${contra} e o comentario do U16, sem botao de voto`
   })
 
   await navegador.close()

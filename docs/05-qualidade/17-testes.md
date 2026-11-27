@@ -141,6 +141,9 @@ python3 scripts/testes/roteiro-e2e.py
 | E16 | Criador cancela um desafio com motivo | `CANCELADA`, CP estornado aos participantes (RN12) | Aprovado |
 | E17 | Consultar o ranking do grupo; não-membro tenta o mesmo | Ranking devolvido; não-membro não vê (HTTP 404) | Aprovado |
 | E18 | Conferir a contabilidade depois de tudo | `vw_reconciliacao_saldo` e `vw_escrow_orfao` vazias | Aprovado |
+| E19 | Antes do E04: Lari, jurada que ainda não votou, abre o desafio da demo; Tavin (desafiado) e Biel (desafiante) também | Lari sabe que Theus votou, mas voto, justificativa e data vêm nulos (RN29). Tavin e Biel veem `VALIDO` e o comentário do Theus | Não executado |
+| E20 | Antes do E04: `GET /api/validacao/minhas-provas` como Tavin, como Lari e sem login | Tavin recebe a prova com placar 1 x 0, quórum 2 e os 3 jurados, com o comentário do Theus. A Lari não recebe a prova. Sem login: 401 | Não executado |
+| E21 | Depois do E04: Lipe, que não votou, abre o desafio; Tavin consulta `minhas-provas` | Com o júri fechado, Lipe vê o voto e o comentário da Lari. A prova sai da lista do Tavin | Não executado |
 
 Executado em 29/10/2026: **18 de 18 aprovados**, duas vezes, cada uma num banco
 recém-criado. Reexecutado em 31/10/2026, depois das leituras novas da API do
@@ -185,6 +188,7 @@ rodada. Para repetir, volte ao seed (`docker compose down -v` e `up`, ou
 | U14 | Abrir a tela de login | Só o botão do Google (ou o aviso de "não configurado"); nenhum usuário do seed listado; `/api/auth/dev/usuarios` responde 404 | Aprovado |
 | U15 | Como Lipe, escolher **Foto** no desafio do dinossauro, enviar um PNG pelo seletor de arquivo e mandar ao júri; depois, como Tavin, abrir a Votação | "Mandar para o júri" só libera depois da foto; `url_comprovante` aponta para `/api/midia/<guid>`; a URL sem login responde 401; o júri vê a imagem carregada ([ADR 0022](../02-arquitetura/adr/0022-foto-da-prova-no-minio-pela-api.md)) | Aprovado |
 | U16 | Na prova do U15, um jurado vota **Vale** pela tela do desafio, com comentário; outro jurado pendente abre a mesma tela; depois, o desafiado | Voto e comentário gravados; o jurado pendente não vê o comentário (RN29); o desafiado vê | Não executado no roteiro (sem Chrome no Mac, 26/11); fluxo conferido à mão |
+| U17 | Depois do U16, o desafiado abre a aba Votação | Se o júri continua aberto: "Suas provas no júri" com placar igual ao banco, o comentário do U16 e nenhum botão de voto (RN14). Se o voto do U16 fechou o júri: a prova não aparece | Não executado |
 
 Executado em 30/10/2026 num banco recém-semeado: **12 de 12 aprovados**, uma vez
 com o navegador visível e outra sem janela.
@@ -376,6 +380,64 @@ O que o nível 5c **não** cobre:
 * **IA não configurada** (`Ia__BaseUrl` vazio): o cliente responde 503 antes de
   qualquer chamada; o ramo existe no código, mas este roteiro não o exercita.
 * **Envio de arquivo de evidência:** não existe no app (a evidência é uma URL).
+
+### Cobertura do nível 5
+
+Os roteiros de ponta a ponta não usam ferramenta de cobertura de linha: a API
+roda em contêiner, sem instrumentação. A cobertura é medida pelo que o sistema
+expõe — endpoints, telas e regras de negócio —, cruzando o código com os três
+roteiros (`roteiro-e2e.py`, `roteiro-e2e-ui.mjs` e `roteiro-e2e-ia.mjs`).
+Medição de 27/11/2026, sobre a `main` em `edd7ceb` (com o PR #84). O PR
+trouxe o endpoint `GET /api/validacao/minhas-provas` e a RN29, cobertos pelos
+casos E19 a E21, U16 e U17. Esses casos estão escritos e **ainda não foram
+executados**, mas já entram na contagem abaixo.
+
+| Dimensão | Cobertos | Total | Cobertura |
+| --- | --- | --- | --- |
+| Endpoints da API (incluindo `/health`) | 24 | 25 | **96%** |
+| Telas do frontend (rotas do `App.tsx`) | 9 | 9 | **100%** |
+| Regras de negócio ([documento 08](../01-negocio/08-regras-de-negocio.md)) | 18 | 28 | **64%** |
+
+Um endpoint conta como coberto quando algum roteiro o chama, direto pela API ou
+pela tela que o usa. Uma regra conta quando algum caso confere o comportamento
+que ela exige, no aceite ou na recusa; observar um status no caminho feliz não
+basta para as regras de domínio de valores (RN03, RN13).
+
+**Endpoint não coberto:** `GET /api/ranking/grupos/{id}/maiores-desafios`.
+Nenhum roteiro o chama, e o frontend também não.
+
+**Cobertura parcial:** `POST /api/auth/google` só é exercitado com token falso
+(E01). O login real depende do popup do Google, testado à mão antes do merge.
+
+**Regras cobertas:** RN01 (I08), RN04 (E05, U09), RN05 (E01, U14), RN06 (E08,
+U03, U04), RN07 (I08), RN12 (E16), RN14 (U07), RN15 (E04, U08), RN17 (E04,
+U08), RN18 (E13, U06), RN21 (U06), RN22 (U15), RN23 (E04), RN25 (E09, E14,
+E15), RN26 (E06, E07), RN27 (E10, E11, I07), RN28 (E12, U05, I01 a I13) e
+RN29 (E19, E21, U16).
+
+**Regras fora do nível 5**, e onde cada uma é testada:
+
+| Regra | Onde é testada |
+| --- | --- |
+| RN02 — valor monetário maior que zero | Em nenhum nível. A migration `AlinhamentoModeloV3` removeu `chk_desafio_valor` e levou o valor para `descricao_recompensa` (I11 do nível 3), mas o documento 08 ainda cita a constraint. A regra precisa ser revista |
+| RN03 — status do desafio restrito | T01 |
+| RN08 — saldo nunca negativo | T08 |
+| RN09 — um `DESAFIANTE` e um `DESAFIADO` | T06 (U06 só percorre o caminho feliz) |
+| RN10 — no máximo 5 evidências | T13 |
+| RN11 — prazo de votação de 1 semana | `EvidenciaTests` (nível 2) |
+| RN13 — status da evidência restrito | Nenhum caso dedicado |
+| RN16 — empate e prazo expirado | Nenhum caso |
+| RN19 — voto só em `EM_VOTACAO` e no prazo | T11 |
+| RN24 — ledger append-only | T09, T10, T19 |
+
+Contando os níveis 1 a 3 junto com o 5, só RN02, RN13 e RN16 ficam sem teste.
+
+O [roteiro completo dos testes de ponta a ponta](roteiro-e2e.md) desce um
+nível: conta cada resposta possível de cada endpoint e tela, não só se o
+endpoint foi chamado. Por esse critério, os roteiros já executados cobrem 51 de
+202 cenários (25%), ou 62 (31%) com os casos do PR #84 escritos e ainda não
+executados. Outros 9 cenários apontam possíveis defeitos, também ainda não
+executados.
 
 ## Execução
 

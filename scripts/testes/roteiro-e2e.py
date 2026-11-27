@@ -92,6 +92,38 @@ s, pend = chamar("GET", "/api/validacao/pendentes", token=lari)
 alvo = [p for p in (pend or []) if "5km" in json.dumps(p, ensure_ascii=False)]
 caso("E03", "Consulta: Central de Votação mostra a evidência pendente da demo", s == 200 and len(alvo) == 1, f"HTTP {s}, {len(pend or [])} pendente(s)")
 
+# --- E19/E20 votos do júri com a votação aberta (RN29, #83) -------------------
+# Evidência 2 do seed (desafio 1): desafiado Tavin, desafiante Biel; júri Theus,
+# Lari e Lipe. Theus já votou com justificativa; Lari e Lipe ainda não. Roda antes
+# do E04, enquanto a evidência está EM_VOTACAO.
+def jurado_da_prova(token, id_desafio, id_evidencia, apelido):
+    s, d = chamar("GET", f"/api/desafios/{id_desafio}", token=token)
+    ev = next((e for e in (d or {}).get("evidencias", []) if e["idEvidencia"] == id_evidencia), None) if s == 200 else None
+    return s, next((j for j in (ev or {}).get("jurados", []) if j["apelido"] == apelido), None)
+
+JUSTIFICATIVA_THEUS = sql("SELECT justificativa FROM jurado_evidencia WHERE id_evidencia=2 AND id_usuario=3")
+s_l, theus_p_lari = jurado_da_prova(lari, 1, 2, "Theus")
+s_t, theus_p_tavin = jurado_da_prova(tavin, 1, 2, "Theus")
+s_b, theus_p_biel = jurado_da_prova(biel, 1, 2, "Theus")
+oculto = bool(theus_p_lari) and theus_p_lari["votou"] and theus_p_lari["voto"] is None \
+    and theus_p_lari["justificativa"] is None and theus_p_lari["dataVoto"] is None
+visivel = lambda j: bool(j) and j["voto"] == "VALIDO" and j["justificativa"] == JUSTIFICATIVA_THEUS and j["dataVoto"]
+caso("E19", "RN29: jurado que ainda não votou só sabe quem votou; desafiado e desafiante veem voto e comentário",
+     s_l == s_t == s_b == 200 and oculto and visivel(theus_p_tavin) and visivel(theus_p_biel),
+     f"Lari vê {theus_p_lari and {k: theus_p_lari[k] for k in ('votou', 'voto', 'justificativa')}}; "
+     f"Tavin vê {theus_p_tavin and theus_p_tavin['voto']}; Biel vê {theus_p_biel and theus_p_biel['voto']}")
+
+s_t, provas_tavin = chamar("GET", "/api/validacao/minhas-provas", token=tavin)
+s_l, provas_lari = chamar("GET", "/api/validacao/minhas-provas", token=lari)
+s_a, _ = chamar("GET", "/api/validacao/minhas-provas")
+prova = next((p for p in (provas_tavin or []) if p["idEvidencia"] == 2), None) if s_t == 200 else None
+voto_theus = next((j for j in (prova or {}).get("jurados", []) if j["apelido"] == "Theus"), None)
+caso("E20", "#83: o desafiado acompanha a própria prova no júri, com placar e comentários; outros não a recebem",
+     s_t == s_l == 200 and s_a == 401 and prova is not None and prova["votosFavoraveis"] == 1 and prova["quorum"] == 2
+     and len(prova["jurados"]) == 3 and visivel(voto_theus) and all(p["idEvidencia"] != 2 for p in provas_lari),
+     f"Tavin HTTP {s_t}, placar {prova and (prova['votosFavoraveis'], prova['votosContra'], prova['quorum'])}; "
+     f"Lari HTTP {s_l}, {len(provas_lari or [])} prova(s); sem login HTTP {s_a}")
+
 # --- E04 roteiro da demonstração: voto que fecha o quórum --------------------
 antes = sql("SELECT string_agg(apelido||'='||saldo_cp, ' ' ORDER BY apelido) FROM membro_grupo m JOIN usuario u USING(id_usuario) WHERE id_grupo=1")
 s, r = chamar("POST", "/api/validacao/evidencias/2/votos", {"voto": "VALIDO", "justificativa": "Print do Strava confere."}, lari)
@@ -103,6 +135,16 @@ caso("E04", "Demo: voto da Lari fecha o quórum, apura no banco e liquida o CP",
 
 s, r = chamar("POST", "/api/validacao/evidencias/2/votos", {"voto": "VALIDO", "justificativa": "de novo"}, lari)
 caso("E05", "Validação: segundo voto na mesma evidência é recusado", s >= 400, f"HTTP {s}: {str(r)[:90]}")
+
+# --- E21 votos do júri com a votação fechada (RN29, #83) ----------------------
+lipe = login("Lipe")
+s_p, lari_p_lipe = jurado_da_prova(lipe, 1, 2, "Lari")
+s_t, provas_tavin = chamar("GET", "/api/validacao/minhas-provas", token=tavin)
+caso("E21", "RN29: votação fechada mostra tudo até a quem não votou; a prova sai das provas do desafiado no júri",
+     s_p == 200 and bool(lari_p_lipe) and lari_p_lipe["voto"] == "VALIDO" and lari_p_lipe["justificativa"] == "Print do Strava confere."
+     and s_t == 200 and all(p["idEvidencia"] != 2 for p in provas_tavin),
+     f"Lipe vê o voto da Lari: {lari_p_lipe and (lari_p_lipe['voto'], lari_p_lipe['justificativa'])}; "
+     f"provas do Tavin no júri: {[p['idEvidencia'] for p in provas_tavin or []]}")
 
 # --- E06/E07 idade mínima (RN26) ---------------------------------------------
 hoje = datetime.date.today()
@@ -164,6 +206,7 @@ caso("E17", "Consulta: ranking do grupo; quem não é membro não vê", s == 200
 # --- E18 integridade final ----------------------------------------------------
 caso("E18", "Contabilidade fechando ao fim de tudo (views vazias)", contabilidade() == "0", sql("SELECT string_agg(tipo||'='||n, ' ') FROM (SELECT tipo, count(*) n FROM transacao_cp GROUP BY 1 ORDER BY 1) x"))
 
-for c in resultados:
+# E19 a E21 rodam no meio da sequência (antes e depois do voto da demo); a saída sai em ordem de ID.
+for c in sorted(resultados, key=lambda c: int(c[0][1:])):
     print(" | ".join(c))
 print(f"\n{sum(c[2]=='Aprovado' for c in resultados)}/{len(resultados)} aprovados")
