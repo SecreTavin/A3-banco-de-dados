@@ -8,7 +8,7 @@
 | **Pergunta que a entrega precisa responder** | O grupo compreendeu e é capaz de explicar o que desenvolveu, do problema à demonstração? |
 
 <!-- entregas:status:start -->
-🔵 **Pronta para entrega** — 3/3 itens prontos · revisão em sala: 2026-11-27
+🟢 **Entregue** — tag `banca-final` em 2026-11-27 · 3/3 itens prontos
 <!-- entregas:status:end -->
 
 ## Checklist

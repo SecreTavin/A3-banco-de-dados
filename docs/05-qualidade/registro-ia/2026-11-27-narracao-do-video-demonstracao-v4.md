@@ -26,7 +26,7 @@ Trocar o texto da narração do vídeo "Demonstracao" (que passa entre os slides
   configuração do v4.
 * Revisão dos docs: data da Banca Final (04/12 → 27/11, no `banca-final.md`, no manifest e no plano de trabalho), índice e contagem do `18-registro-ia.md` (82 → 83) e link do segundo vídeo em `06-encerramento`. A página de entregas foi regerada com `gerar-entregas.mjs`.
 * Conferência do deck no Figma (14 slides) contra o repositório, via MCP do Figma: só o slide 8 mudou (`WHERE id = 1` → `WHERE id_transacao = 1`, porque a coluna `id` não existe em `transacao_cp`). Slides 6 e 10 batem com a migration e a execução final de 27/11.
-* Slide do vídeo criado no Figma, entre o 9 e o 10, no estilo do deck (cartão escuro com o play, os 8 passos e a duração de 2:28). Sem número no rodapé ("Luís · vídeo"), para não renumerar os slides 10 a 14 nem os documentos que os citam.
+* Link do YouTube do vídeo nos dois documentos. A IA criou um slide do vídeo no Figma, mas o time o trocou depois pelo vídeo embutido em tela cheia; um link que a IA pôs sobre o vídeo foi removido. O slide original foi criado no Figma, entre o 9 e o 10, no estilo do deck (cartão escuro com o play, os 8 passos e a duração de 2:28). Sem número no rodapé ("Luís · vídeo"), para não renumerar os slides 10 a 14 nem os documentos que os citam.
 * Cópia dos textos em `~/Downloads/narracao-elevenlabs-v4.txt`.
 * Instalação dos dez mp3 gerados pelo time e render do vídeo (2:28, 148 s).
 
