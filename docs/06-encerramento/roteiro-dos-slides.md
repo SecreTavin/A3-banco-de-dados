@@ -151,7 +151,8 @@ Dar o play. Ao terminar, ir para o slide 1.
 Passeio pelas telas reais, do login ao pagamento, com o objeto do banco que
 garante cada passo ([`apps/video/DEMONSTRACAO.md`](../../apps/video/DEMONSTRACAO.md)).
 Tem 2:28 (148 s), com a narração do ElevenLabs (modelo v4). Ele vai
-num slide próprio depois do 9. O Luís dá o play e, ao
+num slide próprio depois do 9 ("Agora, o ciclo inteiro, tela por tela", rodapé
+"Luís · vídeo", sem número, para os slides 10 a 14 manterem a numeração). O Luís dá o play e, ao
 terminar, segue para o **slide 10**.
 
 ---

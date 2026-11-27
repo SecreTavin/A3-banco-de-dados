@@ -5,7 +5,7 @@
 | **Data** | 2026-11-27 |
 | **Responsável** | Rafael Martins Alves |
 | **Ferramenta** | Claude Code (Sonnet 5.5) para o roteiro e a conferência; ElevenLabs Eleven v4 para a voz |
-| **Artefato afetado** | `apps/video/src/demonstracao/cenas.ts`, `apps/video/scripts/roteiro.mjs`, `apps/video/ELEVENLABS.md`, `apps/video/public/demonstracao/audio/*.mp3`, `apps/video/DEMONSTRACAO.md`, `apps/video/README.md`, `docs/06-encerramento/roteiro-dos-slides.md` |
+| **Artefato afetado** | Slide 8 e novo slide do vídeo no deck do Figma Slides; `apps/video/src/demonstracao/cenas.ts`, `apps/video/scripts/roteiro.mjs`, `apps/video/ELEVENLABS.md`, `apps/video/public/demonstracao/audio/*.mp3`, `apps/video/DEMONSTRACAO.md`, `apps/video/README.md`, `docs/06-encerramento/roteiro-dos-slides.md` |
 
 ## O que foi pedido
 
@@ -25,6 +25,8 @@ Trocar o texto da narração do vídeo "Demonstracao" (que passa entre os slides
 * O gerador do roteiro (`roteiro.mjs`) e o `ELEVENLABS.md` ganharam a
   configuração do v4.
 * Revisão dos docs: data da Banca Final (04/12 → 27/11, no `banca-final.md`, no manifest e no plano de trabalho), índice e contagem do `18-registro-ia.md` (82 → 83) e link do segundo vídeo em `06-encerramento`. A página de entregas foi regerada com `gerar-entregas.mjs`.
+* Conferência do deck no Figma (14 slides) contra o repositório, via MCP do Figma: só o slide 8 mudou (`WHERE id = 1` → `WHERE id_transacao = 1`, porque a coluna `id` não existe em `transacao_cp`). Slides 6 e 10 batem com a migration e a execução final de 27/11.
+* Slide do vídeo criado no Figma, entre o 9 e o 10, no estilo do deck (cartão escuro com o play, os 8 passos e a duração de 2:28). Sem número no rodapé ("Luís · vídeo"), para não renumerar os slides 10 a 14 nem os documentos que os citam.
 * Cópia dos textos em `~/Downloads/narracao-elevenlabs-v4.txt`.
 * Instalação dos dez mp3 gerados pelo time e render do vídeo (2:28, 148 s).
 
