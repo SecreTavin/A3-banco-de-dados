@@ -6,7 +6,7 @@ São 10 falas, uma por capítulo, cada uma gerada numa tomada e salva com o
 nome da tabela em `apps/video/public/demonstracao/audio/`. O vídeo renderiza sem
 elas, com as durações estimadas, e se reajusta sozinho quando cada mp3 aparece.
 
-**Duração estimada:** 2:42 de vídeo, com 2:30 de fala. A conta usa
+**Duração estimada:** 2:43 de vídeo, com 2:30 de fala. A conta usa
 2,4 palavras por segundo, 0,5 s de silêncio antes de cada fala,
 1,0 s depois e 0,6 s de sobreposição em cada transição de fade ou slide (o corte seco não sobrepõe).
 
@@ -15,14 +15,14 @@ elas, com as durações estimadas, e se reajusta sozinho quando cada mp3 aparece
 | # | Arquivo de saída | Fala estimada | Cena | Texto exato para colar | Entonação |
 | --- | --- | --- | --- | --- | --- |
 | 0 | `00-abertura.mp3` | 3,8 s (9 palavras) | 5,3 s | `Esta é a aplicação, do primeiro acesso ao pagamento.` | Calma, de quem abre uma apresentação. Sem ênfase de anúncio. |
-| 1 | `01-entrar.mp3` | 18,0 s (42 palavras) | 19,5 s | `O login é só com o Google: a gente não guarda senha. No primeiro acesso, o app pede apelido e data de nascimento. Com menos de dezesseis anos, a conta não nasce. <break time="0.5s" /> Mesmo se o código falhasse, uma trigger no banco recusaria.` | Explicativa e tranquila. Leve sorriso em "a gente não guarda senha". |
-| 2 | `02-grupo.mp3` | 15,4 s (36 palavras) | 16,9 s | `Agora, o grupo. O filtro da inteligência artificial está no moderado, e o Octávio, que é o admin, adiciona o Rafael pelo e-mail. Ninguém digita saldo: <break time="0.4s" /> ao entrar, uma trigger lança cem cê pê no livro-caixa.` | Ritmo de tutorial. Pequena pausa natural depois de "Agora, o grupo". |
-| 3 | `03-criar.mp3` | 18,7 s (44 palavras) | 20,2 s | `O Mario duvida que o Arthur corre cinco quilômetros em menos de vinte e cinco minutos. Vinte cê pê por pessoa. A inteligência artificial avalia: aprovado. Uma garrafa de vodka em dez minutos? Não passa. <break time="0.4s" /> Aprovada ou não, toda proposta fica gravada no banco.` | Leve provocação na primeira frase. "Não passa" seco, com um toque de humor. |
-| 4 | `04-aceitar.mp3` | 17,9 s (42 palavras) | 19,4 s | `O Luís aposta a favor, o Arthur aceita como desafiado e o Mario fica contra. A cada aceite, vinte cê pê saem da carteira e ficam retidos no desafio. <break time="0.4s" /> É a procedure de débito em garantia: pote de sessenta, e calote nenhum.` | Três batidas na primeira frase, uma por pessoa. "Calote nenhum" com leve humor. |
-| 5 | `05-prova.mp3` | 16,2 s (38 palavras) | 17,7 s | `O Arthur corre e manda a prova pelo celular: o print do aplicativo de corrida. <break time="0.4s" /> Nesse instante, o júri congela: Luís, Octávio e Rafael. Quem está no duelo não julga, e quem entrar no grupo depois não vota.` | Narrativa, um pouco mais leve. Destaque calmo em "o júri congela". |
-| 6 | `06-julgar.mp3` | 17,1 s (40 palavras) | 18,6 s | `Na votação, o júri vê a prova e o que vale como cumprido. Com três jurados, o quórum é dois: metade mais um. O Luís vota: vale. <break time="0.4s" /> Cada jurado tem um voto só, e quem garante é a chave primária.` | Didática em "metade mais um". "Vale" curto, sem festa: a festa é no próximo capítulo. |
-| 7 | `07-apurar.mp3` | 19,2 s (45 palavras) | 20,7 s | `Na tela do Octávio, o placar sobe sozinho. O voto seguinte fecha o júri: vale! <break time="0.4s" /> Numa única transação, a procedure de apuração aceita a prova, paga o pote e dá dois cê pê a quem votou. O aviso ao vivo só sai depois do commit.` | O clímax, mas contido: um pouco mais de energia em "vale!". A frase da transação volta ao tom calmo e claro. |
-| 8 | `08-ranking.mp3` | 18,7 s (44 palavras) | 20,2 s | `No ranking, o Luís lidera com cento e doze cê pê. No perfil do Arthur, o extrato conta a história: cem de entrada, vinte no desafio, trinta de prêmio. <break time="0.4s" /> É um livro-caixa que só aceita lançamento novo, e as visões de conferência voltam vazias.` | Fechamento tranquilo. Os três números do extrato em ritmo de lista. |
+| 1 | `01-entrar.mp3` | 18,0 s (42 palavras) | 19,5 s | `O login é só com o Google: a gente não guarda senha. No primeiro acesso, o app pede apelido e data de nascimento. Com menos de dezesseis anos, a conta não nasce. [pause] Mesmo se o código falhasse, uma trigger no banco recusaria.` | Explicativa e tranquila. Leve sorriso em "a gente não guarda senha". |
+| 2 | `02-grupo.mp3` | 15,5 s (36 palavras) | 17,0 s | `Agora, o grupo. O filtro da inteligência artificial está no moderado, e o Octávio, que é o admin, adiciona o Rafael pelo e-mail. Ninguém digita saldo: [pause] ao entrar, uma trigger lança cem cê pê no livro-caixa.` | Ritmo de tutorial. Pequena pausa natural depois de "Agora, o grupo". |
+| 3 | `03-criar.mp3` | 18,8 s (44 palavras) | 20,3 s | `O Mario duvida que o Arthur corre cinco quilômetros em menos de vinte e cinco minutos. Vinte cê pê por pessoa. A inteligência artificial avalia: aprovado. Uma garrafa de vodka em dez minutos? Não passa. [pause] Aprovada ou não, toda proposta fica gravada no banco.` | Leve provocação na primeira frase. "Não passa" seco, com um toque de humor. |
+| 4 | `04-aceitar.mp3` | 18,0 s (42 palavras) | 19,5 s | `O Luís aposta a favor, o Arthur aceita como desafiado e o Mario fica contra. A cada aceite, vinte cê pê saem da carteira e ficam retidos no desafio. [pause] É a procedure de débito em garantia: pote de sessenta, e calote nenhum.` | Três batidas na primeira frase, uma por pessoa. "Calote nenhum" com leve humor. |
+| 5 | `05-prova.mp3` | 16,3 s (38 palavras) | 17,8 s | `O Arthur corre e manda a prova pelo celular: o print do aplicativo de corrida. [pause] Nesse instante, o júri congela: Luís, Octávio e Rafael. Quem está no duelo não julga, e quem entrar no grupo depois não vota.` | Narrativa, um pouco mais leve. Destaque calmo em "o júri congela". |
+| 6 | `06-julgar.mp3` | 17,2 s (40 palavras) | 18,7 s | `Na votação, o júri vê a prova e o que vale como cumprido. Com três jurados, o quórum é dois: metade mais um. O Luís vota: vale. [pause] Cada jurado tem um voto só, e quem garante é a chave primária.` | Didática em "metade mais um". "Vale" curto, sem festa: a festa é no próximo capítulo. |
+| 7 | `07-apurar.mp3` | 19,3 s (45 palavras) | 20,8 s | `Na tela do Octávio, o placar sobe sozinho. O voto seguinte fecha o júri: vale! [pause] Numa única transação, a procedure de apuração aceita a prova, paga o pote e dá dois cê pê a quem votou. O aviso ao vivo só sai depois do commit.` | O clímax, mas contido: um pouco mais de energia em "vale!". A frase da transação volta ao tom calmo e claro. |
+| 8 | `08-ranking.mp3` | 18,8 s (44 palavras) | 20,3 s | `No ranking, o Luís lidera com cento e doze cê pê. No perfil do Arthur, o extrato conta a história: cem de entrada, vinte no desafio, trinta de prêmio. [pause] É um livro-caixa que só aceita lançamento novo, e as visões de conferência voltam vazias.` | Fechamento tranquilo. Os três números do extrato em ritmo de lista. |
 | 9 | `09-proximo.mp3` | 4,6 s (11 palavras) | 8,0 s | `Do primeiro acesso ao pagamento, cada regra é garantida pelo banco.` | Fechamento calmo e firme, ecoando a frase da abertura. Sem tom de anúncio. |
 
 "Cena" é o tempo do capítulo no vídeo: o silêncio antes, a fala e o silêncio depois.
@@ -31,27 +31,29 @@ acrescente pausa nas pontas do texto.
 
 ## Configuração recomendada (ponto de partida)
 
-Conferido na documentação do ElevenLabs em 26/11/2026. Os valores são ponto de
+Conferido na documentação do ElevenLabs em 27/11/2026. Os valores são ponto de
 partida: ouça o capítulo 3 e ajuste antes de gerar os outros.
 
-**Modelo: Eleven Multilingual v2** (`eleven_multilingual_v2`). O texto acima foi escrito
-para ele.
+**Modelo: Eleven v4** (`eleven_v4`). O texto acima foi escrito para ele.
 
-| Modelo | Quando usar | Por que não aqui |
-| --- | --- | --- |
-| **Multilingual v2** | Narração longa e estável. Lista "Portuguese (Brazil)" como variante e aceita `<break time="0.4s" />` (até 3 s) | É o recomendado |
-| Eleven v3 | Fala expressiva, com tags como `[calm]` ou `[pause]` | Varia mais de uma geração para outra, e são dez tomadas que precisam soar iguais. Não aceita `<break>`: se trocar de modelo, troque cada `<break .../>` por reticências |
-| Eleven v4 | O mais novo, também com tags de voz | Não aceita SSML nem os controles de Style e Speed. Mesma troca de `<break>` do v3 |
+| O que muda do v2 para o v4 | Como o texto trata |
+| --- | --- |
+| Não aceita SSML: `<break time="0.4s" />` é ignorado ou lido | Cada pausa virou a tag `[pause]`, no máximo uma por capítulo |
+| Os controles Style e Speed não existem | A velocidade vem da voz e do texto. Se soar corrido, aumente a pontuação, não um slider |
+| Segue tags entre colchetes (`[pause]`, `[long pause]`, `[whispers]`) | Só `[pause]` é usada. Sem tags de emoção: são dez tomadas que precisam soar iguais |
+| Mais expressivo, varia mais entre gerações | Stability alta e a mesma voz nas dez tomadas. Se uma tomada sair estranha, gere de novo a fala inteira |
+
+Se a pausa não soar, troque `[pause]` por um travessão (` — `) ou por `[long pause]`
+**em todos os capítulos que têm pausa**, não só em um.
 
 **Configurações da voz:**
 
 | Controle | Valor inicial | Por quê |
 | --- | --- | --- |
-| Stability | **0,65** | Acima do padrão (0,50): numa apresentação formal, vale mais a voz igual nas dez tomadas do que a emoção. Acima de 0,75 tende a ficar monótona |
+| Stability | **0,65** | Acima do padrão (0,50): numa apresentação formal, vale mais a voz igual nas dez tomadas do que a emoção. Acima de 0,75 tende a ficar monótona. Se o v4 mostrar a escala por nomes (Creative, Natural, Robust), use **Natural** ou **Robust** |
 | Similarity | **0,75** | É o padrão. Valores muito altos podem distorcer o áudio |
-| Style | **0** | A documentação recomenda deixar em zero: aumentar deixa o modelo menos estável |
-| Speaker Boost | **Ligado** | Aproxima da voz original. Custa latência, que não importa para arquivo gerado |
-| Speed | **1,0** | Faixa de 0,7 a 1,2. Se soar corrido, teste 0,95 em todas as falas, nunca em uma só |
+| Style, Speed | não existem no v4 | Se a tela do app mostrar um deles, deixe em zero e em 1,0 |
+| Speaker Boost | **Ligado**, se aparecer | Aproxima da voz original. Custa latência, que não importa para arquivo gerado |
 
 **Voz:** na Voice Library, filtre por idioma *Portuguese* e sotaque *Brazilian*, com
 uso *Narrative* ou *Educational*. Procure uma voz calma e clara, de colega que
@@ -70,7 +72,7 @@ inglês, troque só a palavra e anote aqui:
 
 ## Checklist
 
-- [ ] Abrir o ElevenLabs em *Text to Speech*, modelo **Eleven Multilingual v2**.
+- [ ] Abrir o ElevenLabs em *Text to Speech*, modelo **Eleven v4**.
 - [ ] Escolher a voz brasileira (veja acima) e aplicar as configurações da tabela.
 - [ ] Gerar o capítulo 3 (`03-criar.mp3`) e ouvir. Ajustar a voz ou a estabilidade antes de seguir.
 - [ ] Gerar **um capítulo por vez**, colando o texto do bloco do capítulo sem mudar nada.
@@ -110,7 +112,7 @@ Esta é a aplicação, do primeiro acesso ao pagamento.
 **Texto para colar** (42 palavras, cerca de 18,0 s):
 
 ```text
-O login é só com o Google: a gente não guarda senha. No primeiro acesso, o app pede apelido e data de nascimento. Com menos de dezesseis anos, a conta não nasce. <break time="0.5s" /> Mesmo se o código falhasse, uma trigger no banco recusaria.
+O login é só com o Google: a gente não guarda senha. No primeiro acesso, o app pede apelido e data de nascimento. Com menos de dezesseis anos, a conta não nasce. [pause] Mesmo se o código falhasse, uma trigger no banco recusaria.
 ```
 
 **Entonação:** Explicativa e tranquila. Leve sorriso em "a gente não guarda senha".
@@ -130,10 +132,10 @@ O login é só com o Google: a gente não guarda senha. No primeiro acesso, o ap
 
 **Tela:** Meus grupos → Banca do A3: Arthur, Luís, Mario e Octávio com 100 CP, filtro da IA "Moderado". O admin digita o e-mail do Rafael e clica em "Adicionar · entra com 100 CP". O Rafael aparece com o saldo rolando de 0 a 100.
 
-**Texto para colar** (36 palavras, cerca de 15,4 s):
+**Texto para colar** (36 palavras, cerca de 15,5 s):
 
 ```text
-Agora, o grupo. O filtro da inteligência artificial está no moderado, e o Octávio, que é o admin, adiciona o Rafael pelo e-mail. Ninguém digita saldo: <break time="0.4s" /> ao entrar, uma trigger lança cem cê pê no livro-caixa.
+Agora, o grupo. O filtro da inteligência artificial está no moderado, e o Octávio, que é o admin, adiciona o Rafael pelo e-mail. Ninguém digita saldo: [pause] ao entrar, uma trigger lança cem cê pê no livro-caixa.
 ```
 
 **Entonação:** Ritmo de tutorial. Pequena pausa natural depois de "Agora, o grupo".
@@ -153,10 +155,10 @@ Agora, o grupo. O filtro da inteligência artificial está no moderado, e o Oct�
 
 **Tela:** Novo desafio no grupo Banca do A3: "Correr 5 km abaixo de 25 minutos", categoria Esportes & Fitness, 20 CP. "Enviar para a moderação" → "A IA está lendo a proposta" → aprovado. Depois, "Beber uma garrafa de vodka em 10 minutos" → "Não passou no filtro Moderado", com o motivo.
 
-**Texto para colar** (44 palavras, cerca de 18,7 s):
+**Texto para colar** (44 palavras, cerca de 18,8 s):
 
 ```text
-O Mario duvida que o Arthur corre cinco quilômetros em menos de vinte e cinco minutos. Vinte cê pê por pessoa. A inteligência artificial avalia: aprovado. Uma garrafa de vodka em dez minutos? Não passa. <break time="0.4s" /> Aprovada ou não, toda proposta fica gravada no banco.
+O Mario duvida que o Arthur corre cinco quilômetros em menos de vinte e cinco minutos. Vinte cê pê por pessoa. A inteligência artificial avalia: aprovado. Uma garrafa de vodka em dez minutos? Não passa. [pause] Aprovada ou não, toda proposta fica gravada no banco.
 ```
 
 **Entonação:** Leve provocação na primeira frase. "Não passa" seco, com um toque de humor.
@@ -177,10 +179,10 @@ O Mario duvida que o Arthur corre cinco quilômetros em menos de vinte e cinco m
 
 **Tela:** Detalhe do desafio, "Entrar por 20 CP". Luís: Apostador + Vai cumprir. Arthur: Desafiado. Mario: Desafiante + Não vai cumprir. Cada saldo cai de 100 para 80, o pote sobe 20 → 40 → 60 CP, e o status vai de Aberto para Em andamento.
 
-**Texto para colar** (42 palavras, cerca de 17,9 s):
+**Texto para colar** (42 palavras, cerca de 18,0 s):
 
 ```text
-O Luís aposta a favor, o Arthur aceita como desafiado e o Mario fica contra. A cada aceite, vinte cê pê saem da carteira e ficam retidos no desafio. <break time="0.4s" /> É a procedure de débito em garantia: pote de sessenta, e calote nenhum.
+O Luís aposta a favor, o Arthur aceita como desafiado e o Mario fica contra. A cada aceite, vinte cê pê saem da carteira e ficam retidos no desafio. [pause] É a procedure de débito em garantia: pote de sessenta, e calote nenhum.
 ```
 
 **Entonação:** Três batidas na primeira frase, uma por pessoa. "Calote nenhum" com leve humor.
@@ -200,10 +202,10 @@ O Luís aposta a favor, o Arthur aceita como desafiado e o Mario fica contra. A 
 
 **Tela:** Celular do Arthur (390x844). Desafio Em andamento, "Enviar a prova", Foto, "Escolher foto": o print da corrida. "Mandar para o júri". O status vai para Em votação e o cartão da prova lista o júri: Luís, Octávio e Rafael.
 
-**Texto para colar** (38 palavras, cerca de 16,2 s):
+**Texto para colar** (38 palavras, cerca de 16,3 s):
 
 ```text
-O Arthur corre e manda a prova pelo celular: o print do aplicativo de corrida. <break time="0.4s" /> Nesse instante, o júri congela: Luís, Octávio e Rafael. Quem está no duelo não julga, e quem entrar no grupo depois não vota.
+O Arthur corre e manda a prova pelo celular: o print do aplicativo de corrida. [pause] Nesse instante, o júri congela: Luís, Octávio e Rafael. Quem está no duelo não julga, e quem entrar no grupo depois não vota.
 ```
 
 **Entonação:** Narrativa, um pouco mais leve. Destaque calmo em "o júri congela".
@@ -221,10 +223,10 @@ O Arthur corre e manda a prova pelo celular: o print do aplicativo de corrida. <
 
 **Tela:** Celular do Luís, aba Votação. Cartão "Arthur diz que cumpriu", "O que vale", a foto, "Faltam 2 votos para fechar… 2 de 3 jurados", prazo e "+2 CP para quem votar". Clique em "Vale", "Confirmar voto", e o diálogo "Voto registrado: falta 1 voto".
 
-**Texto para colar** (40 palavras, cerca de 17,1 s):
+**Texto para colar** (40 palavras, cerca de 17,2 s):
 
 ```text
-Na votação, o júri vê a prova e o que vale como cumprido. Com três jurados, o quórum é dois: metade mais um. O Luís vota: vale. <break time="0.4s" /> Cada jurado tem um voto só, e quem garante é a chave primária.
+Na votação, o júri vê a prova e o que vale como cumprido. Com três jurados, o quórum é dois: metade mais um. O Luís vota: vale. [pause] Cada jurado tem um voto só, e quem garante é a chave primária.
 ```
 
 **Entonação:** Didática em "metade mais um". "Vale" curto, sem festa: a festa é no próximo capítulo.
@@ -244,10 +246,10 @@ Na votação, o júri vê a prova e o que vale como cumprido. Com três jurados,
 
 **Tela:** Tela dividida: à esquerda o celular do Luís, à direita o navegador do Octávio em Votação. O placar do Octávio vai de 0 para 1 sem recarregar: "Seu voto fecha o júri." O Octávio clica em "Vale" e "Confirmar voto": "Júri fechou: vale!", com Arthur +30, Luís +30, Mario perdeu 20 CP, "Você, pelo voto +2 CP" e "Apurado e pago pelo banco numa transação só".
 
-**Texto para colar** (45 palavras, cerca de 19,2 s):
+**Texto para colar** (45 palavras, cerca de 19,3 s):
 
 ```text
-Na tela do Octávio, o placar sobe sozinho. O voto seguinte fecha o júri: vale! <break time="0.4s" /> Numa única transação, a procedure de apuração aceita a prova, paga o pote e dá dois cê pê a quem votou. O aviso ao vivo só sai depois do commit.
+Na tela do Octávio, o placar sobe sozinho. O voto seguinte fecha o júri: vale! [pause] Numa única transação, a procedure de apuração aceita a prova, paga o pote e dá dois cê pê a quem votou. O aviso ao vivo só sai depois do commit.
 ```
 
 **Entonação:** O clímax, mas contido: um pouco mais de energia em "vale!". A frase da transação volta ao tom calmo e claro.
@@ -268,10 +270,10 @@ Na tela do Octávio, o placar sobe sozinho. O voto seguinte fecha o júri: vale!
 
 **Tela:** Ranking da Banca do A3: pódio Luís 112, Arthur 110, Octávio 102; abaixo Rafael 100 e Mario 80. Depois, o Perfil do Arthur (e-mail fictício): 110 CP no grupo e o extrato: +100 crédito de entrada, −20 entrada no desafio, +30 prêmio.
 
-**Texto para colar** (44 palavras, cerca de 18,7 s):
+**Texto para colar** (44 palavras, cerca de 18,8 s):
 
 ```text
-No ranking, o Luís lidera com cento e doze cê pê. No perfil do Arthur, o extrato conta a história: cem de entrada, vinte no desafio, trinta de prêmio. <break time="0.4s" /> É um livro-caixa que só aceita lançamento novo, e as visões de conferência voltam vazias.
+No ranking, o Luís lidera com cento e doze cê pê. No perfil do Arthur, o extrato conta a história: cem de entrada, vinte no desafio, trinta de prêmio. [pause] É um livro-caixa que só aceita lançamento novo, e as visões de conferência voltam vazias.
 ```
 
 **Entonação:** Fechamento tranquilo. Os três números do extrato em ritmo de lista.

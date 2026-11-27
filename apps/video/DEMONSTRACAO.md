@@ -11,7 +11,7 @@ demonstração ao vivo ficou para o fim da apresentação, conduzida pelo profes
 | | Trailer (`Demo`) | Demonstração (`Demonstracao`) |
 | --- | --- | --- |
 | Quando passa | Antes do slide 1 | Entre os slides 9 e 10 |
-| Duração | 63 a 81 s | ~2:40 (alvo de 2:15 a 2:45) |
+| Duração | 63 a 81 s | 2:28 com a narração (alvo de 2:15 a 2:45) |
 | Imagem | Cenas filmadas e telas reconstruídas | Capturas reais da aplicação; reconstrução só onde não dá para capturar |
 | Tom | Gancho, venda | Tutorial: o que a pessoa faz, a tela mostra, o banco garante |
 | Narração | Voz sintética do macOS | ElevenLabs, um mp3 por capítulo ([ELEVENLABS.md](ELEVENLABS.md)) |
@@ -133,8 +133,8 @@ time. Este trabalho não altera `docs/` além do registro de IA.
 
 ## Impacto no tempo da banca
 
-Com o deck de 14 slides, os slides somam cerca de 12:05 de fala. O vídeo ocupa
-~2:45 entre os slides 9 e 10. A demonstração ao vivo, conduzida pelo professor,
+Com o deck de 14 slides, os slides somam cerca de 11:48 de fala. O vídeo ocupa
+~2:28 entre os slides 9 e 10. A demonstração ao vivo, conduzida pelo professor,
 e as perguntas ficam com o restante dos 40 a 45 minutos do edital.
 
 ## Capturas regeneradas em 27/11/2026

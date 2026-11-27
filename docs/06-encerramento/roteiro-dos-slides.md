@@ -6,8 +6,8 @@ São dois vídeos: o [trailer](video-de-demonstracao.md) abre a apresentação, 
 do slide 1, e o vídeo **"Demonstracao"**
 ([`apps/video/DEMONSTRACAO.md`](../../apps/video/DEMONSTRACAO.md)), um passeio
 pelas telas reais, passa entre os slides 9 e 10. Com os dois, a apresentação
-leva **16:20**. Depois do último slide vem a **demonstração ao vivo, conduzida
-pelo professor**, e por fim as perguntas. Sobram de **23:40 a 28:40** para as
+leva **16:03**. Depois do último slide vem a **demonstração ao vivo, conduzida
+pelo professor**, e por fim as perguntas. Sobram de **23:57 a 28:57** para as
 duas.
 
 A demonstração segue as instruções do professor. O
@@ -26,10 +26,10 @@ A divisão segue o rodapé "quem fala" de cada slide do deck.
 | Público e regras | 3 e 4 | Octávio | 2:00 | 4:20 |
 | Modelagem e banco | 5 a 7 | Arthur | 3:00 | 7:20 |
 | Garantias do banco e arquitetura | 8 e 9 | Luís | 2:00 | 9:20 |
-| **Vídeo "Demonstracao"** | entre o 9 e o 10 | Luís dá o play | **2:45** | 12:05 |
-| Testes | 10 a 12 | Mario | 2:30 | 14:35 |
-| IA, limitações e encerramento | 13 e 14 | Rafael | 1:45 | **16:20** |
-| **Demonstração ao vivo** | depois do 14 | Todos, conduzidos pelo professor | cerca de **14:00** | cerca de 30:20 |
+| **Vídeo "Demonstracao"** | entre o 9 e o 10 | Luís dá o play | **2:28** | 11:48 |
+| Testes | 10 a 12 | Mario | 2:30 | 14:18 |
+| IA, limitações e encerramento | 13 e 14 | Rafael | 1:45 | **16:03** |
+| **Demonstração ao vivo** | depois do 14 | Todos, conduzidos pelo professor | cerca de **14:00** | cerca de 30:03 |
 | Perguntas da banca | 14 | Todos | o restante | 40 a 45 |
 
 **Se o tempo apertar:** quem controla o relógio avisa ao chegar no slide 5 (4:20)
@@ -146,12 +146,12 @@ Dar o play. Ao terminar, ir para o slide 1.
 > gpt-oss-120b, na Groq. Antes de falar dos testes, vamos ver o ciclo inteiro de
 > um desafio, tela por tela.
 
-### Vídeo "Demonstracao" (2:45)
+### Vídeo "Demonstracao" (2:28)
 
 Passeio pelas telas reais, do login ao pagamento, com o objeto do banco que
 garante cada passo ([`apps/video/DEMONSTRACAO.md`](../../apps/video/DEMONSTRACAO.md)).
-Tem cerca de 2:42; a duração final sai com a narração do ElevenLabs. Ele vai
-num slide próprio depois do 9, quando ficar pronto. O Luís dá o play e, ao
+Tem 2:28 (148 s), com a narração do ElevenLabs (modelo v4). Ele vai
+num slide próprio depois do 9. O Luís dá o play e, ao
 terminar, segue para o **slide 10**.
 
 ---

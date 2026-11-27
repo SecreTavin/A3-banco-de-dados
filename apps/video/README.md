@@ -31,9 +31,9 @@ a claquete no lugar: `npm run render -- --props='{"claquetes":true}'`, ou ligue
 
 ## Segundo vídeo: `Demonstracao`
 
-Passeio de ~2:42 pelas telas **reais** da aplicação, do primeiro acesso ao
+Passeio de 2:28 pelas telas **reais** da aplicação, do primeiro acesso ao
 pagamento, ligando cada passo ao objeto do banco que o garante. Passa entre os
-slides 18 e 19. O plano está em [DEMONSTRACAO.md](DEMONSTRACAO.md), e as falas,
+slides 9 e 10. O plano está em [DEMONSTRACAO.md](DEMONSTRACAO.md), e as falas,
 legendas, marcos e faixas em `src/demonstracao/cenas.ts` (fonte única).
 
 | Comando | O que faz |
