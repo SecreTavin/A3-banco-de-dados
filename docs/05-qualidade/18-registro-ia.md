@@ -105,7 +105,7 @@ cada arquivo.
 
 ## Registros
 
-82 registros, em ordem cronológica.
+83 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -191,6 +191,7 @@ cada arquivo.
 | 2026-11-27 | [Validador do Google simulado e os cinco cenários de login](registro-ia/2026-11-27-validador-google-simulado.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-27 | [Correção dos 10 defeitos achados pelo roteiro completo](registro-ia/2026-11-27-correcao-dos-defeitos-e2e.md) | Claude Code (Opus 5.5) | Rafael Alves |
 | 2026-11-27 | [Deck da banca com a meta dos testes e2e e dados atualizados](registro-ia/2026-11-27-slide-do-goal-e2e.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-27 | [Narração do vídeo "Demonstracao" no Eleven v4](registro-ia/2026-11-27-narracao-do-video-demonstracao-v4.md) | Claude Code (Sonnet 5.5), ElevenLabs Eleven v4 | Rafael Alves |
 
 ## Consolidação final
 

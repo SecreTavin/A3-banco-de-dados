@@ -2,13 +2,13 @@
 
 | Campo | Valor |
 | --- | --- |
-| **Data prevista** | 04/12/2026 (janela alternativa da Banca ExpoUna; a primeira janela é 20/11/2026) |
+| **Data prevista** | 27/11/2026 (1ª janela da Banca ExpoUna; a 2ª janela, 04/12/2026, fica de reserva) |
 | **Tag de fechamento** | `banca-final` |
 | **Duração** | 40 a 45 minutos por grupo |
 | **Pergunta que a entrega precisa responder** | O grupo compreendeu e é capaz de explicar o que desenvolveu, do problema à demonstração? |
 
 <!-- entregas:status:start -->
-🔵 **Pronta para entrega** — 3/3 itens prontos · revisão em sala: 2026-12-04
+🔵 **Pronta para entrega** — 3/3 itens prontos · revisão em sala: 2026-11-27
 <!-- entregas:status:end -->
 
 ## Checklist

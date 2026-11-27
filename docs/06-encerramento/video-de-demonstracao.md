@@ -68,3 +68,13 @@ e a duração na tabela do topo.
 | 24/11/2026 | História com os integrantes, render 3x mais rápido e cliques corrigidos | [Octávio](../05-qualidade/registro-ia/2026-11-24-video-com-os-integrantes.md) |
 | 24/11/2026 | Narração sintética das seis cenas do sistema | [Octávio](../05-qualidade/registro-ia/2026-11-24-narracao-sintetica-do-video.md) |
 | 24/11/2026 | Abertura da banca; o vídeo pula as cenas filmadas que ainda não existem | [Octávio](../05-qualidade/registro-ia/2026-11-24-video-na-abertura-da-banca.md) |
+
+## Segundo vídeo: "Demonstracao"
+
+Além deste trailer, a banca vê um segundo vídeo, **entre os slides 9 e 10**: um
+passeio de **2:28** pelas telas reais, do login ao pagamento, com o objeto do
+banco que garante cada passo. Tem narração do ElevenLabs (modelo Eleven v4) e
+fica em [`apps/video/`](../../apps/video/DEMONSTRACAO.md). O arquivo sai de
+`npm run render:demonstracao` e não vai para o repositório. O
+[registro de IA](../05-qualidade/registro-ia/2026-11-27-narracao-do-video-demonstracao-v4.md)
+declara a voz e os valores usados.

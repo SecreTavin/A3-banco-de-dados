@@ -24,6 +24,7 @@ Trocar o texto da narração do vídeo "Demonstracao" (que passa entre os slides
   estimador de duração passou a contar a tag.
 * O gerador do roteiro (`roteiro.mjs`) e o `ELEVENLABS.md` ganharam a
   configuração do v4.
+* Revisão dos docs: data da Banca Final (04/12 → 27/11, no `banca-final.md`, no manifest e no plano de trabalho), índice e contagem do `18-registro-ia.md` (82 → 83) e link do segundo vídeo em `06-encerramento`. A página de entregas foi regerada com `gerar-entregas.mjs`.
 * Cópia dos textos em `~/Downloads/narracao-elevenlabs-v4.txt`.
 * Instalação dos dez mp3 gerados pelo time e render do vídeo (2:28, 148 s).
 
@@ -36,6 +37,7 @@ Trocar o texto da narração do vídeo "Demonstracao" (que passa entre os slides
 * Os mp3 baixados não trazem o número do capítulo no nome. Assumir a ordem de
   download seria arriscado (duas falas de 18 s e três de 16 s). A IA casou cada
   arquivo com o capítulo pela transcrição, e não pela ordem.
+* O `banca-final.md` dizia que a primeira janela era 20/11 e marcava a revisão em 04/12, mas o grupo apresenta em 27/11; o plano de trabalho ainda dizia que a janela estava indefinida.
 * O README citava "slides 18 e 19" (deck antigo) e o roteiro dos slides tinha a
   duração do vídeo como estimativa. Os dois foram corrigidos.
 

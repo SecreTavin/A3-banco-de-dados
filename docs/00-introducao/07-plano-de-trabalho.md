@@ -80,7 +80,7 @@ grupo, testes manuais) está nas linhas semanais, quando foi informado ao time.
 | 06/11 | Testes do sistema, registro de uso de IA | Luís Phillipe Pedra Souza, Mario Lana Veloso Junior (testes); Rafael Alves (registro de IA) *(proposto)* | ✅ Concluído — roteiros reexecutados com a abertura em 3D em 07/11 (Octávio) e campo *Prompt utilizado* preenchido nos registros em 09/11 (Rafael, PR #55); testes de Luís e Mario nesta semana sem rastro no repositório |
 | 13/11 | Preparação da apresentação e roteiro de demonstração | Octávio Augusto Arruda dos Prazeres (roteiro), Rafael Alves (VM e redesign) | ✅ Concluído em 16/11 — roteiro da demonstração (Octávio) e site público na VM da Oracle (Rafael, ADR 0020); redesign mobile-first em 10/11 (Rafael, PR #63) |
 | 20/11 | Feriado (Consciência Negra) — **fechamento da Entrega 4 é virtual, pelo GitBook**, em vez de revisão presencial | Rafael Alves *(proposto)* | 🔵 Em andamento — login com Google (PR #61), slides, card da EXPOUNA e conclusão no GitBook; a tag `entrega-4` fica com o PO |
-| 27/11 | **Banca ExpoUna (1ª janela)** — apresentação do Projeto A3 (20 pontos, 2 ou 3 grupos nesta janela) | Todos | ⚪ Planejado |
+| 27/11 | **Banca ExpoUna (1ª janela)** — apresentação do Projeto A3 (20 pontos, 2 ou 3 grupos nesta janela) | Todos | 🔵 É hoje — o grupo apresenta nesta janela: trailer, 14 slides, vídeo "Demonstracao" e demonstração ao vivo ([roteiro dos slides](../06-encerramento/roteiro-dos-slides.md)) |
 
 > O Anexo 1 original (ficha de inscrição) imprime essa semana como "20/12",
 > o que quebra a sequência cronológica das outras semanas (06/11 → 13/11 →
@@ -97,15 +97,14 @@ grupo, testes manuais) está nas linhas semanais, quando foi informado ao time.
 
 | Semana | Atividade | Responsável | Status |
 | --- | --- | --- | --- |
-| 04/12 | **Banca ExpoUna** — apresentação do Projeto A3 (20 pontos, 2 ou 3 grupos nesta janela) | Todos | ⚪ Planejado |
+| 04/12 | **Banca ExpoUna (2ª janela)** — reserva: o grupo já apresenta em 27/11 | Todos | ⚪ Reserva |
 | 11/12 | **Semana Prova A2** — presencial em sala (15 pontos, individual) | Todos, individualmente | ⚪ Planejado |
 | 18/12 | Fim do semestre letivo | — | — |
 
-> O grupo ainda não sabe em qual das duas janelas (20/11 ou 04/12) vai
-> apresentar — isso é definido pelo professor. Os documentos de
+> O grupo apresenta na **1ª janela, em 27/11**. A 2ª janela (04/12) só é usada
+> se o professor remarcar. Os documentos de
 > [Entrega 4](../07-entregas/entrega-4-sistema-funcional.md) e
-> [Banca Final](../07-entregas/banca-final.md) usam essas duas datas como
-> referência; ajustar assim que a janela for confirmada.
+> [Banca Final](../07-entregas/banca-final.md) seguem essas datas.
 
 ## Visão semanal por integrante
 
