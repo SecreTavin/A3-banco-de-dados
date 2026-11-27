@@ -51,14 +51,27 @@ testes de ponta a ponta que faltavam para ele.
 
 * `node --check` no roteiro de tela e `py_compile` no da API: sintaxe válida.
 * `dotnet test --filter Tests.Unidade` com o código do #84: **122 de 122**.
-* **Não executados:** os roteiros de ponta a ponta e os testes de integração,
-  porque o Docker Desktop não estava rodando na máquina. E19 a E21, U16 e U17
-  estão marcados como "Não executado" no documento 17.
+* No primeiro momento, os roteiros de ponta a ponta e os testes de integração
+  não rodaram, porque o Docker Desktop estava desligado.
+* **Execução em 27/11, depois do commit `a50aaba`.** Pilha separada
+  (`COMPOSE_PROJECT_NAME=euduvido-e2e`), para não apagar o banco da pilha
+  `euduvido-video` do responsável, e navegador visível:
+  * `dotnet test`: 176 de 176;
+  * API: 21 de 21;
+  * tela: 17 de 17;
+  * IA simulada: 14 de 14.
+* **Erro de ordem.** A IA rodou a tela no mesmo banco logo depois da API, e
+  U15 a U17 saíram "não cobertos", porque o E16 cancela o desafio do dinossauro
+  que o U15 usa. Com o banco recriado, os três passaram. O documento 17 agora
+  avisa que os dois roteiros não podem rodar em sequência no mesmo banco.
+* **`npm i --no-save playwright-core`** foi rodado na raiz do repositório, que
+  não tem `package.json`. O npm subiu até o `package.json` da pasta do
+  usuário e instalou lá (`C:\Users\dti-\node_modules`). O roteiro funciona
+  assim, mas a instalação ficou fora do projeto.
 * Os valores esperados do E19 ao E21 (Theus votou, quórum 2, comentário da
   Lari) foram conferidos contra o `seed.sql` e contra o próprio E04.
 
 ## Decisão final
 
-Os casos entram escritos e marcados como não executados, até alguém rodá-los
-com o Docker no ar. Fica registrado para o time que o PR #84 numerou os testes
+Os casos entram no repositório executados e aprovados. Fica registrado para o time que o PR #84 numerou os testes
 de integração como I12 a I14, IDs que o nível 5c já usa.

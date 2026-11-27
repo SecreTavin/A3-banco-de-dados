@@ -141,9 +141,9 @@ python3 scripts/testes/roteiro-e2e.py
 | E16 | Criador cancela um desafio com motivo | `CANCELADA`, CP estornado aos participantes (RN12) | Aprovado |
 | E17 | Consultar o ranking do grupo; não-membro tenta o mesmo | Ranking devolvido; não-membro não vê (HTTP 404) | Aprovado |
 | E18 | Conferir a contabilidade depois de tudo | `vw_reconciliacao_saldo` e `vw_escrow_orfao` vazias | Aprovado |
-| E19 | Antes do E04: Lari, jurada que ainda não votou, abre o desafio da demo; Tavin (desafiado) e Biel (desafiante) também | Lari sabe que Theus votou, mas voto, justificativa e data vêm nulos (RN29). Tavin e Biel veem `VALIDO` e o comentário do Theus | Não executado |
-| E20 | Antes do E04: `GET /api/validacao/minhas-provas` como Tavin, como Lari e sem login | Tavin recebe a prova com placar 1 x 0, quórum 2 e os 3 jurados, com o comentário do Theus. A Lari não recebe a prova. Sem login: 401 | Não executado |
-| E21 | Depois do E04: Lipe, que não votou, abre o desafio; Tavin consulta `minhas-provas` | Com o júri fechado, Lipe vê o voto e o comentário da Lari. A prova sai da lista do Tavin | Não executado |
+| E19 | Antes do E04: Lari, jurada que ainda não votou, abre o desafio da demo; Tavin (desafiado) e Biel (desafiante) também | Lari sabe que Theus votou, mas voto, justificativa e data vêm nulos (RN29). Tavin e Biel veem `VALIDO` e o comentário do Theus | Aprovado |
+| E20 | Antes do E04: `GET /api/validacao/minhas-provas` como Tavin, como Lari e sem login | Tavin recebe a prova com placar 1 x 0, quórum 2 e os 3 jurados, com o comentário do Theus. A Lari não recebe a prova. Sem login: 401 | Aprovado |
+| E21 | Depois do E04: Lipe, que não votou, abre o desafio; Tavin consulta `minhas-provas` | Com o júri fechado, Lipe vê o voto e o comentário da Lari. A prova sai da lista do Tavin | Aprovado |
 
 Executado em 29/10/2026: **18 de 18 aprovados**, duas vezes, cada uma num banco
 recém-criado. Reexecutado em 31/10/2026, depois das leituras novas da API do
@@ -187,8 +187,8 @@ rodada. Para repetir, volte ao seed (`docker compose down -v` e `up`, ou
 | U13 | Abrir `/` sem sessão; entrar e abrir `/` de novo | Sem sessão vai direto a `/login`; logado vai a `/desafios`; nenhuma abertura animada no caminho (removida em 20/11/2026) | Aprovado |
 | U14 | Abrir a tela de login | Só o botão do Google (ou o aviso de "não configurado"); nenhum usuário do seed listado; `/api/auth/dev/usuarios` responde 404 | Aprovado |
 | U15 | Como Lipe, escolher **Foto** no desafio do dinossauro, enviar um PNG pelo seletor de arquivo e mandar ao júri; depois, como Tavin, abrir a Votação | "Mandar para o júri" só libera depois da foto; `url_comprovante` aponta para `/api/midia/<guid>`; a URL sem login responde 401; o júri vê a imagem carregada ([ADR 0022](../02-arquitetura/adr/0022-foto-da-prova-no-minio-pela-api.md)) | Aprovado |
-| U16 | Na prova do U15, um jurado vota **Vale** pela tela do desafio, com comentário; outro jurado pendente abre a mesma tela; depois, o desafiado | Voto e comentário gravados; o jurado pendente não vê o comentário (RN29); o desafiado vê | Não executado no roteiro (sem Chrome no Mac, 26/11); fluxo conferido à mão |
-| U17 | Depois do U16, o desafiado abre a aba Votação | Se o júri continua aberto: "Suas provas no júri" com placar igual ao banco, o comentário do U16 e nenhum botão de voto (RN14). Se o voto do U16 fechou o júri: a prova não aparece | Não executado |
+| U16 | Na prova do U15, um jurado vota **Vale** pela tela do desafio, com comentário; outro jurado pendente abre a mesma tela; depois, o desafiado | Voto e comentário gravados; o jurado pendente não vê o comentário (RN29); o desafiado vê | Aprovado (27/11; antes, conferido à mão em 26/11) |
+| U17 | Depois do U16, o desafiado abre a aba Votação | Se o júri continua aberto: "Suas provas no júri" com placar igual ao banco, o comentário do U16 e nenhum botão de voto (RN14). Se o voto do U16 fechou o júri: a prova não aparece | Aprovado |
 
 Executado em 30/10/2026 num banco recém-semeado: **12 de 12 aprovados**, uma vez
 com o navegador visível e outra sem janela.
@@ -257,6 +257,27 @@ Reexecutado em 26/11/2026 com o voto e a justificativa na tela do desafio
   * o desafiado vê a própria prova na aba Votação, com o placar e os comentários;
   * o voto que fecha o júri apura e paga;
   * no celular (375 px), a página não rola na horizontal.
+
+Reexecutado em 27/11/2026 no Windows, com o código do PR #84 e os casos novos
+E19 a E21, U16 e U17. Cada roteiro rodou numa pilha separada
+(`COMPOSE_PROJECT_NAME=euduvido-e2e`) com banco recém-criado, com o navegador
+visível e com a API sem chave da IA:
+
+* testes da API (`dotnet test`): **176 de 176**;
+* API de ponta a ponta: **21 de 21**;
+* tela: **17 de 17**. O U11 voltou a passar, e U16 e U17 rodaram pela primeira
+  vez no roteiro;
+* IA simulada: **14 de 14**.
+
+A primeira rodada de tela, feita no mesmo banco logo depois do roteiro da API,
+deu U15 a U17 como "não coberto": o E16 cancela o desafio do dinossauro, que o
+U15 precisa encontrar em andamento. **Os roteiros da API e da tela não podem
+rodar em sequência no mesmo banco.** Recrie o banco entre eles, ou rode a tela
+primeiro.
+
+No Windows, o roteiro de tela precisa de
+`CHROME_PATH="C:/Program Files/Google/Chrome/Application/chrome.exe"`, porque o
+caminho padrão é o do Mac.
 
 O envio também foi conferido direto na API: sem login responde 401; texto com
 nome `.png` responde 400; arquivo de 9 MB responde 400; nome com `../` responde
@@ -389,8 +410,8 @@ expõe — endpoints, telas e regras de negócio —, cruzando o código com os 
 roteiros (`roteiro-e2e.py`, `roteiro-e2e-ui.mjs` e `roteiro-e2e-ia.mjs`).
 Medição de 27/11/2026, sobre a `main` em `edd7ceb` (com o PR #84). O PR
 trouxe o endpoint `GET /api/validacao/minhas-provas` e a RN29, cobertos pelos
-casos E19 a E21, U16 e U17. Esses casos estão escritos e **ainda não foram
-executados**, mas já entram na contagem abaixo.
+casos E19 a E21, U16 e U17. Os casos foram executados e aprovados em
+27/11/2026.
 
 | Dimensão | Cobertos | Total | Cobertura |
 | --- | --- | --- | --- |
@@ -434,9 +455,8 @@ Contando os níveis 1 a 3 junto com o 5, só RN02, RN13 e RN16 ficam sem teste.
 
 O [roteiro completo dos testes de ponta a ponta](roteiro-e2e.md) desce um
 nível: conta cada resposta possível de cada endpoint e tela, não só se o
-endpoint foi chamado. Por esse critério, os roteiros já executados cobrem 51 de
-202 cenários (25%), ou 62 (31%) com os casos do PR #84 escritos e ainda não
-executados. Outros 9 cenários apontam possíveis defeitos, também ainda não
+endpoint foi chamado. Por esse critério, os roteiros cobrem 62 de 202 cenários
+(31%). Outros 9 cenários apontam possíveis defeitos e ainda não foram
 executados.
 
 ## Execução

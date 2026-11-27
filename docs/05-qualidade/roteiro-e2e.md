@@ -9,7 +9,8 @@ Levantado em 27/11/2026, por leitura do código na `main` (`17996e8`):
 endpoints, validadores, handlers, domínio, procedures de
 `database/scripts/ddl/functions/` e telas de `apps/web/src`. Atualizado no
 mesmo dia com o PR #84 (`edd7ceb`): RN29, voto pela tela do desafio e aba
-Votação do desafiado. **Nenhum cenário novo foi executado ainda.** Os marcados com ⚠ são comportamentos suspeitos
+Votação do desafiado. Os cenários do #84 rodaram e passaram em 27/11; **os
+demais cenários novos, incluindo os ⚠, ainda não foram executados.** Os marcados com ⚠ são comportamentos suspeitos
 encontrados na leitura, e só a execução confirma se o problema existe.
 
 ## Como ler
@@ -140,10 +141,10 @@ do documento 17.
 | D02 | `GET /api/desafios` | Só desafios dos grupos do usuário | ✅ `U01` | P1 |
 | D03 | `GET /api/desafios?status=ABERTA` | Só abertos | ⬜ | P3 |
 | D04 | `GET /api/desafios/{id}` como Membro | Detalhe, participantes, evidências e júri | ✅ `U02` | P2 |
-| D05 | RN29: jurado que ainda não votou abre o detalhe com a votação aberta | Sabe quem votou; voto, justificativa e data dos outros vêm nulos | ✎ `E19` | P1 |
-| D34 | Desafiado e Desafiante abrem o mesmo detalhe | Veem voto, justificativa e data de cada jurado | ✎ `E19` | P1 |
+| D05 | RN29: jurado que ainda não votou abre o detalhe com a votação aberta | Sabe quem votou; voto, justificativa e data dos outros vêm nulos | ✅ `E19` | P1 |
+| D34 | Desafiado e Desafiante abrem o mesmo detalhe | Veem voto, justificativa e data de cada jurado | ✅ `E19` | P1 |
 | D35 | Jurado que já votou abre o detalhe com a votação aberta | Vê os votos de todos | ⬜ (só `I13`, nível 3) | P2 |
-| D36 | Votação fechada: jurado que nunca votou abre o detalhe | Vê todos os votos e comentários | ✎ `E21` | P1 |
+| D36 | Votação fechada: jurado que nunca votou abre o detalhe | Vê todos os votos e comentários | ✅ `E21` | P1 |
 | D06 | `GET /api/desafios/{id}` como Forasteiro | 404 | ⬜ | P1 |
 
 ### Criação (RN27, RN28)
@@ -235,10 +236,10 @@ nível 1.
 
 | ID | Cenário | Resultado esperado | Situação | P |
 | --- | --- | --- | --- | --- |
-| V28 | `GET /api/validacao/minhas-provas` como Desafiado | A própria prova em votação, com placar, quórum e cada jurado com voto e justificativa | ✎ `E20` | P1 |
-| V29 | `minhas-provas` como Jurado da mesma prova | Não inclui a prova | ✎ `E20` | P1 |
-| V30 | `minhas-provas` sem login | 401 | ✎ `E20` | P2 |
-| V31 | `minhas-provas` depois que o júri fecha | A prova sai da lista | ✎ `E21` | P2 |
+| V28 | `GET /api/validacao/minhas-provas` como Desafiado | A própria prova em votação, com placar, quórum e cada jurado com voto e justificativa | ✅ `E20` | P1 |
+| V29 | `minhas-provas` como Jurado da mesma prova | Não inclui a prova | ✅ `E20` | P1 |
+| V30 | `minhas-provas` sem login | 401 | ✅ `E20` | P2 |
+| V31 | `minhas-provas` depois que o júri fecha | A prova sai da lista | ✅ `E21` | P2 |
 | V32 | `minhas-provas` de quem não tem prova em votação | `[]` | ⬜ | P3 |
 
 ## 6. Foto da prova (ADR 0022)
@@ -306,12 +307,12 @@ nível 1.
 | F31 | Celular 390x844 | Sem overflow horizontal | ✅ `U12` | P2 |
 | F32 | Botão **A+** de fonte maior persiste ao recarregar | Fonte mantida | ⬜ | P3 |
 | F33 | Erros 403 e 409 da API | Viram alerta legível, não tela quebrada | ⬜ | P2 |
-| F34 | Detalhe: Jurado pendente vê "Você está no júri desta prova" e vota **Vale** com comentário | Voto e justificativa gravados | ✎ `U16` | P1 |
-| F35 | Detalhe: outro Jurado pendente abre a mesma prova | Aviso de que os votos aparecem depois do dele; comentário ausente (RN29) | ✎ `U16` | P1 |
-| F36 | Detalhe: Desafiado abre a prova | Vê o voto e o comentário | ✎ `U16` | P2 |
+| F34 | Detalhe: Jurado pendente vê "Você está no júri desta prova" e vota **Vale** com comentário | Voto e justificativa gravados | ✅ `U16` | P1 |
+| F35 | Detalhe: outro Jurado pendente abre a mesma prova | Aviso de que os votos aparecem depois do dele; comentário ausente (RN29) | ✅ `U16` | P1 |
+| F36 | Detalhe: Desafiado abre a prova | Vê o voto e o comentário | ✅ `U16` | P2 |
 | F37 | Detalhe: voto **Não vale** com motivo pela tela do desafio | Voto `INVALIDO` gravado | ⬜ | P2 |
 | F38 | Detalhe: Desafiante ou Membro fora do júri | Não vê os botões de voto | ⬜ | P2 |
-| F39 | Votação: Desafiado vê "Suas provas no júri" | Placar igual ao banco, comentário do jurado, sem botão de voto (RN14) | ✎ `U17` | P1 |
+| F39 | Votação: Desafiado vê "Suas provas no júri" | Placar igual ao banco, comentário do jurado, sem botão de voto (RN14) | ✅ `U17` | P1 |
 | F40 | Votação: um jurado vota enquanto o Desafiado está na aba | Placar da prova dele atualiza sem recarregar | ⬜ | P3 |
 
 ## 9. Jornadas completas
@@ -376,20 +377,20 @@ Duas requisições disparadas juntas (`Promise.all` no roteiro).
 | 1. Acesso e cadastro | 16 | 6 | 0 | 2 | 8 | 0 |
 | 2. Sessão e segurança | 5 | 1 | 0 | 0 | 4 | 0 |
 | 3. Grupos | 30 | 10 | 0 | 0 | 20 | 0 |
-| 4. Desafios | 36 | 13 | 3 | 0 | 18 | 2 |
-| 5. Evidência e votação | 32 | 5 | 4 | 0 | 21 | 2 |
+| 4. Desafios | 36 | 16 | 0 | 0 | 18 | 2 |
+| 5. Evidência e votação | 32 | 9 | 0 | 0 | 21 | 2 |
 | 6. Foto da prova | 10 | 2 | 0 | 4 | 4 | 0 |
 | 7. Ranking e perfil | 8 | 3 | 0 | 0 | 5 | 0 |
-| 8. Telas | 40 | 9 | 4 | 1 | 26 | 0 |
+| 8. Telas | 40 | 13 | 0 | 1 | 26 | 0 |
 | 9. Jornadas | 10 | 2 | 0 | 1 | 7 | 0 |
 | 10. Prazos | 6 | 0 | 0 | 0 | 5 | 1 |
 | 11. Concorrência | 5 | 0 | 0 | 0 | 3 | 2 |
 | 12. Tempo real | 4 | 0 | 0 | 0 | 2 | 2 |
-| **Total** | **202** | **51** | **11** | **8** | **123** | **9** |
+| **Total** | **202** | **62** | **0** | **8** | **123** | **9** |
 
-Cobertos por roteiro já executado: **51 de 202 (25%)**. Com os 11 casos do
-PR #84 escritos e ainda não executados (E19 a E21, U16, U17): 62 (31%).
-Somando os conferidos à mão: 70 (35%). O número é menor que os 96% de endpoints do documento 17 porque aqui
+Cobertos por roteiro: **62 de 202 (31%)**, com os 11 cenários do PR #84
+(E19 a E21, U16 e U17), executados e aprovados em 27/11/2026. Somando os
+conferidos à mão: 70 (35%). O número é menor que os 96% de endpoints do documento 17 porque aqui
 cada resposta possível conta separado. Um endpoint chamado uma vez, no caminho
 feliz, conta como coberto lá, e aqui só cobre um dos seus cenários.
 
