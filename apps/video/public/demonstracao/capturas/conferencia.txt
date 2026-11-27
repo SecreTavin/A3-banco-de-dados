@@ -1,0 +1,49 @@
+== 1 · Entrar
+ok  nenhum usuário criado para o menor de 16 anos: 0
+== preparação: os cinco integrantes e o grupo, pela API
+ok  saldos antes do Rafael: Arthur=100 Luís=100 Mario=100 Octávio=100
+== 2 · Grupo
+ok  Rafael entra com 100: Arthur=100 Luís=100 Mario=100 Octávio=100 Rafael=100
+ok  CREDITO_INICIAL do Rafael lançado pela trigger: CREDITO_INICIAL 100
+== 3 · Criar desafio
+ok  um desafio criado: 1
+ok  duas avaliações em moderacao_desafio: Correr 5 km abaixo de 25 minutos → aprovada | Beber uma garrafa de vodka em 10 minutos → recusada
+== 4 · Aceitar e apostar
+ok  saldos depois de Luís: Arthur=100 Luís=80 Mario=100 Octávio=100 Rafael=100
+ok  pote depois de Luís: 20
+ok  saldos depois de Arthur: Arthur=80 Luís=80 Mario=100 Octávio=100 Rafael=100
+ok  pote depois de Arthur: 40
+ok  saldos depois de Mario: Arthur=80 Luís=80 Mario=80 Octávio=100 Rafael=100
+ok  pote depois de Mario: 60
+ok  desafio em andamento: EM_ANDAMENTO
+== 5 · Enviar a prova (celular do Arthur)
+ok  desafio em votação: EM_VOTACAO
+ok  júri congelado em jurado_evidencia: Luís, Octávio, Rafael
+== 6 e 7 · Julgar e apurar
+ok  placar do Octávio mudou sem recarregar, 1.0 s depois do clique do Luís
+ok  voto do Luís gravado: 1
+ok  prova aceita: ACEITA
+ok  desafio cumprido: FINALIZADA_CUMPRIU
+ok  saldos depois da apuração: Arthur=110 Luís=112 Mario=80 Octávio=102 Rafael=100
+ok  pote liberado: 0
+== 8 · Ranking e perfil
+ok  extrato do Arthur: CREDITO_INICIAL 100 | DESAFIO_ESCROW -20 | PREMIO 30
+ok  vw_reconciliacao_saldo vazia: 0
+ok  vw_escrow_orfao vazia: 0
+-- lançamentos do grupo, em ordem:
+Octávio CREDITO_INICIAL 100
+Arthur CREDITO_INICIAL 100
+Luís CREDITO_INICIAL 100
+Mario CREDITO_INICIAL 100
+Rafael CREDITO_INICIAL 100
+Luís DESAFIO_ESCROW -20
+(desafio) DESAFIO_ESCROW 20
+Arthur DESAFIO_ESCROW -20
+(desafio) DESAFIO_ESCROW 20
+Mario DESAFIO_ESCROW -20
+(desafio) DESAFIO_ESCROW 20
+Luís RECOMPENSA_VOTO 2
+Octávio RECOMPENSA_VOTO 2
+Luís PREMIO 30
+Arthur PREMIO 30
+(desafio) PREMIO -60

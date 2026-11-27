@@ -7,19 +7,25 @@
     "studio": "remotion studio",
     "render": "remotion render Demo out/demo.mp4",
     "still": "remotion still Demo out/quadro.png",
+    "render:demonstracao": "remotion render Demonstracao out/demonstracao.mp4",
+    "still:demonstracao": "remotion still Demonstracao out/demonstracao.png",
     "tipos": "tsc",
-    "narrar": "node scripts/narrar.mjs"
+    "narrar": "node scripts/narrar.mjs",
+    "roteiro": "node scripts/roteiro.mjs",
+    "capturar": "node scripts/capturar-demonstracao.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.545",
     "@remotion/google-fonts": "4.0.545",
     "@remotion/transitions": "4.0.545",
+    "mediabunny": "1.66.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "remotion": "4.0.545"
   },
   "devDependencies": {
     "@types/react": "^19.1.0",
+    "playwright-core": "1.65.1",
     "typescript": "~5.7.2"
   }
 }
