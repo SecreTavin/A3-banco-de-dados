@@ -105,7 +105,7 @@ cada arquivo.
 
 ## Registros
 
-71 registros, em ordem cronológica.
+73 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -180,6 +180,8 @@ cada arquivo.
 | 2026-11-25 | [Busca dos prompts dos registros de setembro e outubro](registro-ia/2026-11-25-busca-dos-prompts-antigos.md) | Claude Code (Opus 5.5) | Arthur Araujo Marzano |
 | 2026-11-25 | [publicar.sh troca o túnel expirado](registro-ia/2026-11-25-publicar-tunel-expirado.md) | Claude Code (Opus 5.5) | Arthur Araujo Marzano |
 | 2026-11-26 | [Cloudflare como reserva da VM e fechamento das pendências](registro-ia/2026-11-26-cloudflare-reserva-e-fechamento.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-26 | [Voto e comentário do júri na tela do desafio](registro-ia/2026-11-26-votos-e-comentarios-no-desafio.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-26 | [Aba Votação do desafiado: placar e comentários da própria prova](registro-ia/2026-11-26-votacao-do-desafiado.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 
 ## Consolidação final
 

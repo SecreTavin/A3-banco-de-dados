@@ -141,13 +141,20 @@ export interface Evidencia {
   jurados: Jurado[]
 }
 
-/** Quem está no júri e se já votou — o voto de cada um não é exposto. */
+/**
+ * Quem está no júri, se já votou, o voto e a justificativa (RF07). RN29: para o jurado que
+ * ainda não votou, voto, justificativa e data dos outros chegam nulos enquanto a prova está
+ * em votação.
+ */
 export interface Jurado {
   /** O apelido pode repetir; quem identifica o jurado é o id. */
   idUsuario: number
   apelido: string
   avatarUrl: string | null
   votou: boolean
+  voto: TipoVoto | null
+  justificativa: string | null
+  dataVoto: string | null
 }
 
 export interface DesafioDetalhe extends DesafioResumo {
@@ -183,6 +190,24 @@ export interface EvidenciaPendente {
   jaVotei: boolean
   descricaoDesafio: string | null
   desafiado: string
+}
+
+/** Prova do próprio usuário no júri: o desafiado acompanha o placar e os comentários (#83). */
+export interface MinhaProvaNoJuri {
+  idEvidencia: number
+  idDesafio: number
+  desafio: string
+  idGrupo: number
+  grupo: string
+  ordem: number
+  comentario: string | null
+  dataLimiteVotacao: string
+  totalValidadores: number
+  quorum: number
+  votosFavoraveis: number
+  votosContra: number
+  votosFaltantes: number
+  jurados: Jurado[]
 }
 
 export interface PosicaoRanking {

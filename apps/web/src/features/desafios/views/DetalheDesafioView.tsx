@@ -17,7 +17,8 @@ import {
 import { formatarDataCompleta, formatarDataHora } from '../../../shared/ui/formato'
 import { aparenciaStatusDesafio, rotuloMidia, rotuloPapelDesafio } from '../../../shared/ui/status'
 import { useAuth } from '../../../shared/auth/AuthContext'
-import type { DesafioDetalhe, Escolha, PapelDesafio, TipoMidia } from '../../../shared/api/tipos'
+import { api } from '../../../shared/api/client'
+import type { DesafioDetalhe, Escolha, PapelDesafio, TipoMidia, TipoVoto } from '../../../shared/api/tipos'
 import { ENCERRADOS, etapasDoDesafio, formatarDia } from '../apresentacao'
 import { CartaoProva } from '../components/CartaoProva'
 import { Confronto } from '../components/Confronto'
@@ -26,6 +27,9 @@ import { useCancelarDesafioCommand } from '../hooks/useCancelarDesafioCommand'
 import { useDesafioQuery } from '../hooks/useDesafioQuery'
 import { useEnviarEvidenciaCommand } from '../hooks/useEnviarEvidenciaCommand'
 import { EnvioDeFoto } from '../components/EnvioDeFoto'
+import { ConfirmarVoto } from '../../votacao/components/ConfirmarVoto'
+import { ResultadoVoto } from '../../votacao/components/ResultadoVoto'
+import { useVotarCommand } from '../../votacao/hooks/useVotarCommand'
 import estilos from '../detalhe.module.css'
 
 const MIDIAS: TipoMidia[] = ['FOTO', 'VIDEO', 'LINK', 'TEXTO']
@@ -56,6 +60,7 @@ export function DetalheDesafioView() {
   const aceitar = useAceitarDesafioCommand(idDesafio)
   const cancelar = useCancelarDesafioCommand(idDesafio)
   const enviarEvidencia = useEnviarEvidenciaCommand(idDesafio)
+  const votar = useVotarCommand()
 
   const [papelDesafio, setPapelDesafio] = useState<PapelDesafio | null>(null)
   const [escolha, setEscolha] = useState<Escolha>('VAI_CUMPRIR')
@@ -67,6 +72,9 @@ export function DetalheDesafioView() {
   const [fotoPorLink, setFotoPorLink] = useState(false)
   const enviandoArquivo = tipoMidia === 'FOTO' && !fotoPorLink
   const [notaEvidencia, setNotaEvidencia] = useState('')
+  // Voto pela própria tela do desafio, com a mesma confirmação da aba Votação.
+  const [escolhaVoto, setEscolhaVoto] = useState<{ idEvidencia: number; voto: TipoVoto } | null>(null)
+  const [resultadoVoto, setResultadoVoto] = useState<{ desafio: DesafioDetalhe; idEvidencia: number } | null>(null)
 
   if (carregando) return <SpinnerCentral />
   if (erro) return <Alerta>{erro}</Alerta>
@@ -115,6 +123,22 @@ export function DetalheDesafioView() {
     setMotivo('')
     setCancelando(false)
     recarregar()
+  }
+
+  const confirmarVoto = async (justificativa: string) => {
+    if (!escolhaVoto) return
+    const { idEvidencia, voto } = escolhaVoto
+    const enviado = await votar.executar({ idEvidencia, voto, justificativa })
+    if (!enviado.ok) return
+
+    setEscolhaVoto(null)
+    // A apuração já commitou na procedure; aqui só lemos o desfecho para mostrar.
+    try {
+      const atualizado = await api.get<DesafioDetalhe>(`/api/desafios/${idDesafio}`)
+      setResultadoVoto({ desafio: atualizado, idEvidencia })
+    } finally {
+      recarregar()
+    }
   }
 
   const submeterEvidencia = async (evento: FormEvent) => {
@@ -238,7 +262,15 @@ export function DetalheDesafioView() {
         <div className={estilos.coluna}>
           {ultima ? (
             <>
-              <CartaoProva evidencia={ultima} destaque />
+              <CartaoProva
+                evidencia={ultima}
+                destaque
+                idUsuario={usuario?.idUsuario}
+                aoVotar={(voto) => {
+                  votar.limparErro()
+                  setEscolhaVoto({ idEvidencia: ultima.idEvidencia, voto })
+                }}
+              />
               {evidencias.length > 1 && (
                 <ul className={estilos.provasAntigas}>
                   {evidencias
@@ -329,6 +361,25 @@ export function DetalheDesafioView() {
           )}
         </div>
       </div>
+
+      {escolhaVoto && (
+        <ConfirmarVoto
+          voto={escolhaVoto.voto}
+          enviando={votar.enviando}
+          erro={votar.erro}
+          aoConfirmar={(justificativa) => void confirmarVoto(justificativa)}
+          aoVoltar={() => setEscolhaVoto(null)}
+        />
+      )}
+
+      {resultadoVoto && (
+        <ResultadoVoto
+          desafio={resultadoVoto.desafio}
+          idEvidencia={resultadoVoto.idEvidencia}
+          aoFechar={() => setResultadoVoto(null)}
+          naTelaDoDesafio
+        />
+      )}
 
       {cancelando && (
         <Dialogo titulo="Cancelar o desafio?" aoFechar={() => setCancelando(false)}>

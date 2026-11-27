@@ -2,9 +2,11 @@ import { useMemo, useState } from 'react'
 import { Alerta, CabecalhoPagina, EstadoVazio, SpinnerCentral } from '../../../shared/ui'
 import { api } from '../../../shared/api/client'
 import type { DesafioDetalhe, EvidenciaPendente, TipoVoto } from '../../../shared/api/tipos'
+import { CardMinhaProva } from '../components/CardMinhaProva'
 import { CardVoto } from '../components/CardVoto'
 import { ConfirmarVoto } from '../components/ConfirmarVoto'
 import { ResultadoVoto } from '../components/ResultadoVoto'
+import { useMinhasProvasQuery } from '../hooks/useMinhasProvasQuery'
 import { usePendentesQuery } from '../hooks/usePendentesQuery'
 import { useVotacaoAoVivo } from '../hooks/useVotacaoAoVivo'
 import { useVotarCommand } from '../hooks/useVotarCommand'
@@ -22,19 +24,31 @@ interface Resultado {
 
 export function VotacaoView() {
   const { dados: pendentes, carregando, erro, recarregar } = usePendentesQuery()
+  // O desafiado não vota na própria prova (RN14), mas acompanha o placar e os comentários (#83).
+  const minhas = useMinhasProvasQuery()
   const votar = useVotarCommand()
   const [escolha, setEscolha] = useState<Escolha | null>(null)
   const [resultado, setResultado] = useState<Resultado | null>(null)
 
   const idsGrupos = useMemo(
-    () => [...new Set(pendentes?.map((evidencia) => evidencia.idGrupo) ?? [])],
-    [pendentes],
+    () => [
+      ...new Set([
+        ...(pendentes?.map((evidencia) => evidencia.idGrupo) ?? []),
+        ...(minhas.dados?.map((prova) => prova.idGrupo) ?? []),
+      ]),
+    ],
+    [pendentes, minhas.dados],
   )
 
-  useVotacaoAoVivo(idsGrupos, recarregar)
+  const recarregarMinhas = minhas.recarregar
+  useVotacaoAoVivo(idsGrupos, () => {
+    recarregar()
+    recarregarMinhas()
+  })
 
   const aFazer = pendentes?.filter((evidencia) => !evidencia.jaVotei) ?? []
   const jaVotadas = pendentes?.filter((evidencia) => evidencia.jaVotei) ?? []
+  const minhasProvas = minhas.dados ?? []
 
   async function confirmar(justificativa: string) {
     if (!escolha) return
@@ -60,10 +74,11 @@ export function VotacaoView() {
       />
 
       {erro && <Alerta>{erro}</Alerta>}
+      {minhas.erro && <Alerta>{minhas.erro}</Alerta>}
 
-      {carregando ? (
+      {carregando || minhas.carregando ? (
         <SpinnerCentral />
-      ) : aFazer.length + jaVotadas.length === 0 ? (
+      ) : aFazer.length + jaVotadas.length + minhasProvas.length === 0 ? (
         !erro && (
           <EstadoVazio
             titulo="Nada para julgar agora"
@@ -71,18 +86,31 @@ export function VotacaoView() {
           />
         )
       ) : (
-        <div className={estilos.lista}>
-          {[...aFazer, ...jaVotadas].map((evidencia) => (
-            <CardVoto
-              key={evidencia.idEvidencia}
-              evidencia={evidencia}
-              aoEscolher={(voto) => {
-                votar.limparErro()
-                setEscolha({ evidencia, voto })
-              }}
-            />
-          ))}
-        </div>
+        <>
+          {aFazer.length + jaVotadas.length > 0 && (
+            <div className={estilos.lista}>
+              {[...aFazer, ...jaVotadas].map((evidencia) => (
+                <CardVoto
+                  key={evidencia.idEvidencia}
+                  evidencia={evidencia}
+                  aoEscolher={(voto) => {
+                    votar.limparErro()
+                    setEscolha({ evidencia, voto })
+                  }}
+                />
+              ))}
+            </div>
+          )}
+
+          {minhasProvas.length > 0 && (
+            <div className={estilos.lista}>
+              <h2 className={estilos.secao}>Suas provas no júri</h2>
+              {minhasProvas.map((prova) => (
+                <CardMinhaProva key={prova.idEvidencia} prova={prova} />
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       {escolha && (

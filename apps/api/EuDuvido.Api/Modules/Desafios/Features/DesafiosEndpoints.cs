@@ -104,18 +104,7 @@ public static class DesafiosEndpoints
                  WHERE e.id_desafio = @id ORDER BY e.ordem
                 """, new { id });
 
-            // Quem ja votou e quem falta. O voto em si nao sai daqui: o juri ve o placar, nao
-            // quem votou em que.
-            var jurados = (await conexao.QueryAsync<JuradoLido>(
-                """
-                SELECT j.id_evidencia AS IdEvidencia, j.id_usuario AS IdUsuario, u.apelido AS Apelido,
-                       u.avatar_url AS AvatarUrl, (j.voto IS NOT NULL) AS Votou
-                  FROM jurado_evidencia j
-                  JOIN evidencia e ON e.id_evidencia = j.id_evidencia
-                  JOIN usuario u ON u.id_usuario = j.id_usuario
-                 WHERE e.id_desafio = @id
-                 ORDER BY j.data_voto NULLS LAST, u.apelido
-                """, new { id })).ToLookup(j => j.IdEvidencia);
+            var jurados = await JuradosDoDesafio.LerAsync(conexao, id, usuario.Id);
 
             return Results.Ok(new
             {
@@ -130,7 +119,7 @@ public static class DesafiosEndpoints
                     e.dataEnvio, e.dataLimiteVotacao, e.votosFavoraveis, e.votosContra, e.quorum,
                     e.totalValidadores,
                     jurados = jurados[(int)e.idEvidencia]
-                        .Select(j => new { j.IdUsuario, j.Apelido, j.AvatarUrl, j.Votou })
+                        .Select(j => new { j.IdUsuario, j.Apelido, j.AvatarUrl, j.Votou, j.Voto, j.Justificativa, j.DataVoto })
                 })
             });
         });
@@ -220,7 +209,35 @@ public static class DesafiosEndpoints
     }
 }
 
+// Quem ja votou, o voto e a justificativa (RF07). RN29: o jurado que ainda nao votou nao ve
+// os votos dos outros enquanto a prova esta em votacao, para nao ser influenciado; o placar
+// continua aberto. Fica numa classe propria para o teste exercitar o SQL contra o PostgreSQL.
+public static class JuradosDoDesafio
+{
+    public static async Task<ILookup<int, JuradoLido>> LerAsync(
+        System.Data.IDbConnection conexao, int idDesafio, int idUsuario) =>
+        (await conexao.QueryAsync<JuradoLido>(
+            """
+            SELECT j.id_evidencia AS IdEvidencia, j.id_usuario AS IdUsuario, u.apelido AS Apelido,
+                   u.avatar_url AS AvatarUrl, (j.voto IS NOT NULL) AS Votou,
+                   CASE WHEN oculto THEN NULL ELSE j.voto END AS Voto,
+                   CASE WHEN oculto THEN NULL ELSE j.justificativa END AS Justificativa,
+                   CASE WHEN oculto THEN NULL ELSE j.data_voto END AS DataVoto
+              FROM jurado_evidencia j
+              JOIN evidencia e ON e.id_evidencia = j.id_evidencia
+              JOIN usuario u ON u.id_usuario = j.id_usuario
+              LEFT JOIN jurado_evidencia eu
+                ON eu.id_evidencia = j.id_evidencia AND eu.id_usuario = @usuario
+              CROSS JOIN LATERAL (
+                  SELECT e.status = 'EM_VOTACAO' AND eu.id_usuario IS NOT NULL AND eu.voto IS NULL
+                         AS oculto) o
+             WHERE e.id_desafio = @id
+             ORDER BY j.data_voto NULLS LAST, u.apelido
+            """, new { id = idDesafio, usuario = idUsuario })).ToLookup(j => j.IdEvidencia);
+}
+
 public record AceitarRequest(string PapelDesafio, string Escolha);
 public record CancelarRequest(string Motivo);
 // O apelido pode repetir; quem identifica o jurado e o id.
-public record JuradoLido(int IdEvidencia, int IdUsuario, string Apelido, string? AvatarUrl, bool Votou);
+public record JuradoLido(int IdEvidencia, int IdUsuario, string Apelido, string? AvatarUrl, bool Votou,
+    string? Voto, string? Justificativa, DateTime? DataVoto);

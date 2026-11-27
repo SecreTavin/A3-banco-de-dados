@@ -146,6 +146,8 @@
     * [2026-11-25 - Busca dos prompts dos registros de setembro e outubro](docs/05-qualidade/registro-ia/2026-11-25-busca-dos-prompts-antigos.md)
     * [2026-11-25 - publicar.sh troca o túnel expirado](docs/05-qualidade/registro-ia/2026-11-25-publicar-tunel-expirado.md)
     * [2026-11-26 - Cloudflare como reserva da VM e fechamento das pendências](docs/05-qualidade/registro-ia/2026-11-26-cloudflare-reserva-e-fechamento.md)
+    * [2026-11-26 - Voto e comentário do júri na tela do desafio](docs/05-qualidade/registro-ia/2026-11-26-votos-e-comentarios-no-desafio.md)
+    * [2026-11-26 - Aba Votação do desafiado: placar e comentários da própria prova](docs/05-qualidade/registro-ia/2026-11-26-votacao-do-desafiado.md)
 
 ## Produto
 

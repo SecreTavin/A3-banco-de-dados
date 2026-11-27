@@ -1,6 +1,7 @@
 using Dapper;
 using EuDuvido.Api.Modules.Validacao.Features.EnviarEvidencia;
 using EuDuvido.Api.Modules.Validacao.Features.EnviarFoto;
+using EuDuvido.Api.Modules.Validacao.Features.MinhasProvas;
 using EuDuvido.Api.Modules.Validacao.Features.RegistrarVoto;
 using EuDuvido.Api.Shared.Database;
 using EuDuvido.Api.Shared.Auth;
@@ -64,6 +65,14 @@ public static class ValidacaoEndpoints
                 """, new { id = usuario.Id }));
         })
         .WithSummary("Evidencias que este usuario pode validar.");
+
+        grupo.MapGet("/minhas-provas", async (
+            IUsuarioAtual usuario, IConexaoLeitura leitura, CancellationToken ct) =>
+        {
+            using var conexao = await leitura.AbrirAsync(ct);
+            return Results.Ok(await MinhasProvasNoJuri.LerAsync(conexao, usuario.Id));
+        })
+        .WithSummary("Provas deste usuario que estao no juri, com o placar e os votos (#83).");
 
         app.MapPost("/api/desafios/{idDesafio:int}/evidencias", async (
             int idDesafio,

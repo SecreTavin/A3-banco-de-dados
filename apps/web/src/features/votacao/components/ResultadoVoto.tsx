@@ -8,6 +8,8 @@ interface Props {
   desafio: DesafioDetalhe
   idEvidencia: number
   aoFechar: () => void
+  /** Votou pela própria tela do desafio: o botão final só fecha, não navega para ela. */
+  naTelaDoDesafio?: boolean
 }
 
 /** Recompensa por voto quando a evidência atinge quórum (RN17). */
@@ -17,7 +19,7 @@ const RECOMPENSA_VOTO = 2
  * O que o banco acabou de fazer com o meu voto. Nada aqui decide: tudo é lido do desafio
  * depois que `apurar_votacao` commitou.
  */
-export function ResultadoVoto({ desafio, idEvidencia, aoFechar }: Props) {
+export function ResultadoVoto({ desafio, idEvidencia, aoFechar, naTelaDoDesafio = false }: Props) {
   const navegar = useNavigate()
   const evidencia = desafio.evidencias.find((e) => e.idEvidencia === idEvidencia)
   const fechou = evidencia !== undefined && evidencia.status !== 'EM_VOTACAO'
@@ -91,9 +93,15 @@ export function ResultadoVoto({ desafio, idEvidencia, aoFechar }: Props) {
         Apurado e pago pelo banco numa transação só
       </span>
 
-      <Botao bloco variante="secundaria" onClick={() => navegar(`/desafios/${desafio.idDesafio}`)}>
-        Ver o desafio
-      </Botao>
+      {naTelaDoDesafio ? (
+        <Botao bloco variante="secundaria" onClick={aoFechar}>
+          Fechar
+        </Botao>
+      ) : (
+        <Botao bloco variante="secundaria" onClick={() => navegar(`/desafios/${desafio.idDesafio}`)}>
+          Ver o desafio
+        </Botao>
+      )}
     </Dialogo>
   )
 }
