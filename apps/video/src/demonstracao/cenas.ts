@@ -10,8 +10,9 @@
 // Regras do texto falado (`fala`):
 // * é o que a voz LÊ: "cê pê", "dezesseis", "inteligência artificial";
 // * nome de objeto do banco não é falado: fica na faixa (`faixaBanco`);
-// * escrito para o Eleven Multilingual v2: a única marcação é
-//   <break time="0.4s" />, no máximo uma por capítulo. Nada de [tags] do v3.
+// * escrito para o Eleven v4: o v4 não aceita SSML, então a única marcação é a
+//   tag [pause], no máximo uma por capítulo. Nada de <break>, nem de tags de
+//   emoção: a entonação fica por conta da voz e da Stability.
 
 /** Ritmo usado para estimar a duração da fala antes de o áudio existir. */
 export const PALAVRAS_POR_SEGUNDO = 2.4;
@@ -70,7 +71,9 @@ export type Cena = CenaBase & {
 
 const marco = (id: string, em: number, descricao: string, ajuste = 0): Marco => ({ id, em, descricao, ajuste });
 
-const PAUSA = /<break time="([\d.]+)s"\s*\/>/g;
+/** Duração que a tag [pause] do v4 acrescenta, em segundos (estimativa). */
+const SEGUNDOS_POR_PAUSA = 0.5;
+const PAUSA = /\[pause\]/g;
 
 /** Texto sem as marcações, como a voz pronuncia. */
 export const textoLimpo = (fala: string) => fala.replace(PAUSA, ' ').replace(/\s+/g, ' ').trim();
@@ -79,7 +82,7 @@ export const contarPalavras = (fala: string) => textoLimpo(fala).split(' ').filt
 
 /** Duração estimada da fala: palavras no ritmo padrão mais as pausas marcadas. */
 export const estimarFala = (fala: string) => {
-  const pausas = [...fala.matchAll(PAUSA)].reduce((soma, m) => soma + Number(m[1]), 0);
+  const pausas = [...fala.matchAll(PAUSA)].length * SEGUNDOS_POR_PAUSA;
   return Math.round((contarPalavras(fala) / PALAVRAS_POR_SEGUNDO + pausas) * 10) / 10;
 };
 
@@ -105,7 +108,7 @@ const base: CenaBase[] = [
     tela:
       'Login com o botão "Entrar com Google". No primeiro acesso, "Complete seu cadastro": apelido "Novato" e nascimento em 2014. "Criar conta e entrar" mostra a recusa da idade mínima.',
     fala:
-      'O login é só com o Google: a gente não guarda senha. No primeiro acesso, o app pede apelido e data de nascimento. Com menos de dezesseis anos, a conta não nasce. <break time="0.5s" /> Mesmo se o código falhasse, uma trigger no banco recusaria.',
+      'O login é só com o Google: a gente não guarda senha. No primeiro acesso, o app pede apelido e data de nascimento. Com menos de dezesseis anos, a conta não nasce. [pause] Mesmo se o código falhasse, uma trigger no banco recusaria.',
     legendas: [
       'O login é só com o Google: a gente não guarda senha.',
       'No primeiro acesso, o app pede apelido e data de nascimento.',
@@ -135,7 +138,7 @@ const base: CenaBase[] = [
     tela:
       'Meus grupos → Banca do A3: Arthur, Luís, Mario e Octávio com 100 CP, filtro da IA "Moderado". O admin digita o e-mail do Rafael e clica em "Adicionar · entra com 100 CP". O Rafael aparece com o saldo rolando de 0 a 100.',
     fala:
-      'Agora, o grupo. O filtro da inteligência artificial está no moderado, e o Octávio, que é o admin, adiciona o Rafael pelo e-mail. Ninguém digita saldo: <break time="0.4s" /> ao entrar, uma trigger lança cem cê pê no livro-caixa.',
+      'Agora, o grupo. O filtro da inteligência artificial está no moderado, e o Octávio, que é o admin, adiciona o Rafael pelo e-mail. Ninguém digita saldo: [pause] ao entrar, uma trigger lança cem cê pê no livro-caixa.',
     legendas: [
       'Agora, o grupo.',
       'O filtro da IA está no moderado, e o Octávio, que é o admin, adiciona o Rafael pelo e-mail.',
@@ -164,7 +167,7 @@ const base: CenaBase[] = [
     tela:
       'Novo desafio no grupo Banca do A3: "Correr 5 km abaixo de 25 minutos", categoria Esportes & Fitness, 20 CP. "Enviar para a moderação" → "A IA está lendo a proposta" → aprovado. Depois, "Beber uma garrafa de vodka em 10 minutos" → "Não passou no filtro Moderado", com o motivo.',
     fala:
-      'O Mario duvida que o Arthur corre cinco quilômetros em menos de vinte e cinco minutos. Vinte cê pê por pessoa. A inteligência artificial avalia: aprovado. Uma garrafa de vodka em dez minutos? Não passa. <break time="0.4s" /> Aprovada ou não, toda proposta fica gravada no banco.',
+      'O Mario duvida que o Arthur corre cinco quilômetros em menos de vinte e cinco minutos. Vinte cê pê por pessoa. A inteligência artificial avalia: aprovado. Uma garrafa de vodka em dez minutos? Não passa. [pause] Aprovada ou não, toda proposta fica gravada no banco.',
     legendas: [
       'O Mario duvida que o Arthur corre 5 km em menos de 25 minutos.',
       '20 CP por pessoa.',
@@ -196,7 +199,7 @@ const base: CenaBase[] = [
     tela:
       'Detalhe do desafio, "Entrar por 20 CP". Luís: Apostador + Vai cumprir. Arthur: Desafiado. Mario: Desafiante + Não vai cumprir. Cada saldo cai de 100 para 80, o pote sobe 20 → 40 → 60 CP, e o status vai de Aberto para Em andamento.',
     fala:
-      'O Luís aposta a favor, o Arthur aceita como desafiado e o Mario fica contra. A cada aceite, vinte cê pê saem da carteira e ficam retidos no desafio. <break time="0.4s" /> É a procedure de débito em garantia: pote de sessenta, e calote nenhum.',
+      'O Luís aposta a favor, o Arthur aceita como desafiado e o Mario fica contra. A cada aceite, vinte cê pê saem da carteira e ficam retidos no desafio. [pause] É a procedure de débito em garantia: pote de sessenta, e calote nenhum.',
     legendas: [
       'O Luís aposta a favor, o Arthur aceita como desafiado e o Mario fica contra.',
       'A cada aceite, 20 CP saem da carteira e ficam retidos no desafio.',
@@ -225,7 +228,7 @@ const base: CenaBase[] = [
     tela:
       'Celular do Arthur (390x844). Desafio Em andamento, "Enviar a prova", Foto, "Escolher foto": o print da corrida. "Mandar para o júri". O status vai para Em votação e o cartão da prova lista o júri: Luís, Octávio e Rafael.',
     fala:
-      'O Arthur corre e manda a prova pelo celular: o print do aplicativo de corrida. <break time="0.4s" /> Nesse instante, o júri congela: Luís, Octávio e Rafael. Quem está no duelo não julga, e quem entrar no grupo depois não vota.',
+      'O Arthur corre e manda a prova pelo celular: o print do aplicativo de corrida. [pause] Nesse instante, o júri congela: Luís, Octávio e Rafael. Quem está no duelo não julga, e quem entrar no grupo depois não vota.',
     legendas: [
       'O Arthur corre e manda a prova pelo celular: o print do aplicativo de corrida.',
       'Nesse instante, o júri congela: Luís, Octávio e Rafael.',
@@ -252,7 +255,7 @@ const base: CenaBase[] = [
     tela:
       'Celular do Luís, aba Votação. Cartão "Arthur diz que cumpriu", "O que vale", a foto, "Faltam 2 votos para fechar… 2 de 3 jurados", prazo e "+2 CP para quem votar". Clique em "Vale", "Confirmar voto", e o diálogo "Voto registrado: falta 1 voto".',
     fala:
-      'Na votação, o júri vê a prova e o que vale como cumprido. Com três jurados, o quórum é dois: metade mais um. O Luís vota: vale. <break time="0.4s" /> Cada jurado tem um voto só, e quem garante é a chave primária.',
+      'Na votação, o júri vê a prova e o que vale como cumprido. Com três jurados, o quórum é dois: metade mais um. O Luís vota: vale. [pause] Cada jurado tem um voto só, e quem garante é a chave primária.',
     legendas: [
       'Na votação, o júri vê a prova e o que vale como cumprido.',
       'Com 3 jurados, o quórum é 2: metade mais um.',
@@ -282,7 +285,7 @@ const base: CenaBase[] = [
     tela:
       'Tela dividida: à esquerda o celular do Luís, à direita o navegador do Octávio em Votação. O placar do Octávio vai de 0 para 1 sem recarregar: "Seu voto fecha o júri." O Octávio clica em "Vale" e "Confirmar voto": "Júri fechou: vale!", com Arthur +30, Luís +30, Mario perdeu 20 CP, "Você, pelo voto +2 CP" e "Apurado e pago pelo banco numa transação só".',
     fala:
-      'Na tela do Octávio, o placar sobe sozinho. O voto seguinte fecha o júri: vale! <break time="0.4s" /> Numa única transação, a procedure de apuração aceita a prova, paga o pote e dá dois cê pê a quem votou. O aviso ao vivo só sai depois do commit.',
+      'Na tela do Octávio, o placar sobe sozinho. O voto seguinte fecha o júri: vale! [pause] Numa única transação, a procedure de apuração aceita a prova, paga o pote e dá dois cê pê a quem votou. O aviso ao vivo só sai depois do commit.',
     legendas: [
       'Na tela do Octávio, o placar sobe sozinho.',
       'O voto seguinte fecha o júri: vale!',
@@ -313,7 +316,7 @@ const base: CenaBase[] = [
     tela:
       'Ranking da Banca do A3: pódio Luís 112, Arthur 110, Octávio 102; abaixo Rafael 100 e Mario 80. Depois, o Perfil do Arthur (e-mail fictício): 110 CP no grupo e o extrato: +100 crédito de entrada, −20 entrada no desafio, +30 prêmio.',
     fala:
-      'No ranking, o Luís lidera com cento e doze cê pê. No perfil do Arthur, o extrato conta a história: cem de entrada, vinte no desafio, trinta de prêmio. <break time="0.4s" /> É um livro-caixa que só aceita lançamento novo, e as visões de conferência voltam vazias.',
+      'No ranking, o Luís lidera com cento e doze cê pê. No perfil do Arthur, o extrato conta a história: cem de entrada, vinte no desafio, trinta de prêmio. [pause] É um livro-caixa que só aceita lançamento novo, e as visões de conferência voltam vazias.',
     legendas: [
       'No ranking, o Luís lidera com 112 CP.',
       'No perfil do Arthur, o extrato conta a história: 100 de entrada, 20 no desafio, 30 de prêmio.',

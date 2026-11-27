@@ -88,27 +88,29 @@ acrescente pausa nas pontas do texto.
 
 ## Configuração recomendada (ponto de partida)
 
-Conferido na documentação do ElevenLabs em 26/11/2026. Os valores são ponto de
+Conferido na documentação do ElevenLabs em 27/11/2026. Os valores são ponto de
 partida: ouça o capítulo 3 e ajuste antes de gerar os outros.
 
-**Modelo: Eleven Multilingual v2** (\`eleven_multilingual_v2\`). O texto acima foi escrito
-para ele.
+**Modelo: Eleven v4** (\`eleven_v4\`). O texto acima foi escrito para ele.
 
-| Modelo | Quando usar | Por que não aqui |
-| --- | --- | --- |
-| **Multilingual v2** | Narração longa e estável. Lista "Portuguese (Brazil)" como variante e aceita \`<break time="0.4s" />\` (até 3 s) | É o recomendado |
-| Eleven v3 | Fala expressiva, com tags como \`[calm]\` ou \`[pause]\` | Varia mais de uma geração para outra, e são dez tomadas que precisam soar iguais. Não aceita \`<break>\`: se trocar de modelo, troque cada \`<break .../>\` por reticências |
-| Eleven v4 | O mais novo, também com tags de voz | Não aceita SSML nem os controles de Style e Speed. Mesma troca de \`<break>\` do v3 |
+| O que muda do v2 para o v4 | Como o texto trata |
+| --- | --- |
+| Não aceita SSML: \`<break time="0.4s" />\` é ignorado ou lido | Cada pausa virou a tag \`[pause]\`, no máximo uma por capítulo |
+| Os controles Style e Speed não existem | A velocidade vem da voz e do texto. Se soar corrido, aumente a pontuação, não um slider |
+| Segue tags entre colchetes (\`[pause]\`, \`[long pause]\`, \`[whispers]\`) | Só \`[pause]\` é usada. Sem tags de emoção: são dez tomadas que precisam soar iguais |
+| Mais expressivo, varia mais entre gerações | Stability alta e a mesma voz nas dez tomadas. Se uma tomada sair estranha, gere de novo a fala inteira |
+
+Se a pausa não soar, troque \`[pause]\` por um travessão (\` — \`) ou por \`[long pause]\`
+**em todos os capítulos que têm pausa**, não só em um.
 
 **Configurações da voz:**
 
 | Controle | Valor inicial | Por quê |
 | --- | --- | --- |
-| Stability | **0,65** | Acima do padrão (0,50): numa apresentação formal, vale mais a voz igual nas dez tomadas do que a emoção. Acima de 0,75 tende a ficar monótona |
+| Stability | **0,65** | Acima do padrão (0,50): numa apresentação formal, vale mais a voz igual nas dez tomadas do que a emoção. Acima de 0,75 tende a ficar monótona. Se o v4 mostrar a escala por nomes (Creative, Natural, Robust), use **Natural** ou **Robust** |
 | Similarity | **0,75** | É o padrão. Valores muito altos podem distorcer o áudio |
-| Style | **0** | A documentação recomenda deixar em zero: aumentar deixa o modelo menos estável |
-| Speaker Boost | **Ligado** | Aproxima da voz original. Custa latência, que não importa para arquivo gerado |
-| Speed | **1,0** | Faixa de 0,7 a 1,2. Se soar corrido, teste 0,95 em todas as falas, nunca em uma só |
+| Style, Speed | não existem no v4 | Se a tela do app mostrar um deles, deixe em zero e em 1,0 |
+| Speaker Boost | **Ligado**, se aparecer | Aproxima da voz original. Custa latência, que não importa para arquivo gerado |
 
 **Voz:** na Voice Library, filtre por idioma *Portuguese* e sotaque *Brazilian*, com
 uso *Narrative* ou *Educational*. Procure uma voz calma e clara, de colega que
@@ -127,7 +129,7 @@ inglês, troque só a palavra e anote aqui:
 
 ## Checklist
 
-- [ ] Abrir o ElevenLabs em *Text to Speech*, modelo **Eleven Multilingual v2**.
+- [ ] Abrir o ElevenLabs em *Text to Speech*, modelo **Eleven v4**.
 - [ ] Escolher a voz brasileira (veja acima) e aplicar as configurações da tabela.
 - [ ] Gerar o capítulo 3 (\`03-criar.mp3\`) e ouvir. Ajustar a voz ou a estabilidade antes de seguir.
 - [ ] Gerar **um capítulo por vez**, colando o texto do bloco do capítulo sem mudar nada.
