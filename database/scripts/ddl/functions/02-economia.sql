@@ -104,6 +104,7 @@ $$;
 -- Encerramento: distribui o pote entre quem acertou.
 -- p_cumpriu = TRUE  -> ganham os que escolheram VAI_CUMPRIR
 -- p_cumpriu = FALSE -> ganham os que escolheram NAO_VAI_CUMPRIR
+-- Ninguem do lado vencedor -> o pote volta a quem entrou (RN23).
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE encerrar_desafio(
     p_id_desafio INT,
@@ -113,6 +114,7 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
     v_id_grupo       INT;
+    v_valor_cp       INT;
     v_status         VARCHAR(30);
     v_escolha_vence  VARCHAR(20);
     v_pote           INT;
@@ -122,8 +124,8 @@ DECLARE
     v_vencedor       RECORD;
     v_primeiro       BOOLEAN := TRUE;
 BEGIN
-    SELECT id_grupo, status
-      INTO v_id_grupo, v_status
+    SELECT id_grupo, valor_cp, status
+      INTO v_id_grupo, v_valor_cp, v_status
       FROM desafio
      WHERE id_desafio = p_id_desafio
        FOR UPDATE;
@@ -162,6 +164,20 @@ BEGIN
 
         CALL lancar(v_id_grupo, NULL, p_id_desafio,
             'PREMIO', -v_pote, 'Pote distribuido aos vencedores');
+    ELSIF v_pote > 0 THEN
+        -- Ninguem escolheu o lado vencedor: sem estorno, o pote ficaria preso na
+        -- conta do desafio e vw_escrow_orfao acusaria CP fora de circulacao.
+        -- Cada participante recebe de volta o que pagou, como no cancelamento.
+        FOR v_vencedor IN
+            SELECT id_usuario FROM participante_desafio
+             WHERE id_desafio = p_id_desafio
+             ORDER BY id_participante
+        LOOP
+            CALL lancar(v_id_grupo, v_vencedor.id_usuario, p_id_desafio,
+                'ESTORNO', v_valor_cp, 'Estorno: ninguem acertou o resultado');
+            CALL lancar(v_id_grupo, NULL, p_id_desafio,
+                'ESTORNO', -v_valor_cp, 'Pote devolvido: ninguem acertou o resultado');
+        END LOOP;
     END IF;
 
     UPDATE desafio
@@ -173,7 +189,8 @@ END;
 $$;
 
 -- -----------------------------------------------------------------------------
--- Cancelamento: estorna o escrow para cada participante (RN12).
+-- Cancelamento: estorna o escrow para cada participante (RN12). A prova que
+-- estava no juri vira EXPIRADA: ninguem vota nem recebe CP por ela depois.
 -- -----------------------------------------------------------------------------
 CREATE OR REPLACE PROCEDURE cancelar_desafio(
     p_id_desafio INT,
@@ -206,6 +223,13 @@ BEGIN
         CALL lancar(v_id_grupo, NULL, p_id_desafio,
             'ESTORNO', -v_valor_cp, 'Estorno devolvido ao participante');
     END LOOP;
+
+    -- A trigger trg_jurado_evidencia_valida so aceita voto em prova EM_VOTACAO.
+    UPDATE evidencia
+       SET status = 'EXPIRADA',
+           data_apuracao = CURRENT_TIMESTAMP
+     WHERE id_desafio = p_id_desafio
+       AND status = 'EM_VOTACAO';
 
     UPDATE desafio
        SET status = 'CANCELADA',

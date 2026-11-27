@@ -37,4 +37,9 @@ public static class EvidenciaErrors
     public static Error SomenteDesafiadoEnvia =>
         Error.Forbidden("Evidencia.SomenteDesafiadoEnvia",
             "Apenas o desafiado envia evidência.");
+
+    // RN14: sem ninguem alem dos duelistas, a prova nao teria quem a julgasse.
+    public static Error SemJuri =>
+        Error.Conflict("Evidencia.SemJuri",
+            "O grupo precisa de ao menos um membro além do desafiado e do desafiante para julgar a prova.");
 }

@@ -400,8 +400,40 @@
     top: 0;
   }
 
+  /* A tela cabe em 1440x900 sem rolar (U11). */
   .formulario {
-    gap: 22px;
-    padding: 24px;
+    gap: 14px;
+    padding: 20px 24px;
+  }
+
+  .campo legend,
+  .rotulo {
+    margin-bottom: 6px;
+  }
+
+  .campo textarea {
+    min-height: 64px;
+  }
+
+  /* Grupos numa linha só: a altura não cresce com a quantidade de grupos. */
+  .grupos {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(230px, 1fr);
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+  }
+
+  /* Nome numa linha: cartão com altura fixa; o nome inteiro aparece na prévia. */
+  .grupo > span:first-child {
+    min-width: 0;
+  }
+
+  .grupo strong {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }

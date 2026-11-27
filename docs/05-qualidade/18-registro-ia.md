@@ -105,7 +105,7 @@ cada arquivo.
 
 ## Registros
 
-73 registros, em ordem cronológica.
+80 registros, em ordem cronológica.
 
 | Data | Alteração | Ferramenta | Responsável |
 | --- | --- | --- | --- |
@@ -182,6 +182,13 @@ cada arquivo.
 | 2026-11-26 | [Cloudflare como reserva da VM e fechamento das pendências](registro-ia/2026-11-26-cloudflare-reserva-e-fechamento.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-26 | [Voto e comentário do júri na tela do desafio](registro-ia/2026-11-26-votos-e-comentarios-no-desafio.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
 | 2026-11-26 | [Aba Votação do desafiado: placar e comentários da própria prova](registro-ia/2026-11-26-votacao-do-desafiado.md) | Claude Code (Opus 5.5) | Octávio Augusto Arruda dos Prazeres |
+| 2026-11-27 | [Medição da cobertura dos testes de ponta a ponta](registro-ia/2026-11-27-cobertura-e2e.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-27 | [Roteiro completo dos testes de ponta a ponta](registro-ia/2026-11-27-roteiro-e2e-completo.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-27 | [Testes de ponta a ponta do PR #84](registro-ia/2026-11-27-testes-e2e-do-pr-84.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-27 | [Testes de ponta a ponta de grupo](registro-ia/2026-11-27-testes-e2e-de-grupo.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-27 | [Todos os cenários do roteiro completo com caso de teste](registro-ia/2026-11-27-roteiro-e2e-executado.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-27 | [Validador do Google simulado e os cinco cenários de login](registro-ia/2026-11-27-validador-google-simulado.md) | Claude Code (Opus 5.5) | Rafael Alves |
+| 2026-11-27 | [Correção dos 10 defeitos achados pelo roteiro completo](registro-ia/2026-11-27-correcao-dos-defeitos-e2e.md) | Claude Code (Opus 5.5) | Rafael Alves |
 
 ## Consolidação final
 

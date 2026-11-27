@@ -118,7 +118,8 @@ async function abrir(rota) {
   await esperarRede()
 }
 
-const idUsuario = (apelido) => num(`SELECT id_usuario FROM usuario WHERE apelido='${esc(apelido)}'`)
+// O apelido pode repetir (A15): o ator do seed e o de menor id, como em sessao.mjs.
+const idUsuario = (apelido) => num(`SELECT id_usuario FROM usuario WHERE apelido='${esc(apelido)}' ORDER BY id_usuario LIMIT 1`)
 
 async function medirRolagem() {
   return pagina.evaluate(() => {
@@ -624,7 +625,118 @@ async function rodar() {
     await irPara(`${WEB}/desafios/${idDesafio}`)
     await esperarRede()
     await pagina.getByText(comentario).first().waitFor()
+    S.votoU16 = { idDesafio, idEvidencia, comentario }
     return `${primeiro} votou Vale pela tela do desafio, com comentario gravado; ${rn29}; o desafiado ve o voto e o comentario`
+  })
+
+  await cenario('U17', 'Desafiado acompanha a propria prova na aba Votacao, com placar e comentarios, sem votar (#83)', async () => {
+    precisa(S.votoU16, 'depende de U16')
+    const { idDesafio, idEvidencia, comentario } = S.votoU16
+    const desafiado = sql(`SELECT u.apelido FROM participante_desafio p JOIN usuario u USING (id_usuario) WHERE p.id_desafio = ${idDesafio} AND p.papel_desafio = 'DESAFIADO'`)
+    const titulo = sql(`SELECT titulo FROM desafio WHERE id_desafio = ${idDesafio}`)
+    const aberta = sql(`SELECT status FROM evidencia WHERE id_evidencia = ${idEvidencia}`) === 'EM_VOTACAO'
+
+    await entrar(desafiado)
+    await abrir('/votacao')
+    const cartao = pagina.locator('article').filter({ hasText: titulo }).filter({ hasText: 'Você é o desafiado' })
+
+    if (!aberta) {
+      // O voto do U16 fechou o juri: a prova sai da lista do desafiado.
+      confere((await cartao.count()) === 0, 'prova com o juri fechado continua em "Suas provas no júri"')
+      return 'o voto do U16 fechou o juri; a prova saiu da aba Votacao do desafiado'
+    }
+
+    await pagina.getByRole('heading', { name: 'Suas provas no júri' }).waitFor()
+    await cartao.waitFor()
+    const [favor, contra] = sql(`SELECT votos_favoraveis || '|' || votos_contra FROM vw_status_votacao WHERE id_evidencia = ${idEvidencia}`).split('|')
+    confere((await cartao.getByText(comentario).count()) === 1, 'o comentario do jurado nao aparece no cartao')
+    confere((await cartao.getByText(`${favor} vale · ${contra} não vale`).count()) === 1, `placar da tela difere do banco (${favor} x ${contra})`)
+    confere((await cartao.getByRole('button', { name: /^(Vale|Não vale)$/ }).count()) === 0, 'o desafiado recebeu botao de voto na propria prova (RN14)')
+    return `${desafiado} ve "${titulo}" com placar ${favor} x ${contra} e o comentario do U16, sem botao de voto`
+  })
+
+  // --- Grupo: edicao, convite recusado, visao do membro e saida (RN25, RN27) ----
+  // Usam o grupo do U03, em que Tavin e o ADMIN e, depois do U04, o unico membro.
+  // Rodam no fim para nao mudar a lista de grupos que o U11 mede.
+  const MEMBRO_GRUPO = 'Mila'
+
+  await cenario('U18', 'ADMIN troca o nivel de filtro do grupo pela tela (RN27)', async () => {
+    precisa(S.grupoNovo, 'depende de U03')
+    await entrar('Tavin')
+    await abrir(`/grupos/${S.grupoNovo}`)
+    const antes = sql(`SELECT nivel_filtro FROM grupo_amigos WHERE id_grupo=${S.grupoNovo}`)
+    confere(antes === 'MODERADO', `nivel inicial "${antes}"`)
+    await pagina.getByRole('radio', { name: /^Leve/ }).click()
+    await pagina.getByRole('button', { name: 'Salvar filtro Leve' }).click()
+    await pagina.getByRole('button', { name: 'Salvar filtro Leve' }).waitFor({ state: 'detached' })
+    const depois = sql(`SELECT nivel_filtro FROM grupo_amigos WHERE id_grupo=${S.grupoNovo}`)
+    confere(depois === 'LEVE', `nivel no banco depois de salvar: "${depois}"`)
+    confere((await pagina.getByRole('radio', { name: /^Leve/ }).getAttribute('aria-checked')) === 'true', 'Leve nao ficou marcado')
+    await irPara(`${WEB}/grupos/${S.grupoNovo}`)
+    await esperarRede()
+    confere((await pagina.locator('dd', { hasText: 'Leve' }).count()) === 1, 'cabecalho nao mostra o filtro Leve depois de recarregar')
+    return `Moderado -> Leve salvo pela tela; banco ${depois}; persistiu ao recarregar`
+  })
+
+  await cenario('U19', 'Convite com e-mail sem conta mostra o erro; convite valido entra com 100 CP', async () => {
+    precisa(S.grupoNovo, 'depende de U03')
+    await abrir(`/grupos/${S.grupoNovo}`)
+    const membros = num(`SELECT count(*) FROM membro_grupo WHERE id_grupo=${S.grupoNovo}`)
+    await pagina.getByLabel('E-mail do novo membro').fill(`${ETIQUETA}@ninguem.com`)
+    await pagina.getByRole('button', { name: /^Adicionar/ }).click()
+    await pagina.getByText('Nenhum usuário cadastrado com este e-mail.').waitFor()
+    confere(num(`SELECT count(*) FROM membro_grupo WHERE id_grupo=${S.grupoNovo}`) === membros, 'membro gravado com e-mail sem conta')
+
+    const email = sql(`SELECT email FROM usuario WHERE apelido='${MEMBRO_GRUPO}' ORDER BY id_usuario LIMIT 1`)
+    await pagina.getByLabel('E-mail do novo membro').fill(email)
+    await pagina.getByRole('button', { name: /^Adicionar/ }).click()
+    await pagina.locator('li', { hasText: MEMBRO_GRUPO }).first().waitFor()
+    const saldo = sql(`SELECT saldo_cp FROM membro_grupo WHERE id_grupo=${S.grupoNovo} AND id_usuario=${idUsuario(MEMBRO_GRUPO)}`)
+    confere(saldo === '100', `saldo de ${MEMBRO_GRUPO} ao entrar: "${saldo}"`)
+    S.membroGrupo = MEMBRO_GRUPO
+    return `e-mail sem conta: alerta da API e nada gravado; ${MEMBRO_GRUPO} entrou com 100 CP`
+  })
+
+  await cenario('U20', 'Membro comum nao ve as acoes de ADMIN; unico ADMIN e impedido de sair (RN25)', async () => {
+    precisa(S.membroGrupo, 'depende de U19')
+    // Unico admin com outro membro no grupo: a tela avisa e a API recusa.
+    await abrir(`/grupos/${S.grupoNovo}`)
+    await pagina.getByText('Para sair, o grupo precisa de outro admin.').waitFor()
+    await pagina.getByRole('button', { name: 'Sair do grupo…' }).click()
+    await pagina.getByRole('dialog').getByRole('button', { name: 'Sair do grupo', exact: true }).click()
+    await pagina.getByRole('dialog').getByText(/único administrador/).waitFor()
+    confere(num(`SELECT count(*) FROM membro_grupo WHERE id_grupo=${S.grupoNovo} AND id_usuario=${idUsuario('Tavin')}`) === 1, 'o unico admin saiu do grupo')
+    await pagina.getByRole('dialog').getByRole('button', { name: 'Voltar' }).click()
+
+    await entrar(S.membroGrupo)
+    await abrir(`/grupos/${S.grupoNovo}`)
+    await pagina.getByText('Só o admin muda o filtro.').waitFor()
+    const acoes = await pagina.getByRole('button', { name: /^Ações para / }).count()
+    const formulario = await pagina.getByLabel('E-mail do novo membro').count()
+    const radiosAtivos = await pagina.getByRole('radio').evaluateAll((radios) => radios.filter((r) => !r.disabled).length)
+    confere(acoes === 0, `${acoes} menu(s) de acoes visiveis para membro comum`)
+    confere(formulario === 0, 'formulario de convite visivel para membro comum')
+    confere(radiosAtivos === 0, `${radiosAtivos} nivel(is) de filtro clicavel(is) para membro comum`)
+    return 'Tavin, unico admin: aviso na tela e saida recusada pela API; Mila: sem menu de acoes, sem convite, filtro travado'
+  })
+
+  await cenario('U21', 'Membro sai do grupo pelo dialogo; SAIDA_GRUPO zera a conta (RN25, ADR 0018)', async () => {
+    precisa(S.membroGrupo, 'depende de U19')
+    const id = idUsuario(S.membroGrupo)
+    await pagina.getByRole('button', { name: 'Sair do grupo…' }).click()
+    await pagina.getByRole('dialog').getByRole('button', { name: 'Sair do grupo', exact: true }).click()
+    await pagina.waitForURL('**/grupos', { timeout: 15000 })
+    await esperarRede()
+    const nome = sql(`SELECT nome FROM grupo_amigos WHERE id_grupo=${S.grupoNovo}`)
+    confere((await pagina.getByText(nome).count()) === 0, 'o grupo continua na lista de quem saiu')
+    const ficou = num(`SELECT count(*) FROM membro_grupo WHERE id_grupo=${S.grupoNovo} AND id_usuario=${id}`)
+    const saida = num(`SELECT coalesce(sum(valor),0) FROM transacao_cp WHERE id_grupo=${S.grupoNovo} AND id_usuario=${id} AND tipo='SAIDA_GRUPO'`)
+    const conta = num(`SELECT coalesce(sum(valor),0) FROM transacao_cp WHERE id_grupo=${S.grupoNovo} AND id_usuario=${id}`)
+    const views = num('SELECT (SELECT count(*) FROM vw_reconciliacao_saldo) + (SELECT count(*) FROM vw_escrow_orfao)')
+    confere(ficou === 0, 'membro continua no banco')
+    confere(saida === -100 && conta === 0, `SAIDA_GRUPO=${saida}, conta no grupo=${conta}`)
+    confere(views === 0, `${views} linha(s) nas views de contabilidade`)
+    return `${S.membroGrupo} saiu pela tela, voltou para /grupos sem o grupo; SAIDA_GRUPO=-100; contabilidade fechando`
   })
 
   await navegador.close()

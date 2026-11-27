@@ -36,9 +36,18 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
   cancelada automaticamente — sem isso ela ficaria aberta para sempre.
   *`BackgroundService` + `cancelar_desafio`.*
 
+* **RN30 —** Desafio `EM_ANDAMENTO` ou `EM_VOTACAO` cuja `data_limite` passou
+  sem prova no júri é encerrado como perdido (`FINALIZADA_PERDEU`): o desafiado
+  não provou a tempo, e o pote vai a quem apostou contra. Sem isso, o desafio
+  ficaria parado para sempre com o CP retido em escrow (decisão de 27/11/2026,
+  [roteiro completo](../05-qualidade/roteiro-e2e.md), cenário P05).
+  *`BackgroundService` (`PrazosWorker`) + `encerrar_desafio`.*
+
 * **RN12 —** Cancelamento exige motivo e estorna o CP de todos os participantes.
   A partir do início da validação, o motivo precisa ser aprovado por ao menos
-  metade dos integrantes (`APOSTADOR` não conta para esse quórum).
+  metade dos integrantes (`APOSTADOR` não conta para esse quórum). A prova que
+  estava no júri vira `EXPIRADA`: ninguém vota nem recebe CP por ela depois do
+  cancelamento (decisão de 27/11/2026, cenário D32).
   *Constraint `chk_desafio_cancelamento` + procedure `cancelar_desafio`.*
 
 ## Evidências
@@ -73,8 +82,11 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
   `DESAFIADO`. O conjunto é **congelado** no momento do envio da evidência: quem
   entra no grupo depois não vota nem conta para o quórum. Sem esse
   congelamento, o resultado de um desafio mudaria sozinho
-  ([ADR 0008](../02-arquitetura/adr/0008-quorum-congelado.md)).
-  *Tabela `jurado_evidencia`, chave primária `(id_evidencia, id_usuario)`.*
+  ([ADR 0008](../02-arquitetura/adr/0008-quorum-congelado.md)). O júri não pode
+  ser vazio: num grupo só com os dois duelistas, o envio da prova é recusado
+  (decisão de 27/11/2026, cenário V11).
+  *Tabela `jurado_evidencia`, chave primária `(id_evidencia, id_usuario)`;
+  `EnviarEvidenciaHandler` recusa o envio sem jurados.*
 
 * **RN15 —** Quórum é `floor(n/2) + 1` sobre os validadores congelados. A
   evidência é aceita quando os votos `VALIDO` atingem o quórum, e recusada
@@ -115,7 +127,9 @@ violação; **procedure** ou **trigger** significa que a lógica roda no SGBD;
 
 * **RN23 —** O pote é dividido igualmente entre os participantes que acertaram.
   Como CP é inteiro, o resto da divisão vai para o primeiro vencedor, de modo
-  que a soma dos prêmios seja exatamente o pote.
+  que a soma dos prêmios seja exatamente o pote. Se ninguém escolheu o lado
+  vencedor, o pote volta a quem entrou, como no cancelamento (decisão de
+  27/11/2026, cenário V27).
   *Procedure `encerrar_desafio`.*
 
 * **RN24 —** O ledger é **append-only**: nunca sofre `UPDATE` nem `DELETE`.

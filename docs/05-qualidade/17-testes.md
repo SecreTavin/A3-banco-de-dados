@@ -141,6 +141,18 @@ python3 scripts/testes/roteiro-e2e.py
 | E16 | Criador cancela um desafio com motivo | `CANCELADA`, CP estornado aos participantes (RN12) | Aprovado |
 | E17 | Consultar o ranking do grupo; não-membro tenta o mesmo | Ranking devolvido; não-membro não vê (HTTP 404) | Aprovado |
 | E18 | Conferir a contabilidade depois de tudo | `vw_reconciliacao_saldo` e `vw_escrow_orfao` vazias | Aprovado |
+| E19 | Antes do E04: Lari, jurada que ainda não votou, abre o desafio da demo; Tavin (desafiado) e Biel (desafiante) também | Lari sabe que Theus votou, mas voto, justificativa e data vêm nulos (RN29). Tavin e Biel veem `VALIDO` e o comentário do Theus | Aprovado |
+| E20 | Antes do E04: `GET /api/validacao/minhas-provas` como Tavin, como Lari e sem login | Tavin recebe a prova com placar 1 x 0, quórum 2 e os 3 jurados, com o comentário do Theus. A Lari não recebe a prova. Sem login: 401 | Aprovado |
+| E21 | Depois do E04: Lipe, que não votou, abre o desafio; Tavin consulta `minhas-provas` | Com o júri fechado, Lipe vê o voto e o comentário da Lari. A prova sai da lista do Tavin | Aprovado |
+| E22 | Tavin cria um grupo pela API, com espaços em volta do nome e sem nível de filtro | 201; nome aparado; `MODERADO` por padrão; criador `ADMIN` com 100 CP e `CREDITO_INICIAL` (RN06) | Aprovado |
+| E23 | Criar grupo com nome só de espaços; criar com nível `EXTREMO` | 400 nos dois; nenhum grupo gravado | Aprovado |
+| E24 | Lari, que não é do grupo, tenta ler o detalhe, mudar o nível, convidar e remover | 404 nos quatro, sem revelar que o grupo existe; nada muda | Aprovado |
+| E25 | Tavin convida com e-mail vazio, sem conta, com maiúsculas e espaços, e repetido | 400; 404 `Grupo.UsuarioNaoEncontrado`; 201 (acha a conta da Lari); 409 `Grupo.JaMembro` | Aprovado |
+| E26 | Lari, membro comum, remove o Lipe; Tavin remove quem não é do grupo | 403 `Grupo.SomenteAdmin`, Lipe continua; 404 `Grupo.NaoMembro` | Aprovado |
+| E27 | Tavin, único ADMIN, tenta sair com outros membros no grupo | 409 `Grupo.UltimoAdmin`; continua no grupo (RN25) | Aprovado |
+| E28 | Lipe sai do grupo por conta própria | 204; `SAIDA_GRUPO` de -100; conta do Lipe no grupo em zero; views vazias | Aprovado |
+| E29 | Tavin readmite o Lipe | 201; volta com 100 CP; ledger `CREDITO_INICIAL`, `SAIDA_GRUPO`, `CREDITO_INICIAL`; reconciliação fecha (ADR 0018) | Aprovado |
+| E30 | Antes do E04: Lari, que só está no júri da evidência 2, tenta sair do grupo 1 | 409 `Grupo.MembroComPendencias`; continua no grupo (RN25) | Aprovado |
 
 Executado em 29/10/2026: **18 de 18 aprovados**, duas vezes, cada uma num banco
 recém-criado. Reexecutado em 31/10/2026, depois das leituras novas da API do
@@ -184,7 +196,12 @@ rodada. Para repetir, volte ao seed (`docker compose down -v` e `up`, ou
 | U13 | Abrir `/` sem sessão; entrar e abrir `/` de novo | Sem sessão vai direto a `/login`; logado vai a `/desafios`; nenhuma abertura animada no caminho (removida em 20/11/2026) | Aprovado |
 | U14 | Abrir a tela de login | Só o botão do Google (ou o aviso de "não configurado"); nenhum usuário do seed listado; `/api/auth/dev/usuarios` responde 404 | Aprovado |
 | U15 | Como Lipe, escolher **Foto** no desafio do dinossauro, enviar um PNG pelo seletor de arquivo e mandar ao júri; depois, como Tavin, abrir a Votação | "Mandar para o júri" só libera depois da foto; `url_comprovante` aponta para `/api/midia/<guid>`; a URL sem login responde 401; o júri vê a imagem carregada ([ADR 0022](../02-arquitetura/adr/0022-foto-da-prova-no-minio-pela-api.md)) | Aprovado |
-| U16 | Na prova do U15, um jurado vota **Vale** pela tela do desafio, com comentário; outro jurado pendente abre a mesma tela; depois, o desafiado | Voto e comentário gravados; o jurado pendente não vê o comentário (RN29); o desafiado vê | Não executado no roteiro (sem Chrome no Mac, 26/11); fluxo conferido à mão |
+| U16 | Na prova do U15, um jurado vota **Vale** pela tela do desafio, com comentário; outro jurado pendente abre a mesma tela; depois, o desafiado | Voto e comentário gravados; o jurado pendente não vê o comentário (RN29); o desafiado vê | Aprovado (27/11; antes, conferido à mão em 26/11) |
+| U17 | Depois do U16, o desafiado abre a aba Votação | Se o júri continua aberto: "Suas provas no júri" com placar igual ao banco, o comentário do U16 e nenhum botão de voto (RN14). Se o voto do U16 fechou o júri: a prova não aparece | Aprovado |
+| U18 | Tavin, ADMIN do grupo do U03, troca o filtro para **Leve** e salva | `LEVE` no banco; continua marcado depois de recarregar (RN27) | Aprovado |
+| U19 | Convidar pela tela um e-mail sem conta; depois, o da Mila | Alerta "Nenhum usuário cadastrado com este e-mail." e nada gravado; Mila entra com 100 CP | Aprovado |
+| U20 | Tavin, único admin, tenta sair; depois a Mila, membro comum, abre o grupo | A tela avisa e a API recusa a saída do Tavin. A Mila não tem menu de ações nem convite, e o filtro fica travado | Aprovado |
+| U21 | Mila sai pelo diálogo "Sair do grupo" | Volta para `/grupos` sem o grupo; `SAIDA_GRUPO` de -100; views vazias (RN25, ADR 0018) | Aprovado |
 
 Executado em 30/10/2026 num banco recém-semeado: **12 de 12 aprovados**, uma vez
 com o navegador visível e outra sem janela.
@@ -253,6 +270,36 @@ Reexecutado em 26/11/2026 com o voto e a justificativa na tela do desafio
   * o desafiado vê a própria prova na aba Votação, com o placar e os comentários;
   * o voto que fecha o júri apura e paga;
   * no celular (375 px), a página não rola na horizontal.
+
+Reexecutado em 27/11/2026 no Windows, com o código do PR #84 e os casos novos
+E19 a E21, U16 e U17. Cada roteiro rodou numa pilha separada
+(`COMPOSE_PROJECT_NAME=euduvido-e2e`) com banco recém-criado, com o navegador
+visível e com a API sem chave da IA:
+
+* testes da API (`dotnet test`): **176 de 176**;
+* API de ponta a ponta: **21 de 21**;
+* tela: **17 de 17**, com U16 e U17 rodando pela primeira vez no roteiro;
+* IA simulada: **14 de 14**.
+
+Na mesma data, depois dos casos de grupo (E22 a E30 e U18 a U21), cada roteiro
+rodou de novo num banco recém-criado:
+
+* API de ponta a ponta: **30 de 30**;
+* tela: **20 de 21**. Os 4 cenários de grupo passaram nas duas rodadas. O U11
+  reprovou nas duas, com os mesmos números de 20/11: rolagem da área de conteúdo
+  em `/desafios/nova` (146 px), `/grupos/1` (68 px) e `/perfil` (2 px). A
+  aprovação dele na rodada anterior foi a exceção. A tela está no limite da
+  altura, e o defeito continua aberto para decisão do time.
+
+A primeira rodada de tela, feita no mesmo banco logo depois do roteiro da API,
+deu U15 a U17 como "não coberto": o E16 cancela o desafio do dinossauro, que o
+U15 precisa encontrar em andamento. **Os roteiros da API e da tela não podem
+rodar em sequência no mesmo banco.** Recrie o banco entre eles, ou rode a tela
+primeiro.
+
+No Windows, o roteiro de tela precisa de
+`CHROME_PATH="C:/Program Files/Google/Chrome/Application/chrome.exe"`, porque o
+caminho padrão é o do Mac.
 
 O envio também foi conferido direto na API: sem login responde 401; texto com
 nome `.png` responde 400; arquivo de 9 MB responde 400; nome com `../` responde
@@ -376,6 +423,146 @@ O que o nível 5c **não** cobre:
 * **IA não configurada** (`Ia__BaseUrl` vazio): o cliente responde 503 antes de
   qualquer chamada; o ramo existe no código, mas este roteiro não o exercita.
 * **Envio de arquivo de evidência:** não existe no app (a evidência é uma URL).
+
+### Cobertura do nível 5
+
+Os roteiros de ponta a ponta não usam ferramenta de cobertura de linha: a API
+roda em contêiner, sem instrumentação. A cobertura é medida pelo que o sistema
+expõe — endpoints, telas e regras de negócio —, cruzando o código com os três
+roteiros (`roteiro-e2e.py`, `roteiro-e2e-ui.mjs` e `roteiro-e2e-ia.mjs`).
+Medição de 27/11/2026, sobre a `main` em `edd7ceb` (com o PR #84). O PR
+trouxe o endpoint `GET /api/validacao/minhas-provas` e a RN29, cobertos pelos
+casos E19 a E21, U16 e U17. Os casos foram executados e aprovados em
+27/11/2026.
+
+| Dimensão | Cobertos | Total | Cobertura |
+| --- | --- | --- | --- |
+| Endpoints da API (incluindo `/health`) | 24 | 25 | **96%** |
+| Telas do frontend (rotas do `App.tsx`) | 9 | 9 | **100%** |
+| Regras de negócio ([documento 08](../01-negocio/08-regras-de-negocio.md)) | 18 | 28 | **64%** |
+
+Um endpoint conta como coberto quando algum roteiro o chama, direto pela API ou
+pela tela que o usa. Uma regra conta quando algum caso confere o comportamento
+que ela exige, no aceite ou na recusa; observar um status no caminho feliz não
+basta para as regras de domínio de valores (RN03, RN13).
+
+**Endpoint não coberto:** `GET /api/ranking/grupos/{id}/maiores-desafios`.
+Nenhum roteiro o chama, e o frontend também não.
+
+**Cobertura parcial:** `POST /api/auth/google` só é exercitado com token falso
+(E01). O login real depende do popup do Google, testado à mão antes do merge.
+
+**Regras cobertas:** RN01 (I08), RN04 (E05, U09), RN05 (E01, U14), RN06 (E08,
+U03, U04), RN07 (I08), RN12 (E16), RN14 (U07), RN15 (E04, U08), RN17 (E04,
+U08), RN18 (E13, U06), RN21 (U06), RN22 (U15), RN23 (E04), RN25 (E09, E14,
+E15), RN26 (E06, E07), RN27 (E10, E11, I07), RN28 (E12, U05, I01 a I13) e
+RN29 (E19, E21, U16).
+
+**Regras fora do nível 5**, e onde cada uma é testada:
+
+| Regra | Onde é testada |
+| --- | --- |
+| RN02 — valor monetário maior que zero | Em nenhum nível. A migration `AlinhamentoModeloV3` removeu `chk_desafio_valor` e levou o valor para `descricao_recompensa` (I11 do nível 3), mas o documento 08 ainda cita a constraint. A regra precisa ser revista |
+| RN03 — status do desafio restrito | T01 |
+| RN08 — saldo nunca negativo | T08 |
+| RN09 — um `DESAFIANTE` e um `DESAFIADO` | T06 (U06 só percorre o caminho feliz) |
+| RN10 — no máximo 5 evidências | T13 |
+| RN11 — prazo de votação de 1 semana | `EvidenciaTests` (nível 2) |
+| RN13 — status da evidência restrito | Nenhum caso dedicado |
+| RN16 — empate e prazo expirado | Nenhum caso |
+| RN19 — voto só em `EM_VOTACAO` e no prazo | T11 |
+| RN24 — ledger append-only | T09, T10, T19 |
+
+Contando os níveis 1 a 3 junto com o 5, só RN02, RN13 e RN16 ficam sem teste.
+A RN16 (empate e prazo expirado) passou a ser coberta pelos cenários V19, P01 e
+P02 do roteiro completo, descrito abaixo.
+
+### Nível 5d — Roteiro completo
+
+O [roteiro completo dos testes de ponta a ponta](roteiro-e2e.md) desce um
+nível: conta cada resposta possível de cada endpoint e tela, não só se o
+endpoint foi chamado. São 201 cenários, e os que os roteiros acima não
+cobriam ganharam caso em dois scripts novos. Cada caso leva o ID do cenário:
+
+* [`roteiro-e2e-completo.py`](../../scripts/testes/roteiro-e2e-completo.py):
+  API, banco, prazos, concorrência, configuração e banco fora do ar;
+* [`roteiro-e2e-ui-completo.mjs`](../../scripts/testes/roteiro-e2e-ui-completo.mjs):
+  tela no Chrome e hub do SignalR por WebSocket.
+
+Cada cenário monta o próprio mundo por SQL (usuários, grupo, desafio) e age
+pela API ou pela tela. Os prazos são testados movendo as datas para o passado e
+reiniciando a API, porque o `PrazosWorker` roda ao subir.
+
+Executado em 27/11/2026 numa pilha própria (`euduvido-e2e`), com banco
+recém-criado e navegador visível:
+
+Primeira execução, antes das correções:
+
+| Roteiro | Casos | Aprovados | Reprovados |
+| --- | --- | --- | --- |
+| API completo | 92 | 85 | 7 |
+| Tela e tempo real completo | 26 | 24 | 2 |
+
+Somando os roteiros dos níveis 5 a 5c: 201 de 201 cenários executados, 191
+aprovados e 10 reprovados, todos por defeito do sistema (abaixo).
+
+O login com o Google (A05 a A07, F05 e F06) roda com o validador simulado do
+[ADR 0024](../02-arquitetura/adr/0024-validador-google-simulado-para-testes.md).
+Os roteiros recriam a API com `GOOGLE_SIMULADO_CHAVE`, e ela passa a aceitar ID
+tokens no formato do Google assinados com essa chave. Na tela, o script do
+Google é trocado por um botão que devolve esse token. Daí em diante, o fluxo é
+o real: `cadastroPendente`, formulário de apelido e nascimento, criação da
+conta. O popup do Google de verdade continua sendo testado à mão antes do
+merge. Testes de unidade do validador: **129 de 129**, com 7 novos.
+
+**Os 10 reprovados eram defeitos do sistema, corrigidos no mesmo dia** com as
+regras decididas pelo responsável:
+
+| ID | Defeito | Correção |
+| --- | --- | --- |
+| V27 | Desafio decidido sem ninguém do lado vencedor deixava o pote preso: 20 CP em `vw_escrow_orfao` | `encerrar_desafio` devolve o pote a quem entrou (RN23) |
+| D32 | Cancelar com prova no júri não fechava a votação: o júri continuava votando e recebia 2 CP | `cancelar_desafio` expira a prova (RN12) |
+| H01, H02 | O hub `/hubs/votacao` aceitava conexão sem login, e qualquer logado entrava no canal de outro grupo | Hub exige login; `EntrarNoGrupo` confere se quem chama é membro |
+| C02 | Dois aceites simultâneos no mesmo papel davam 500 | Violação de constraint vira 409 |
+| P05 | Desafio `EM_ANDAMENTO` com prazo vencido ficava parado, com CP em escrow | Nova RN30: o worker encerra como perdido o desafio vencido sem prova no júri |
+| V11 | Num grupo só com os duelistas, a prova nascia sem júri | Envio recusado (409 `Evidencia.SemJuri`, RN14) |
+| D25 | Quem não é do grupo recebia 403 ao aceitar, o que revelava o desafio | 404, como no `GET` |
+| S05 | Com o banco fora, o `/health` levava 121 s para responder 503 | Prazo de 5 s |
+| F30 (`U11`) | Rolagem vertical em `/desafios/nova`, `/grupos/:id` e `/perfil` a 1440x900 | CSS de desktop: grupos numa linha, coluna do filtro mais larga, rodapé menor |
+
+As procedures mudaram por migration (`RegrasDeEncerramentoECancelamento`, com
+o `schema.sql` regenerado), e as regras, no
+[documento 08](../01-negocio/08-regras-de-negocio.md). O seed passou a usar
+prazos relativos nos desafios em curso, senão a RN30 os encerraria ao subir a
+API.
+
+**Execução final em 27/11/2026, depois das correções.** Pilha própria
+reconstruída, navegador visível. O roteiro de tela rodou num banco novo; os
+outros quatro, em sequência no mesmo banco, para provar que um não interfere
+no outro:
+
+| Suíte | Resultado |
+| --- | --- |
+| `dotnet test` (níveis 1 a 3) | **183 de 183** |
+| API de ponta a ponta (`roteiro-e2e.py`) | **30 de 30** |
+| Tela (`roteiro-e2e-ui.mjs`) | **21 de 21**, com o U11 aprovado |
+| API completo | **92 de 92** |
+| Tela e tempo real completo | **26 de 26** |
+| IA simulada | **14 de 14** |
+
+`vw_reconciliacao_saldo` e `vw_escrow_orfao` vazias no fim. **Os 201 cenários
+do roteiro completo passam.**
+
+Na execução final, dois testes precisaram de ajuste, sem mudança no app:
+
+* **F33:** a correção do D25 trocou o 403 por 404, e o teste ainda procurava o
+  403.
+* **I01:** o A15 cadastrava um segundo "Tavin", e o roteiro da IA buscava o
+  Tavin pelo apelido sem `LIMIT`. O A15 agora repete o apelido de um usuário
+  próprio, e as buscas por apelido pegam o de menor id.
+
+A análise também mostrou que o ramo "5ª evidência esgotada" de
+`apurar_votacao` nunca roda: a terceira prova não aceita já encerra o desafio.
 
 ## Execução
 

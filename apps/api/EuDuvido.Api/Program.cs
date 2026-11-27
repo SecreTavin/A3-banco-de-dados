@@ -32,7 +32,19 @@ var auth = builder.Configuration.GetSection(AuthOptions.Secao).Get<AuthOptions>(
 
 builder.Services.AddSingleton(auth);
 builder.Services.AddSingleton<TokenService>();
-builder.Services.AddSingleton<IValidadorGoogle, ValidadorGoogle>();
+// O validador simulado so existe para os testes de ponta a ponta (ADR 0024).
+var googleSimulado = !string.IsNullOrWhiteSpace(auth.GoogleSimuladoChave);
+if (googleSimulado)
+{
+    if (auth.GoogleSimuladoChave!.Length < ValidadorGoogleSimulado.TamanhoMinimoChave)
+        throw new InvalidOperationException(
+            $"Auth:GoogleSimuladoChave precisa de ao menos {ValidadorGoogleSimulado.TamanhoMinimoChave} caracteres.");
+    builder.Services.AddSingleton<IValidadorGoogle>(new ValidadorGoogleSimulado(auth.GoogleSimuladoChave));
+}
+else
+{
+    builder.Services.AddSingleton<IValidadorGoogle, ValidadorGoogle>();
+}
 builder.Services.AddScoped<EntrarComGoogleHandler>();
 builder.Services.AddScoped<CompletarCadastroHandler>();
 
@@ -103,6 +115,10 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p => p
 
 var app = builder.Build();
 
+if (googleSimulado)
+    app.Logger.LogWarning(
+        "Login com Google SIMULADO ativo (Auth:GoogleSimuladoChave): so para testes, nunca na producao. ADR 0024.");
+
 app.UseExceptionHandler();
 app.UseCors();
 app.UseAuthentication();
@@ -111,17 +127,32 @@ app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+// Prazo curto: com o banco fora, a estrategia de retry segurava a resposta por
+// ~2 minutos (cenario S05), e quem monitora desistia antes de ver o 503.
 app.MapGet("/health", async (EuDuvidoDbContext db, CancellationToken ct) =>
-    await db.Database.CanConnectAsync(ct)
+{
+    using var prazo = CancellationTokenSource.CreateLinkedTokenSource(ct);
+    prazo.CancelAfter(TimeSpan.FromSeconds(5));
+    bool conecta;
+    try
+    {
+        conecta = await db.Database.CanConnectAsync(prazo.Token);
+    }
+    catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+    {
+        conecta = false;
+    }
+    return conecta
         ? Results.Ok(new { status = "ok" })
-        : Results.Problem("Banco indisponivel.", statusCode: 503));
+        : Results.Problem("Banco indisponivel.", statusCode: 503);
+});
 
 app.MapAuthEndpoints();
 app.MapGruposEndpoints();
 app.MapDesafiosEndpoints();
 app.MapValidacaoEndpoints();
 app.MapRankingEndpoints();
-app.MapHub<VotacaoHub>("/hubs/votacao");
+app.MapHub<VotacaoHub>("/hubs/votacao").RequireAuthorization();
 
 using (var escopo = app.Services.CreateScope())
 {

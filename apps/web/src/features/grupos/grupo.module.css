@@ -386,11 +386,21 @@
     margin-bottom: 16px;
   }
 
+  /* Coluna larga o bastante para os dois exemplos de cada nível caberem numa
+     linha: a tela cabe em 1440x900 sem rolar (U11). */
   .grade {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 400px;
+    grid-template-columns: minmax(0, 1fr) 440px;
     align-items: start;
     gap: 20px;
+  }
+
+  .nivel {
+    padding: 10px 12px;
+  }
+
+  .exemplos {
+    margin-top: 2px;
   }
 
   .membroTextos strong {

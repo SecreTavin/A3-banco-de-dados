@@ -162,7 +162,8 @@ public static class DesafiosEndpoints
                 .Select(m => (int?)m.SaldoCp)
                 .FirstOrDefaultAsync(ct);
 
-            if (saldo is null) return Results.Forbid();
+            // Quem nao e do grupo nao descobre que o desafio existe, como no GET (cenario D25).
+            if (saldo is null) return Results.NotFound();
             if (saldo < desafio.ValorCp)
             {
                 ErrorOr.ErrorOr<Success> insuficiente =
@@ -175,16 +176,39 @@ public static class DesafiosEndpoints
 
             // O debito e a entrada no desafio precisam commitar juntos (RN18).
             var estrategia = db.Database.CreateExecutionStrategy();
-            await estrategia.ExecuteAsync(async () =>
+            try
             {
-                await using var tx = await db.Database.BeginTransactionAsync(ct);
-                await db.SaveChangesAsync(ct);
-                await db.Database.ExecuteSqlRawAsync(
-                    "CALL debitar_escrow(@a, @u)",
-                    [new NpgsqlParameter("a", NpgsqlDbType.Integer) { Value = id },
-                     new NpgsqlParameter("u", NpgsqlDbType.Integer) { Value = usuario.Id }], ct);
-                await tx.CommitAsync(ct);
-            });
+                await estrategia.ExecuteAsync(async () =>
+                {
+                    await using var tx = await db.Database.BeginTransactionAsync(ct);
+                    await db.SaveChangesAsync(ct);
+                    await db.Database.ExecuteSqlRawAsync(
+                        "CALL debitar_escrow(@a, @u)",
+                        [new NpgsqlParameter("a", NpgsqlDbType.Integer) { Value = id },
+                         new NpgsqlParameter("u", NpgsqlDbType.Integer) { Value = usuario.Id }], ct);
+                    await tx.CommitAsync(ct);
+                });
+            }
+            // Dois aceites ao mesmo tempo passam juntos pela checagem do dominio; quem
+            // decide e o banco. A regra violada volta como conflito, nao como 500 (cenario C02).
+            catch (DbUpdateException e) when (e.InnerException is PostgresException
+            {
+                SqlState: PostgresErrorCodes.UniqueViolation
+            } pg)
+            {
+                ErrorOr<Success> conflito = pg.ConstraintName == "unq_participante_desafio"
+                    ? DesafioErrors.JaParticipa
+                    : DesafioErrors.PapelJaOcupado(requisicao.PapelDesafio);
+                return conflito.ToHttp();
+            }
+            catch (PostgresException e) when (e is
+            {
+                SqlState: PostgresErrorCodes.CheckViolation, ConstraintName: "chk_membro_saldo"
+            })
+            {
+                ErrorOr<Success> semSaldo = DesafioErrors.SaldoInsuficiente(saldo.Value, desafio.ValorCp);
+                return semSaldo.ToHttp();
+            }
 
             return Results.Ok(new { idDesafio = id, status = desafio.Status });
         });
