@@ -1,11 +1,13 @@
 # Roteiro da demonstração (Banca Final)
 
-Demonstração ao vivo de **14 minutos** na banca de **27/11/2026**, dentro do
-[roteiro dos slides](roteiro-dos-slides.md) (slide 19). Os cinco
-integrantes entram com a **própria conta Google**, no próprio celular, e fazem
-na hora o ciclo de um desafio: entrar, criar, aceitar, provar, julgar e pagar.
-Em cada passo, a tela mostra a funcionalidade e o banco mostra a regra que a
-garante.
+Demonstração ao vivo na banca de **27/11/2026**, depois do último slide do
+[roteiro dos slides](roteiro-dos-slides.md). Quem conduz é o professor: o time
+segue as instruções dele. Os 10 passos abaixo, que somam **14 minutos**, são a
+ordem de reserva, para quando ele não indicar outra, e servem de mapa para
+achar rápido qualquer funcionalidade que ele pedir. Os cinco integrantes entram
+com a **própria conta Google**, no próprio celular, e fazem na hora o ciclo de
+um desafio: entrar, criar, aceitar, provar, julgar e pagar. Em cada passo, a
+tela mostra a funcionalidade e o banco mostra a regra que a garante.
 
 > **Ensaiado em 22/11/2026** num banco local vazio, povoado só com os cinco
 > integrantes, pela API e com a moderação simulada. Os saldos, o júri, o quórum
