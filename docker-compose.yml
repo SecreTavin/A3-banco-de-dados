@@ -73,6 +73,8 @@ services:
       # padrao so para desenvolvimento e CI; no ambiente publico vem do .env.
       Auth__Chave: "${AUTH_CHAVE:-chave-de-desenvolvimento-nao-usar-em-producao-min-32-chars}"
       Auth__GoogleClientId: "${GOOGLE_CLIENT_ID:-}"
+      # So nos testes de ponta a ponta (ADR 0024); vazio, vale o Google de verdade.
+      Auth__GoogleSimuladoChave: "${GOOGLE_SIMULADO_CHAVE:-}"
       Cors__Origens__0: "http://localhost:8080"
       Cors__Origens__1: "http://localhost:5173"
       # Moderacao de desafios por IA na Groq (ADR 0015). A chave vem do .env.

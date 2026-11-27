@@ -59,6 +59,9 @@ INSERT INTO categoria_desafio (nome, descricao) VALUES
 -- 2: EM_ANDAMENTO - desafio aceito, aguardando cumprimento.
 -- 3: FINALIZADA_CUMPRIU - historico para o ranking.
 -- 4: ABERTA - ainda sem participantes.
+-- Os desafios em curso (1, 2 e 8) tem prazo relativo a carga: o PrazosWorker
+-- encerra como perdido o desafio vencido sem prova no juri (RN30), e um prazo
+-- fixo no passado fecharia esses desafios assim que a API subisse.
 -- descricao_recompensa e so descritiva: nenhum calculo a usa (RN02, ADR 0006).
 INSERT INTO desafio
     (id_grupo, id_criador, id_categoria, titulo, descricao, valor_cp,
@@ -66,11 +69,11 @@ INSERT INTO desafio
      data_encerramento) VALUES
 (1, 1, 1, 'Correr 5km abaixo de 25 minutos',
     'Biel duvidou que Tavin faz 5km em menos de 25 minutos no Parque Municipal.',
-    20, 'MONETARIA', 'R$ 50,00', '2026-09-15 18:00:00-03', 'EM_VOTACAO', NULL),
+    20, 'MONETARIA', 'R$ 50,00', CURRENT_TIMESTAMP + INTERVAL '10 days', 'EM_VOTACAO', NULL),
 (1, 2, 2, 'Ir fantasiado de dinossauro na aula',
     'Theus duvidou que Lipe vai para a aula do Prof. Mário de dinossauro inflável.',
     15, 'PRENDA_ACAO', 'Pagar 1 rodada de açaí para todo o grupo',
-    '2026-10-05 19:00:00-03', 'EM_ANDAMENTO', NULL),
+    CURRENT_TIMESTAMP + INTERVAL '5 days', 'EM_ANDAMENTO', NULL),
 -- Entra como EM_VOTACAO e e encerrado pela procedure no fim deste script.
 -- Semear direto como FINALIZADA_CUMPRIU faria a guarda de idempotencia de
 -- encerrar_desafio retornar sem pagar, deixando o pote preso no escrow.
@@ -242,7 +245,7 @@ INSERT INTO desafio
     20, 'PRENDA_ACAO', 'Levar o bolo do aniversario da turma', '2026-11-30 22:00:00-03', 'EM_ANDAMENTO'),
 (3, 2, 1, 'Comer 3 pimentas malaguetas sem beber agua',
     'Biel duvidou que Lipe aguenta 3 malaguetas seguidas sem agua por 5 minutos.',
-    10, 'PRENDA_ACAO', 'Lavar a louca do churrasco do time', '2026-11-12 21:00:00-03', 'EM_ANDAMENTO'),
+    10, 'PRENDA_ACAO', 'Lavar a louca do churrasco do time', CURRENT_TIMESTAMP + INTERVAL '6 days', 'EM_ANDAMENTO'),
 (3, 3, 3, 'Ganhar 5 partidas seguidas no CS',
     'Theus acha que ninguem do grupo ganha 5 partidas seguidas no competitivo.',
     10, 'MONETARIA', 'R$ 10,00 por cabeca', '2026-12-01 23:00:00-03', 'ABERTA'),

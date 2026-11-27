@@ -124,6 +124,17 @@ caso("E20", "#83: o desafiado acompanha a própria prova no júri, com placar e 
      f"Tavin HTTP {s_t}, placar {prova and (prova['votosFavoraveis'], prova['votosContra'], prova['quorum'])}; "
      f"Lari HTTP {s_l}, {len(provas_lari or [])} prova(s); sem login HTTP {s_a}")
 
+# --- E30 júri aberto impede a saída do grupo (RN25) ---------------------------
+# Lari não está em desafio em curso no grupo 1, só no júri da evidência 2: é o
+# júri, e não um desafio, que tem de barrar a saída. Roda antes do voto dela no E04.
+pend_lari = sql("SELECT count(*) FROM participante_desafio p JOIN desafio d USING(id_desafio) "
+                "WHERE d.id_grupo=1 AND p.id_usuario=4 AND d.status IN ('ABERTA','EM_ANDAMENTO','EM_VOTACAO')")
+s, r = chamar("DELETE", "/api/grupos/1/membros/4", token=lari)
+caso("E30", "RN25: quem está em júri de votação aberta não sai do grupo",
+     pend_lari == "0" and s == 409 and isinstance(r, dict) and r.get("title") == "Grupo.MembroComPendencias"
+     and sql("SELECT count(*) FROM membro_grupo WHERE id_grupo=1 AND id_usuario=4") == "1",
+     f"desafios em curso da Lari no grupo: {pend_lari}; HTTP {s} {isinstance(r, dict) and r.get('title')}")
+
 # --- E04 roteiro da demonstração: voto que fecha o quórum --------------------
 antes = sql("SELECT string_agg(apelido||'='||saldo_cp, ' ' ORDER BY apelido) FROM membro_grupo m JOIN usuario u USING(id_usuario) WHERE id_grupo=1")
 s, r = chamar("POST", "/api/validacao/evidencias/2/votos", {"voto": "VALIDO", "justificativa": "Print do Strava confere."}, lari)
@@ -202,6 +213,78 @@ caso("E16", "RN12: criador cancela com motivo e o CP é estornado", s == 200 and
 s, r = chamar("GET", "/api/ranking/grupos/1", token=tavin)
 s2, r2 = chamar("GET", "/api/ranking/grupos/2", token=biel)
 caso("E17", "Consulta: ranking do grupo; quem não é membro não vê", s == 200 and s2 in (403, 404), f"HTTP {s}; não-membro HTTP {s2}")
+
+# --- E22 a E29 ciclo de vida de um grupo (RN06, RN25, ADR 0018) ----------------
+# Grupo criado pelo próprio roteiro: Tavin é o ADMIN; Lari e Lipe entram e saem.
+def codigo(r):
+    return r.get("title") if isinstance(r, dict) else None
+
+def no_grupo(id_grupo, id_usuario):
+    return sql(f"SELECT count(*) FROM membro_grupo WHERE id_grupo={id_grupo} AND id_usuario={id_usuario}") == "1"
+
+def ledger(id_grupo, id_usuario):
+    return int(sql(f"SELECT coalesce(sum(valor),0) FROM transacao_cp WHERE id_grupo={id_grupo} AND id_usuario={id_usuario}"))
+
+nome_grupo = f"Grupo e2e-api {int(time.time())}"
+s, r = chamar("POST", "/api/grupos", {"nome": f"  {nome_grupo}  ", "descricao": "Criado pelo roteiro da API"}, tavin)
+g = (r or {}).get("idGrupo") if s == 201 else None
+criador = sql(f"SELECT papel||'/'||saldo_cp FROM membro_grupo WHERE id_grupo={g} AND id_usuario=1") if g else ""
+credito = sql(f"SELECT coalesce(sum(valor),0) FROM transacao_cp WHERE id_grupo={g} AND id_usuario=1 AND tipo='CREDITO_INICIAL'") if g else ""
+caso("E22", "Inclusão de grupo: nome aparado, filtro MODERADO por padrão, criador ADMIN com 100 CP",
+     bool(g) and r.get("nome") == nome_grupo and r.get("nivelFiltro") == "MODERADO" and criador == "ADMIN/100" and credito == "100",
+     f"HTTP {s}, grupo {g} \"{(r or {}).get('nome')}\" {(r or {}).get('nivelFiltro')}; criador {criador}; CREDITO_INICIAL={credito}")
+
+n_grupos = sql("SELECT count(*) FROM grupo_amigos")
+s1, _ = chamar("POST", "/api/grupos", {"nome": "   "}, tavin)
+s2, _ = chamar("POST", "/api/grupos", {"nome": "Grupo extremo", "nivelFiltro": "EXTREMO"}, tavin)
+caso("E23", "Validação de grupo: nome vazio e nível inexistente são recusados sem gravar",
+     s1 == 400 and s2 == 400 and sql("SELECT count(*) FROM grupo_amigos") == n_grupos,
+     f"nome vazio HTTP {s1}; nível EXTREMO HTTP {s2}; grupos {n_grupos} -> {sql('SELECT count(*) FROM grupo_amigos')}")
+
+s_ver, _ = chamar("GET", f"/api/grupos/{g}", token=lari)
+s_niv, _ = chamar("PATCH", f"/api/grupos/{g}/nivel-filtro", {"nivelFiltro": "PESADO"}, lari)
+s_add, _ = chamar("POST", f"/api/grupos/{g}/membros", {"email": "felipe@email.com"}, lari)
+s_rem, _ = chamar("DELETE", f"/api/grupos/{g}/membros/1", token=lari)
+caso("E24", "Visibilidade: quem não é do grupo recebe 404 em ler, editar, convidar e remover",
+     (s_ver, s_niv, s_add, s_rem) == (404, 404, 404, 404) and no_grupo(g, 1) and not no_grupo(g, 5)
+     and sql(f"SELECT nivel_filtro FROM grupo_amigos WHERE id_grupo={g}") == "MODERADO",
+     f"GET {s_ver}, PATCH {s_niv}, POST membro {s_add}, DELETE {s_rem}")
+
+s_vazio, _ = chamar("POST", f"/api/grupos/{g}/membros", {"email": "  "}, tavin)
+s_sem, r_sem = chamar("POST", f"/api/grupos/{g}/membros", {"email": "ninguem@email.com"}, tavin)
+s_ok, _ = chamar("POST", f"/api/grupos/{g}/membros", {"email": "  LARISSA@Email.com "}, tavin)
+s_dup, r_dup = chamar("POST", f"/api/grupos/{g}/membros", {"email": "larissa@email.com"}, tavin)
+s_lipe, _ = chamar("POST", f"/api/grupos/{g}/membros", {"email": "felipe@email.com"}, tavin)
+caso("E25", "Convite: e-mail vazio, sem conta e repetido são recusados; maiúsculas e espaços acham a conta",
+     s_vazio == 400 and s_sem == 404 and codigo(r_sem) == "Grupo.UsuarioNaoEncontrado" and s_ok == 201
+     and s_dup == 409 and codigo(r_dup) == "Grupo.JaMembro" and s_lipe == 201
+     and ledger(g, 4) == 100 and ledger(g, 5) == 100,
+     f"vazio {s_vazio}; sem conta {s_sem} {codigo(r_sem)}; maiúsculas {s_ok}; repetido {s_dup} {codigo(r_dup)}; Lipe {s_lipe}")
+
+s_outro, r_outro = chamar("DELETE", f"/api/grupos/{g}/membros/5", token=lari)
+s_fora, r_fora = chamar("DELETE", f"/api/grupos/{g}/membros/2", token=tavin)
+caso("E26", "RN25: membro comum não remove outro; remover quem não é do grupo responde 404",
+     s_outro == 403 and codigo(r_outro) == "Grupo.SomenteAdmin" and no_grupo(g, 5)
+     and s_fora == 404 and codigo(r_fora) == "Grupo.NaoMembro",
+     f"Lari remove Lipe: {s_outro} {codigo(r_outro)}; Tavin remove Biel (de fora): {s_fora} {codigo(r_fora)}")
+
+s, r = chamar("DELETE", f"/api/grupos/{g}/membros/1", token=tavin)
+caso("E27", "RN25: o único ADMIN não sai enquanto houver outros membros",
+     s == 409 and codigo(r) == "Grupo.UltimoAdmin" and no_grupo(g, 1),
+     f"HTTP {s} {codigo(r)}")
+
+s, _ = chamar("DELETE", f"/api/grupos/{g}/membros/5", token=lipe)
+saida = sql(f"SELECT coalesce(sum(valor),0) FROM transacao_cp WHERE id_grupo={g} AND id_usuario=5 AND tipo='SAIDA_GRUPO'")
+caso("E28", "RN25: membro sai do grupo por conta própria; SAIDA_GRUPO zera a conta",
+     s == 204 and not no_grupo(g, 5) and saida == "-100" and ledger(g, 5) == 0 and contabilidade() == "0",
+     f"HTTP {s}; SAIDA_GRUPO={saida}; ledger do Lipe no grupo={ledger(g, 5)}")
+
+s, _ = chamar("POST", f"/api/grupos/{g}/membros", {"email": "felipe@email.com"}, tavin)
+saldo_volta = sql(f"SELECT saldo_cp FROM membro_grupo WHERE id_grupo={g} AND id_usuario=5")
+caso("E29", "ADR 0018: quem saiu e é readmitido volta com 100 CP e a reconciliação fecha",
+     s == 201 and saldo_volta == "100" and ledger(g, 5) == 100 and contabilidade() == "0",
+     f"HTTP {s}; saldo {saldo_volta}; ledger {ledger(g, 5)}; lançamentos do Lipe: "
+     + sql(f"SELECT string_agg(tipo||'='||valor, ' ' ORDER BY id_transacao) FROM transacao_cp WHERE id_grupo={g} AND id_usuario=5"))
 
 # --- E18 integridade final ----------------------------------------------------
 caso("E18", "Contabilidade fechando ao fim de tudo (views vazias)", contabilidade() == "0", sql("SELECT string_agg(tipo||'='||n, ' ') FROM (SELECT tipo, count(*) n FROM transacao_cp GROUP BY 1 ORDER BY 1) x"))

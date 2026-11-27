@@ -302,7 +302,7 @@ async function cenariosDeApi() {
       `SELECT d.status||'|'||m.aprovado||'|'||m.nivel_filtro||'|'||m.id_desafio||'|'||m.id_criador||'|'||m.id_grupo
        FROM desafio d JOIN moderacao_desafio m ON m.id_desafio=d.id_desafio WHERE d.id_desafio=${id}`,
     )
-    const esperada = `ABERTA|true|${nivelOriginal}|${id}|${num(`SELECT id_usuario FROM usuario WHERE apelido='Tavin'`)}|${grupoAdmin}`
+    const esperada = `ABERTA|true|${nivelOriginal}|${id}|${num(`SELECT id_usuario FROM usuario WHERE apelido='Tavin' ORDER BY id_usuario LIMIT 1`)}|${grupoAdmin}`
     confere(linha === esperada, `banco: ${linha} (esperado ${esperada})`)
     const novas = ia.requisicoes.slice(antes)
     confere(novas.length === 1, `provedor recebeu ${novas.length} chamadas (esperado 1)`)

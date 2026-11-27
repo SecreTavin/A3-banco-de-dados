@@ -33,9 +33,10 @@ Registro das decisões de arquitetura do Eu Duvido!. Uma decisão por arquivo, e
 | [0018](0018-saida-de-membro-e-invariante-do-ledger.md) | Saída de membro zera o saldo no ledger | Aceita | 2026-10-29 |
 | [0019](0019-demonstracao-publica-cloudflare-tunel.md) | Demonstração pública pela Cloudflare, com a API por túnel | Substituída por 0020 | 2026-10-31 |
 | [0020](0020-demonstracao-publica-na-vm-oracle.md) | Demonstração pública numa VM da Oracle Cloud | Aceita, complementada pela 0023 | 2026-11-16 |
-| [0021](0021-login-exclusivo-google.md) | Login exclusivo com Google e fim do login de desenvolvimento | Aceita | 2026-11-07 |
+| [0021](0021-login-exclusivo-google.md) | Login exclusivo com Google e fim do login de desenvolvimento | Aceita, complementada pela 0024 | 2026-11-07 |
 | [0022](0022-foto-da-prova-no-minio-pela-api.md) | Foto da prova no MinIO, enviada e lida pela API | Aceita | 2026-11-20 |
 | [0023](0023-cloudflare-como-reserva-da-vm.md) | Cloudflare do Mac do PO como reserva da VM | Aceita | 2026-11-26 |
+| [0024](0024-validador-google-simulado-para-testes.md) | Validador do Google simulado para os testes de ponta a ponta | Aceita | 2026-11-27 |
 
 ## Status possíveis
 

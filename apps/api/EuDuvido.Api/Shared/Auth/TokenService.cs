@@ -16,6 +16,10 @@ public class AuthOptions
     public string Audiencia { get; set; } = "euduvido";
     public int ExpiracaoHoras { get; set; } = 12;
     public string? GoogleClientId { get; set; }
+
+    // So para os testes de ponta a ponta (ADR 0024): com ela, o login aceita tokens
+    // assinados por esta chave no lugar dos do Google. Nunca configurar na producao.
+    public string? GoogleSimuladoChave { get; set; }
 }
 
 // Quem o Google disse que a pessoa e, enquanto ela completa o cadastro.

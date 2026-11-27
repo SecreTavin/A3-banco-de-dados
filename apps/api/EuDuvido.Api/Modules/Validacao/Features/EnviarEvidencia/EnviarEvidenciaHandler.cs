@@ -46,6 +46,8 @@ public class EnviarEvidenciaHandler(EuDuvidoDbContext db)
         // RN14: juri lido agora e congelado em jurado_evidencia. A prova vai
         // direto ao juri: e ele quem decide se ela vale.
         var elegiveis = await CarregarJuri(desafio.IdGrupo, desafio.IdDesafio, ct);
+        if (elegiveis.Count == 0)
+            return EvidenciaErrors.SemJuri;
 
         var evidencia = Evidencia.Enviar(
             comando.IdDesafio, idUsuario, anteriores.Count + 1,

@@ -53,5 +53,21 @@ public class PrazosWorker(IServiceProvider provedor, ILogger<PrazosWorker> log)
             await conexao.ExecuteAsync(
                 "CALL cancelar_desafio(@id, 'Prazo encerrado sem participantes suficientes')",
                 new { id });
+
+        // RN30: o prazo do desafio acabou e nao ha prova no juri - o desafiado nao
+        // provou a tempo. Encerra como perdido; o pote vai a quem apostou contra.
+        // Roda depois da apuracao das provas vencidas, para nao fechar um desafio
+        // cuja ultima prova acabou de ser decidida.
+        var vencidos = await conexao.QueryAsync<int>(
+            """
+            SELECT d.id_desafio FROM desafio d
+             WHERE d.status IN ('EM_ANDAMENTO', 'EM_VOTACAO')
+               AND d.data_limite < CURRENT_TIMESTAMP
+               AND NOT EXISTS (SELECT 1 FROM evidencia e
+                                WHERE e.id_desafio = d.id_desafio AND e.status = 'EM_VOTACAO')
+            """);
+
+        foreach (var id in vencidos)
+            await conexao.ExecuteAsync("CALL encerrar_desafio(@id, FALSE)", new { id });
     }
 }
